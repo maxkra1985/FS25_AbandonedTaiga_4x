@@ -1,0 +1,531 @@
+--[[
+    Abandoned Taiga - Construction Info HUD
+    FS25
+
+    Формирует контекстное информационное меню constructible-placeable.
+    Модуль не устанавливает hooks: координатор решает, когда подавлять штатные
+    updateInfo специализаций и когда вызывать строительный/составной HUD.
+]]
+
+TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
+local HUD = TaigaConstructionInfoHUD
+
+HUD.VERSION = "1.0.0"
+HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
+
+HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
+HUD.L10N_PRODUCTION_STORAGE = "taiga_cl_infoProductionStorage"
+HUD.L10N_WAREHOUSE_STORAGE = "taiga_cl_infoWarehouseStorage"
+HUD.L10N_OBJECT = "taiga_cl_infoObject"
+
+local function getLifecycle()
+    return TaigaConstructionLifecycle
+end
+
+-- Возвращает пользовательскую строку подсистемы, пока отсутствующий ключ
+-- безопасно подменяется штатным текстом GIANTS. Собственные RU/EN/DE ключи
+-- добавляются в языковые XML отдельно от логики HUD.
+local function getText(customKey, fallbackKey, hardFallback)
+    if g_i18n ~= nil then
+        if customKey ~= nil and g_i18n:hasText(customKey) then
+            return g_i18n:getText(customKey)
+        end
+
+        if fallbackKey ~= nil and g_i18n:hasText(fallbackKey) then
+            return g_i18n:getText(fallbackKey)
+        end
+    end
+
+    return hardFallback
+end
+
+local function addSection(infoTable, title)
+    table.insert(infoTable, {
+        title = title,
+        accentuate = true
+    })
+end
+
+local function normalizeFillTypeIndex(value)
+    if type(value) == "number" then
+        local fillType = g_fillTypeManager ~= nil and g_fillTypeManager:getFillTypeByIndex(value) or nil
+        return fillType ~= nil and value or nil
+    end
+
+    if type(value) == "table" and type(value.index) == "number" then
+        local fillType = g_fillTypeManager ~= nil and g_fillTypeManager:getFillTypeByIndex(value.index) or nil
+        return fillType ~= nil and value.index or nil
+    end
+
+    return nil
+end
+
+local function normalizeFilename(filename)
+    if filename == nil then
+        return nil
+    end
+
+    return string.lower(string.gsub(tostring(filename), "\\", "/"))
+end
+
+local function getFilenameBasename(filename)
+    filename = normalizeFilename(filename)
+    if filename == nil then
+        return nil
+    end
+
+    return string.match(filename, "([^/]+)$") or filename
+end
+
+local function getAbstractObjectFilename(abstractObject)
+    if abstractObject == nil then
+        return nil
+    end
+
+    if abstractObject.palletAttributes ~= nil then
+        local filename = abstractObject.palletAttributes.configFileName
+            or abstractObject.palletAttributes.xmlFilename
+        if filename ~= nil then
+            return filename
+        end
+    end
+
+    if abstractObject.baleAttributes ~= nil and abstractObject.baleAttributes.xmlFilename ~= nil then
+        return abstractObject.baleAttributes.xmlFilename
+    end
+
+    if type(abstractObject.getXMLFilename) == "function" then
+        local ok, filename = pcall(abstractObject.getXMLFilename, abstractObject)
+        if ok then
+            return filename
+        end
+    end
+
+    return abstractObject.configFileName or abstractObject.xmlFilename
+end
+
+-- Возвращает канонический fillType абстрактного объекта ObjectStorage.
+-- Сначала читаются поля, реально используемые штатными AbstractPalletObject и
+-- AbstractBaleObject; filename-сопоставление оставлено только последним fallback.
+function HUD.getAbstractObjectFillTypeIndex(placeable, abstractObject)
+    if abstractObject == nil or g_fillTypeManager == nil then
+        return nil
+    end
+
+    -- PlaceableObjectStorage.AbstractPalletObject хранит тип продукта здесь.
+    if abstractObject.palletAttributes ~= nil then
+        local index = normalizeFillTypeIndex(abstractObject.palletAttributes.fillType)
+        if index ~= nil then
+            return index
+        end
+    end
+
+    -- AbstractBaleObject после абстрагирования тюка хранит те же данные в baleAttributes.
+    if abstractObject.baleAttributes ~= nil then
+        local index = normalizeFillTypeIndex(abstractObject.baleAttributes.fillType)
+        if index ~= nil then
+            return index
+        end
+    end
+
+    -- Пока реальный тюк ещё существует, штатный объект позволяет получить тип напрямую.
+    if abstractObject.baleObject ~= nil and type(abstractObject.baleObject.getFillType) == "function" then
+        local ok, value = pcall(abstractObject.baleObject.getFillType, abstractObject.baleObject)
+        if ok then
+            local index = normalizeFillTypeIndex(value)
+            if index ~= nil then
+                return index
+            end
+        end
+    end
+
+    -- Поддержка сторонних abstract object классов с обычными полями/методами.
+    local directFields = {"fillTypeIndex", "fillTypeId", "fillType"}
+    for _, fieldName in ipairs(directFields) do
+        local index = normalizeFillTypeIndex(abstractObject[fieldName])
+        if index ~= nil then
+            return index
+        end
+    end
+
+    local methodNames = {"getFillTypeIndex", "getFillType"}
+    for _, methodName in ipairs(methodNames) do
+        local method = abstractObject[methodName]
+        if type(method) == "function" then
+            local ok, value = pcall(method, abstractObject)
+            if ok then
+                local index = normalizeFillTypeIndex(value)
+                if index ~= nil then
+                    return index
+                end
+            end
+        end
+    end
+
+    -- Последний fallback для паллет: сопоставление XML с palletFilename fillType.
+    local objectFilename = normalizeFilename(getAbstractObjectFilename(abstractObject))
+    if objectFilename == nil then
+        return nil
+    end
+
+    local objectBasename = getFilenameBasename(objectFilename)
+    local function matchesFillType(fillTypeIndex)
+        local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
+        if fillType == nil or fillType.palletFilename == nil then
+            return false
+        end
+
+        local palletFilename = normalizeFilename(fillType.palletFilename)
+        return palletFilename == objectFilename
+            or getFilenameBasename(palletFilename) == objectBasename
+    end
+
+    local objectStorageSpec = placeable ~= nil and placeable.spec_objectStorage or nil
+    if objectStorageSpec ~= nil and objectStorageSpec.supportedFillTypes ~= nil then
+        for _, fillTypeIndex in ipairs(objectStorageSpec.supportedFillTypes) do
+            if matchesFillType(fillTypeIndex) then
+                return fillTypeIndex
+            end
+        end
+    end
+
+    if g_fillTypeManager.fillTypes ~= nil then
+        for key, fillType in pairs(g_fillTypeManager.fillTypes) do
+            local fillTypeIndex = type(fillType) == "table" and fillType.index or key
+            if type(fillTypeIndex) == "number" and matchesFillType(fillTypeIndex) then
+                return fillTypeIndex
+            end
+        end
+    end
+
+    return nil
+end
+
+local function getAbstractObjectDialogTitle(abstractObject)
+    if abstractObject ~= nil and type(abstractObject.getDialogText) == "function" then
+        local ok, title = pcall(abstractObject.getDialogText, abstractObject)
+        if ok and title ~= nil and title ~= "" then
+            title = tostring(title)
+            if utf8Strlen(title) > 32 then
+                title = utf8Substr(title, 0, 32) .. "..."
+            end
+            return title
+        end
+    end
+
+    return getText(HUD.L10N_OBJECT, nil, "Object")
+end
+
+-- Возвращает стабильный ключ группы склада. Для известных паллет/тюков это fillType;
+-- для сторонних объектов — класс+XML, поэтому разный fillLevel не дробит одну позицию.
+local function getObjectStorageGroupKey(abstractObject, fillTypeIndex)
+    if fillTypeIndex ~= nil then
+        return "fillType:" .. tostring(fillTypeIndex)
+    end
+
+    local className = abstractObject ~= nil and abstractObject.REFERENCE_CLASS_NAME or nil
+    local filename = normalizeFilename(getAbstractObjectFilename(abstractObject))
+    if className ~= nil or filename ~= nil then
+        return string.format("object:%s:%s", tostring(className or ""), tostring(filename or ""))
+    end
+
+    return "title:" .. getAbstractObjectDialogTitle(abstractObject)
+end
+
+-- Проверяет составной объект ProductionPoint + ObjectStorage без привязки к XML filename/type.
+function HUD.isProductionObjectStorageComposite(placeable)
+    if placeable == nil then
+        return false
+    end
+
+    local productionSpec = placeable.spec_productionPoint
+    return productionSpec ~= nil
+        and productionSpec.productionPoint ~= nil
+        and placeable.spec_objectStorage ~= nil
+end
+
+-- Составной HUD используется для обычного готового объекта сразу, а для constructible — только DONE.
+function HUD.useFinishedCompositeInfo(placeable)
+    if not HUD.isProductionObjectStorageComposite(placeable) then
+        return false
+    end
+
+    if placeable.spec_constructible == nil then
+        return true
+    end
+
+    local lifecycle = getLifecycle()
+    return lifecycle ~= nil and lifecycle.isFinished(placeable)
+end
+
+-- Во время строительства любая будущая специализация должна пропустить собственные строки HUD.
+function HUD.shouldSuppressFutureFacilityInfo(placeable)
+    local lifecycle = getLifecycle()
+    return placeable ~= nil
+        and placeable.spec_constructible ~= nil
+        and lifecycle ~= nil
+        and lifecycle.isUnderConstruction(placeable)
+end
+
+local function addOwnerInfo(productionPoint, infoTable)
+    if productionPoint == nil or g_farmManager == nil then
+        return
+    end
+
+    local ownerFarm = g_farmManager:getFarmById(productionPoint:getOwnerFarmId())
+    if ownerFarm ~= nil and not string.isNilOrWhitespace(ownerFarm.name) then
+        table.insert(infoTable, {
+            title = g_i18n:getText("fieldInfo_ownedBy"),
+            text = ownerFarm.name
+        })
+    end
+end
+
+local function addProductionInfo(productionPoint, infoTable)
+    addSection(
+        infoTable,
+        getText(HUD.L10N_PRODUCTION, "infohud_activeProductions", "Production")
+    )
+
+    local activeProductions = productionPoint.activeProductions or {}
+    if #activeProductions == 0 then
+        if productionPoint.infoTables ~= nil and productionPoint.infoTables.noActiveProd ~= nil then
+            table.insert(infoTable, productionPoint.infoTables.noActiveProd)
+        else
+            table.insert(infoTable, {
+                title = "",
+                text = g_i18n:getText("infohud_noActiveProduction")
+            })
+        end
+        return
+    end
+
+    -- Формат строки и статус совпадают со штатным ProductionPoint:updateInfo().
+    for _, production in ipairs(activeProductions) do
+        local status = productionPoint:getProductionStatus(production.id)
+        local statusKey = ProductionPoint.PROD_STATUS_TO_L10N[status]
+        local statusText = statusKey ~= nil and g_i18n:getText(statusKey) or tostring(status or "")
+
+        table.insert(infoTable, {
+            title = production.name
+                or g_fillTypeManager:getFillTypeTitleByIndex(production.primaryProductFillType),
+            text = statusText
+        })
+    end
+end
+
+local function addProductionStorageInfo(productionPoint, infoTable)
+    addSection(
+        infoTable,
+        getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage")
+    )
+
+    local displayed = false
+    local displayedFillTypes = {}
+
+    local function addFillType(fillTypeIndex)
+        if fillTypeIndex == nil or displayedFillTypes[fillTypeIndex] then
+            return
+        end
+        displayedFillTypes[fillTypeIndex] = true
+
+        local fillLevel = productionPoint:getFillLevel(fillTypeIndex)
+        if fillLevel ~= nil and fillLevel > 1 then
+            table.insert(infoTable, {
+                title = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex),
+                text = g_i18n:formatVolume(fillLevel, 0)
+            })
+            displayed = true
+        end
+    end
+
+    for _, fillTypeIndex in ipairs(productionPoint.inputFillTypeIdsArray or {}) do
+        addFillType(fillTypeIndex)
+    end
+    for _, fillTypeIndex in ipairs(productionPoint.outputFillTypeIdsArray or {}) do
+        addFillType(fillTypeIndex)
+    end
+
+    if not displayed then
+        if productionPoint.infoTables ~= nil and productionPoint.infoTables.storageEmpty ~= nil then
+            table.insert(infoTable, productionPoint.infoTables.storageEmpty)
+        else
+            table.insert(infoTable, {
+                title = "",
+                text = g_i18n:getText("infohud_storageIsEmpty")
+            })
+        end
+    end
+
+    if productionPoint.palletLimitReached
+        and productionPoint.infoTables ~= nil
+        and productionPoint.infoTables.palletLimitReached ~= nil then
+        table.insert(infoTable, productionPoint.infoTables.palletLimitReached)
+    end
+end
+
+local function addObjectStorageInfo(placeable, infoTable)
+    local spec = placeable.spec_objectStorage
+    if spec == nil then
+        return
+    end
+
+    local storageTitle = getText(HUD.L10N_WAREHOUSE_STORAGE, "statistic_storage", "Warehouse storage")
+    addSection(
+        infoTable,
+        string.format(
+            "%s (%d / %d)",
+            storageTitle,
+            spec.numStoredObjects or 0,
+            spec.capacity or 0
+        )
+    )
+
+    local groupedEntries = {}
+    local groupedByKey = {}
+
+    for _, objectInfo in ipairs(spec.objectInfos or {}) do
+        local abstractObject = objectInfo ~= nil
+            and objectInfo.objects ~= nil
+            and objectInfo.objects[1]
+            or nil
+
+        if abstractObject ~= nil then
+            local fillTypeIndex = HUD.getAbstractObjectFillTypeIndex(placeable, abstractObject)
+            local title = fillTypeIndex ~= nil
+                and g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+                or getAbstractObjectDialogTitle(abstractObject)
+            local groupKey = getObjectStorageGroupKey(abstractObject, fillTypeIndex)
+            local count = objectInfo.numObjects or #objectInfo.objects
+
+            local groupedEntry = groupedByKey[groupKey]
+            if groupedEntry == nil then
+                groupedEntry = {
+                    title = title,
+                    count = 0
+                }
+                groupedByKey[groupKey] = groupedEntry
+                table.insert(groupedEntries, groupedEntry)
+            end
+
+            groupedEntry.count = groupedEntry.count + count
+        end
+    end
+
+    local maxEntries = PlaceableObjectStorage ~= nil
+        and PlaceableObjectStorage.MAX_HUD_INFO_ENTRIES
+        or #groupedEntries
+    local displayedEntries = math.min(#groupedEntries, maxEntries)
+
+    for index = 1, displayedEntries do
+        local entry = groupedEntries[index]
+        table.insert(infoTable, {
+            title = entry.title,
+            text = tostring(entry.count)
+        })
+    end
+
+    if #groupedEntries > maxEntries then
+        local others = 0
+        for index = maxEntries + 1, #groupedEntries do
+            others = others + groupedEntries[index].count
+        end
+
+        table.insert(infoTable, {
+            title = spec.texts ~= nil and spec.texts.otherElements
+                or getText(nil, "helpLine_IconOverview_Others", "Other"),
+            text = tostring(others)
+        })
+    end
+end
+
+-- Добавляет эталонный HUD готового ProductionPoint + ObjectStorage:
+-- владелец -> производство -> производственное хранилище -> склад объектов.
+function HUD.addFinishedCompositeInfo(placeable, infoTable)
+    if type(infoTable) ~= "table" or not HUD.useFinishedCompositeInfo(placeable) then
+        return false
+    end
+
+    local productionPoint = placeable.spec_productionPoint.productionPoint
+    addOwnerInfo(productionPoint, infoTable)
+    addProductionInfo(productionPoint, infoTable)
+    addProductionStorageInfo(productionPoint, infoTable)
+    addObjectStorageInfo(placeable, infoTable)
+
+    return true
+end
+
+-- Добавляет только сведения строительной части объекта. Никакая production/husbandry/
+-- silo/objectStorage специализация здесь намеренно не вызывается.
+function HUD.addConstructionInfo(placeable, infoTable)
+    if type(infoTable) ~= "table" then
+        return false
+    end
+
+    local lifecycle = getLifecycle()
+    local spec = placeable ~= nil and placeable.spec_constructible or nil
+    if lifecycle == nil or spec == nil or not lifecycle.isUnderConstruction(placeable) then
+        return false
+    end
+
+    local finishedStates, totalStates = lifecycle.getConstructionProgress(placeable)
+    if finishedStates < totalStates then
+        local progressText = string.format("(%d / %d)", finishedStates, totalStates)
+        local stateName = lifecycle.getConfiguredStateDisplayName(placeable, spec.stateIndex)
+
+        if stateName ~= nil then
+            progressText = string.format("%s %s", stateName, progressText)
+        end
+
+        table.insert(infoTable, {
+            title = g_i18n:getText("ui_construction_state"),
+            text = progressText
+        })
+    end
+
+    -- Показываем только отдельное хранилище строительных материалов.
+    -- В отличие от vanilla лимит в 7 строк здесь не используется: карта содержит
+    -- этапы с большим количеством разных строительных fillType.
+    local storageEntries = {}
+    if spec.storage ~= nil then
+        for fillTypeIndex, fillLevel in pairs(spec.storage:getFillLevels()) do
+            if fillLevel ~= nil and fillLevel > 0.1 then
+                table.insert(storageEntries, {
+                    fillType = fillTypeIndex,
+                    fillLevel = fillLevel
+                })
+            end
+        end
+    end
+
+    table.sort(storageEntries, function(a, b)
+        return a.fillLevel > b.fillLevel
+    end)
+
+    if #storageEntries > 0 then
+        local storageHeader = spec.infoTableEntryStorage
+        if storageHeader ~= nil then
+            table.insert(infoTable, storageHeader)
+        else
+            addSection(infoTable, g_i18n:getText("statistic_storage"))
+        end
+
+        for _, entry in ipairs(storageEntries) do
+            table.insert(infoTable, {
+                title = g_fillTypeManager:getFillTypeTitleByIndex(entry.fillType),
+                text = g_i18n:formatVolume(entry.fillLevel, 0)
+            })
+        end
+    end
+
+    -- ConstructibleState может добавлять прогресс текущей фазы. Это строительная,
+    -- а не будущая функциональность объекта, поэтому сохраняем штатный вызов.
+    local state = spec.stateMachine ~= nil and spec.stateMachine[spec.stateIndex] or nil
+    if state ~= nil and type(state.updateInfo) == "function" then
+        state:updateInfo(infoTable)
+    end
+
+    return true
+end
+
+Logging.info("%s loaded, version %s", HUD.LOG_PREFIX, HUD.VERSION)
