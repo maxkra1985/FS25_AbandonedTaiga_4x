@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<handTools>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool15a5479ce493d4c93210eaff3e2ff22d" farmId="1" age="0.000000">
+        <holder uniqueId="d538eeef403163f6883c272f452c13c2"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool312fb8ace235035f5e1b86e14913d87d" farmId="1" age="0.000000">
+        <holder uniqueId="0b1d579e3c5ef881ad0c4400ce556e93"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool33b250546f3836ff3100bf7b08b6d5d8" farmId="1" age="0.000000">
+        <holder uniqueId="ed499e9ccbe50afcb3245aeab6cec9fb"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandToolc8266260afd95af049dc96752826480b" farmId="1" age="0.000000">
+        <holder uniqueId="e5b4fc78e816ea3ab2f1167de633bfc2"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandToold024a512e3138c2721a651444b09b0c3" farmId="1" age="0.000000">
+        <holder uniqueId="f70e877d2d5d12744d9bcb0f79f9fefd"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool245ec1a399be83fef6cee2d57df840ae" farmId="1" age="0.000000">
+        <holder uniqueId="45f29df1e59c56075f7dd90408e4c550"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool6efb1e89f30b5313cfc941d82d1c1c8d" farmId="1" age="0.000000">
+        <holder uniqueId="90c711e781f5374fe7c267c51196eca9"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandToolca71a11d5c8f67bff77102853311a312" farmId="1" age="0.000000">
+        <holder uniqueId="ee4d6695ddd575b1cc16f35e16b3c481"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool6e088729fc9ddaeeba051c6030348096" farmId="1" age="0.000000">
+        <holder uniqueId="246f89845c765c678daa9e71a4e6c7f1"/>
+    </handTool>
+    <handTool filename="data/handTools/stihl/sprayCan/sprayCanBlue.xml" uniqueId="HandTool63d6e0a931c1431c07e8a92886ad9b0f" farmId="1" age="0.000000">
+        <holder uniqueId="48ccbfbbefbf08d2b2469572a7970b34"/>
+        <sprayCan remainingNumMarkers="25"/>
+    </handTool>
+    <handTool filename="data/handTools/stihl/sprayCan/sprayCanPink.xml" uniqueId="HandTool3711e07fd5e98d270ef955147265c56f" farmId="1" age="0.000000">
+        <holder uniqueId="c74f02620b6f46f92be631fab9f68984"/>
+        <sprayCan remainingNumMarkers="25"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandTool362321ae6363e1be2ef97b4df1ad5d83" farmId="1" age="0.000000">
+        <holder uniqueId="2ab3d3ffb203f742fcef92175885e957"/>
+    </handTool>
+    <handTool modName="FS25_AbandonedTaiga_4x" filename="$moddir$FS25_AbandonedTaiga_4x/map/tools/axe/axe.xml" uniqueId="HandToole8d6b8b5745218c664dac63193eb4346" farmId="1" age="0.000000">
+        <holder uniqueId="a20ee6c138823190728f89e6323296ce"/>
+    </handTool>
+</handTools>

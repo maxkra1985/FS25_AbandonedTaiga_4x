@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="handPlantSaplings02" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+
+  <Files>
+    <File fileId="12" filename="$data/maps/mapAS/textures/props/flowerPots/flowerPotsMedium_diffuse.dds"/>
+    <File fileId="13" filename="$data/maps/mapAS/textures/props/flowerPots/flowerPotsMedium_normal.dds"/>
+    <File fileId="14" filename="$data/maps/mapAS/textures/props/flowerPots/flowerPotsMedium_specular.dds"/>
+    <File fileId="3" filename="$data/maps/mapEU/textures/props/woodenTable_diffuse.dds"/>
+    <File fileId="4" filename="$data/maps/mapEU/textures/props/woodenTable_normal.dds"/>
+    <File fileId="5" filename="$data/maps/mapEU/textures/props/woodenTable_specular.dds"/>
+    <File fileId="30" filename="$data/maps/mapUS/textures/props/residentialLightSet_diffuse.dds"/>
+    <File fileId="31" filename="$data/maps/mapUS/textures/props/residentialLightSet_normal.dds"/>
+    <File fileId="32" filename="$data/maps/mapUS/textures/props/residentialLightSet_specular.dds"/>
+    <File fileId="15" filename="$data/maps/textures/shared/woodChipsDecal_diffuse.dds"/>
+    <File fileId="16" filename="$data/maps/textures/shared/woodChipsDecal_normal.dds"/>
+    <File fileId="17" filename="$data/maps/textures/shared/woodChipsDecal_specular.dds"/>
+    <File fileId="27" filename="$data/placeables/brandless/toolSheds/shared/toolShedsDetails_diffuse.dds"/>
+    <File fileId="28" filename="$data/placeables/brandless/toolSheds/shared/toolShedsDetails_normal.dds"/>
+    <File fileId="29" filename="$data/placeables/brandless/toolSheds/shared/toolShedsDetails_specular.dds"/>
+    <File fileId="19" filename="$data/placeables/brandless/toolSheds/shared/toolSheds_diffuse.dds"/>
+    <File fileId="26" filename="$data/placeables/brandless/toolSheds/shared/toolSheds_height.dds"/>
+    <File fileId="23" filename="$data/placeables/brandless/toolSheds/shared/toolSheds_mask.dds"/>
+    <File fileId="20" filename="$data/placeables/brandless/toolSheds/shared/toolSheds_normal.dds"/>
+    <File fileId="21" filename="$data/placeables/brandless/toolSheds/shared/toolSheds_specular.dds"/>
+    <File fileId="22" filename="$data/shaders/buildingShader.xml"/>
+    <File fileId="18" filename="$data/shaders/decalShader.xml"/>
+    <File fileId="33" filename="$data/shaders/glowShader.xml"/>
+    <File fileId="6" filename="$data/shaders/placeableShader.xml"/>
+    <File fileId="35" filename="$data/shared/default_normal.dds"/>
+    <File fileId="34" filename="$data/shared/window02_diffuse.dds"/>
+    <File fileId="36" filename="$data/shared/window02_specular.dds"/>
+    <File fileId="9" filename="handPlantSaplings_diffuse.dds"/>
+    <File fileId="10" filename="handPlantSaplings_normal.dds"/>
+    <File fileId="11" filename="handPlantSaplings_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="flowerPotsMedium_mat" materialId="5" customShaderId="6">
+      <Texture fileId="12"/>
+      <Normalmap fileId="13"/>
+      <Glossmap fileId="14"/>
+    </Material>
+    <Material name="lambert1" materialId="6" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="residentialLightSet_mat" materialId="7" customShaderId="33" customShaderVariation="additive_colorScale">
+      <Texture fileId="30"/>
+      <Normalmap fileId="31"/>
+      <Glossmap fileId="32"/>
+      <CustomParameter name="lightControl" value="0"/>
+      <CustomParameter name="colorScale" value="0.905 0.485 0.042"/>
+    </Material>
+    <Material name="residentialLightSet_mat" materialId="8" customShaderId="33" customShaderVariation="additive_colorScale">
+      <Texture fileId="30"/>
+      <Normalmap fileId="31"/>
+      <Glossmap fileId="32"/>
+      <CustomParameter name="lightControl" value="0"/>
+      <CustomParameter name="colorScale" value="1 1 0.5"/>
+    </Material>
+    <Material name="saplingSack_mat" materialId="9" customShaderId="6">
+      <Texture fileId="9"/>
+      <Normalmap fileId="10"/>
+      <Glossmap fileId="11"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="soil_mat" materialId="10" customShaderId="6">
+      <Texture fileId="9"/>
+      <Normalmap fileId="10"/>
+      <Glossmap fileId="11"/>
+    </Material>
+    <Material name="standardSurface1" materialId="11" diffuseColor="0.4 0.4 0.4 1">
+    </Material>
+    <Material name="toolSheds_mat" materialId="12" customShaderId="22" customShaderVariation="customParallax">
+      <Texture fileId="19"/>
+      <Normalmap fileId="20"/>
+      <Glossmap fileId="21"/>
+      <Custommap name="mMaskMap" fileId="23"/>
+      <Custommap name="mParallaxMap" fileId="26"/>
+    </Material>
+    <Material name="toolShedsDetails_mat" materialId="13" customShaderId="22" customShaderVariation="customParallax">
+      <Texture fileId="27"/>
+      <Normalmap fileId="28"/>
+      <Glossmap fileId="29"/>
+      <Custommap name="mMaskMap" fileId="23"/>
+      <Custommap name="mParallaxMap" fileId="26"/>
+    </Material>
+    <Material name="window02_mat" materialId="14" alphaBlending="true" customShaderId="33" customShaderVariation="additive_colorScale">
+      <Texture fileId="34"/>
+      <Normalmap fileId="35"/>
+      <Glossmap fileId="36"/>
+      <CustomParameter name="lightControl" value="0"/>
+      <CustomParameter name="colorScale" value="0.905 0.485 0.042"/>
+    </Material>
+    <Material name="woodChipsDecal_mat" materialId="15" customShaderId="18">
+      <Texture fileId="15"/>
+      <Normalmap fileId="16"/>
+      <Glossmap fileId="17"/>
+    </Material>
+    <Material name="woodenTable_mat" materialId="16" customShaderId="6">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="woodenTable_mat" materialId="17" customShaderId="6">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="handPlantSaplings02.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="handPlantSaplings02" clipDistance="500" nodeId="40">
+      <TransformGroup name="clearAreas" nodeId="41">
+        <TransformGroup name="clearAreaStart01" translation="-1.5 0 -1.5" nodeId="42">
+          <TransformGroup name="clearAreaWidth01" translation="0 0 3.5" nodeId="43"/>
+          <TransformGroup name="clearAreaHeight01" translation="3 0 0" nodeId="44"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="levelAreas" nodeId="45">
+        <TransformGroup name="levelAreaStart01" translation="-1.5 0 -1.5" nodeId="46">
+          <TransformGroup name="levelAreaWidth01" translation="0 0 3.5" nodeId="47"/>
+          <TransformGroup name="levelAreaHeight01" translation="3 0 0" nodeId="48"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="indoorAreas" nodeId="49">
+        <TransformGroup name="indoorAreaStart01" translation="-1.25 0 -1" nodeId="50">
+          <TransformGroup name="indoorAreaWidth01" translation="0 0 3" nodeId="51"/>
+          <TransformGroup name="indoorAreaHeight01" translation="2.5 0 0" nodeId="52"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="testAreas" nodeId="53">
+        <TransformGroup name="testAreaStart01" translation="-1.25 0 -1.1" nodeId="54">
+          <TransformGroup name="testAreaEnd01" translation="2.5 3.5 2.5" nodeId="55"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="tipOcclusionUpdateAreas" nodeId="56">
+        <TransformGroup name="tipOcclusionUpdateAreaStart01" translation="-1.5 0 -1.5" nodeId="57">
+          <TransformGroup name="tipOcclusionUpdateAreaEnd01" translation="3 0 3.5" nodeId="58"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="doors" nodeId="59">
+        <TransformGroup name="doorLeftRot" translation="-0.961947 2.18703 1.26129" nodeId="60">
+          <TransformGroup name="doorLeft_LOD0" nodeId="61"/>
+          <TransformGroup name="doorLeft_LOD1" rotation="-90 0 0" nodeId="62"/>
+          <Shape name="col_doorLeft" shapeId="1" kinematic="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="63" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </TransformGroup>
+        <TransformGroup name="doorRightRot" translation="0.964249 2.2217 1.26129" nodeId="64">
+          <TransformGroup name="doorRight_LOD0" nodeId="65"/>
+          <TransformGroup name="doorRight_LOD1" nodeId="66"/>
+          <Shape name="col_doorRight" translation="0 -0.035098 0" shapeId="2" kinematic="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="67" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </TransformGroup>
+        <Shape name="doorTrigger" translation="0 1 3.18138" shapeId="3" visibility="false" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x110000" nodeId="68" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        <TransformGroup name="teleportNode" translation="0 0 5.5" nodeId="69"/>
+      </TransformGroup>
+      <TransformGroup name="handToolHolders" nodeId="70">
+        <TransformGroup name="shovelHolder01" translation="-1.07879 2.20105 1.07364" rotation="-90 -90 0" scale="1.1 1.1 1.1" nodeId="71">
+          <Shape name="playerTrigger01" translation="-0.976036 0.980718 -1.22356" rotation="90 -5.00896e-06 90" scale="0.909091 0.909091 0.909091" shapeId="4" visibility="false" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="72" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+          <TransformGroup name="distanceNode01" translation="-9.95822e-22 8.21218e-15 -1" nodeId="73"/>
+        </TransformGroup>
+        <TransformGroup name="shovelHolder02" translation="-1.079 2.20105 0.165344" rotation="-90 -90 0" scale="1.1 1.1 1.1" nodeId="74">
+          <Shape name="playerTrigger02" translation="-0.150313 0.980909 -1.22356" rotation="90 -5.00896e-06 90" scale="0.909091 0.909091 0.909091" shapeId="4" visibility="false" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="75" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+          <TransformGroup name="distanceNode02" translation="0 1.19209e-07 -1" rotation="3.82822e-20 -4.85314e-20 0" nodeId="76"/>
+        </TransformGroup>
+        <TransformGroup name="sprayCanHolder01" translation="0.987137 0.793302 1.02945" rotation="8.43841e-16 90 2.93079e-10" nodeId="77">
+          <Shape name="playerTrigger03" translation="1.02945 0.061832 -0.987137" rotation="5.00896e-06 -90 0" shapeId="4" visibility="false" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="78" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+          <TransformGroup name="distanceNode03" translation="0.0576079 0.307748 -0.0633972" rotation="0 2.36783e-05 0" nodeId="79"/>
+        </TransformGroup>
+        <TransformGroup name="sprayCanHolder02" translation="0.847926 0.795638 0.794468" rotation="0 133.576 0" nodeId="80">
+          <Shape name="playerTrigger04" translation="1.16005 0.059496 -0.0666501" rotation="-180 -46.424 -180" shapeId="4" visibility="false" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="81" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11" weatherPreventMask="0x0"/>
+          <TransformGroup name="distanceNode04" translation="0.0248125 0.305412 0.128257" rotation="-2.93078e-10 -43.576 -2.99003e-16" nodeId="82"/>
+        </TransformGroup>
+        <TransformGroup name="chainsawHolder01" translation="0.896883 0.822595 0.495874" rotation="-1.31445 20.8728 0.358067" nodeId="83">
+          <Shape name="playerTrigger05" translation="-0.661141 0.0560905 -0.781726" rotation="1.54316 -20.8578 -0.884231" shapeId="4" visibility="false" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="84" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11" weatherPreventMask="0x0"/>
+          <TransformGroup name="distanceNode05" translation="0.0723492 0.28072 -0.103063" rotation="4.04286 69.0878 3.44267" nodeId="85"/>
+        </TransformGroup>
+        <TransformGroup name="woodenTable" translation="0.929701 0.209969 0.589817" rotation="0 90 0" scale="0.616908 0.7 0.7" clipDistance="130" nodeId="86">
+          <TransformGroup name="visual_lod" lodDistance="0 15" nodeId="87">
+            <Shape name="LOD0" shapeId="5" nodeId="88" castsShadows="true" receiveShadows="true" materialIds="16"/>
+            <Shape name="LOD1" shapeId="6" nodeId="89" castsShadows="true" receiveShadows="true" materialIds="17"/>
+          </TransformGroup>
+          <Shape name="col" shapeId="7" visibility="false" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="90" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="storageAreas" nodeId="91">
+        <TransformGroup name="storageArea" nodeId="92">
+          <TransformGroup name="storageArea_sapling01" translation="0.901251 0.5 -0.614552" scale="0.8 1 0.8" nodeId="93"/>
+          <TransformGroup name="storageArea_sapling02" translation="0.70125 0.5 -0.614552" scale="0.8 1 0.8" nodeId="94"/>
+          <TransformGroup name="storageArea_sapling03" translation="0.50125 0.5 -0.614552" scale="0.8 1 0.8" nodeId="95"/>
+          <TransformGroup name="storageArea_sapling04" translation="0.30125 0.5 -0.614552" scale="0.8 1 0.8" nodeId="96"/>
+          <TransformGroup name="storageArea_sapling05" translation="0.10142 0.5 -0.614552" scale="0.8 1 0.8" nodeId="97"/>
+          <TransformGroup name="storageArea_sapling06" translation="-0.100496 0.5 -0.614552" scale="0.8 1 0.8" nodeId="98"/>
+          <TransformGroup name="storageArea_sapling07" translation="-0.300496 0.5 -0.614552" scale="0.8 1 0.8" nodeId="99"/>
+          <TransformGroup name="storageArea_sapling08" translation="-0.500496 0.5 -0.614552" scale="0.8 1 0.8" nodeId="100"/>
+          <TransformGroup name="storageArea_sapling09" translation="-0.700496 0.5 -0.614552" scale="0.8 1 0.8" nodeId="101"/>
+          <TransformGroup name="storageArea_sapling10" translation="-0.900495 0.5 -0.614552" scale="0.8 1 0.8" nodeId="102"/>
+          <TransformGroup name="storageArea_sapling11" translation="0.901251 0.5 -0.464246" scale="0.8 1 0.8" nodeId="103"/>
+          <TransformGroup name="storageArea_sapling12" translation="0.70125 0.5 -0.464246" scale="0.8 1 0.8" nodeId="104"/>
+          <TransformGroup name="storageArea_sapling13" translation="0.50125 0.5 -0.464246" scale="0.8 1 0.8" nodeId="105"/>
+          <TransformGroup name="storageArea_sapling14" translation="0.30125 0.5 -0.464246" scale="0.8 1 0.8" nodeId="106"/>
+          <TransformGroup name="storageArea_sapling15" translation="0.10142 0.5 -0.464246" scale="0.8 1 0.8" nodeId="107"/>
+          <TransformGroup name="storageArea_sapling16" translation="-0.100496 0.5 -0.464246" scale="0.8 1 0.8" nodeId="108"/>
+          <TransformGroup name="storageArea_sapling17" translation="-0.300496 0.5 -0.464246" scale="0.8 1 0.8" nodeId="109"/>
+          <TransformGroup name="storageArea_sapling18" translation="-0.500496 0.5 -0.464246" scale="0.8 1 0.8" nodeId="110"/>
+          <TransformGroup name="storageArea_sapling19" translation="-0.700496 0.5 -0.464246" scale="0.8 1 0.8" nodeId="111"/>
+          <TransformGroup name="storageArea_sapling20" translation="-0.900495 0.5 -0.464246" scale="0.8 1 0.8" nodeId="112"/>
+          <TransformGroup name="storageArea_sapling21" translation="0.901251 0.5 -0.314247" scale="0.8 1 0.8" nodeId="113"/>
+          <TransformGroup name="storageArea_sapling22" translation="0.70125 0.5 -0.314247" scale="0.8 1 0.8" nodeId="114"/>
+          <TransformGroup name="storageArea_sapling23" translation="0.50125 0.5 -0.314247" scale="0.8 1 0.8" nodeId="115"/>
+          <TransformGroup name="storageArea_sapling24" translation="0.30125 0.5 -0.314247" scale="0.8 1 0.8" nodeId="116"/>
+          <TransformGroup name="storageArea_sapling25" translation="0.10142 0.5 -0.314247" scale="0.8 1 0.8" nodeId="117"/>
+          <TransformGroup name="storageArea_sapling26" translation="-0.100496 0.5 -0.314247" scale="0.8 1 0.8" nodeId="118"/>
+          <TransformGroup name="storageArea_sapling27" translation="-0.300496 0.5 -0.314247" scale="0.8 1 0.8" nodeId="119"/>
+          <TransformGroup name="storageArea_sapling28" translation="-0.500496 0.5 -0.314247" scale="0.8 1 0.8" nodeId="120"/>
+          <TransformGroup name="storageArea_sapling29" translation="-0.700496 0.5 -0.314247" scale="0.8 1 0.8" nodeId="121"/>
+          <TransformGroup name="storageArea_sapling30" translation="-0.900495 0.5 -0.314247" scale="0.8 1 0.8" nodeId="122"/>
+          <TransformGroup name="storageArea_sapling31" translation="0.901251 0.5 -0.164247" scale="0.8 1 0.8" nodeId="123"/>
+          <TransformGroup name="storageArea_sapling32" translation="0.70125 0.5 -0.164247" scale="0.8 1 0.8" nodeId="124"/>
+          <TransformGroup name="storageArea_sapling33" translation="0.50125 0.5 -0.164247" scale="0.8 1 0.8" nodeId="125"/>
+          <TransformGroup name="storageArea_sapling34" translation="0.30125 0.5 -0.164247" scale="0.8 1 0.8" nodeId="126"/>
+          <TransformGroup name="storageArea_sapling35" translation="0.10142 0.5 -0.164247" scale="0.8 1 0.8" nodeId="127"/>
+          <TransformGroup name="storageArea_sapling36" translation="-0.100496 0.5 -0.164247" scale="0.8 1 0.8" nodeId="128"/>
+          <TransformGroup name="storageArea_sapling37" translation="-0.300496 0.5 -0.164247" scale="0.8 1 0.8" nodeId="129"/>
+          <TransformGroup name="storageArea_sapling38" translation="-0.500496 0.5 -0.164247" scale="0.8 1 0.8" nodeId="130"/>
+          <TransformGroup name="storageArea_sapling39" translation="-0.700496 0.5 -0.164247" scale="0.8 1 0.8" nodeId="131"/>
+          <TransformGroup name="storageArea_sapling40" translation="-0.900495 0.5 -0.164247" scale="0.8 1 0.8" nodeId="132"/>
+        </TransformGroup>
+        <TransformGroup name="saplingSack01" translation="-0.882331 0.165624 0.862127" rotation="5.78666 -90 0" nodeId="133">
+          <TransformGroup name="saplings" nodeId="134">
+            <TransformGroup name="saplingSack01_sapling01" translation="-0.035855 0.430179 -0.049503" scale="0.8 1 0.8" nodeId="135"/>
+            <TransformGroup name="saplingSack01_sapling02" translation="0.069102 0.427925 -0.0915018" scale="0.8 1 0.8" nodeId="136"/>
+            <TransformGroup name="saplingSack01_sapling03" translation="-0.0459859 0.491719 -0.114714" scale="0.8 1 0.8" nodeId="137"/>
+            <TransformGroup name="saplingSack01_sapling04" translation="0.122662 0.500859 -0.0964064" scale="0.8 1 0.8" nodeId="138"/>
+            <TransformGroup name="saplingSack01_sapling05" translation="-0.120428 0.42883 -0.0746472" scale="0.8 1 0.8" nodeId="139"/>
+            <TransformGroup name="saplingSack01_sapling06" translation="-0.00968322 0.426548 -0.114346" scale="0.8 1 0.8" nodeId="140"/>
+            <TransformGroup name="saplingSack01_sapling07" translation="-0.0634649 0.430112 -0.0507559" scale="0.8 1 0.8" nodeId="141"/>
+            <TransformGroup name="saplingSack01_sapling08" translation="-0.164508 0.432353 -0.00903401" scale="0.8 1 0.8" nodeId="142"/>
+            <TransformGroup name="saplingSack01_sapling09" translation="0.072575 0.427364 -0.101911" scale="0.8 1 0.8" nodeId="143"/>
+            <TransformGroup name="saplingSack01_sapling10" translation="0.098531 0.433293 0.00848929" scale="0.8 1 0.8" nodeId="144"/>
+          </TransformGroup>
+          <Shape name="saplingSack" shapeId="8" clipDistance="150" nodeId="145" castsShadows="true" receiveShadows="true" materialIds="9"/>
+        </TransformGroup>
+        <TransformGroup name="saplingSack02" translation="-0.882331 0.165624 0.365402" rotation="5.78666 -90 0" nodeId="146">
+          <TransformGroup name="saplings" nodeId="147">
+            <TransformGroup name="saplingSack02_sapling01" translation="-0.035855 0.430179 -0.049503" scale="0.8 1 0.8" nodeId="148"/>
+            <TransformGroup name="saplingSack02_sapling02" translation="0.069102 0.427925 -0.0915018" scale="0.8 1 0.8" nodeId="149"/>
+            <TransformGroup name="saplingSack02_sapling03" translation="-0.0459859 0.491719 -0.114714" scale="0.8 1 0.8" nodeId="150"/>
+            <TransformGroup name="saplingSack02_sapling04" translation="0.122662 0.500859 -0.0964064" scale="0.8 1 0.8" nodeId="151"/>
+            <TransformGroup name="saplingSack02_sapling05" translation="-0.120428 0.42883 -0.0746472" scale="0.8 1 0.8" nodeId="152"/>
+            <TransformGroup name="saplingSack02_sapling06" translation="-0.00968322 0.426548 -0.114346" scale="0.8 1 0.8" nodeId="153"/>
+            <TransformGroup name="saplingSack02_sapling07" translation="-0.0634649 0.430112 -0.0507559" scale="0.8 1 0.8" nodeId="154"/>
+            <TransformGroup name="saplingSack02_sapling08" translation="-0.164508 0.432353 -0.00903401" scale="0.8 1 0.8" nodeId="155"/>
+            <TransformGroup name="saplingSack02_sapling09" translation="0.072575 0.427364 -0.101911" scale="0.8 1 0.8" nodeId="156"/>
+            <TransformGroup name="saplingSack02_sapling10" translation="0.098531 0.433293 0.00848929" scale="0.8 1 0.8" nodeId="157"/>
+          </TransformGroup>
+          <Shape name="saplingSack" shapeId="8" clipDistance="150" nodeId="158" castsShadows="true" receiveShadows="true" materialIds="9"/>
+        </TransformGroup>
+        <Shape name="gardenBed" shapeId="9" clipDistance="130" nodeId="159" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="soil" shapeId="10" clipDistance="80" nodeId="160" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="collision" translation="-1.48148e-07 0.229221 -0.454664" shapeId="11" visibility="false" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" nodeId="161" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </Shape>
+        <Shape name="woodChipsDecal01" translation="1.21148 0.224186 -0.0250748" rotation="0 90 0" shapeId="12" clipDistance="60" nodeId="162" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="15"/>
+        <Shape name="woodChipsDecal05" translation="-0.0158006 0.225702 -0.0135812" shapeId="13" clipDistance="60" nodeId="163" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="15"/>
+      </TransformGroup>
+      <TransformGroup name="visuals_lod" lodDistance="0 25" static="true" nodeId="164">
+        <Shape name="handPlantSaplings02_LOD0" translation="0.002626 1.63682 0.142064" shapeId="14" nodeId="165" castsShadows="true" receiveShadows="true" skinBindNodeIds="165 61 65 166 167" materialIds="12,13">
+          <TransformGroup name="toolRack01" translation="-1.17439 0.228112 0.0267797" rotation="-90 0 0" nodeId="166"/>
+          <TransformGroup name="details" translation="-0.000646 0.057614 0.012712" nodeId="167"/>
+        </Shape>
+        <Shape name="handPlantSaplings02_LOD1" translation="0.002626 1.63682 0.142064" shapeId="15" nodeId="168" castsShadows="true" receiveShadows="true" skinBindNodeIds="168 62 66 169" materialIds="12,13">
+          <TransformGroup name="details" translation="-0.000646 0.057614 0.012712" nodeId="169"/>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="lights" nodeId="170">
+        <TransformGroup name="residentialLight03a" lockedgroup="true" translation="0.0142644 2.8 -0.95576" rotation="0 -90 0" nodeId="171">
+          <TransformGroup name="visual_lod" lodDistance="0 15" lodBlending="false" clipDistance="80" nodeId="172">
+            <Shape name="LOD0" shapeId="16" nodeId="173" castsShadows="true" receiveShadows="true" materialIds="7" renderInvisible="true">
+              <Shape name="glass" shapeId="17" nodeId="174" castsShadows="true" receiveShadows="true" materialIds="14" renderInvisible="true"/>
+            </Shape>
+            <Shape name="LOD1" shapeId="18" nodeId="175" castsShadows="true" receiveShadows="true" materialIds="8" renderInvisible="true"/>
+          </TransformGroup>
+          <TransformGroup name="light" translation="0.207745 -0.104713 0" visibility="false" nodeId="176" weatherPreventMask="0x0">
+            <Light name="pointLight01" translation="0 -0.131157 0" rotation="0 0 0.00028" nodeId="177" type="point" color="0.673 0.318 0.096" emitDiffuse="true" emitSpecular="true" range="5"/>
+            <Light name="spotLight01" translation="0 -0.077089 0" rotation="-90 0 0" nodeId="178" type="spot" color="0.673 0.318 0.096" emitDiffuse="true" emitSpecular="true" castShadowMap="true" depthMapBias="0.001" depthMapSlopeScaleBias="2" depthMapSlopeClamp="0.02" depthMapResolution="512" shadowFarDistance="80" shadowExtrusionDistance="200" softShadowsLightSize="0.05" softShadowsLightDistance="15" softShadowsDepthBiasFactor="5" softShadowsMaxPenumbraSize="0.5" range="10" coneAngle="110" dropOff="4"/>
+          </TransformGroup>
+          <Shape name="col" shapeId="19" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="179" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="collisions" nodeId="180">
+        <Shape name="collision" shapeId="20" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" nodeId="181" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        <Shape name="tipCollision" translation="0 0 0.168852" shapeId="21" static="true" collisionFilterGroup="0x8" collisionFilterMask="0x1" nodeId="182" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+      </TransformGroup>
+      <Shape name="infoTrigger" translation="0 1.58661 -0.405065" scale="2.4537 1.43007 3.93803" shapeId="4" visibility="false" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="183" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+    </TransformGroup>
+  </Scene>
+
+  <UserAttributes>
+    <UserAttribute nodeId="162">
+      <Attribute name="typeDecal" type="string" value="woodChipsDecal01"/>
+    </UserAttribute>
+    <UserAttribute nodeId="163">
+      <Attribute name="typeDecal" type="string" value="woodChipsDecal05"/>
+    </UserAttribute>
+  </UserAttributes>
+
+</i3D>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="tomatoes.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="4" filename="$data/shaders/fruitGrowthFoliageShader.xml"/>
+    <File fileId="10" filename="addons_diffuse.png"/>
+    <File fileId="16" filename="tomatoFruitStage1_diffuse.dds"/>
+    <File fileId="7" filename="tomatoFruitStage2_diffuse.dds"/>
+    <File fileId="8" filename="tomatoFruit_normal.png"/>
+    <File fileId="9" filename="tomatoFruit_specular.png"/>
+    <File fileId="15" filename="tomatoesStage01_alpha.png"/>
+    <File fileId="12" filename="tomatoesStage01_diffuse.png"/>
+    <File fileId="14" filename="tomatoesStage01_fmask.png"/>
+    <File fileId="13" filename="tomatoesStage01_normal.png"/>
+    <File fileId="6" filename="tomatoesStage02_alpha.png"/>
+    <File fileId="1" filename="tomatoesStage02_diffuse.png"/>
+    <File fileId="3" filename="tomatoesStage02_fmask.png"/>
+    <File fileId="2" filename="tomatoesStage02_normal.png"/>
+    <File fileId="20" filename="tomatoesStage03_alpha.png"/>
+    <File fileId="17" filename="tomatoesStage03_diffuse.png"/>
+    <File fileId="19" filename="tomatoesStage03_fmask.png"/>
+    <File fileId="18" filename="tomatoesStage03_normal.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="plantSupport_mat" materialId="5" specularColor="0.494118 1 0.494118">
+      <Texture fileId="10"/>
+    </Material>
+    <Material name="tomatoesStage01_mat" materialId="6" customShaderId="4">
+      <Texture fileId="12"/>
+      <Normalmap fileId="13"/>
+      <Glossmap fileId="14"/>
+      <Custommap name="alphaMap" fileId="15"/>
+      <CustomParameter name="windScale" value="0"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="tomatoesStage02_mat" materialId="7" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="alphaMap" fileId="6"/>
+      <CustomParameter name="windScale" value="0"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="tomatoesStage03_mat" materialId="8" customShaderId="4">
+      <Texture fileId="17"/>
+      <Normalmap fileId="18"/>
+      <Glossmap fileId="19"/>
+      <Custommap name="alphaMap" fileId="20"/>
+      <CustomParameter name="windScale" value="0"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="tomatoFruitStage1_mat" materialId="9">
+      <Texture fileId="16"/>
+      <Normalmap fileId="8"/>
+      <Glossmap fileId="9"/>
+    </Material>
+    <Material name="tomatoFruitStage2_mat" materialId="10">
+      <Texture fileId="7"/>
+      <Normalmap fileId="8"/>
+      <Glossmap fileId="9"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="tomatoes.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="lod0" nodeId="17">
+      <Shape name="greenBig" shapeId="1" clipDistance="150" nodeId="18" castsShadows="true" receiveShadows="true" materialIds="7">
+        <TransformGroup name="fruitsRed" translation="0.000815416 0.374122 0.0162154" nodeId="19">
+          <Shape name="tomatoFruit1" translation="0.0539006 0.0306929 -0.0162154" shapeId="2" clipDistance="20" nodeId="20" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0787262 0.0295045 0.0168661" shapeId="2" clipDistance="20" nodeId="21" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0787262 -0.204724 0.0168661" shapeId="2" clipDistance="20" nodeId="22" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0514787 -0.210718 -0.0596107" shapeId="2" clipDistance="20" nodeId="23" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0486941 -0.207296 -0.0010182" shapeId="2" clipDistance="20" nodeId="24" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.10697 -0.219421 0.0488821" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="25" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.115942 0.0277063 0.0195539" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="26" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0538667 0.0324384 0.000564142" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="27" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0946973 0.0242124 -0.0724531" rotation="0 49.0175 0" shapeId="2" clipDistance="20" nodeId="28" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0157066 -0.10963 -0.0705247" shapeId="2" clipDistance="20" nodeId="29" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0730143 -0.125361 0.00572313" shapeId="2" clipDistance="20" nodeId="30" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0131764 0.0185505 -0.0406977" shapeId="2" clipDistance="20" nodeId="31" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0245152 -0.0216209 0.0105519" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="32" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.000320993 0.0105169 0.124062" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="33" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.00885821 0.405106 -0.0134413" rotation="-58.2241 17.1347 37.3878" shapeId="2" clipDistance="20" nodeId="34" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.0320147 0.146186 0.0337516" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="35" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="-0.0483602 0.149551 -0.0530635" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="36" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.000191071 0.259211 -0.0408297" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="37" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.00610806 0.361131 -0.0274312" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="38" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.00224403 0.267603 0.0440803" rotation="0 67.7727 0" shapeId="2" clipDistance="20" nodeId="39" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="tomatoFruit1" translation="0.000607246 0.475728 -0.0117144" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="40" castsShadows="true" receiveShadows="true" materialIds="10"/>
+        </TransformGroup>
+        <Shape name="plantSupport" translation="0 0.0280447 0.0267067" scale="0.5 0.8 0.5" shapeId="3" clipDistance="150" nodeId="41" castsShadows="true" receiveShadows="true" materialIds="5"/>
+      </Shape>
+      <Shape name="greenSmall" shapeId="4" clipDistance="150" nodeId="42" castsShadows="true" receiveShadows="true" materialIds="6">
+        <Shape name="plantSupport" translation="0 -0.198711 0.0267067" scale="0.5 0.8 0.5" shapeId="3" clipDistance="150" nodeId="43" castsShadows="true" receiveShadows="true" materialIds="5"/>
+      </Shape>
+      <Shape name="greenSmall" shapeId="4" clipDistance="150" nodeId="44" castsShadows="true" receiveShadows="true" materialIds="6">
+        <TransformGroup name="fruitsGreen" translation="0.000815416 0.343696 0.0162154" nodeId="45">
+          <Shape name="tomatoFruit1" translation="0.0539006 -0.0257367 -0.0162154" shapeId="2" clipDistance="20" nodeId="46" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0787262 -0.0257367 0.0168661" shapeId="2" clipDistance="20" nodeId="47" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0787262 -0.212531 0.0168661" shapeId="2" clipDistance="20" nodeId="48" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0514787 -0.197493 -0.0596107" shapeId="2" clipDistance="20" nodeId="49" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0486941 -0.200711 -0.0010182" shapeId="2" clipDistance="20" nodeId="50" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.115942 -0.206979 0.0195539" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="51" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.115942 -0.0403111 0.0195539" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="52" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0219039 -0.023609 -0.00921375" rotation="0 17.0097 0" shapeId="2" clipDistance="20" nodeId="53" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0946973 -0.0224095 -0.0724531" rotation="0 49.0175 0" shapeId="2" clipDistance="20" nodeId="54" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0157066 -0.135193 -0.0178471" shapeId="2" clipDistance="20" nodeId="55" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0131764 -0.135193 0.0410705" shapeId="2" clipDistance="20" nodeId="56" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0131764 0.0185505 -0.0406977" shapeId="2" clipDistance="20" nodeId="57" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0245152 -0.0216209 0.0105519" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="58" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.00974073 -0.038046 0.125806" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="59" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0142916 0.159784 -0.00421796" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="60" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.104531 0.163267 0.0203206" rotation="0 10.493 0" shapeId="2" clipDistance="20" nodeId="61" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="-0.0483602 0.149551 -0.0530635" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="62" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.000191071 0.259211 -0.0408297" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="63" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.0859055 0.267603 0.000497565" rotation="0 70.7102 0" shapeId="2" clipDistance="20" nodeId="64" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="tomatoFruit1" translation="0.00224403 0.267603 0.0440803" rotation="0 67.7727 0" shapeId="2" clipDistance="20" nodeId="65" castsShadows="true" receiveShadows="true" materialIds="9"/>
+        </TransformGroup>
+        <Shape name="plantSupport" translation="0 -0.198711 0.0267067" scale="0.5 0.8 0.5" shapeId="3" clipDistance="150" nodeId="66" castsShadows="true" receiveShadows="true" materialIds="5"/>
+      </Shape>
+      <Shape name="dead" shapeId="5" clipDistance="150" nodeId="67" castsShadows="true" receiveShadows="true" materialIds="8">
+        <Shape name="plantSupport" translation="0 0.0280447 0.0267067" scale="0.5 0.8 0.5" shapeId="3" clipDistance="150" nodeId="68" castsShadows="true" receiveShadows="true" materialIds="5"/>
+      </Shape>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

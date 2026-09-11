@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<greenhousePlant xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/greenhousePlant.xsd">
+	<i3dFilename>map/placeables/GardenBeds/plants/cabbage.i3d</i3dFilename>
+	<stages>
+		<growing node="0>0"/>
+		<withered node="0>1"/>
+	</stages>
+</greenhousePlant>

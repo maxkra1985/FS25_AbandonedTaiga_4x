@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<vehicle type="UazForester" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs22/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+	<storeData>
+		<name>
+			<en>The UAZ-3303 is a four-wheel drive, all-terrain vehicle produced by the Ulyanovsk Automobile Plant from 1965 to 1985. A modification for transporting logs.</en>
+			<ru>УАЗ-3303 – полноприводной автомобиль повышенной проходимости, который серийно выпускался Ульяновским автомобильным заводом с 1965-го по 1985-й год. Модификация для перевозки брёвен.</ru>
+		</name>
+		<specs>
+			<power>72</power>
+			<maxSpeed>90</maxSpeed>
+		</specs>
+		<functions>
+			<function>$l10n_function_car</function>
+			<function>$l10n_function_car_fieldservice</function>
+		</functions>
+		<image>map/vehicles/UAZ_Forester/store.dds</image>
+		<price>3500</price>
+		<lifetime>1200</lifetime>
+		<rotation>0</rotation>
+		<brand>UAZ</brand>
+		<category>cars</category>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_car</typeDesc>
+		<filename>map/vehicles/UAZ_Forester/UAZ_3303.i3d</filename>
+		<size width="2.1" length="4.4" height="2.355"/>
+		<components>
+			<component centerOfMass="0 0.4 0" solverIterationCount="10" mass="950"/>
+			<component centerOfMass="0 0.0 0" solverIterationCount="20" mass="800"/>
+			<component centerOfMass="0 0.0 0" solverIterationCount="20" mass="800"/>
+			<component centerOfMass="0 0.0 0" solverIterationCount="20" mass="50"/>
+			<component centerOfMass="0 0.0 0" solverIterationCount="20" mass="50"/>
+			<joint component1="1" component2="2" node="MainComponent2FixPoint" rotLimit="0 0 20" rotLimitSpring="0 0 40" transLimitSpring="5000 200 5000" transLimitDamping="20 20 20" rotLimitDamping="0 0 15" maxRotDriveForce="0 0 15" rotDriveRotation="0 0 0" rotDriveSpring="0 0 10" rotDriveDamping="0 0 5"/>
+			<joint component1="1" component2="3" node="MainComponent3FixPoint" rotLimit="0 0 20" rotLimitSpring="0 0 40" transLimitSpring="5000 200 5000" transLimitDamping="20 20 20" rotLimitDamping="0 0 15" maxRotDriveForce="0 0 15" rotDriveRotation="0 0 0" rotDriveSpring="0 0 10" rotDriveDamping="0 0 5"/>
+			<joint component1="1" component2="4" node="3>1"  rotLimit="30 0 0" transLimit="0 0 0" rotLimitSpring="1000 0 0" rotLimitDamping="1000 0 0"  />
+			<joint component1="1" component2="5" node="4>1"  rotLimit="30 0 0" transLimit="0 0 0" rotLimitSpring="1000 0 0" rotLimitDamping="1000 0 0"  />
+		</components>
+		<schemaOverlay attacherJointPosition="0 0" name="CAR"/>
+		<sounds filename="map/vehicles/UAZ_Forester/Sounds/UAZ_452.xml"/>
+		<mapHotspot type="CAR"/>
+	</base>
+
+	<wheels>
+		<wheelConfigurations>
+			<wheelConfiguration name="$l10n_configuration_valueDefault" price="0">
+				<wheels>
+					<wheel filename="map/vehicles/UAZ_Forester/Wheels/Wheels.xml" isLeft="true" hasTireTracks="true" hasParticles="true">
+						<physics tipOcclusionAreaGroupId="1" rotSpeed="1" restLoad="1.5" repr="AxleLeftRef" driveNode="FrontWheelLeftRef" forcePointRatio="0.5" transRatio="1" initialCompression="180" suspTravel="0.05" spring="40" damper="30"/>
+					</wheel>
+					<wheel filename="map/vehicles/UAZ_Forester/Wheels/Wheels.xml" isLeft="false" hasTireTracks="true" hasParticles="true">
+						<physics tipOcclusionAreaGroupId="1" rotSpeed="1" restLoad="1.5" repr="AxleRightRef" driveNode="FrontWheelRightRef" forcePointRatio="0.5" transRatio="1" initialCompression="180" suspTravel="0.05" spring="40" damper="30"/>
+					</wheel>
+					<wheel filename="map/vehicles/UAZ_Forester/Wheels/Wheels.xml" isLeft="true" hasTireTracks="true" hasParticles="true">
+						<physics tipOcclusionAreaGroupId="1" rotSpeed="0" restLoad="1.7" repr="RearWheelLeft" driveNode="RearWheelLeftRef" forcePointRatio="0.5" transRatio="1" initialCompression="180" suspTravel="0.05" spring="40" damper="30"/>
+					</wheel>
+					<wheel filename="map/vehicles/UAZ_Forester/Wheels/Wheels.xml" isLeft="false" hasTireTracks="true" hasParticles="true">
+						<physics tipOcclusionAreaGroupId="1" rotSpeed="0" restLoad="1.7" repr="RearWheelRight" driveNode="RearWheelRightRef" forcePointRatio="0.5" transRatio="1" initialCompression="180" suspTravel="0.05" spring="40" damper="30"/>
+					</wheel>
+				</wheels>
+			</wheelConfiguration>
+		</wheelConfigurations>
+		<ackermannSteeringConfigurations>
+			<ackermannSteering rotSpeed="50" rotMax="25" rotCenterWheel1="3" rotCenterWheel2="4"/>
+		</ackermannSteeringConfigurations>
+	</wheels>
+
+	<speedRotatingParts>
+		<speedRotatingPart node="CardanJoint1"	radius="0.31"/>
+		<speedRotatingPart node="CardanJoint4"	radius="0.31"/>
+		<speedRotatingPart node="CardanJoint2"	radius="0.31"/>
+		<speedRotatingPart node="CardanJoint3"	radius="0.31"/>
+		<speedRotatingPart node="Cardan1"		radius="0.31"/>
+		<speedRotatingPart node="Cardan2"		radius="-0.31"/>
+	</speedRotatingParts>
+
+	<attacherJoints>
+		<attacherJoint allowsJointLimitMovement="false" allowsLowering="false" canTurnOnImplement="false" jointType="trailerCar" lowerRotLimit="10 80 50" lowerTransLimit="0 0 0" node="AttacherJoint">
+		  <schema invertX="false" position="1 0" rotation="0"/>
+		</attacherJoint>
+		<attacherJoint allowsJointLimitMovement="false" allowsLowering="false" canTurnOnImplement="false" jointType="trailer" lowerRotLimit="10 80 50" lowerTransLimit="0 0 0" node="AttacherJoint2">
+		  <schema invertX="false" position="1 0" rotation="0"/>
+		</attacherJoint>
+		<attacherJoint allowsJointLimitMovement="false" allowsLowering="false" canTurnOnImplement="false" jointType="trailer" lowerRotLimit="0 0 0" lowerTransLimit="0 0 0" node="AttacherJoint3">
+		  <schema invertX="false" position="1 0" rotation="0"/>
+		</attacherJoint>
+	</attacherJoints>
+
+	<connectionHoses>
+		<target attacherJointIndices="1 2" node="0>0|2|10" socket="electric" type="electric"/>
+	</connectionHoses>
+
+	<lights>
+		<states>
+			<state lightTypes="0"/>
+			<state lightTypes="0 1"/>
+		</states>
+		<realLights>
+			<low>
+				<light node="frontLightLow" lightTypes="0"/>
+				<light node="frontLightHigh" lightTypes="1"/>
+				<light node="backLightsHigh" lightTypes="1"/>
+				<light node="dashboardLights" lightTypes="0" excludedLightTypes="2 3"/>
+				<!-- <light node="licensePlateLightHigh" ightTypes="0" excludedLightTypes="2 3"/> -->
+				<turnLightLeft node="turnLightLeftFront"/>
+				<turnLightRight node="turnLightRightFront"/>
+				<brakeLight node="brakeLightsHigh"/>
+				<reverseLight node="reverseLightHigh"/>
+			</low>
+			<high>
+				<light node="frontLightLow" lightTypes="0 1"/>
+				<light node="frontLightHigh" lightTypes="0 1"/>
+				<light node="backLightsHigh" lightTypes="0 1"/>
+				<light node="dashboardLights" lightTypes="0" excludedLightTypes="2 3"/>
+			   <!--  <light node="licensePlateLightHigh" lightTypes="0" excludedLightTypes="2 3"/> -->
+				<turnLightLeft node="turnLightLeftFront"/>
+				<turnLightRight node="turnLightRightFront"/>
+				<brakeLight node="brakeLightsHigh"/>
+				<reverseLight node="reverseLightHigh"/>
+			</high>
+		</realLights>
+		<reverseLights>
+			<reverseLight shaderNode="ReversLight"/>
+			<reverseLight shaderNode="ReversLight1"/>
+		</reverseLights>
+		<defaultLights>
+			<defaultLight shaderNode="FrontLightLow" lightTypes="0 1"/>
+			<defaultLight shaderNode="FrontLights" lightTypes="1"/>
+			<defaultLight shaderNode="BackLightsHigh" lightTypes="1"/>
+			<defaultLight shaderNode="gabaritR" lightTypes="0 1"/>
+			<defaultLight shaderNode="gabaritL" lightTypes="0 1"/>
+		</defaultLights>
+		<turnLights>
+			<turnLightLeft shaderNode="TurnLightLeft"/>
+			<turnLightRight shaderNode="TurnLightRight"/>
+			<turnLightLeft shaderNode="povorotnikL"/>
+			<turnLightRight shaderNode="povorotnikR"/>
+		</turnLights>
+		<brakeLights>
+			<brakeLight shaderNode="stopL"/>
+			<brakeLight shaderNode="stopR"/>
+		</brakeLights>
+		<dashboards>
+			<dashboard displayType="ROT" valueType="turnLight" node="TurnLightsLever" minRot="15 0 0" maxRot="-15 0 0" doInterpolation="true"/>
+			<dashboard displayType="EMITTER" valueType="turnLightHazard" node="ButtonAlarm" intensity="5" groups="MOTOR_ACTIVE"/>
+			<dashboard displayType="MULTI_STATE" valueType="lightState" node="Button1_1" doInterpolation="true">
+				<state value="0" rotation="-20 0 0"/>
+			</dashboard>
+			<dashboard displayType="MULTI_STATE" valueType="lightState" node="FrontLightTumbler" doInterpolation="true">
+				<state value="1" translation="0 0 -0.013"/>
+			</dashboard>
+		</dashboards>
+	</lights>
+
+	<enterable isTabbable="true">
+		<exitPoint node="ExitPoint"/>
+		<enterReferenceNode node="MainComponent"/>
+		<characterNode node="PlayerSeat" cameraMinDistance="2.0" spineRotation="-90 0 90">
+			<target ikChain="rightFoot" targetNode="playerRightFootTargetGas"/>
+			<target ikChain="leftFoot" targetNode="playerLeftFootTargetClutch"/>
+			<target ikChain="rightArm" targetNode="playerRightHandTarget_0"/>
+			<target ikChain="leftArm" targetNode="playerLeftHandTarget"/>
+		</characterNode>
+		<characterTargetNodeModifier node="RightFoot" transitionTime="0.1">
+			<state node="playerRightFootTargetGas" referenceNode="PedalGas"/>
+			<state node="playerRightFootTargetBrake" referenceNode="PedalBrake"/>
+		</characterTargetNodeModifier>
+		<characterTargetNodeModifier node="LeftFoot" transitionTime="0.1">
+			<state node="playerLeftFootTargetClutch" referenceNode="PedalClutch"/>
+		</characterTargetNodeModifier>
+		<characterTargetNodeModifier node="playerRightHandTarget_0" transitionTime="0.1">
+			<state node="playerRightHandTarget_1" referenceNode="GearShiftBone"/>
+		</characterTargetNodeModifier>
+		<cameras>
+			<camera node="outdoorCamera" rotatable="true" rotateNode="outdoorCameraTarget" limit="true" useWorldXZRotation="true" rotMinX="-1.4" rotMaxX="1" transMin="4.5" transMax="35">
+				<raycastNode node="cameraRaycastNode1"/>
+			</camera>
+			<camera node="indoorCamera" rotatable="true" limit="true" rotMinX="-1.1" rotMaxX="0.4" transMin="0" transMax="0" useMirror="true" isInside="true" shadowFocusBox="shadowFocusBox"/>
+		</cameras>
+		<mirrors>
+			<mirror node="MirrorLeft" prio="1"/>
+			<mirror node="MirrorRight" prio="1"/>
+			<mirror node="InterierMirror" prio="2"/>
+		</mirrors>
+		
+		<passengerSeats>
+				<passengerSeat node="passengerSeat01" exitPoint="passengerSeat01ExitPoint" outdoorCameraIndex="1">
+					<camera node="passengerSeat01Camera" rotatable="true" limit="true" rotMinX="-1.1" rotMaxX="0.4" transMin="0" transMax="0" useMirror="true" isInside="true" positionSmoothingParameter="0" shadowFocusBox="shadowFocusBox"/>
+					<characterNode node="passengerSeat01PlayerSkin" cameraMinDistance="0.5" spineRotation="-90 0 90">
+						<target ikChain="leftArm" targetNode="passengerSeat01PlayerLeftHand" poseId="flatFingers"/>
+						<target ikChain="rightArm" targetNode="passengerSeat01PlayerRightHand" poseId="flatFingers"/>
+						<target ikChain="leftFoot" targetNode="passengerSeat01PlayerLeftFoot"/>
+						<target ikChain="rightFoot" targetNode="passengerSeat01PlayerRightFoot"/>
+					</characterNode>
+				</passengerSeat>
+			</passengerSeats>
+	</enterable>
+
+	<suspensions>
+		<suspension useCharacterTorso="true" weight="90" minRotation="0 -5 -5" maxRotation="0 5 5" suspensionParametersY="7 1" suspensionParametersZ="7 1"/>
+	</suspensions>
+
+	<motorized>
+		<consumerConfigurations>
+			<consumerConfiguration>
+				<consumer fillUnitIndex="1" usage="18" fillType="diesel"/>
+			</consumerConfiguration>
+		</consumerConfigurations>
+		<motorConfigurations>
+			<motorConfiguration name="UMZ-451" price="0">
+				<motor torqueScale="0.25" minRpm="850" maxRpm="2800" maxForwardSpeed="90" maxBackwardSpeed="20" brakeForce="0.8" lowBrakeForceScale="0.12" dampingRateScale="0.5">
+					<torque normRpm="0.45" torque="0.9"/>
+					<torque normRpm="0.5" torque="0.97"/>
+					<torque normRpm="0.59" torque="1"/>
+					<torque normRpm="0.72" torque="1"/>
+					<torque normRpm="0.86" torque="0.88"/>
+					<torque normRpm="1" torque="0.72"/>
+				</motor>
+				<transmission autoGearChangeTime="0.5" gearChangeTime="0.4" axleRatio="0.95" startGearThreshold="0.35" name="$l10n_info_transmission_manual">
+					<directionChange useGear="true" reverseGearIndex="1" changeTime="0.5"/>
+					<groups type="DEFAULT" changeTime="0.5">
+						<group ratio="0.5" name="L"/>
+						<group ratio="1" name="H"/>
+					</groups>
+					<backwardGear maxSpeed="20" name="R"/>
+					<forwardGear maxSpeed="35" name="1"/>
+					<forwardGear maxSpeed="60" name="2"/>
+					<forwardGear maxSpeed="75" name="3"/>
+					<forwardGear maxSpeed="90" name="4"/>
+				</transmission>
+			</motorConfiguration>
+		</motorConfigurations>
+		<differentialConfigurations>
+			<differentialConfiguration>
+				<differentials>
+					<differential torqueRatio="0.5" maxSpeedRatio="1.8" wheelIndex1="1" wheelIndex2="2"/>
+					<differential torqueRatio="0.5" maxSpeedRatio="1.8" wheelIndex1="3" wheelIndex2="4"/>
+					<differential torqueRatio="0.5" maxSpeedRatio="1.8" differentialIndex1="1" differentialIndex2="2"/>
+				</differentials>
+			</differentialConfiguration>
+		</differentialConfigurations>
+		<gearLevers>
+			<gearLever node="GearShiftBone" centerAxis="3" changeTime="0.3" handsOnDelay="0.25">
+				<state gear="-1" xRot="-8" zRot="8"/>
+				<state gear="0" xRot="0" zRot="0"/>
+				<state gear="1" xRot="8" zRot="-8"/>
+				<state gear="2" xRot="-8" zRot="-8"/>
+				<state gear="3" xRot="8" zRot="0"/>
+				<state gear="4" xRot="-8" zRot="0"/>
+			</gearLever>
+			<gearLever node="GearSelector" centerAxis="2" changeTime="0.5" handsOnDelay="0.25">
+				<state group="1" xRot="0" yRot="20"/>
+				<state group="2" xRot="0" yRot="-20"/>
+			</gearLever>
+		</gearLevers>
+		<exhaustEffects>
+			<exhaustEffect node="ExhaustParticle" filename="$data/effects/exhaust/exhaust.i3d" minRpmColor="0.1 0.1 0.1 0.05" maxRpmColor="0.1 0.1 0.1 5" minRpmScale="0.05" maxRpmScale="0.5"/>
+		</exhaustEffects>
+		<motorStartDuration>1800</motorStartDuration>
+		<dashboards>
+			<dashboard valueType="speed" displayType="ANIMATION" groups="MOTOR_ACTIVE" animName="speedDisplay" minValueAnim="0" maxValueAnim="100"/>
+			<dashboard displayType="ROT" valueType="motorTemperature" node="Arrow2" minRot="0" maxRot="70" rotAxis="3" doInterpolation="true" interpolationSpeed="10" groups="MOTOR_ACTIVE"/>
+			<dashboard displayType="ROT" valueType="motorTemperature" node="Arrow3" minRot="0" maxRot="70" rotAxis="3" doInterpolation="true" interpolationSpeed="10" groups="MOTOR_ACTIVE"/>
+			<dashboard displayType="ROT" valueType="motorTemperature" node="Arrow4" minRot="0" maxRot="60" rotAxis="3" doInterpolation="true" interpolationSpeed="10" groups="MOTOR_ACTIVE"/>
+			<dashboard displayType="ROT" valueType="clutchPedal" node="PedalClutch" minRot="0 0 0" maxRot="-25 0 0" doInterpolation="true" groups="MOTOR_ACTIVE"/>
+			<dashboard displayType="MULTI_STATE" valueType="ignitionState" node="keyIgnition" doInterpolation="true" groups="MOTOR_ACTIVE">
+				<state value="0" rotation="0 0 0"/>
+				<state value="1" rotation="0 0 -120"/>
+				<state value="2" rotation="0 0 -90"/>
+			</dashboard>
+		</dashboards>
+	</motorized>
+
+	  <drivable>
+		<dashboards>
+		  <dashboard node="PedalGas" valueType="accelerationAxis" displayType="ROT" maxRot="-20 0 0" minRot="0 0 0" doInterpolation="true" groups="MOTOR_ACTIVE"/>
+		  <dashboard node="PedalBrake" valueType="decelerationAxis" displayType="ROT" maxRot="-25 0 0" minRot="0 0 0" doInterpolation="true" groups="MOTOR_ACTIVE"/>
+		</dashboards>
+		<steeringWheel node="SteeringWheel_1" indoorRotation="540" outdoorRotation="37"/>
+	  </drivable>
+
+	<dashboard>
+		<groups>
+			<group name="MOTOR_STARTING" isMotorStarting="true"/>
+			<group name="MOTOR_ACTIVE" isMotorStarting="true" isMotorRunning="true"/>
+			<group name="PRESSURE_WASHER_STARTING"			isPressureWasherStarting="true" />
+			<group name="PRESSURE_WASHER_RUNNING"			isPressureWasherRunning="true" />
+			<group name="PRESSURE_WASHER_DELAYED_STARTING"	isPressureWasherDelayedStart="true" />
+		</groups>
+	</dashboard>
+
+	  <animations>
+		<animation name="speedDisplay">
+		  <part node="Arrow5" startRot="0 0 0" endRot="0 0 180" startTime="0" endTime="1"/>
+		</animation>
+		<animation name="loadingBarFuel">
+		  <part node="Arrow1" startRot="0 0 0" endRot="0 0 100" startTime="0" endTime="1"/>
+		</animation>
+		<animation name="loadingBarTemperature">
+		  <part node="Arrow2" startRot="0 0 0" endRot="0 0 100" startTime="0" endTime="1"/>
+		</animation>
+		<animation name="wiperAnimation">
+		  <part node="WiperLeft" startRot="0 0 0" endRot="0 0 -50" startTime="0.0" endTime="0.475"/>
+		  <part node="WiperLeft" startRot="0 0 -50" endRot="0 0 0" startTime="0.475" endTime="0.95"/>
+		  <part node="WiperRight" startRot="0 0 0" endRot="0 0 50" startTime="0.0" endTime="0.475"/>
+		  <part node="WiperRight" startRot="0 0 50" endRot="0 0 0" startTime="0.475" endTime="0.95"/>
+		  <sound template="wiper1" startTime="0.0" endTime="1" direction="1" volumeScale="1.0" pitchScale="1.0" fadeOut="0.1" linkNode="WiperLeft"/>
+		  <sound template="wiper2" startTime="0.0" endTime="1" direction="-1" volumeScale="1.0" pitchScale="1.0" fadeOut="0.1" linkNode="WiperLeft"/>
+		</animation>
+		<animation name="sIC_FrontLeftDoor">
+		  <part node="LeftDoorHand" startTime="0" endTime="0.5" startRot="0 0 0" endRot="-30 0 0"/>
+		  <part node="LeftDoorHand" startTime="0.5" endTime="1" startRot="-30 0 0" endRot="0 0 0"/>
+		  <part node="DoorLeft" startTime="1" endTime="2" startRot="0 0 0" endRot="0 -90 0"/>
+		  <part node="DoorLeftHandOut" startTime="0" endTime="0.5" startRot="0 0 0" endRot="0 20 0"/>
+		  <part node="DoorLeftHandOut" startTime="0.5" endTime="1" startRot="0 20 0" endRot="0 0 0"/>
+		  <sound template="metalClose" startTime="0.05" direction="-1" volumeScale="1.3" pitchScale="1.4" linkNode="DoorLeft"/>
+		  <sound template="metalOpen" startTime="0.05" direction="1" volumeScale="1.2" pitchScale="0.8" linkNode="DoorLeft"/>
+		</animation>
+		<animation name="sIC_FrontRightDoor">
+		  <part node="RightDoorHand" startTime="0" endTime="0.5" startRot="0 0 0" endRot="30 0 0"/>
+		  <part node="RightDoorHand" startTime="0.5" endTime="1" startRot="30 0 0" endRot="0 0 0"/>
+		  <part node="DoorRight" startTime="1" endTime="2" startRot="0 0 0" endRot="0 90 0"/>
+		  <part node="DoorRightHandOut" startTime="0" endTime="0.5" startRot="0 0 0" endRot="0 -20 0"/>
+		  <part node="DoorRightHandOut" startTime="0.5" endTime="1" startRot="0 -20 0" endRot="0 0 0"/>
+		  <sound template="metalClose" startTime="0.05" direction="-1" volumeScale="1.3" pitchScale="1.4" linkNode="DoorRight"/>
+		  <sound template="metalOpen" startTime="0.05" direction="1" volumeScale="1.2" pitchScale="0.8" linkNode="DoorRight"/>
+		</animation>
+	  </animations>
+
+	  <wipers>
+		<wiper animName="wiperAnimation">
+		  <state animSpeed="0.75" animPause="2.0"/>
+		  <state animSpeed="0.75" animPause="0.0"/>
+		  <state animSpeed="1.10" animPause="0.0"/>
+		</wiper>
+	  </wipers>
+
+	  <cylindered>
+		<movingParts>
+		  <movingPart node="Thurst2" referenceFrame="Thurst2Ref_1" referencePoint="Thurst2Ref_1" scaleZ="true" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="Thurst3" referenceFrame="Thurst1Ref" referencePoint="Thurst1Ref" scaleZ="true" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="Thurst1" referenceFrame="Thurst3Ref" referencePoint="Thurst3Ref" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="FrontAxleRef" referenceFrame="FrontAxleRightFix" referencePoint="FrontAxleRightFix" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="RearAxleRef" referenceFrame="RearAxleRightFix" referencePoint="RearAxleRightFix" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="Cardan1_1" referenceFrame="CardanJoin1Ref" referencePoint="CardanJoin1Ref" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="Cardan2_1" referenceFrame="CardanJoint4_1_1" referencePoint="CardanJoint4_1_1" isActiveDirty="true" maxUpdateDistance="40"/>
+		  <movingPart node="FrontDampferLeft" referencePoint="FrontLeftShtockFix" referenceFrame="FrontLeftShtockFix" isActiveDirty="true" maxUpdateDistance="20">
+			<translatingPart node="FrontShtockLeft"/>
+		  </movingPart>
+		  <movingPart node="FrontDampferRight" referencePoint="FrontRightShtockFix" referenceFrame="FrontRightShtockFix" isActiveDirty="true" maxUpdateDistance="20">
+			<translatingPart node="FrontShtockRight"/>
+		  </movingPart>
+		  <movingPart node="RearDampfer" referencePoint="RearShtockFix" referenceFrame="RearShtockFix" isActiveDirty="true" maxUpdateDistance="20">
+			<translatingPart node="RearShtock"/>
+		  </movingPart>
+		</movingParts>
+	</cylindered>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits>
+					<fillUnit unitTextOverride="$l10n_unit_literShort" showOnHud="false" showInShop="false" fillTypes="diesel" capacity="77">
+						<dashboard valueType="fillLevel" displayType="ANIMATION" groups="MOTOR_ACTIVE" animName="loadingBarFuel" minValueAnim="0" maxValueAnim="100"/>
+						<exactFillRootNode node="exactFillRootNodeDiesel"/>
+					</fillUnit>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+ 
+
+
+
+
+	<tensionBelts>
+		<tensionBeltsConfigurations>
+			<tensionBeltsConfiguration>
+				<tensionBelts linkNode="tensionBelts" jointNode="0>" width="0.05" maxEdgeLength="0.1" geometryBias="0.01" ratchetPosition="0.2" defaultOffset="0.1" defaultOffsetSide="0.1" defaultHeight="4" activationTrigger="beltActivationTrigger">
+					<tensionBelt startNode="tensionBeltStart1" endNode="tensionBeltEnd1"/>
+					<tensionBelt startNode="tensionBeltStart2" endNode="tensionBeltEnd2"/>
+					<tensionBelt startNode="tensionBeltStart3" endNode="tensionBeltEnd3"/>
+					<tensionBelt startNode="tensionBeltStart4" endNode="tensionBeltEnd4"/>
+					<sounds>
+						<addBelt template="beltOpen"/>
+						<removeBelt template="beltClose"/>
+					</sounds>
+				</tensionBelts>
+			</tensionBeltsConfiguration>
+		</tensionBeltsConfigurations>
+	</tensionBelts>
+	
+	<baseColorConfigurations price="500" useDefaultColors="true" title="Шасси">
+		<baseColorConfiguration name="AEBI_White"		color="0.5 0.5 0.5"/>
+		<baseColorConfiguration name="AEBI_Green"		color="0.075 0.083 0.032"/>
+		<baseColorConfiguration name="FARMTECH_YELLOW1"	color="0.242 0.203 0.07"/>
+		<baseColorConfiguration name="AGRIO_Yellow"		color="0.6 0.4 0"/>
+		<baseColorConfiguration name="AGRIO_Blue1"		color="0 0.03 0.35"/>
+		<baseColorConfiguration name="AGRIO_Blue2"		color="0 0 0.128"/>
+		<baseColorConfiguration name="AGRIO_Orange"		color="1 0.194 0.019"/>
+		<baseColorConfiguration name="AGRIO_Red1"		color="0.7 0 0"/>
+		<baseColorConfiguration name="AGRIO_Red2"		color="0.121 0.006 0.004"/>
+		<material materialSlotName="body_mat"/>
+	</baseColorConfigurations>
+
+	<foliageBending>
+		<bendingNode minX="-1.05" maxX="1.05" minZ="-1.9" maxZ="1.9" yOffset="0"/>
+	</foliageBending>
+
+	<licensePlates>
+		<licensePlate node="LicensePlateFront" position="FRONT" preferedType="ELONGATED" placementArea="0.06 0.26 0.2 0.27"/>
+		<licensePlate node="LicensePlateBack" position="BACK" preferedType="ELONGATED" placementArea="0.06 0.26 0.2 0.27"/>
+	</licensePlates>
+
+	<wearable wearDuration="640" workMultiplier="1" fieldMultiplier="2"/>
+	<washable dirtDuration="90" workMultiplier="3" fieldMultiplier="2" washDuration="1"/>
+
+	<ai>
+		<agent width="1.8" length="4.6" height="2.2" lengthOffset="1.22" frontOffset="2.12"/>
+		<collisionTrigger node="aiCollisionNode" width="2.3" height="2.2"/>
+	</ai>
+
+	<i3dMappings>
+		<i3dMapping id="MainComponent" node="0>"/>
+		<i3dMapping id="Body" node="0>0"/>
+		<i3dMapping id="Wheels" node="0>0|0"/>
+		<i3dMapping id="Cameras" node="0>0|1"/>
+		<i3dMapping id="outdoorCameraTarget" node="0>0|1|0"/>
+		<i3dMapping id="outdoorCamera" node="0>0|1|0|0"/>
+		<i3dMapping id="indoorCamera" node="0>0|1|1"/>
+		<i3dMapping id="cameraRaycastNode1" node="0>0|1|2"/>
+		<i3dMapping id="shadowFocusBox" node="0>0|1|5"/>
+		<i3dMapping id="Lights" node="0>0|2"/>
+		<i3dMapping id="StaticLights" node="0>0|2|0"/>
+		<i3dMapping id="FrontLightLow" node="0>0|2|0|0"/>
+		<i3dMapping id="FrontLights" node="0>0|2|0|1"/>
+		<i3dMapping id="BackLightsHigh" node="0>0|2|0|2"/>
+		<i3dMapping id="stopL" node="0>0|2|6|3"/>
+		<i3dMapping id="stopR" node="0>0|2|7|3"/>
+		<i3dMapping id="TurnLightLeft" node="0>0|2|0|4"/>
+		<i3dMapping id="TurnLightRight" node="0>0|2|0|5"/>
+		<i3dMapping id="povorotnikL" node="0>0|2|6|1"/>
+		<i3dMapping id="povorotnikR" node="0>0|2|7|1"/>
+		<i3dMapping id="DefaultLights" node="0>0|2|1"/>
+		<i3dMapping id="frontLightLow" node="0>0|2|1|0"/>
+		<i3dMapping id="frontLightLow1" node="0>0|2|1|0|0"/>
+		<i3dMapping id="frontLightHigh" node="0>0|2|1|1"/>
+		<i3dMapping id="frontLightHigh1" node="0>0|2|1|1|0"/>
+		<i3dMapping id="BackLights" node="0>0|2|2"/>
+		<i3dMapping id="backLightsHigh" node="0>0|2|2|0"/>
+		<i3dMapping id="backLightsHigh2" node="0>0|2|2|0|0"/>
+		<i3dMapping id="BrakeLights_1" node="0>0|2|3"/>
+		<i3dMapping id="brakeLightsHigh" node="0>0|2|3|0"/>
+		<i3dMapping id="brakeLightsHigh2" node="0>0|2|3|0|0"/>
+		<i3dMapping id="TurnLights" node="0>0|2|4"/>
+		<i3dMapping id="turnLightLeftFront" node="0>0|2|4|0"/>
+		<i3dMapping id="turnLightLeftBack" node="0>0|2|4|0|0"/>
+		<i3dMapping id="turnLightRightFront" node="0>0|2|4|1"/>
+		<i3dMapping id="turnLightRightBack" node="0>0|2|4|1|0"/>
+		<i3dMapping id="DasboardLights" node="0>0|2|5"/>
+		<i3dMapping id="dashboardLights" node="0>0|2|5|0"/>
+		<i3dMapping id="dashboardLights1" node="0>0|2|5|0|0"/>
+		<i3dMapping id="dashboardLights2" node="0>0|2|5|0|1"/>
+		<i3dMapping id="dashboardLights3" node="0>0|2|5|0|2"/>
+		<i3dMapping id="dashboardLights4" node="0>0|2|5|0|3"/>
+		<i3dMapping id="ExitPoint" node="0>0|3"/>
+		<i3dMapping id="ExhaustParticle" node="0>0|4"/>
+		<i3dMapping id="LicensePlateFront" node="0>0|5"/>
+		<i3dMapping id="AttacherJoint" node="0>0|6|0"/>
+		<i3dMapping id="AttacherJoint2" node="0>0|6|1"/>
+		<i3dMapping id="AttacherJoint3" node="0>0|18|0"/>
+		<i3dMapping id="Interier_0" node="0>0|7"/>
+		<i3dMapping id="Interier_1" node="0>0|7|0"/>
+		<i3dMapping id="SteeringWheelRot" node="0>0|7|0|0"/>
+		<i3dMapping id="SteeringWheel_0" node="0>0|7|0|0|0"/>
+		<i3dMapping id="SteeringWheel_1" node="0>0|7|0|0|0|0"/>
+		<i3dMapping id="playerLeftHandTarget" node="0>0|7|0|0|0|0|0"/>
+		<i3dMapping id="playerRightHandTarget_0" node="0>0|7|0|0|0|0|1"/>
+		<i3dMapping id="Wipers" node="0>0|7|0|1"/>
+		<i3dMapping id="WiperLeftRef" node="0>0|7|0|1|0"/>
+		<i3dMapping id="WiperLeft" node="0>0|7|0|1|0|0"/>
+		<i3dMapping id="WiperRightRef" node="0>0|7|0|1|1"/>
+		<i3dMapping id="WiperRight" node="0>0|7|0|1|1|0"/>
+		<i3dMapping id="Dashboards" node="0>0|7|0|2"/>
+		<i3dMapping id="leverTurnlightRot" node="0>0|7|0|2|0"/>
+		<i3dMapping id="TurnLightsLever" node="0>0|7|0|2|0|0"/>
+		<i3dMapping id="NeedleFuelRot" node="0>0|7|0|2|1"/>
+		<i3dMapping id="Arrow1" node="0>0|7|0|2|1|0"/>
+		<i3dMapping id="NeedleTemperatureRot" node="0>0|7|0|2|2"/>
+		<i3dMapping id="Arrow2" node="0>0|7|0|2|2|0"/>
+		<i3dMapping id="NeedleOilRot" node="0>0|7|0|2|3"/>
+		<i3dMapping id="Arrow3" node="0>0|7|0|2|3|0"/>
+		<i3dMapping id="NeedleBatteryRot" node="0>0|7|0|2|4"/>
+		<i3dMapping id="Arrow4" node="0>0|7|0|2|4|0"/>
+		<i3dMapping id="NeedleSpeedRot" node="0>0|7|0|2|5"/>
+		<i3dMapping id="Arrow5" node="0>0|7|0|2|5|0"/>
+		<i3dMapping id="GearShiftBone" node="0>0|7|0|2|6"/>
+		<i3dMapping id="playerRightHandTarget_1" node="0>0|7|0|2|6|0"/>
+		<i3dMapping id="KeyIgnitionRot" node="0>0|7|0|2|7"/>
+		<i3dMapping id="keyIgnition" node="0>0|7|0|2|7|0"/>
+		<i3dMapping id="Button1_0" node="0>0|7|0|2|8"/>
+		<i3dMapping id="Button1_1" node="0>0|7|0|2|8|0"/>
+		<i3dMapping id="Button1Decal" node="0>0|7|0|2|8|0|0"/>
+		<i3dMapping id="Button2_0" node="0>0|7|0|2|9"/>
+		<i3dMapping id="Button2_1" node="0>0|7|0|2|9|0"/>
+		<i3dMapping id="Button2Decal" node="0>0|7|0|2|9|0|0"/>
+		<i3dMapping id="Button3_0" node="0>0|7|0|2|10"/>
+		<i3dMapping id="Button3_1" node="0>0|7|0|2|10|0"/>
+		<i3dMapping id="Button3Decals" node="0>0|7|0|2|10|0|0"/>
+		<i3dMapping id="Button4" node="0>0|7|0|2|11"/>
+		<i3dMapping id="ButtonAlarm" node="0>0|7|0|2|11|0"/>
+		<i3dMapping id="ButtonAlarmDecal" node="0>0|7|0|2|11|0|0"/>
+		<i3dMapping id="Tumbler1" node="0>0|7|0|2|12"/>
+		<i3dMapping id="FrontLightTumbler" node="0>0|7|0|2|12|0"/>
+		<i3dMapping id="FrontLightTumblerDecalShape" node="0>0|7|0|2|12|0|0"/>
+		<i3dMapping id="Tumbler2" node="0>0|7|0|2|13"/>
+		<i3dMapping id="WiperTumbler" node="0>0|7|0|2|13|0"/>
+		<i3dMapping id="TubmlerWiperDecal" node="0>0|7|0|2|13|0|0"/>
+		<i3dMapping id="Decals1" node="0>0|7|0|2|14"/>
+		<i3dMapping id="GearShift" node="0>0|7|0|2|15"/>
+		<i3dMapping id="GearSelector" node="0>0|7|0|2|16"/>
+		<i3dMapping id="Pedals" node="0>0|7|0|3"/>
+		<i3dMapping id="PedalClutch" node="0>0|7|0|3|0"/>
+		<i3dMapping id="playerLeftFootTargetClutch" node="0>0|7|0|3|0|0"/>
+		<i3dMapping id="PedalBrake" node="0>0|7|0|3|1"/>
+		<i3dMapping id="playerRightFootTargetBrake" node="0>0|7|0|3|1|0"/>
+		<i3dMapping id="PedalGas" node="0>0|7|0|3|2"/>
+		<i3dMapping id="playerRightFootTargetGas" node="0>0|7|0|3|2|0"/>
+		<i3dMapping id="Visuals" node="0>0|7|0|4"/>
+		<i3dMapping id="Dashboard" node="0>0|7|0|4|0"/>
+		<i3dMapping id="Seats" node="0>0|7|0|4|1"/>
+		<i3dMapping id="InterierMirror" node="0>0|7|0|4|2"/>
+		<i3dMapping id="Grid" node="0>0|7|0|4|3"/>
+		<i3dMapping id="Windows" node="0>0|7|0|4|4"/>
+		<i3dMapping id="DashBoardGlass" node="0>0|7|0|4|5"/>
+		<i3dMapping id="Frame" node="0>0|7|0|4|6"/>
+		<i3dMapping id="FrontAxleFixBone" node="0>0|7|0|4|6|0"/>
+		<i3dMapping id="RearAxleFixBone" node="0>0|7|0|4|6|1"/>
+		<i3dMapping id="FrontAxle" node="0>0|7|0|4|6|2"/>
+		<i3dMapping id="RearAxle" node="0>0|7|0|4|6|3"/>
+		<i3dMapping id="InterierMirrorBackFace" node="0>0|7|0|4|7"/>
+		<i3dMapping id="PlayerSeat" node="0>0|7|0|5"/>
+		<i3dMapping id="LeftFoot" node="0>0|7|0|6"/>
+		<i3dMapping id="RightFoot" node="0>0|7|0|7"/>
+		<i3dMapping id="InterierAssetsDecals" node="0>0|7|0|8"/>
+		<i3dMapping id="GearShiftWorldBone" node="0>0|7|1"/>
+		<i3dMapping id="Animations" node="0>0|8"/>
+		<i3dMapping id="DoorLeft" node="0>0|8|0"/>
+		<i3dMapping id="LeftDoorInterier" node="0>0|8|0|0"/>
+		<i3dMapping id="LeftDoorHand" node="0>0|8|0|1"/>
+		<i3dMapping id="InterierAssetsDecals1" node="0>0|8|0|2"/>
+		<i3dMapping id="WindowsDoorLeft" node="0>0|8|0|3"/>
+		<i3dMapping id="MirrorLeftBackFace" node="0>0|8|0|4"/>
+		<i3dMapping id="MirrorLeft" node="0>0|8|0|4|0"/>
+		<i3dMapping id="sIC_LeftDoor_in" node="0>0|8|0|5"/>
+		<i3dMapping id="sIC_LeftDoor_out" node="0>0|8|0|6"/>
+		<i3dMapping id="DoorLeftHandOut" node="0>0|8|0|7"/>
+		<i3dMapping id="DoorRight" node="0>0|8|1"/>
+		<i3dMapping id="RightDoorInterier" node="0>0|8|1|0"/>
+		<i3dMapping id="RightDoorHand" node="0>0|8|1|1"/>
+		<i3dMapping id="InterierAssetsDecals2" node="0>0|8|1|2"/>
+		<i3dMapping id="WindowsDoorRight" node="0>0|8|1|3"/>
+		<i3dMapping id="MirrorRightBackFace" node="0>0|8|1|4"/>
+		<i3dMapping id="MirrorRight" node="0>0|8|1|4|0"/>
+		<i3dMapping id="sIC_RightDoor_in" node="0>0|8|1|5"/>
+		<i3dMapping id="sIC_RightDoor_out" node="0>0|8|1|6"/>
+		<i3dMapping id="DoorRightHandOut" node="0>0|8|1|7"/>
+		<i3dMapping id="LicensePlateBack" node="0>0|17"/>
+		<i3dMapping id="gabaritR" node="0>0|2|7|2"/>
+		<i3dMapping id="gabaritL" node="0>0|2|6|2"/>
+		<i3dMapping id="stopL" node="0>0|2|6|3"/>
+		<i3dMapping id="stopR" node="0>0|2|7|3"/>
+		<i3dMapping id="ReversLight" node="0>0|2|8|0"/>
+		<i3dMapping id="ReversLight1" node="0>0|2|8|1"/>
+		<i3dMapping id="reverseLightHigh" node="0>0|2|9|0"/> 
+		<!-- <i3dMapping id="licensePlateLightHigh" node="0>0|8|3|0|5"/> -->
+		<i3dMapping id="MovingParts" node="0>0|9"/>
+		<i3dMapping id="CardanJoint2_1" node="0>0|9|0"/>
+		<i3dMapping id="CardanJoint2" node="0>0|9|0|0"/>
+		<i3dMapping id="CardanJoint3_1" node="0>0|9|1"/>
+		<i3dMapping id="CardanJoint3" node="0>0|9|1|0"/>
+		<i3dMapping id="Cardan1_1" node="0>0|9|2"/>
+		<i3dMapping id="Cardan1_1Y" node="0>0|9|2|0"/>
+		<i3dMapping id="Cardan1" node="0>0|9|2|0|0"/>
+		<i3dMapping id="Cardan2_1" node="0>0|9|3"/>
+		<i3dMapping id="Cardan2_1Y" node="0>0|9|3|0"/>
+		<i3dMapping id="Cardan2" node="0>0|9|3|0|0"/>
+		<i3dMapping id="Thurst2Ref_0" node="0>0|9|4"/>
+		<i3dMapping id="Thurst2" node="0>0|9|4|0"/>
+		<i3dMapping id="Thurst3Ref" node="0>0|9|5"/>
+		<i3dMapping id="FrontDampferLeftRef" node="0>0|9|6"/>
+		<i3dMapping id="FrontDampferLeft" node="0>0|9|6|0"/>
+		<i3dMapping id="FrontShtockLeft" node="0>0|9|6|0|0"/>
+		<i3dMapping id="FrontDempferRightRef" node="0>0|9|7"/>
+		<i3dMapping id="FrontDampferRight" node="0>0|9|7|0"/>
+		<i3dMapping id="FrontShtockRight" node="0>0|9|7|0|0"/>
+		<i3dMapping id="RearDempferRef" node="0>0|9|8"/>
+		<i3dMapping id="RearDampfer" node="0>0|9|8|0"/>
+		<i3dMapping id="RearShtock" node="0>0|9|8|0|0"/>
+		<i3dMapping id="Collisions" node="0>0|10"/>
+		<i3dMapping id="BodyColDown" node="0>0|10|0"/>
+		<i3dMapping id="Ai" node="0>0|11"/>
+		<i3dMapping id="aiCollisionNode" node="0>0|11|0"/>
+		<i3dMapping id="SimpleIC" node="0>0|12"/>
+		<i3dMapping id="sIC_playerTrigger" node="0>0|12|0"/>
+		<i3dMapping id="camera" node="0>0|13"/>
+
+		<i3dMapping id="MainComponent2" node="1>"/>
+		<i3dMapping id="FrontWheels" node="1>0"/>
+		<i3dMapping id="AxleLeftRef" node="1>0|0"/>
+		<i3dMapping id="FrontWheelLeftRef" node="1>0|0|0"/>
+		<i3dMapping id="FrontAxleRef" node="1>0|0|1"/>
+		<i3dMapping id="FrontLeftShtockFix" node="1>0|0|1|0"/>
+		<i3dMapping id="FrontRightShtockFix" node="1>0|0|1|1"/>
+		<i3dMapping id="FrontAxleRigBone" node="1>0|0|1|2"/>
+		<i3dMapping id="CardanJoint1_1" node="1>0|0|1|3"/>
+		<i3dMapping id="CardanJoint1" node="1>0|0|1|3|0"/>
+		<i3dMapping id="CardanJoin1Ref" node="1>0|0|1|3|0|0"/>
+		<i3dMapping id="Thurst1Ref" node="1>0|0|2"/>
+		<i3dMapping id="Thurst1" node="1>0|0|3"/>
+		<i3dMapping id="Thurst2Ref_1" node="1>0|0|3|0"/>
+		<i3dMapping id="AxleLeftHub" node="1>0|0|4"/>
+		<i3dMapping id="AxleRightRef" node="1>0|1"/>
+		<i3dMapping id="FrontWheelRightRef" node="1>0|1|0"/>
+		<i3dMapping id="FrontAxleRightFix" node="1>0|1|1"/>
+		<i3dMapping id="Thurst3" node="1>0|1|2"/>
+		<i3dMapping id="AxleRightHub" node="1>0|1|3"/>
+		<i3dMapping id="MainComponent2FixPoint" node="1>1"/>
+		<i3dMapping id="MainComponent3" node="2>"/>
+		<i3dMapping id="RearWheels" node="2>0"/>
+		<i3dMapping id="RearWheelLeft" node="2>0|0"/>
+		<i3dMapping id="RearWheelLeftRef" node="2>0|0|0"/>
+		<i3dMapping id="RearAxleRef" node="2>0|0|1"/>
+		<i3dMapping id="RearShtockFix" node="2>0|0|1|0"/>
+		<i3dMapping id="RearAxleRigBone" node="2>0|0|1|1"/>
+		<i3dMapping id="CardanJoint4_1_0" node="2>0|0|1|2"/>
+		<i3dMapping id="CardanJoint4" node="2>0|0|1|2|0"/>
+		<i3dMapping id="CardanJoint4_1_1" node="2>0|0|1|2|0|0"/>
+		<i3dMapping id="RearWheelRight" node="2>0|1"/>
+		<i3dMapping id="RearWheelRightRef" node="2>0|1|0"/>
+		<i3dMapping id="RearAxleRightFix" node="2>0|1|1"/>
+		<i3dMapping id="MainComponent3FixPoint" node="2>1"/>
+
+		<i3dMapping id="exactFillRootNodeDiesel" node="0>0|14|0"/>
+
+		<i3dMapping id="passengerSeat01" node="0>0|15"/>
+		<i3dMapping id="passengerSeat01Camera" node="0>0|1|6"/>
+		<i3dMapping id="passengerSeat01PlayerSkin" node="0>0|15|1"/>
+		<i3dMapping id="passengerSeat01PlayerLeftFoot" node="0>0|15|2"/>
+		<i3dMapping id="passengerSeat01PlayerRightFoot" node="0>0|15|3"/>
+		<i3dMapping id="passengerSeat01PlayerLeftHand" node="0>0|15|4"/>
+		<i3dMapping id="passengerSeat01PlayerRightHand" node="0>0|15|5"/>
+		<i3dMapping id="passengerSeat01ExitPoint" node="0>0|15|6"/>
+		<!-- Бревновоз -->
+
+
+		<!-- Ремни -->
+		<i3dMapping id="tensionBelts" node="0>0|16|8"/>
+		<i3dMapping id="tensionBeltStart1" node="0>0|16|8|0"/>
+		<i3dMapping id="tensionBeltEnd1" node="0>0|16|8|0|0"/>
+		<i3dMapping id="tensionBeltStart2" node="0>0|16|8|1"/>
+		<i3dMapping id="tensionBeltEnd2" node="0>0|16|8|1|0"/>
+		<i3dMapping id="tensionBeltStart3" node="0>0|16|8|2"/>
+		<i3dMapping id="tensionBeltEnd3" node="0>0|16|8|2|0"/>
+		<i3dMapping id="tensionBeltStart4" node="0>0|16|8|3"/>
+		<i3dMapping id="tensionBeltEnd4" node="0>0|16|8|3|0"/>
+		<i3dMapping id="beltActivationTrigger" node="0>0|16|8|4"/>
+	</i3dMappings>
+</vehicle>

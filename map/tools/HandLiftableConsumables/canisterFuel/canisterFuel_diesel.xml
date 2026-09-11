@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<parentFile xmlFilename="map/tools/HandLiftableConsumables/canisterFuel/canisterFuel.xml">
+		<attributes>
+			<set path="vehicle.storeData.name" value="$l10n_shopItem_canisterFuelDiesel"/>
+			<set path="vehicle.storeData.image" value="map/tools/HandLiftableConsumables/canisterFuel/store_canisterFuel_diesel.png"/>
+			<set path="vehicle.storeData.price" value="75"/>
+			<set path="vehicle.storeData.functions.function" value="$function_canisterDiesel"/>
+			<set path="vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit#fillTypes" value="DIESEL"/>
+			<set path="vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit#startFillType" value="DIESEL"/>
+			<set path="vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit#capacity" value="50"/>
+			<set path="vehicle.fillUnit.fillUnitConfigurations.fillUnitConfiguration(0).fillUnits.fillUnit#startFillLevel" value="50"/>
+		 </attributes>
+	</parentFile>
+
+	<base>
+		<size width="0.55" length="0.3" height="0.8" />
+	</base>
+
+	<!-- ONLY FOR ICON GENERATION -->
+	<storeData>
+		<name>$l10n_shopItem_canisterFuelDiesel</name>
+		<image>map/tools/HandLiftableConsumables/canisterFuel/store_canisterFuel_diesel.png</image>
+		<brand>NONE</brand>
+		<category>objectMisc</category>
+
+		<storeIconRendering>
+			<settings cameraXRot="-5" cameraYRot="-230"/>
+		</storeIconRendering>
+		<vertexBufferMemoryUsage>0</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>0</indexBufferMemoryUsage>
+		<textureMemoryUsage>0</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+</vehicle>

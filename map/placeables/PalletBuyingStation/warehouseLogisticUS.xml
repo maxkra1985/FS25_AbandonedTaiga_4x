@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="warehouse" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>Склад Семёныча</name>
+		<functions>
+			<function>Место покупки различных товаров</function>
+		</functions>
+		<image>$data/store/store_empty.png</image>
+		<price>0</price>
+		<showInStore>true</showInStore>
+		<canBeSold>false</canBeSold>
+		<lifetime>100000</lifetime>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<species>PLACEABLE</species>
+		<category>placeableMisc</category>
+		<brush>
+			<type>placeable</type>
+			<category>buildings</category>
+			<tab>tools</tab>
+		</brush>
+		<vertexBufferMemoryUsage>0</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>0</indexBufferMemoryUsage>
+		<textureMemoryUsage>0</textureMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/PalletBuyingStation/warehouseLogisticUS.i3d</filename>
+		<canBeRenamed>false</canBeRenamed>
+		<canBeDeleted>false</canBeDeleted>
+		<boughtWithFarmland>false</boughtWithFarmland>
+	</base>
+
+	<placement useRandomYRotation="false" useManualYRotation="true" />
+
+	<clearAreas></clearAreas>
+
+	<leveling></leveling>
+
+	<indoorAreas>
+		<indoorArea startNode="indoorAreaStart01" widthNode="indoorAreaWidth01" heightNode="indoorAreaHeight01"/>
+	</indoorAreas>
+
+	<tipOcclusionUpdateAreas>
+		<tipOcclusionUpdateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+	</tipOcclusionUpdateAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+		</updateAreas>
+	</ai>
+
+	<!--infoTrigger triggerNode="infoTrigger"/-->
+
+	<hotspots>
+		<hotspot type="SHOP" linkNode="teleportNode" teleportNode="teleportNode" />
+	</hotspots>
+
+	<triggerMarkers>
+		<triggerMarker node="warningStripes01"/>
+	</triggerMarkers>
+
+	<palletBuyingStation triggerNode="palletBuyingActivationTrigger">
+		<fillType name="salt"					priceScale="1.0" />
+		<fillType name="SUGAR"					priceScale="1.0" />
+		<fillType name="INSTRUMENT"				priceScale="1.0" />
+		<fillType name="PLYWOOD"				priceScale="1.0" />
+		<fillType name="METAL"					priceScale="1.0" />
+		<fillType name="BUILDING_METAL"			priceScale="1.0" />
+		<fillType name="BOARDS"					priceScale="1.2" />
+		<fillType name="PLANKS"					priceScale="1.2" />
+		<fillType name="PREFABWALL"				priceScale="1.2" />
+		<fillType name="WOODBEAM"				priceScale="1.2" />
+		<fillType name="CEMENT"					priceScale="1.2" />
+		<fillType name="CEMENTBRICKS"			priceScale="1.2" />
+		<fillType name="ROOFPLATES"				priceScale="1.2" />
+		<fillType name="FURNITURE"				priceScale="1.2" />
+
+		<fillType name="FABRIC"					priceScale="1.44" />
+		<fillType name="CLOTHES"				priceScale="1.44" />
+		<fillType name="BARREL"					priceScale="1.44" />
+		<fillType name="BUCKET"					priceScale="1.44" />
+		<fillType name="BATHTUB"				priceScale="1.44" />
+		<fillType name="CARTONROLL"				priceScale="1.44" />
+		<fillType name="PAPERROLL"				priceScale="1.44" />
+		<fillType name="WOOL"					priceScale="1.44" />
+		<fillType name="EGG"                  priceScale="1.44" />
+		<fillType name="HONEY"                priceScale="1.44" />
+		<fillType name="FLOUR"                priceScale="1.44" />
+		<fillType name="RICEFLOUR"            priceScale="1.44" />
+		<fillType name="BREAD"                priceScale="1.44" />
+		<fillType name="CAKE"                 priceScale="1.44" />
+		<fillType name="BUTTER"               priceScale="1.44" />
+		<fillType name="CHEESE"               priceScale="1.44" />
+		<fillType name="CEREAL"               priceScale="1.44" />
+		<fillType name="SUNFLOWER_OIL"        priceScale="1.44" />
+		<fillType name="CANOLA_OIL"           priceScale="1.44" />
+		<fillType name="OLIVE_OIL"            priceScale="1.44" />
+		<fillType name="RICE_OIL"             priceScale="1.44" />
+		<fillType name="RAISINS"              priceScale="1.44" />
+		<fillType name="GRAPEJUICE"           priceScale="1.44" />
+		<fillType name="CHOCOLATE"            priceScale="1.44" />
+		<fillType name="STRAWBERRY"           priceScale="1.44" />
+		<fillType name="LETTUCE"              priceScale="1.44" />
+		<fillType name="TOMATO"               priceScale="1.44" />
+		<fillType name="SPRING_ONION"         priceScale="1.44" />
+		<fillType name="NAPACABBAGE"          priceScale="1.44" />
+		<fillType name="CHILLI"               priceScale="1.44" />
+		<fillType name="GARLIC"               priceScale="1.44" />
+		<fillType name="ENOKI"                priceScale="1.44" />
+		<fillType name="OYSTER"               priceScale="1.44" />
+		<fillType name="POTATOCHIPS"          priceScale="1.44" />
+		<fillType name="PRESERVEDCARROTS"     priceScale="1.44" />
+		<fillType name="PRESERVEDPARSNIP"     priceScale="1.44" />
+		<fillType name="PRESERVEDBEETROOT"    priceScale="1.44" />
+		<fillType name="CANNED_PEAS"          priceScale="1.44" />
+		<fillType name="SPINACH_BAGS"         priceScale="1.44" />
+		<fillType name="JARRED_GREENBEAN"     priceScale="1.44" />
+		<fillType name="RICE_BAGS"            priceScale="1.44" />
+		<fillType name="RICE_BOXES"           priceScale="1.44" />
+		<fillType name="ROPE"                 priceScale="1.44" />
+		<fillType name="GOATMILK"				priceScale="1.44" />
+		<fillType name="MILK_BOTTLED"			priceScale="1.44" />
+		<fillType name="GOATMILK_BOTTLED"		priceScale="1.44" />
+		<fillType name="BUFFALOMILK_BOTTLED"	priceScale="1.44" />
+		<fillType name="BUFFALOMOZZARELLA"		priceScale="1.44" />
+		<fillType name="GOATCHEESE"				priceScale="1.44" />
+		<fillType name="RICEROLLS"				priceScale="1.44" />
+		<fillType name="FERMENTEDNAPACABBAGE"	priceScale="1.44" />
+		<fillType name="NOODLESOUP"				priceScale="1.44" />
+		<fillType name="SOUPCANSMIXED"			priceScale="1.44" />
+		<fillType name="SOUPCANSCARROTS"		priceScale="1.44" />
+		<fillType name="SOUPCANSPARSNIP"		priceScale="1.44" />
+		<fillType name="SOUPCANSBEETROOT"		priceScale="1.44" />
+		<fillType name="SOUPCANSPOTATO"			priceScale="1.44" />
+
+		<palletSpawner>
+			<spawnPlaces>
+				<spawnPlace startNode="palletAreaStart01" endNode="palletAreaEnd01" palletRotationOffset="90"/>
+				<spawnPlace startNode="palletAreaStart02" endNode="palletAreaEnd02" palletRotationOffset="90"/>
+				<spawnPlace startNode="palletAreaStart03" endNode="palletAreaEnd03" palletRotationOffset="90"/>
+				<spawnPlace startNode="palletAreaStart04" endNode="palletAreaEnd04" palletRotationOffset="90"/>
+			</spawnPlaces>
+		</palletSpawner>
+	</palletBuyingStation>
+
+	<i3dMappings>
+		<i3dMapping id="indoorAreaStart01" node="0>0|0" />
+		<i3dMapping id="indoorAreaWidth01" node="0>0|0|0" />
+		<i3dMapping id="indoorAreaHeight01" node="0>0|0|1" />
+		<i3dMapping id="tipOcclusionUpdateAreaStart01" node="0>1|0" />
+		<i3dMapping id="tipOcclusionUpdateAreaEnd01" node="0>1|0|0" />
+		<i3dMapping id="warningStripes01" node="0>3|0" />
+		<i3dMapping id="palletSpawner" node="0>4" />
+		<i3dMapping id="palletAreaStart01" node="0>4|0" />
+		<i3dMapping id="palletAreaEnd01" node="0>4|0|0" />
+		<i3dMapping id="palletAreaStart02" node="0>4|1" />
+		<i3dMapping id="palletAreaEnd02" node="0>4|1|0" />
+		<i3dMapping id="palletAreaStart03" node="0>4|2" />
+		<i3dMapping id="palletAreaEnd03" node="0>4|2|0" />
+		<i3dMapping id="palletAreaStart04" node="0>4|3" />
+		<i3dMapping id="palletAreaEnd04" node="0>4|3|0" />
+		<i3dMapping id="palletBuyingActivationTrigger" node="0>4|4" />
+		<i3dMapping id="teleportNode" node="0>5" />
+	</i3dMappings>
+</placeable>

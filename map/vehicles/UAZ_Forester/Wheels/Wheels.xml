@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<wheel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../shared/xml/schema/wheel.xsd">
+	<default>
+		<physics radius="0.35" width="0.27" mass="0.011" tireType="offRoad" frictionScale="2.60" maxLongStiffness="8" maxLatStiffness="100" maxLatStiffnessLoad="2"/>
+		<tire filename="map/vehicles/UAZ_Forester/Wheels/Wheels.i3d" nodeLeft="0|0" nodeRight="0|1" maxDeformation="0.015" isCareWheel="false" tireTrackAtlasIndex="1"/>
+		<innerRim filename="map/vehicles/UAZ_Forester/Wheels/Wheels.i3d" nodeLeft="1|0" nodeRight="1|1" scale="1 1 1"/>
+	</default>
+</wheel>

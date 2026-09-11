@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/savegame_vehicles.xsd" >
+	<vehicle filename="$mapdir$/map/tools/HandLiftableConsumables/barrelIron/barrelIron_diesel.xml" uniqueId="vehicle3358016b17449255a0dc1eb0acadeb7a" price="0.000000" farmId="1">
+		<component index="1" position="-84.477 50.062 -62.335" rotation="179.99 66.53 180.00"/>
+	</vehicle>
+	<vehicle filename="$mapdir$/map/tools/HandLiftableConsumables/barrelIron/barrelIron_diesel.xml" uniqueId="vehicled93ce95591a8832cb9b5dd4ea3e21bff" price="0.000000" farmId="1">
+		<component index="1" position="-28.021 50.062 -24.503" rotation="179.89 -11.77 -179.96"/>
+	</vehicle>
+	<vehicle filename="$mapdir$/map/tools/Jackhammer/jackhammer.xml" uniqueId="vehicle19b5b2609a0e3fdaca39477357f54c31" price="0.000000" farmId="1" >
+		<component index="1" position="-27.364 50.187 -25.700" rotation="92.40 75.56 -177.51"/>
+	</vehicle>
+
+	<vehicle filename="$mapdir$/map/placeables/GardenSwing/gardenSwing.xml" isAbsolute="true" age="1.000000" price="0.000000" propertyState="1" operatingTime="0.000000" selectedObjectIndex="1" subSelectedObjectIndex="1">
+		<component index="1" position="-1030 50 1013" rotation="0 90 0"/>
+	</vehicle>
+
+
+	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehicle3183b485f18724c6c4299e02a1f40b56" age="10000.000000" price="0.0" propertyState="OWNED" operatingTime="10000.000000">
+		<component index="1" position="998.970 51.021 966.578" rotation="179.69 -31.20 -180.00"/>
+		<component index="2" position="998.375 51.408 965.596" rotation="179.69 -31.20 -180.00"/>
+		<component index="3" position="999.567 51.404 967.564" rotation="179.69 -31.20 -180.00"/>
+		<component index="4" position="999.235 51.389 968.501" rotation="-179.40 -31.20 -180.00"/>
+		<component index="5" position="1000.551 51.389 967.704" rotation="-179.48 -31.20 -180.00"/>
+		<configuration name="fillUnit" id="1" isActive="true"/>
+		<configuration name="tensionBelts" id="1" isActive="true"/>
+		<configuration name="trailer" id="1" isActive="true"/>
+		<configuration name="motor" id="1" isActive="true"/>
+		<configuration name="folding" id="1" isActive="true"/>
+		<configuration name="fillVolume" id="1" isActive="true"/>
+		<configuration name="wheel" id="1" isActive="true"/>
+		<configuration name="designColor2" id="1" isActive="false"/>
+		<configuration name="designColor2" id="2" isActive="true"/>
+		<configuration name="baseColor" id="1" isActive="false"/>
+		<configuration name="baseColor" id="2" isActive="true"/>
+		<washable>
+			<dirtNode amount="0.91" wetness="0.000000"/>
+		</washable>
+		<wearable damage="0.91">
+			<wearNode amount="0.91"/>
+		</wearable>
+		<fillUnit>
+			<unit index="1" fillType="UNKNOWN" fillLevel="0.000000"/>
+			<unit index="2" fillType="DIESEL" fillLevel="10.000000"/>
+		</fillUnit>
+		<FS25_UniversalAutoload>
+			<universalAutoload>
+				<currentState tipside="left" loadside="both" materialIndex="1" containerIndex="1" loadingFilter="false" autoCollectionMode="false" useHorizontalLoading="false" loadWidth="0.000000" loadHeight="0.000000" loadLength="0.000000" actualWidth="0.000000" actualLength="0.000000" layerCount="0" layerHeight="0.000000" nextLayerHeight="0.000000" lastLoadLength="0.000000" loadAreaIndex="1"/>
+			</universalAutoload>
+		</FS25_UniversalAutoload>
+	</vehicle>
+	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehiclead535e2be6a7cd9e9c2435ab58d884ea" age="10000.000000" price="0.000000" propertyState="OWNED" operatingTime="10000.000000">
+		<component index="1" position="985.232 51.021 937.962" rotation="-0.30 -59.84 -0.00"/>
+		<component index="2" position="984.239 51.408 938.539" rotation="-0.30 -59.84 -0.00"/>
+		<component index="3" position="986.228 51.404 937.383" rotation="-0.30 -59.84 -0.00"/>
+		<component index="4" position="987.158 51.389 937.732" rotation="3.16 -59.84 -0.00"/>
+		<component index="5" position="986.386 51.389 936.402" rotation="4.03 -59.84 -0.00"/>
+		<configuration name="fillUnit" id="1" isActive="true"/>
+		<configuration name="tensionBelts" id="1" isActive="true"/>
+		<configuration name="trailer" id="1" isActive="true"/>
+		<configuration name="motor" id="1" isActive="true"/>
+		<configuration name="folding" id="1" isActive="true"/>
+		<configuration name="fillVolume" id="1" isActive="true"/>
+		<configuration name="wheel" id="1" isActive="true"/>
+		<configuration name="designColor2" id="1" isActive="false"/>
+		<configuration name="designColor2" id="2" isActive="true"/>
+		<configuration name="baseColor" id="1" isActive="false"/>
+		<configuration name="baseColor" id="2" isActive="true"/>
+		<washable>
+			<dirtNode amount="0.91" wetness="0.000000"/>
+		</washable>
+		<wearable damage="0.91">
+			<wearNode amount="0.91"/>
+		</wearable>
+		<fillUnit>
+			<unit index="1" fillType="UNKNOWN" fillLevel="0.000000"/>
+			<unit index="2" fillType="DIESEL" fillLevel="10.000000"/>
+		</fillUnit>
+		<FS25_UniversalAutoload>
+			<universalAutoload>
+				<currentState tipside="left" loadside="both" materialIndex="1" containerIndex="1" loadingFilter="false" autoCollectionMode="false" useHorizontalLoading="false" loadWidth="0.000000" loadHeight="0.000000" loadLength="0.000000" actualWidth="0.000000" actualLength="0.000000" layerCount="0" layerHeight="0.000000" nextLayerHeight="0.000000" lastLoadLength="0.000000" loadAreaIndex="1"/>
+			</universalAutoload>
+		</FS25_UniversalAutoload>
+	</vehicle>
+
+</vehicles>

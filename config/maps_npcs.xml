@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<map xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../shared/xml/schema/npcs.xsd">
+	<npcs>
+		<npc name="GRANDPA">map/npc/grandpa.xml</npc>
+		<npc name="FORESTER">map/npc/forester.xml</npc>
+		<npc name="FARMER">map/npc/farmer.xml</npc>
+		<npc name="HELPER">map/npc/helper.xml</npc>
+	</npcs>
+</map>

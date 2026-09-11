@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<map>
+	<treeTypes>
+		<treeType name="spruce1" splitType="SPRUCE" title="$l10n_storeItem_spruce_stage01" growthTimeHours="208" saplingPrice="0">
+			<stage>
+				<variation name="RISUTECSKB240" filename="map/trees/spruce/saplings/spruceSapling01.i3d">
+					<pallet filename="map/trees/spruce/saplings/spruceSapling01_pallet.i3d" storeItem="$data/objects/pallets/treeSaplingPallet01/treeSaplingPallet01.xml"/>
+					<planter filename="map/trees/spruce/saplings/spruceSapling01_planter_risutecSKB240.i3d" />
+				</variation>
+				<variation name="DEFAULT" filename="map/trees/spruce/saplings/spruceSapling02.i3d">
+					<pallet storeItem="$data/objects/pallets/treeSaplingPallet02/treeSaplingPallet02.xml"/>
+				</variation>
+			</stage>
+			<stage filename="map/trees/spruce/spruceVar1_stage01.i3d" />
+			<stage filename="map/trees/spruce/spruceVar1_stage02.i3d" />
+			<stage filename="map/trees/spruce/spruceVar1_stage03.i3d" />
+		</treeType>
+
+		<treeType name="spruce2" splitType="SPRUCE" title="$l10n_storeItem_spruce_stage02" growthTimeHours="208" saplingPrice="0">
+			<stage>
+				<variation name="RISUTECSKB240" filename="map/trees/spruce/saplings/spruceSapling01.i3d">
+					<pallet filename="map/trees/spruce/saplings/spruceSapling01_pallet.i3d" storeItem="$data/objects/pallets/treeSaplingPallet01/treeSaplingPallet01.xml"/>
+					<planter filename="map/trees/spruce/saplings/spruceSapling01_planter_risutecSKB240.i3d" />
+				</variation>
+				<variation name="DEFAULT" filename="map/trees/spruce/saplings/spruceSapling02.i3d">
+					<pallet storeItem="$data/objects/pallets/treeSaplingPallet02/treeSaplingPallet02.xml"/>
+				</variation>
+			</stage>
+			<stage filename="map/trees/spruce/spruceVar2_stage01.i3d" />
+			<stage filename="map/trees/spruce/spruceVar2_stage02.i3d" />
+			<stage filename="map/trees/spruce/spruceVar2_stage03.i3d" />
+		</treeType>
+	</treeTypes>
+</map>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="licensePlatesRUS.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.2"/>
+  </Asset>
+
+  <Files>
+    <File fileId="4" filename="$data/shaders/vehicleShader.xml"/>
+    <File fileId="12" filename="$data/shared/assets/assetLibraryDecals_diffuse.dds"/>
+    <File fileId="13" filename="$data/shared/assets/assetLibraryDecals_normal.dds"/>
+    <File fileId="14" filename="$data/shared/assets/assetLibraryDecals_vmask.dds"/>
+    <File fileId="21" filename="$data/shared/default_vmask.dds"/>
+    <File fileId="6" filename="$data/shared/detailLibrary/flat_normal.png"/>
+    <File fileId="16" filename="$data/shared/detailLibrary/metallic/silverScratched_diffuse.png"/>
+    <File fileId="15" filename="$data/shared/detailLibrary/metallic/silverScratched_specular.png"/>
+    <File fileId="18" filename="$data/shared/detailLibrary/nonMetallic/metal/metalPainted_diffuse.png"/>
+    <File fileId="17" filename="$data/shared/detailLibrary/nonMetallic/metal/metalPainted_specular.png"/>
+    <File fileId="7" filename="$data/shared/detailLibrary/nonMetallic/plastic/plasticPainted_diffuse.png"/>
+    <File fileId="5" filename="$data/shared/detailLibrary/nonMetallic/plastic/plasticPainted_specular.png"/>
+    <File fileId="1" filename="$data/shared/white_diffuse.png"/>
+    <File fileId="19" filename="RUS_diffuse.png"/>
+    <File fileId="20" filename="RUS_normal.png"/>
+    <File fileId="2" filename="licensePlatesRUS_normal.dds"/>
+    <File fileId="3" filename="licensePlatesRUS_vmask.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="assetLibraryDecal_silverScratched_mat" materialId="5" customShaderId="4" customShaderVariation="vmaskUV2">
+      <Texture fileId="12"/>
+      <Normalmap fileId="13"/>
+      <Glossmap fileId="14"/>
+      <Custommap name="detailSpecular" fileId="15"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="16"/>
+      <CustomParameter name="colorScale" value="0.7379 0.7454 0.7529"/>
+    </Material>
+    <Material name="licensePlatesRUS_colorMask0_mat" materialId="6" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="detailSpecular" fileId="17"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="18"/>
+      <CustomParameter name="colorScale" value="0.8 0.8 0.8"/>
+    </Material>
+    <Material name="licensePlatesRUS_colorMask1_mat" materialId="7" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="detailSpecular" fileId="17"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="18"/>
+      <CustomParameter name="colorScale" value="0.021 0.021 0.021"/>
+    </Material>
+    <Material name="licensePlatesRUS_Decals_paintedMetal_mat" materialId="8" customShaderId="4" customShaderVariation="vmaskUV2">
+      <Texture fileId="19"/>
+      <Normalmap fileId="20"/>
+      <Glossmap fileId="21"/>
+      <Custommap name="detailSpecular" fileId="17"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="18"/>
+    </Material>
+    <Material name="licensePlatesRUS_paintedMetalBlack_mat" materialId="9" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="detailSpecular" fileId="5"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="7"/>
+      <CustomParameter name="colorScale" value="0.012 0.012 0.012"/>
+    </Material>
+    <Material name="licensePlatesRUS_silverScratched_mat" materialId="10" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="detailSpecular" fileId="15"/>
+      <Custommap name="detailNormal" fileId="6"/>
+      <Custommap name="detailDiffuse" fileId="16"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="licensePlatesRUS.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="rectangle" translation="0 -4.52876e-09 0" rotation="-90 0 0" nodeId="25">
+      <TransformGroup name="symbols01" translation="0 -0.000197005 -1.72227e-11" rotation="4.07111e-13 -0 0" nodeId="26">
+        <TransformGroup name="letter01" translation="-0.201 -0.00799013 0.00198534" scale="0.75 0.75 1" nodeId="27"/>
+        <TransformGroup name="letter02" translation="-0.138 0 0.00198534" scale="0.85 1 1" nodeId="28"/>
+        <TransformGroup name="letter03" translation="-0.082 0 0.00198534" scale="0.85 1 1" nodeId="29"/>
+        <TransformGroup name="letter04" translation="-0.026 0 0.00198534" scale="0.85 1 1" nodeId="30"/>
+        <TransformGroup name="letter05" translation="0.034 -0.008 0.00198534" scale="0.75 0.75 1" nodeId="31"/>
+        <TransformGroup name="letter06" translation="0.09 -0.008 0.00198534" scale="0.75 0.75 1" nodeId="32"/>
+        <TransformGroup name="letter07" translation="0.143 0.0118319 0.00198534" scale="0.55 0.6 1" nodeId="33"/>
+        <TransformGroup name="letter08" translation="0.166 0.0118319 0.00198534" scale="0.55 0.6 1" nodeId="34"/>
+        <TransformGroup name="letter09" translation="0.21 0.0118319 0.00198534" scale="0.55 0.6 1" nodeId="35"/>
+      </TransformGroup>
+      <TransformGroup name="symbols02" translation="0 -0.000197005 -1.72227e-11" rotation="4.07111e-13 -0 0" nodeId="36">
+        <TransformGroup name="letter01" translation="-0.199 -0.00799013 0.00198534" scale="0.75 0.75 1" nodeId="37"/>
+        <TransformGroup name="letter02" translation="-0.142907 -0.008 0.00198534" scale="0.75 0.75 1" nodeId="38"/>
+        <TransformGroup name="letter03" translation="-0.0738123 0 0.00198534" scale="0.85 1 1" nodeId="39"/>
+        <TransformGroup name="letter04" translation="-0.018 0 0.00198534" scale="0.85 1 1" nodeId="40"/>
+        <TransformGroup name="letter05" translation="0.038165 0 0.00198534" scale="0.85 1 1" nodeId="41"/>
+        <TransformGroup name="letter06" translation="0.0941536 0 0.00198534" scale="0.85 1 1" nodeId="42"/>
+      </TransformGroup>
+      <Shape name="rectangleFrame" translation="0 -1.45523e-11 4.52876e-09" rotation="-1.36604e-05 -0 0" shapeId="1" clipDistance="300" nodeId="43" castsShadows="true" receiveShadows="true" materialIds="9">
+        <Shape name="assetLibraryDecal" translation="-0.240046 0.00049024 0.00198534" rotation="1.36604e-05 -0 0" scale="1.3 1.3 1.3" shapeId="2" clipDistance="10" nodeId="44" castsShadows="false" receiveShadows="false" materialIds="5">
+          <Shape name="assetLibraryDecal" translation="0.369302 0 0" shapeId="2" clipDistance="10" nodeId="45" castsShadows="false" receiveShadows="false" materialIds="5"/>
+        </Shape>
+      </Shape>
+      <TransformGroup name="plates" translation="0 -0.000197005 -1.72227e-11" rotation="4.07111e-13 -0 0" nodeId="46">
+        <Shape name="rectanglePlate_2code" translation="0 0.000197005 4.54598e-09" rotation="-1.36604e-05 -0 0" shapeId="3" clipDistance="300" nodeId="47" castsShadows="true" receiveShadows="true" materialIds="6,7,10">
+          <Shape name="decal" translation="0.194149 -0.0301362 0.00198533" rotation="1.36604e-05 -0 0" shapeId="4" clipDistance="10" nodeId="48" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+        </Shape>
+        <Shape name="rectanglePlate_3code" translation="0 0.000197005 4.54598e-09" rotation="-1.36604e-05 -0 0" shapeId="5" clipDistance="300" nodeId="49" castsShadows="true" receiveShadows="true" materialIds="6,7,10">
+          <Shape name="decal" translation="0.184 -0.0301362 0.00198533" rotation="1.36604e-05 -0 0" shapeId="4" clipDistance="10" nodeId="50" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+        </Shape>
+      </TransformGroup>
+    </TransformGroup>
+    <TransformGroup name="square" translation="0 9.88413e-09 0.2" rotation="-90 0 0" nodeId="51">
+      <TransformGroup name="symbols" nodeId="52">
+        <TransformGroup name="symbols01" nodeId="53">
+          <TransformGroup name="letter01" translation="-0.0759211 0.0398368 0.00198534" scale="0.75 0.75 1" nodeId="54"/>
+          <TransformGroup name="letter02" translation="-0.00654124 0.0398368 0.00198534" scale="0.75 0.75 1" nodeId="55"/>
+          <TransformGroup name="letter03" translation="0.0359619 0.0398368 0.00198534" scale="0.75 0.75 1" nodeId="56"/>
+          <TransformGroup name="letter04" translation="0.0784651 0.0398368 0.00198534" scale="0.75 0.75 1" nodeId="57"/>
+          <TransformGroup name="letter05" translation="-0.081425 -0.0395097 0.00198534" scale="0.75 0.75 1" nodeId="58"/>
+          <TransformGroup name="letter06" translation="-0.0299114 -0.0395097 0.00198534" scale="0.75 0.75 1" nodeId="59"/>
+          <TransformGroup name="letter07" translation="0.038 -0.03105 0.00198535" scale="0.6 0.6 1" nodeId="60"/>
+          <TransformGroup name="letter08" translation="0.064 -0.03105 0.00198535" scale="0.6 0.6 1" nodeId="61"/>
+          <TransformGroup name="letter09" translation="0.103644 -0.03105 0.00198535" scale="0.6 0.6 1" nodeId="62"/>
+        </TransformGroup>
+        <TransformGroup name="symbols02" nodeId="63">
+          <TransformGroup name="letter01" translation="-0.0824322 0.0470593 0.00198535" scale="0.95 1 1" nodeId="64"/>
+          <TransformGroup name="letter02" translation="-0.027455 0.0470593 0.00198535" scale="0.95 1 1" nodeId="65"/>
+          <TransformGroup name="letter03" translation="0.0275223 0.0470593 0.00198535" scale="0.95 1 1" nodeId="66"/>
+          <TransformGroup name="letter04" translation="0.0830052 0.0470593 0.00198535" scale="0.95 1 1" nodeId="67"/>
+          <TransformGroup name="letter05" translation="-0.0883404 -0.0548421 0.00198535" scale="0.75 0.75 1" nodeId="68"/>
+          <TransformGroup name="letter06" translation="-0.0323837 -0.0548421 0.00198535" scale="0.75 0.75 1" nodeId="69"/>
+          <TransformGroup name="letter07" translation="0.038 -0.039911 0.00198535" scale="0.6 0.6 1" nodeId="70"/>
+          <TransformGroup name="letter08" translation="0.06 -0.04 0.00198535" scale="0.6 0.6 1" nodeId="71"/>
+          <TransformGroup name="letter09" translation="0.1 -0.039911 0.00198535" scale="0.6 0.6 1" nodeId="72"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="frames" nodeId="73">
+        <Shape name="squareFrame01" translation="0 -5.74685e-15 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="6" clipDistance="300" nodeId="74" castsShadows="true" receiveShadows="true" materialIds="9">
+          <Shape name="assetLibraryDecal" translation="-0.129 0.069 0.00199996" rotation="1.36604e-05 -0 0" scale="1.3 1.3 1.3" shapeId="2" clipDistance="10" nodeId="75" castsShadows="false" receiveShadows="false" materialIds="5">
+            <Shape name="assetLibraryDecal" translation="0.199 0 0" shapeId="2" clipDistance="10" nodeId="76" castsShadows="false" receiveShadows="false" materialIds="5"/>
+            <Shape name="assetLibraryDecal" translation="0.098 -0.107 0" shapeId="2" clipDistance="10" nodeId="77" castsShadows="false" receiveShadows="false" materialIds="5"/>
+          </Shape>
+        </Shape>
+        <Shape name="squareFrame02" translation="0 -5.74685e-15 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="7" clipDistance="300" nodeId="78" castsShadows="true" receiveShadows="true" materialIds="9">
+          <Shape name="assetLibraryDecal" translation="-0.128 0.087 0.00199996" rotation="1.36604e-05 -0 0" scale="1.3 1.3 1.3" shapeId="2" clipDistance="10" nodeId="79" castsShadows="false" receiveShadows="false" materialIds="5">
+            <Shape name="assetLibraryDecal" translation="0.098 -0.134 0" shapeId="2" clipDistance="10" nodeId="80" castsShadows="false" receiveShadows="false" materialIds="5"/>
+            <Shape name="assetLibraryDecal" translation="0.197 0 0" shapeId="2" clipDistance="10" nodeId="81" castsShadows="false" receiveShadows="false" materialIds="5"/>
+          </Shape>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="plates" nodeId="82">
+        <TransformGroup name="squarePlate01" translation="0 -0.018 0" nodeId="83">
+          <Shape name="squarePlate01_2code" translation="0 0.018 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="8" clipDistance="300" nodeId="85" castsShadows="true" receiveShadows="true" materialIds="6,7,10"/>
+          <Shape name="squarePlate01_3code" translation="0 0.018 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="9" clipDistance="300" nodeId="86" castsShadows="true" receiveShadows="true" materialIds="6,7,10"/>
+          <Shape name="decal" translation="0.09 -0.045 0.002" shapeId="10" clipDistance="10" nodeId="84" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+        </TransformGroup>
+        <TransformGroup name="squarePlate02" nodeId="87">
+          <Shape name="squarePlate02_2code" translation="0 -5.74685e-15 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="11" clipDistance="300" nodeId="88" castsShadows="true" receiveShadows="true" materialIds="6,7,10">
+            <Shape name="decal" translation="0.09 -0.082 0.00199992" rotation="1.36604e-05 -0 0" shapeId="10" clipDistance="10" nodeId="89" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          </Shape>
+          <Shape name="squarePlate02_3code" translation="0 -5.74685e-15 5.58522e-08" rotation="-1.36604e-05 -0 0" shapeId="12" clipDistance="300" nodeId="90" castsShadows="true" receiveShadows="true" materialIds="6,7,10">
+            <Shape name="decal" translation="0.077 -0.082 0.00199992" rotation="1.36604e-05 -0 0" shapeId="13" clipDistance="10" nodeId="91" castsShadows="true" receiveShadows="true" decalLayer="1" materialIds="8"/>
+          </Shape>
+        </TransformGroup>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

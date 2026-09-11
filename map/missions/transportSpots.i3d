@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?>
+<i3D name="transportSpots.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+    <Asset>
+        <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+    </Asset>
+    <Files/>
+    <Materials/>
+    <Shapes/>
+    <Scene>
+        <TransformGroup name="transportTreeSpots" nodeId="26391">
+            <TransformGroup name="spot1" translation="1156.34 62 -464.912" rotation="2.50748 -74.3817 -0.713422" nodeId="26392">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26393"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26394"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26395"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26396"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26397"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26398"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26399"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26400"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26401"/>
+            </TransformGroup>
+            <TransformGroup name="spot2" translation="1156.37 50.5 -897.72" rotation="178.222 42.7025 -175.047" nodeId="26402">
+                <TransformGroup name="tree1" translation="-0.0749817 0.320004 0.320007" rotation="-90 -90 0" nodeId="26403"/>
+                <TransformGroup name="tree2" translation="0.0749817 0.320004 0.960022" rotation="-90 -90 0" nodeId="26404"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320011 1.60004" rotation="-90 -90 0" nodeId="26405"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26406"/>
+                <TransformGroup name="tree5" translation="-3.05176e-05 0.320004 2.88007" rotation="-90 -90 0" nodeId="26407"/>
+                <TransformGroup name="tree6" translation="0.0749817 0.320007 3.51996" rotation="-90 -90 0" nodeId="26408"/>
+                <TransformGroup name="tree7" translation="-0.0750427 0.320004 4.15997" rotation="-90 -90 0" nodeId="26409"/>
+                <TransformGroup name="tree8" translation="3.05176e-05 0.320004 4.79999" rotation="-90 -90 0" nodeId="26410"/>
+                <TransformGroup name="tree9" translation="-0.0749817 0.320007 5.44" rotation="-90 -90 0" nodeId="26411"/>
+                <TransformGroup name="tree10" translation="-6.10352e-05 0.32 6.08002" rotation="-90 -90 0" nodeId="26412"/>
+                <TransformGroup name="tree11" translation="-0.0750427 0.320007 6.72003" rotation="-90 -90 0" nodeId="26413"/>
+                <TransformGroup name="tree12" translation="-0.0749512 0.320004 7.35999" rotation="-90 -90 0" nodeId="26414"/>
+                <TransformGroup name="tree13" translation="0.0750122 0.320004 7.99994" rotation="-90 -90 0" nodeId="26415"/>
+                <TransformGroup name="tree14" translation="-0.0750122 0.320004 8.63995" rotation="-90 -90 0" nodeId="26416"/>
+                <TransformGroup name="tree15" translation="0.0750122 0.32 9.28003" rotation="-90 -90 0" nodeId="26417"/>
+                <TransformGroup name="tree16" translation="-0.0749817 0.880005 0.639954" rotation="-90 -90 0" nodeId="26418"/>
+                <TransformGroup name="tree17" translation="0.0749512 0.880001 1.27997" rotation="-90 -90 0" nodeId="26419"/>
+                <TransformGroup name="tree18" translation="0.0749817 0.880009 1.91998" rotation="-90 -90 0" nodeId="26420"/>
+                <TransformGroup name="tree19" translation="0.0749512 0.880009 2.56" rotation="-90 -90 0" nodeId="26421"/>
+                <TransformGroup name="tree20" translation="0.0749817 0.880005 3.20001" rotation="-90 -90 0" nodeId="26422"/>
+                <TransformGroup name="tree21" translation="-6.10352e-05 0.880005 3.84003" rotation="-90 -90 0" nodeId="26423"/>
+                <TransformGroup name="tree22" translation="0 0.880001 4.48004" rotation="-90 -90 0" nodeId="26424"/>
+                <TransformGroup name="tree23" translation="-3.05176e-05 0.880001 5.12006" rotation="-90 -90 0" nodeId="26425"/>
+                <TransformGroup name="tree24" translation="-3.05176e-05 0.880001 5.76001" rotation="-90 -90 0" nodeId="26426"/>
+                <TransformGroup name="tree25" translation="0.0749512 0.880005 6.39996" rotation="-90 -90 0" nodeId="26427"/>
+                <TransformGroup name="tree26" translation="0.0749817 0.880005 7.03998" rotation="-90 -90 0" nodeId="26428"/>
+                <TransformGroup name="tree27" translation="0.0749817 0.880001 7.67999" rotation="-90 -90 0" nodeId="26429"/>
+                <TransformGroup name="tree28" translation="0.0749817 0.880001 8.32001" rotation="-90 -90 0" nodeId="26430"/>
+                <TransformGroup name="tree29" translation="-6.10352e-05 0.880009 8.96002" rotation="-90 -90 0" nodeId="26431"/>
+            </TransformGroup>
+            <TransformGroup name="spot3" translation="1153.77 50.5 -1152.26" rotation="173.321 -66.0373 174.771" nodeId="26432">
+                <TransformGroup name="tree1" translation="-0.0749512 0.319992 0.320007" rotation="-90 -90 0" nodeId="26433"/>
+                <TransformGroup name="tree2" translation="0.0750427 0.320007 0.960022" rotation="-90 -90 0" nodeId="26434"/>
+                <TransformGroup name="tree3" translation="6.10352e-05 0.319992 1.60004" rotation="-90 -90 0" nodeId="26435"/>
+                <TransformGroup name="tree4" translation="3.05176e-05 0.319992 2.24005" rotation="-90 -90 0" nodeId="26436"/>
+                <TransformGroup name="tree5" translation="-0.0749512 0.319992 2.88" rotation="-90 -90 0" nodeId="26437"/>
+                <TransformGroup name="tree6" translation="0.0750427 0.319992 3.52002" rotation="-90 -90 0" nodeId="26438"/>
+                <TransformGroup name="tree7" translation="3.05176e-05 0.320007 4.16003" rotation="-90 -90 0" nodeId="26439"/>
+                <TransformGroup name="tree8" translation="0.0750427 0.319992 4.80005" rotation="-90 -90 0" nodeId="26440"/>
+                <TransformGroup name="tree9" translation="3.05176e-05 0.87999 0.640076" rotation="-90 -90 0" nodeId="26441"/>
+                <TransformGroup name="tree10" translation="-0.0749817 0.880005 1.28003" rotation="-90 -90 0" nodeId="26442"/>
+                <TransformGroup name="tree11" translation="6.10352e-05 0.87999 1.92004" rotation="-90 -90 0" nodeId="26443"/>
+                <TransformGroup name="tree12" translation="3.05176e-05 0.880005 2.56" rotation="-90 -90 0" nodeId="26444"/>
+                <TransformGroup name="tree13" translation="-0.0749512 0.880005 3.20007" rotation="-90 -90 0" nodeId="26445"/>
+                <TransformGroup name="tree14" translation="0 0.87999 3.84003" rotation="-90 -90 0" nodeId="26446"/>
+                <TransformGroup name="tree15" translation="0.0750122 0.880005 4.47998" rotation="-90 -90 0" nodeId="26447"/>
+            </TransformGroup>
+            <TransformGroup name="spot4" translation="894.899 50.5 -1159.43" rotation="35.0823 -85.2688 -35.3171" nodeId="26448">
+                <TransformGroup name="tree1" translation="-6.10352e-05 0.32 0.319946" rotation="-90 -90 0" nodeId="26449"/>
+                <TransformGroup name="tree2" translation="-0.0750427 0.32 0.959961" rotation="-90 -90 0" nodeId="26450"/>
+                <TransformGroup name="tree3" translation="0.0749512 0.32 1.59998" rotation="-90 -90 0" nodeId="26451"/>
+                <TransformGroup name="tree4" translation="-6.10352e-05 0.319996 2.23999" rotation="-90 -90 0" nodeId="26452"/>
+                <TransformGroup name="tree5" translation="-3.05176e-05 0.32 2.87994" rotation="-90 -90 0" nodeId="26453"/>
+                <TransformGroup name="tree6" translation="-6.10352e-05 0.32 3.51996" rotation="-90 -90 0" nodeId="26454"/>
+                <TransformGroup name="tree7" translation="-6.10352e-05 0.32 4.15997" rotation="-90 -90 0" nodeId="26455"/>
+                <TransformGroup name="tree8" translation="-0.0750427 0.32 4.79999" rotation="-90 -90 0" nodeId="26456"/>
+                <TransformGroup name="tree9" translation="-0.0750122 0.879997 0.640015" rotation="-90 -90 0" nodeId="26457"/>
+                <TransformGroup name="tree10" translation="-0.0750122 0.879997 1.28003" rotation="-90 -90 0" nodeId="26458"/>
+                <TransformGroup name="tree11" translation="-0.0750122 0.879997 1.91992" rotation="-90 -90 0" nodeId="26459"/>
+                <TransformGroup name="tree12" translation="-0.0750122 0.879997 2.56" rotation="-90 -90 0" nodeId="26460"/>
+                <TransformGroup name="tree13" translation="-0.0750122 0.879997 3.20001" rotation="-90 -90 0" nodeId="26461"/>
+                <TransformGroup name="tree14" translation="-3.05176e-05 0.879997 3.83997" rotation="-90 -90 0" nodeId="26462"/>
+                <TransformGroup name="tree15" translation="-3.05176e-05 0.879997 4.47998" rotation="-90 -90 0" nodeId="26463"/>
+            </TransformGroup>
+            <TransformGroup name="spot5" translation="670.786 50.5 -1159.92" rotation="7.67994 50.5948 14.9325" nodeId="26464">
+                <TransformGroup name="tree1" translation="0 0.319992 0.320038" rotation="-90 -90 0" nodeId="26465"/>
+                <TransformGroup name="tree2" translation="0 0.320007 0.960022" rotation="-90 -90 0" nodeId="26466"/>
+                <TransformGroup name="tree3" translation="0.0749512 0.320007 1.60001" rotation="-90 -90 0" nodeId="26467"/>
+                <TransformGroup name="tree4" translation="-0.0749512 0.320007 2.24002" rotation="-90 -90 0" nodeId="26468"/>
+                <TransformGroup name="tree5" translation="-0.0749512 0.319992 2.88" rotation="-90 -90 0" nodeId="26469"/>
+                <TransformGroup name="tree6" translation="-0.0749512 0.320007 3.52002" rotation="-90 -90 0" nodeId="26470"/>
+                <TransformGroup name="tree7" translation="0.0750122 0.320007 4.16003" rotation="-90 -90 0" nodeId="26471"/>
+                <TransformGroup name="tree8" translation="0.0749512 0.880005 0.639954" rotation="-90 -90 0" nodeId="26472"/>
+                <TransformGroup name="tree9" translation="0.0749512 0.88002 1.28" rotation="-90 -90 0" nodeId="26473"/>
+                <TransformGroup name="tree10" translation="0 0.87999 1.91995" rotation="-90 -90 0" nodeId="26474"/>
+                <TransformGroup name="tree11" translation="-0.0749512 0.880005 2.55994" rotation="-90 -90 0" nodeId="26475"/>
+                <TransformGroup name="tree12" translation="-0.0750732 0.880005 3.20001" rotation="-90 -90 0" nodeId="26476"/>
+                <TransformGroup name="tree13" translation="-0.0750732 0.880005 3.84003" rotation="-90 -90 0" nodeId="26477"/>
+            </TransformGroup>
+            <TransformGroup name="spot6" translation="446.282 50.5 -1161.39" rotation="179.318 42.9411 172.287" nodeId="26478">
+                <TransformGroup name="tree1" translation="0.0749817 0.320007 0.319946" rotation="-90 -90 0" nodeId="26479"/>
+                <TransformGroup name="tree2" translation="-0.0750427 0.320015 0.959961" rotation="-90 -90 0" nodeId="26480"/>
+                <TransformGroup name="tree3" translation="0.0749512 0.32 1.59985" rotation="-90 -90 0" nodeId="26481"/>
+                <TransformGroup name="tree4" translation="0.0749817 0.320007 2.23999" rotation="-90 -90 0" nodeId="26482"/>
+                <TransformGroup name="tree5" translation="0.0750122 0.320007 2.87988" rotation="-90 -90 0" nodeId="26483"/>
+                <TransformGroup name="tree6" translation="0 0.320007 3.5199" rotation="-90 -90 0" nodeId="26484"/>
+                <TransformGroup name="tree7" translation="0.0750122 0.320015 4.15991" rotation="-90 -90 0" nodeId="26485"/>
+                <TransformGroup name="tree8" translation="0 0.32 4.79993" rotation="-90 -90 0" nodeId="26486"/>
+                <TransformGroup name="tree9" translation="-0.0750122 0.320015 5.43994" rotation="-90 -90 0" nodeId="26487"/>
+                <TransformGroup name="tree10" translation="3.05176e-05 0.320007 6.07983" rotation="-90 -90 0" nodeId="26488"/>
+                <TransformGroup name="tree11" translation="3.05176e-05 0.880005 0.639893" rotation="-90 -90 0" nodeId="26489"/>
+                <TransformGroup name="tree12" translation="0.0750122 0.880005 1.28003" rotation="-90 -90 0" nodeId="26490"/>
+                <TransformGroup name="tree13" translation="0 0.880005 1.91992" rotation="-90 -90 0" nodeId="26491"/>
+                <TransformGroup name="tree14" translation="-3.05176e-05 0.880005 2.55994" rotation="-90 -90 0" nodeId="26492"/>
+                <TransformGroup name="tree15" translation="-0.0749817 0.880005 3.19995" rotation="-90 -90 0" nodeId="26493"/>
+                <TransformGroup name="tree16" translation="0 0.880013 3.83997" rotation="-90 -90 0" nodeId="26494"/>
+                <TransformGroup name="tree17" translation="0.0750427 0.880013 4.47998" rotation="-90 -90 0" nodeId="26495"/>
+                <TransformGroup name="tree18" translation="0.0750732 0.880005 5.12" rotation="-90 -90 0" nodeId="26496"/>
+                <TransformGroup name="tree19" translation="0.0750427 0.880013 5.76001" rotation="-90 -90 0" nodeId="26497"/>
+            </TransformGroup>
+            <TransformGroup name="spot7" translation="224.655 50.5 -1160.46" rotation="14.032 33.1862 14.6063" nodeId="26498">
+                <TransformGroup name="tree1" translation="0.0750122 0.32 0.320068" rotation="-90 -90 0" nodeId="26499"/>
+                <TransformGroup name="tree2" translation="0.0749512 0.320023 0.960022" rotation="-90 -90 0" nodeId="26500"/>
+                <TransformGroup name="tree3" translation="0 0.319992 1.60004" rotation="-90 -90 0" nodeId="26501"/>
+                <TransformGroup name="tree4" translation="0 0.319992 2.24005" rotation="-90 -90 0" nodeId="26502"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.32 2.87994" rotation="-90 -90 0" nodeId="26503"/>
+                <TransformGroup name="tree6" translation="0 0.320007 3.52008" rotation="-90 -90 0" nodeId="26504"/>
+                <TransformGroup name="tree7" translation="0 0.320007 4.15997" rotation="-90 -90 0" nodeId="26505"/>
+                <TransformGroup name="tree8" translation="0.0750122 0.320007 4.80005" rotation="-90 -90 0" nodeId="26506"/>
+                <TransformGroup name="tree9" translation="0.0750122 0.320015 5.44006" rotation="-90 -90 0" nodeId="26507"/>
+                <TransformGroup name="tree10" translation="0.0750122 0.320007 6.08002" rotation="-90 -90 0" nodeId="26508"/>
+                <TransformGroup name="tree11" translation="0.0748901 0.88002 0.639893" rotation="-90 -90 0" nodeId="26509"/>
+                <TransformGroup name="tree12" translation="0 0.880005 1.28003" rotation="-90 -90 0" nodeId="26510"/>
+                <TransformGroup name="tree13" translation="0 0.880013 1.91992" rotation="-90 -90 0" nodeId="26511"/>
+                <TransformGroup name="tree14" translation="-0.0750122 0.879997 2.56006" rotation="-90 -90 0" nodeId="26512"/>
+                <TransformGroup name="tree15" translation="0.0749512 0.880005 3.20001" rotation="-90 -90 0" nodeId="26513"/>
+                <TransformGroup name="tree16" translation="0.0750122 0.880005 3.83997" rotation="-90 -90 0" nodeId="26514"/>
+                <TransformGroup name="tree17" translation="-0.0750732 0.880005 4.47998" rotation="-90 -90 0" nodeId="26515"/>
+                <TransformGroup name="tree18" translation="-6.10352e-05 0.880013 5.12" rotation="-90 -90 0" nodeId="26516"/>
+                <TransformGroup name="tree19" translation="-6.10352e-05 0.88002 5.76001" rotation="-90 -90 0" nodeId="26517"/>
+            </TransformGroup>
+            <TransformGroup name="spot8" translation="0.0634537 50.5 -1159.4" rotation="16.276 -65.735 -20.8143" nodeId="26518">
+                <TransformGroup name="tree1" translation="0.0749512 0.319977 0.320007" rotation="-90 -90 0" nodeId="26519"/>
+                <TransformGroup name="tree2" translation="-0.0750122 0.319992 0.960022" rotation="-90 -90 0" nodeId="26520"/>
+                <TransformGroup name="tree3" translation="-0.0750732 0.32 1.60004" rotation="-90 -90 0" nodeId="26521"/>
+                <TransformGroup name="tree4" translation="0.0749512 0.319984 2.23999" rotation="-90 -90 0" nodeId="26522"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.319988 2.88007" rotation="-90 -90 0" nodeId="26523"/>
+                <TransformGroup name="tree6" translation="0.0749512 0.319988 3.52008" rotation="-90 -90 0" nodeId="26524"/>
+                <TransformGroup name="tree7" translation="0.0749512 0.319981 4.1601" rotation="-90 -90 0" nodeId="26525"/>
+                <TransformGroup name="tree8" translation="-0.0750732 0.319988 4.80005" rotation="-90 -90 0" nodeId="26526"/>
+                <TransformGroup name="tree9" translation="0.0749512 0.319992 5.44" rotation="-90 -90 0" nodeId="26527"/>
+                <TransformGroup name="tree10" translation="0.0749512 0.319988 6.08002" rotation="-90 -90 0" nodeId="26528"/>
+                <TransformGroup name="tree11" translation="0.0749512 0.32 6.72003" rotation="-90 -90 0" nodeId="26529"/>
+                <TransformGroup name="tree12" translation="-0.0750732 0.320007 7.36005" rotation="-90 -90 0" nodeId="26530"/>
+                <TransformGroup name="tree13" translation="-0.0750732 0.879993 0.640076" rotation="-90 -90 0" nodeId="26531"/>
+                <TransformGroup name="tree14" translation="0.0749512 0.880009 1.27997" rotation="-90 -90 0" nodeId="26532"/>
+                <TransformGroup name="tree15" translation="-0.0750122 0.880001 1.91998" rotation="-90 -90 0" nodeId="26533"/>
+                <TransformGroup name="tree16" translation="-0.0750732 0.879978 2.56012" rotation="-90 -90 0" nodeId="26534"/>
+                <TransformGroup name="tree17" translation="-0.0750122 0.879997 3.20007" rotation="-90 -90 0" nodeId="26535"/>
+                <TransformGroup name="tree18" translation="0 0.879997 3.84003" rotation="-90 -90 0" nodeId="26536"/>
+                <TransformGroup name="tree19" translation="-0.0750732 0.879997 4.48004" rotation="-90 -90 0" nodeId="26537"/>
+                <TransformGroup name="tree20" translation="0.0749512 0.880013 5.12" rotation="-90 -90 0" nodeId="26538"/>
+                <TransformGroup name="tree21" translation="-0.0750732 0.880005 5.76001" rotation="-90 -90 0" nodeId="26539"/>
+                <TransformGroup name="tree22" translation="-0.0750732 0.879986 6.40009" rotation="-90 -90 0" nodeId="26540"/>
+                <TransformGroup name="tree23" translation="-0.0750732 0.879997 7.04004" rotation="-90 -90 0" nodeId="26541"/>
+            </TransformGroup>
+            <TransformGroup name="spot9" translation="-225.483 50.5 -1157.13" rotation="-9.83941 -64.5647 10.5431" nodeId="26542">
+                <TransformGroup name="tree1" translation="0 0.320007 0.320068" rotation="-90 -90 0" nodeId="26543"/>
+                <TransformGroup name="tree2" translation="0 0.320007 0.960083" rotation="-90 -90 0" nodeId="26544"/>
+                <TransformGroup name="tree3" translation="0 0.320007 1.60004" rotation="-90 -90 0" nodeId="26545"/>
+                <TransformGroup name="tree4" translation="6.10352e-05 0.320007 2.24005" rotation="-90 -90 0" nodeId="26546"/>
+                <TransformGroup name="tree5" translation="-0.0749512 0.320007 2.88007" rotation="-90 -90 0" nodeId="26547"/>
+                <TransformGroup name="tree6" translation="0 0.320007 3.52002" rotation="-90 -90 0" nodeId="26548"/>
+                <TransformGroup name="tree7" translation="0 0.320007 4.16003" rotation="-90 -90 0" nodeId="26549"/>
+                <TransformGroup name="tree8" translation="-0.0749512 0.320007 4.80005" rotation="-90 -90 0" nodeId="26550"/>
+                <TransformGroup name="tree9" translation="-0.0749512 0.320007 5.44006" rotation="-90 -90 0" nodeId="26551"/>
+                <TransformGroup name="tree10" translation="-0.0749512 0.320007 6.08008" rotation="-90 -90 0" nodeId="26552"/>
+                <TransformGroup name="tree11" translation="0.0750122 0.320007 6.72003" rotation="-90 -90 0" nodeId="26553"/>
+                <TransformGroup name="tree12" translation="0.0750122 0.320007 7.36005" rotation="-90 -90 0" nodeId="26554"/>
+                <TransformGroup name="tree13" translation="0.0750122 0.880005 0.640015" rotation="-90 -90 0" nodeId="26555"/>
+                <TransformGroup name="tree14" translation="-0.0749512 0.880005 1.28003" rotation="-90 -90 0" nodeId="26556"/>
+                <TransformGroup name="tree15" translation="0 0.880005 1.92004" rotation="-90 -90 0" nodeId="26557"/>
+                <TransformGroup name="tree16" translation="-0.0749512 0.88002 2.56006" rotation="-90 -90 0" nodeId="26558"/>
+                <TransformGroup name="tree17" translation="-0.0749512 0.880005 3.20001" rotation="-90 -90 0" nodeId="26559"/>
+                <TransformGroup name="tree18" translation="6.10352e-05 0.880005 3.84009" rotation="-90 -90 0" nodeId="26560"/>
+                <TransformGroup name="tree19" translation="0 0.88002 4.48004" rotation="-90 -90 0" nodeId="26561"/>
+                <TransformGroup name="tree20" translation="-0.0750122 0.880005 5.12" rotation="-90 -90 0" nodeId="26562"/>
+                <TransformGroup name="tree21" translation="0.0750122 0.88002 5.76001" rotation="-90 -90 0" nodeId="26563"/>
+                <TransformGroup name="tree22" translation="0 0.88002 6.40002" rotation="-90 -90 0" nodeId="26564"/>
+                <TransformGroup name="tree23" translation="0.0749512 0.880005 7.04004" rotation="-90 -90 0" nodeId="26565"/>
+                <TransformGroup name="tree24" translation="0.0750122 1.44 0.960022" rotation="-90 -90 0" nodeId="26566"/>
+                <TransformGroup name="tree25" translation="-0.0749512 1.44 1.60004" rotation="-90 -90 0" nodeId="26567"/>
+                <TransformGroup name="tree26" translation="0.0750732 1.44 2.23999" rotation="-90 -90 0" nodeId="26568"/>
+                <TransformGroup name="tree27" translation="0 1.44 2.88" rotation="-90 -90 0" nodeId="26569"/>
+                <TransformGroup name="tree28" translation="0 1.44 3.52002" rotation="-90 -90 0" nodeId="26570"/>
+                <TransformGroup name="tree29" translation="-0.0749512 1.44 4.1601" rotation="-90 -90 0" nodeId="26571"/>
+                <TransformGroup name="tree30" translation="0 1.44 4.80005" rotation="-90 -90 0" nodeId="26572"/>
+                <TransformGroup name="tree31" translation="0.0749512 1.44002 5.44006" rotation="-90 -90 0" nodeId="26573"/>
+                <TransformGroup name="tree32" translation="0.0749512 1.44002 6.08002" rotation="-90 -90 0" nodeId="26574"/>
+                <TransformGroup name="tree33" translation="0 1.44 6.71997" rotation="-90 -90 0" nodeId="26575"/>
+            </TransformGroup>
+            <TransformGroup name="spot10" translation="-448.491 50.5 -1157.66" rotation="2.50748 -74.3817 -0.713422" nodeId="26806">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26807"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26808"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26809"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26810"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26811"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26812"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26813"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26814"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26815"/>
+            </TransformGroup>
+            <TransformGroup name="spot11" translation="-673.367 50.5 -1156.57" rotation="2.50748 -74.3817 -0.713422" nodeId="26816">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26817"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26818"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26819"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26820"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26821"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26822"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26823"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26824"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26825"/>
+            </TransformGroup>
+            <TransformGroup name="spot12" translation="-1154.21 50.5 -1158.08" rotation="2.50748 -74.3817 -0.713422" nodeId="26826">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26827"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26828"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26829"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26830"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26831"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26832"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26833"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26834"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26835"/>
+            </TransformGroup>
+            <TransformGroup name="spot13" translation="-1161.76 50.5 -894.015" rotation="2.50748 -74.3817 -0.713422" nodeId="26836">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26837"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26838"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26839"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26840"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26841"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26842"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26843"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26844"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26845"/>
+            </TransformGroup>
+            <TransformGroup name="spot14" translation="-1162.03 50.5 -670.585" rotation="2.50748 -74.3817 -0.713422" nodeId="26846">
+                <TransformGroup name="tree1" translation="-0.0750732 0.32 0.319946" rotation="-90 -90 0" nodeId="26847"/>
+                <TransformGroup name="tree2" translation="0.0750122 0.320007 0.960083" rotation="-90 -90 0" nodeId="26848"/>
+                <TransformGroup name="tree3" translation="0.0750122 0.320007 1.59998" rotation="-90 -90 0" nodeId="26849"/>
+                <TransformGroup name="tree4" translation="0 0.32 2.24005" rotation="-90 -90 0" nodeId="26850"/>
+                <TransformGroup name="tree5" translation="0.0749512 0.320015 2.88007" rotation="-90 -90 0" nodeId="26851"/>
+                <TransformGroup name="tree6" translation="-0.0750732 0.87999 0.639954" rotation="-90 -90 0" nodeId="26852"/>
+                <TransformGroup name="tree7" translation="-0.0750122 0.87999 1.28003" rotation="-90 -90 0" nodeId="26853"/>
+                <TransformGroup name="tree8" translation="-0.0750122 0.879997 1.92004" rotation="-90 -90 0" nodeId="26854"/>
+                <TransformGroup name="tree9" translation="-0.0750732 0.879997 2.56" rotation="-90 -90 0" nodeId="26855"/>
+            </TransformGroup>
+        </TransformGroup>
+    </Scene>
+    <UserAttributes>
+        <UserAttribute nodeId="26392">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26402">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="15"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="10.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26432">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="8"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="10.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26448">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="8"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="5.6"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26464">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="7"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="4.9"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26478">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="10"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="7"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26498">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="10"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="7"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26518">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="12"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="8.4"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26542">
+            <Attribute name="numRows" type="integer" value="3"/>
+            <Attribute name="numTreesPerRow" type="integer" value="12"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="4.2"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26806">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26816">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26826">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26836">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26846">
+            <Attribute name="numRows" type="integer" value="2"/>
+            <Attribute name="numTreesPerRow" type="integer" value="5"/>
+            <Attribute name="sizeX" type="float" value="5.5"/>
+            <Attribute name="sizeY" type="float" value="1.4"/>
+            <Attribute name="sizeZ" type="float" value="3.5"/>
+        </UserAttribute>
+    </UserAttributes>
+</i3D>

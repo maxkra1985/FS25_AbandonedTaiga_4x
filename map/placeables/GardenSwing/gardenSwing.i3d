@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="gardenSwing.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="$data/maps/mapEU/textures/props/gardenSwing_diffuse.png"/>
+    <File fileId="3" filename="$data/maps/mapEU/textures/props/gardenSwing_normal.png"/>
+    <File fileId="4" filename="$data/maps/mapEU/textures/props/gardenSwing_specular.png"/>
+    <File fileId="5" filename="$data/shaders/placeableShader.xml"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="default" materialId="5" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="gardenSwing_mat" materialId="6" customShaderId="5">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="lambert1" materialId="7" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="gardenSwing.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="gardenSwing" rotation="0 -90 0" scale="1 3 2" shapeId="1" static="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" clipDistance="300" nodeId="13" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7">
+      <TransformGroup name="cameras" translation="0 0.0111508 0" scale="1 0.333333 0.5" nodeId="14">
+        <TransformGroup name="outdoorCameraTarget" translation="-9.68899e-08 1.00084 -0.511536" rotation="163.237 0 -180" nodeId="15">
+          <Camera name="outdoorCamera" translation="-3.59635 1.40383 0.679652" rotation="58.7313 -73.1968 -86.424" nodeId="16" fov="54.4322" nearClip="0.3" farClip="5000" orthographicHeight="1"/>
+        </TransformGroup>
+        <Camera name="indoorCamera" translation="-0.211772 1.39611 0.489199" rotation="-13.519 -90 0" nodeId="17" fov="60" nearClip="0.1" farClip="5000" orthographicHeight="1"/>
+        <TransformGroup name="cameraRaycastNode1" translation="0 0.667232 0" rotation="0 -90 0" nodeId="18"/>
+        <TransformGroup name="cameraRaycastNode2" translation="0 1.068 -0.874459" rotation="0 -90 0" nodeId="19"/>
+        <TransformGroup name="cameraRaycastNode3" translation="0 1.36201 -1.29759" rotation="0 -90 0" nodeId="20"/>
+      </TransformGroup>
+      <TransformGroup name="player" translation="4.7255e-08 0.0111508 0.290049" rotation="0 90 0" scale="1 0.333333 0.5" nodeId="21">
+        <TransformGroup name="passengerSeat01" translation="0.0273058 0.568424 -0.64" rotation="0 6.46594e-05 0" scale="0.5 1 2" nodeId="22">
+          <Camera name="passengerSeat01Camera" translation="-0.053 0.75 0.03" rotation="-15 180 0" nodeId="23" fov="60" nearClip="0.1" farClip="5000" orthographicHeight="1"/>
+          <TransformGroup name="passengerSeat01ExitPoint" translation="0 -0.845067 0.954511" nodeId="24"/>
+          <TransformGroup name="passengerSeat01PlayerSkin" translation="-1.48565e-09 -0.0596679 0.239643" rotation="-11.6788 -3.552e-07 0" nodeId="25"/>
+          <TransformGroup name="passengerSeat01PlayerLeftFoot" translation="0.0599415 -0.568856 0.652022" nodeId="26"/>
+          <TransformGroup name="passengerSeat01PlayerRightFoot" translation="-0.211773 -0.568667 0.663886" nodeId="27"/>
+          <TransformGroup name="passengerSeat01PlayerLeftHand" translation="0.226271 -0.0562226 0.4067" rotation="90 -90 -90" nodeId="28"/>
+          <TransformGroup name="passengerSeat01PlayerRightHand" translation="-0.25238 -0.0562226 0.4067" rotation="0 90 0" nodeId="29"/>
+        </TransformGroup>
+        <TransformGroup name="passengerSeat02" translation="0.327556 0.568424 -0.64" rotation="0 6.46594e-05 0" scale="0.5 1 2" nodeId="30">
+          <Camera name="passengerSeat01Camera" translation="-0.053 0.75 0.03" rotation="-15 180 0" nodeId="31" fov="60" nearClip="0.1" farClip="5000" orthographicHeight="1"/>
+          <TransformGroup name="passengerSeat01ExitPoint" translation="0 -0.845067 0.954511" nodeId="32"/>
+          <TransformGroup name="passengerSeat01PlayerSkin" translation="-1.48565e-09 -0.0596679 0.239643" rotation="-11.6788 -3.552e-07 0" nodeId="33"/>
+          <TransformGroup name="passengerSeat01PlayerLeftFoot" translation="0.0599415 -0.568856 0.652022" nodeId="34"/>
+          <TransformGroup name="passengerSeat01PlayerRightFoot" translation="-0.211773 -0.568667 0.663886" nodeId="35"/>
+          <TransformGroup name="passengerSeat01PlayerLeftHand" translation="0.226271 -0.0562226 0.4067" rotation="90 -90 -90" nodeId="36"/>
+          <TransformGroup name="passengerSeat01PlayerRightHand" translation="-0.25238 -0.0562226 0.4067" rotation="0 90 0" nodeId="37"/>
+        </TransformGroup>
+        <TransformGroup name="passengerSeat03" translation="0.617765 0.568424 -0.64" rotation="0 6.46594e-05 0" scale="0.5 1 2" nodeId="38">
+          <Camera name="passengerSeat01Camera" translation="-0.053 0.75 0.03" rotation="-15 180 0" nodeId="39" fov="60" nearClip="0.1" farClip="5000" orthographicHeight="1"/>
+          <TransformGroup name="passengerSeat01ExitPoint" translation="0 -0.845067 0.954511" nodeId="40"/>
+          <TransformGroup name="passengerSeat01PlayerSkin" translation="-1.48565e-09 -0.0596679 0.239643" rotation="-11.6788 -3.552e-07 0" nodeId="41"/>
+          <TransformGroup name="passengerSeat01PlayerLeftFoot" translation="0.0599415 -0.568856 0.652022" nodeId="42"/>
+          <TransformGroup name="passengerSeat01PlayerRightFoot" translation="-0.211773 -0.568667 0.663886" nodeId="43"/>
+          <TransformGroup name="passengerSeat01PlayerLeftHand" translation="0.226271 -0.0562226 0.4067" rotation="90 -90 -90" nodeId="44"/>
+          <TransformGroup name="passengerSeat01PlayerRightHand" translation="-0.25238 -0.0562226 0.4067" rotation="0 90 0" nodeId="45"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="visual_lod" scale="0.855302 0.333333 0.5" lodDistance="0 20" nodeId="46">
+        <Shape name="LOD0" shapeId="2" nodeId="47" castsShadows="true" receiveShadows="true" materialIds="6"/>
+        <Shape name="LOD1" shapeId="3" nodeId="48" castsShadows="true" receiveShadows="true" materialIds="6"/>
+        <Shape name="col" shapeId="4" static="true" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="49" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      </TransformGroup>
+      <TransformGroup name="enterReferenceNode" translation="0.231524 0 0" scale="1 0.333333 0.5" nodeId="50"/>
+    </Shape>
+  </Scene>
+
+</i3D>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<handTool type="hpsShovel" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/handtool.xsd">
+	<storeData>
+		<name>$l10n_shopItem_handPlantSaplingsShovel</name>
+		<functions>
+			<function>$l10n_function_handPlantSaplingsShovel</function>
+		</functions>
+		<image>map/placeables/HandPlantSaplings/handTools/store_handPlantSaplingsShovel.dds</image>
+		<price>10</price>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>1000</lifetime>
+		<rotation>0</rotation>
+		<brand>FARMING_INNOVATIONS</brand>
+		<canBeSold>false</canBeSold>
+		<showInStore>false</showInStore>
+		<allowLeasing>false</allowLeasing>
+		<category>handtoolsMisc</category>
+		<species>HANDTOOL</species>
+		<storeIconRendering>
+			<settings cameraXRot="-20" cameraYRot="40"/>
+		</storeIconRendering>
+	</storeData>
+
+	<base mass="0.3" canCrouch="false" runMultiplier="0" mustBeHeld="false" canBeSaved="false" canBeDropped="true">
+		<typeDesc>Sapling shovel</typeDesc>
+		<filename>map/placeables/HandPlantSaplings/handTools/handPlantSaplingsShovel.i3d</filename>
+		<graphics node="0>0" lockFirstPerson="true"/>
+		<handNode node="0>1" useLeftHand="false" />
+		<firstPersonNode node="0>2"/>
+	</base>
+
+	<storable>
+		<holderType type="HPS_LINKED_SHOVEL" node="0>3"/>
+	</storable>
+
+	<hpsShovel>
+		<animation node="0>0|0|0" duration="4" autoPlantTime="0.25">
+			<graphics translation="0 0 0" rotation="38 28 0" scale="1.5 1.5 1.5"/>
+			<keyFrames>
+				<keyFrame time="0.000" translation="0 0 0" rotation="0 0 0"/>
+				<keyFrame time="0.050" translation="0 0 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.250" translation="0 0 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.300" translation="0 0.282 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.350" translation="0.233 0.282 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.475" translation="0.233 0.282 0.216" rotation="0 0 -40"/>
+				<keyFrame time="0.500" translation="0 0 0" rotation="0 0 0"/>
+				<keyFrame time="0.550" translation="0 0 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.750" translation="0 0 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.800" translation="0 0.282 0.216" rotation="0 0 0"/>
+				<keyFrame time="0.855" translation="0.233 0.282 0.216" rotation="0 0 0"/>
+				<keyFrame time="1.000" translation="0.233 0.282 0.216" rotation="0 0 -40"/>
+			</keyFrames>
+		</animation>
+		<sounds>
+			<digging linkNode="0>0|0|0" loops="0" file="map/placeables/HandPlantSaplings/sounds/shovelSound.ogg" innerRadius="5.0" outerRadius="80.0">
+				<volume indoor="0.3" outdoor="1.00" />
+				<pitch indoor="1.00" outdoor="1.00" />
+				<lowpassGain indoor="0.50" outdoor="1.00"/>
+			</digging>
+		</sounds>
+
+		<placeholder filename="map/placeables/HandPlantSaplings/shared/placeholder.i3d" dirtNode="0"/>
+	</hpsShovel>
+</handTool>

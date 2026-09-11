@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Instrument.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="../../Objects/OldBuildings/models/models01/wood_plank7.dds"/>
+    <File fileId="22" filename="../axe/siekiera_normal.dds"/>
+    <File fileId="23" filename="../axe/siekiera_vmask.dds"/>
+    <File fileId="35" filename="$data/placeables/mapEU/pianoFactory/props/batteryCharger_diffuse.png"/>
+    <File fileId="36" filename="$data/placeables/mapEU/pianoFactory/props/batteryCharger_normal.png"/>
+    <File fileId="37" filename="$data/placeables/mapEU/pianoFactory/props/batteryCharger_specular.png"/>
+    <File fileId="15" filename="$data/placeables/mapEU/pianoFactory/props/earmuffs_diffuse.png"/>
+    <File fileId="16" filename="$data/placeables/mapEU/pianoFactory/props/earmuffs_normal.png"/>
+    <File fileId="17" filename="$data/placeables/mapEU/pianoFactory/props/earmuffs_specular.png"/>
+    <File fileId="9" filename="$data/placeables/mapEU/pianoFactory/props/hammers_diffuse.png"/>
+    <File fileId="10" filename="$data/placeables/mapEU/pianoFactory/props/hammers_normal.png"/>
+    <File fileId="11" filename="$data/placeables/mapEU/pianoFactory/props/hammers_specular.png"/>
+    <File fileId="18" filename="$data/placeables/mapEU/pianoFactory/props/oiler_diffuse.png"/>
+    <File fileId="19" filename="$data/placeables/mapEU/pianoFactory/props/oiler_normal.png"/>
+    <File fileId="20" filename="$data/placeables/mapEU/pianoFactory/props/oiler_specular.png"/>
+    <File fileId="12" filename="$data/placeables/mapEU/pianoFactory/props/pliers_diffuse.png"/>
+    <File fileId="13" filename="$data/placeables/mapEU/pianoFactory/props/pliers_normal.png"/>
+    <File fileId="14" filename="$data/placeables/mapEU/pianoFactory/props/pliers_specular.png"/>
+    <File fileId="3" filename="$data/placeables/mapEU/pianoFactory/props/toolBox_diffuse.png"/>
+    <File fileId="4" filename="$data/placeables/mapEU/pianoFactory/props/toolBox_normal.png"/>
+    <File fileId="5" filename="$data/placeables/mapEU/pianoFactory/props/toolBox_specular.png"/>
+    <File fileId="6" filename="$data/placeables/mapEU/pianoFactory/props/wrenches_diffuse.png"/>
+    <File fileId="7" filename="$data/placeables/mapEU/pianoFactory/props/wrenches_normal.png"/>
+    <File fileId="8" filename="$data/placeables/mapEU/pianoFactory/props/wrenches_specular.png"/>
+    <File fileId="24" filename="$data/shaders/vehicleShader.xml"/>
+    <File fileId="33" filename="$data/shared/detailLibrary/flat_normal.png"/>
+    <File fileId="34" filename="$data/shared/detailLibrary/metallic/silverScratched_diffuse.png"/>
+    <File fileId="32" filename="$data/shared/detailLibrary/metallic/silverScratched_specular.png"/>
+    <File fileId="27" filename="$data/shared/detailLibrary/nonMetallic/wood/wood1_diffuse.dds"/>
+    <File fileId="26" filename="$data/shared/detailLibrary/nonMetallic/wood/wood1_normal.dds"/>
+    <File fileId="25" filename="$data/shared/detailLibrary/nonMetallic/wood/wood1_specular.dds"/>
+    <File fileId="21" filename="$data/shared/white_diffuse.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="batteryCharger_mat" materialId="5">
+      <Texture fileId="35"/>
+      <Normalmap fileId="36"/>
+      <Glossmap fileId="37"/>
+    </Material>
+    <Material name="earmuffs_mat" materialId="6">
+      <Texture fileId="15"/>
+      <Normalmap fileId="16"/>
+      <Glossmap fileId="17"/>
+    </Material>
+    <Material name="hammers_mat" materialId="7">
+      <Texture fileId="9"/>
+      <Normalmap fileId="10"/>
+      <Glossmap fileId="11"/>
+    </Material>
+    <Material name="lambert1" materialId="8" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="oiler_mat" materialId="9">
+      <Texture fileId="18"/>
+      <Normalmap fileId="19"/>
+      <Glossmap fileId="20"/>
+    </Material>
+    <Material name="pliers_mat" materialId="10">
+      <Texture fileId="12"/>
+      <Normalmap fileId="13"/>
+      <Glossmap fileId="14"/>
+    </Material>
+    <Material name="silverScratchedMat" materialId="11" customShaderId="24">
+      <Texture fileId="21"/>
+      <Normalmap fileId="22"/>
+      <Glossmap fileId="23"/>
+      <Custommap name="detailSpecular" fileId="32"/>
+      <Custommap name="detailNormal" fileId="33"/>
+      <Custommap name="detailDiffuse" fileId="34"/>
+      <CustomParameter name="scratches_dirt_snow_wetness" value="0.36 0.15 0 0"/>
+    </Material>
+    <Material name="toolBox_mat" materialId="12">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="13">
+      <Texture fileId="2"/>
+    </Material>
+    <Material name="wood1Mat" materialId="14" customShaderId="24">
+      <Texture fileId="21"/>
+      <Normalmap fileId="22"/>
+      <Glossmap fileId="23"/>
+      <Custommap name="detailSpecular" fileId="25"/>
+      <Custommap name="detailNormal" fileId="26"/>
+      <Custommap name="detailDiffuse" fileId="27"/>
+      <CustomParameter name="scratches_dirt_snow_wetness" value="0 0.95 0 0"/>
+      <CustomParameter name="colorScale" value="0.5804 0.1861 0.0346"/>
+      <CustomParameter name="porosity" value="1"/>
+    </Material>
+    <Material name="wrenches_mat" materialId="15">
+      <Texture fileId="6"/>
+      <Normalmap fileId="7"/>
+      <Glossmap fileId="8"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Instrument.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="Instrument" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" clipDistance="300" nodeId="45" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8">
+      <TransformGroup name="pallet" translation="-0.0137947 -1.17515e-09 -0.0562439" rotation="-1.36816e-05 -0.720083 8.25184e-06" nodeId="46">
+        <Shape name="cube" translation="0.0145005 0.155 0.0560661" rotation="1.3579e-05 0.720083 -8.08054e-06" scale="1.23 0.015 1" shapeId="2" nodeId="47" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="13"/>
+      </TransformGroup>
+      <TransformGroup name="contents" nodeId="48">
+        <TransformGroup name="content_01" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="49">
+          <Shape name="ContentTension01" translation="-0 0.16 0.38" rotation="-180 0.279592 -180" scale="0.7 1 0.5" shapeId="3" nodeId="50" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="visual24" translation="-0.0151503 1.19209e-07 0.39313" rotation="180 1.00179e-05 180" scale="0.7 0.7 0.7" shapeId="4" nodeId="51" castsShadows="true" receiveShadows="true" materialIds="12"/>
+          <Shape name="wrenchKey01" translation="-0.11402 1.19209e-07 -0.33164" rotation="4.3968e-11 -3.41509e-06 7.12444e-12" shapeId="5" nodeId="52" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="hammer03" translation="-0.297101 0.0325101 0.0946448" rotation="-2.03556e-13 4.14303e-11 -90" shapeId="6" nodeId="53" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="pliers01" translation="-0.522701 0.0314201 0.277552" rotation="4.62195e-06 80.7262 4.556e-06" shapeId="7" nodeId="54" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="pliers02" translation="-0.484701 0.05 0.282072" rotation="4.33573e-11 5.00896e-06 7.53156e-12" shapeId="8" nodeId="55" castsShadows="true" receiveShadows="true" materialIds="10"/>
+        </TransformGroup>
+        <TransformGroup name="content_02" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="56">
+          <Shape name="ContentTension02" translation="-0.35 0.0496712 0.2" rotation="-180 90 -180" shapeId="3" nodeId="57" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="hammer02" translation="-0.281282 0.10015 -0.316382" rotation="4.33573e-11 -3.41509e-06 8.14222e-12" shapeId="9" nodeId="58" castsShadows="true" receiveShadows="true" materialIds="7">
+            <Shape name="hammer02" translation="0.059166 0 0.137135" rotation="180 -1.8783e-05 180" shapeId="9" nodeId="59" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          </Shape>
+          <Shape name="visual14" translation="0.216305 0.372222 -0.388639" rotation="-4.78113e-05 8.96458e-06 101.026" shapeId="10" nodeId="60" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          <Shape name="wrenchKey02" translation="-0.0822242 0.0129001 -0.335428" rotation="4.35609e-11 3.30141e-06 7.73511e-12" shapeId="11" nodeId="61" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="visual21" translation="0.405792 -0.00200987 0.438752" rotation="180 48.1699 180" shapeId="12" nodeId="62" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="hammer01" translation="-0.433104 0.0732501 -0.215208" rotation="180 -2.21981e-05 -180" shapeId="13" nodeId="63" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="siekiera" translation="0.0132908 0.00948752 0.0452591" rotation="1.43513e-06 -1.36061e-05 83.979" shapeId="14" nodeId="64" castsShadows="true" receiveShadows="true" materialIds="14,11"/>
+        </TransformGroup>
+        <TransformGroup name="content_03" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="65">
+          <Shape name="ContentTension03" translation="0.3 0 0" rotation="-180 0.279592 -180" shapeId="3" nodeId="66" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="adjustableWrench" translation="0.380659 1.19209e-07 -0.106149" rotation="4.33573e-11 5.00896e-06 7.53156e-12" shapeId="15" nodeId="67" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="wrenchPlier04" translation="-0.438328 0.0348901 0.256403" rotation="4.33573e-11 1.93108e-30 7.53155e-12" shapeId="16" nodeId="68" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="pliers03" translation="-0.330729 0.0293301 0.353386" rotation="3.40234e-10 86.8447 3.6876e-10" shapeId="17" nodeId="69" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="wrenchKey02" translation="-0.0241492 0.0129001 -0.335428" rotation="4.33573e-11 5.00896e-06 7.53156e-12" shapeId="11" nodeId="70" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="hammer01" translation="-0.544257 0.0732501 -0.257318" rotation="180 -1.53679e-05 -180" shapeId="13" nodeId="71" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="hammer01" translation="-0.487257 0.0732501 -0.311376" rotation="4.37644e-11 -3.41509e-06 8.14222e-12" shapeId="13" nodeId="72" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="wrenchTire" translation="0.422392 0.0286101 0.00976186" rotation="10.2474 -42.7388 -6.99381" shapeId="18" nodeId="73" castsShadows="true" receiveShadows="true" skinBindNodeIds="73" materialIds="15"/>
+        </TransformGroup>
+        <TransformGroup name="content_04" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="74">
+          <Shape name="ContentTension04" translation="0.45 0.1 0.23" rotation="-180 0.279592 -180" scale="0.5 1 0.5" shapeId="3" nodeId="75" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="visual7" translation="0.455784 0.00579011 0.235597" rotation="5.009e-06 -5.00896e-06 -5.00895e-06" shapeId="19" nodeId="76" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="wrenchPlier02" translation="-0.373749 0.0149101 0.223162" rotation="7.53155e-12 -90 0" shapeId="20" nodeId="77" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="wrenchPlier03" translation="-0.360399 1.19209e-07 0.431817" rotation="7.53155e-12 -90 0" shapeId="21" nodeId="78" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="wrenchKey01" translation="-0.0605909 1.19209e-07 -0.331636" rotation="4.35609e-11 1.96419e-30 7.73511e-12" shapeId="5" nodeId="79" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="hammer01" translation="-0.487257 0.0268101 -0.311376" rotation="4.37644e-11 -3.41509e-06 8.14222e-12" shapeId="13" nodeId="80" castsShadows="true" receiveShadows="true" materialIds="7"/>
+        </TransformGroup>
+        <TransformGroup name="content_05" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="81">
+          <Shape name="ContentTension05" translation="0.53 0.0496712 0.43" rotation="-180 0.279592 -180" scale="0.2 1 0.3" shapeId="3" nodeId="82" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="visual20" translation="0.520159 1.19209e-07 0.426497" rotation="4.33573e-11 1.93108e-30 7.53155e-12" shapeId="22" nodeId="83" castsShadows="true" receiveShadows="true" materialIds="9"/>
+          <Shape name="wrenchFrenchKey1" translation="0.323445 0.01127 0.0132139" rotation="-179.999 -90 0" shapeId="23" nodeId="84" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="hammer01" translation="-0.433104 0.0268101 -0.215208" rotation="180 -2.21981e-05 -180" shapeId="13" nodeId="85" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="cutter" translation="-0.3229 -0.00330997 0.161722" rotation="4.33573e-11 5.00896e-06 7.53156e-12" shapeId="24" nodeId="86" castsShadows="true" receiveShadows="true" skinBindNodeIds="86" materialIds="10"/>
+          <Shape name="hammer03" translation="-0.419538 0.03251 0.0533049" rotation="-3.41509e-06 -4.25431e-11 90" shapeId="6" nodeId="87" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="siekiera" translation="0.144742 0.0102833 0.0166159" rotation="180 -1.29986e-05 97" shapeId="14" nodeId="88" castsShadows="true" receiveShadows="true" materialIds="14,11"/>
+        </TransformGroup>
+        <TransformGroup name="content_06" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="89">
+          <Shape name="ContentTension06" translation="0 0.05 0" rotation="-180 0.279592 -180" scale="2 0.5 2.5" shapeId="3" nodeId="90" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="hammer02" translation="-0.222116 0.0421901 -0.179247" rotation="-180 -1.53679e-05 -180" shapeId="9" nodeId="91" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="wrenchPlier01" translation="-0.541275 0.0162001 0.332785" rotation="-7.53156e-12 90 0" shapeId="25" nodeId="92" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="wrenchFrenchKey" translation="0.461584 0.0184401 -0.0350571" rotation="7.53155e-12 -90 0" shapeId="26" nodeId="93" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="wrenchKey01" translation="-0.0138532 1.19209e-07 -0.331636" rotation="4.37644e-11 -3.41509e-06 8.14222e-12" shapeId="5" nodeId="94" castsShadows="true" receiveShadows="true" materialIds="15"/>
+          <Shape name="siekiera" translation="0.124206 0.0102833 0.0707929" rotation="4.26877e-06 -1.29986e-05 83.979" shapeId="14" nodeId="95" castsShadows="true" receiveShadows="true" materialIds="14,11"/>
+        </TransformGroup>
+        <TransformGroup name="content_07" translation="-0.0126358 0.16387 0" rotation="-1.36816e-05 -0 8.25183e-06" nodeId="96">
+          <Shape name="ContentTension07" translation="0.3 0.3 -0.35" rotation="-180 0.279592 -180" scale="1 1 0.7" shapeId="3" nodeId="97" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="visual24" translation="0.324722 1.19209e-07 -0.349112" rotation="180 1.00179e-05 180" shapeId="4" nodeId="98" castsShadows="true" receiveShadows="true" materialIds="12"/>
+          <Shape name="hammer01" translation="-0.544257 0.0268101 -0.257318" rotation="180 -1.53679e-05 -180" shapeId="13" nodeId="99" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="hammer02" translation="-0.281282 0.0421901 -0.316382" rotation="4.33573e-11 -3.41509e-06 8.14222e-12" shapeId="9" nodeId="100" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <Shape name="siekiera" translation="-0.0851367 0.00824466 0.0472069" rotation="0 -0 -83.979" shapeId="14" nodeId="101" castsShadows="true" receiveShadows="true" materialIds="14,11"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="collisions" clipDistance="10" nodeId="102">
+        <Shape name="floorCollision01" translation="-0.299024 0.073241 0" shapeId="27" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="103" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <Shape name="floorCollision02" translation="0.299024 0.073241 0" shapeId="27" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="104" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      </TransformGroup>
+      <Shape name="dynamicMountTrigger" translation="0 0.090475 0" shapeId="28" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x20000" nodeId="105" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+    </Shape>
+  </Scene>
+
+</i3D>

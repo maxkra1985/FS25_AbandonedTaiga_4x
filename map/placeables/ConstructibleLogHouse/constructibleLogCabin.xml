@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="constructibleFarmhouse" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>Бревенчатый дом</name>
+		<functions>
+			<function>Реконструируемый бревенчатый жилой дом</function>
+		</functions>
+		<image>map/placeables/ConstructibleLogHouse/store_LogCabin.dds</image>
+		<price>2000</price>
+		<showInStore>true</showInStore>
+		<lifetime>1000</lifetime>
+		<dailyUpkeep>1</dailyUpkeep>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<species>PLACEABLE</species>
+		<category>farmhouses</category>
+		<brush>
+			<type>placeable</type>
+			<category>buildings</category>
+			<tab>constructibles</tab>
+		</brush>
+
+		<storeIconRendering>
+			<objectBundle>
+				<object filename="constructibleLogCabin.i3d">
+					<node node="0|10|0|0"/>
+				</object>
+			</objectBundle>
+		</storeIconRendering>
+		<vertexBufferMemoryUsage>1469440</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>355072</indexBufferMemoryUsage>
+		<textureMemoryUsage>8388608</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/ConstructibleLogHouse/constructibleLogCabin.i3d</filename>
+		<canBeRenamed>true</canBeRenamed>
+		<boughtWithFarmland>true</boughtWithFarmland>
+	</base>
+
+	<placement useRandomYRotation="false" useManualYRotation="true">
+		<testAreas>
+			<testArea startNode="testAreaStart01" endNode="testAreaEnd01" />
+		</testAreas>
+		<sounds>
+			<place template="buildableImp" />
+		</sounds>
+	</placement>
+
+	<clearAreas>
+		<clearArea startNode="clearAreaStart01" widthNode="clearAreaWidth01" heightNode="clearAreaHeight01"/>
+	</clearAreas>
+
+	<leveling requireLeveling="true" maxSmoothDistance="10" maxSlope="75" maxEdgeAngle="30" >
+		<levelAreas>
+			<levelArea startNode="levelAreaStart01" widthNode="levelAreaWidth01" heightNode="levelAreaHeight01" />
+		</levelAreas>
+		<paintAreas>
+			<paintArea startNode="paintAreaStart01" widthNode="paintAreaWidth01" heightNode="paintAreaHeight01" />
+		</paintAreas>
+	</leveling>
+
+	<indoorAreas>
+		<indoorArea startNode="indoorAreaStart01" widthNode="indoorAreaWidth01" heightNode="indoorAreaHeight01" />
+	</indoorAreas>
+
+	<tipOcclusionUpdateAreas>
+		<tipOcclusionUpdateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+	</tipOcclusionUpdateAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+		</updateAreas>
+	</ai>
+
+	<infoTrigger triggerNode="infoTrigger"/>
+
+	<hotspots>
+		<hotspot type="UNLOADING_PALLET"	linkNode="unloadTriggerMarker"	teleportNode="unloadTriggerMarker" />
+		<hotspot type="FARM"				linkNode="0>"					teleportNode="spawnPoint" />
+	</hotspots>
+
+	<triggerMarkers>
+		<triggerMarker node="unloadTriggerMarker"   filename="$data/shared/assets/marker/markerIconPallet.i3d" adjustToGround="true" />
+		<triggerMarker node="sleepTriggerMarker"    filename="$data/shared/assets/marker/markerIconSleep.i3d"/>
+		<triggerMarker node="wardrobeTriggerMarker" filename="$data/shared/assets/marker/markerIconWardrobe.i3d"/>
+		<triggerMarker node="warningStripes01" adjustToGround="true" />
+		<triggerMarker node="woodSellActivationTriggerMarker" adjustToGround="true" filename="$data/shared/assets/marker/markerIconExclamationMark.i3d"/>
+	</triggerMarkers>
+
+	<farmhouse spawnNode="spawnPoint">
+		<sleeping triggerNode="sleepingTrigger" cameraNode="sleepCamera"/>
+	</farmhouse>
+
+	<wardrobe triggerNode="wardrobeTrigger"/>
+
+	<constructible>
+		<stateMachine>
+			<states>
+				<state name="SETUP" class="ConstructibleStateBuilding" >
+					<toggleMesh node="oldDom"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="sawhorseLogSaw"		active="false"	updatePhysics="false"/>
+					<toggleMesh node="transportBarrow"		active="false"	updatePhysics="false"/>
+					<toggleMesh node="boardAndBeams"		active="false"	updatePhysics="false"/>
+					<toggleMesh node="logPiles"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="1_foundationPosts"	active="false"	updatePhysics="false"/>
+					<toggleMesh node="2_foundationFrame"	active="false"	updatePhysics="false"/>
+					<toggleMesh node="3_floor"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_01"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_02"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_03"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_04"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_05"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_06"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_07"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_08"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_09"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_10"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_11"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_log_12"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="4_walls"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="5_trusses"			active="false"	updatePhysics="false"/>
+					<toggleMesh node="5_roofBase"			active="false"	updatePhysics="false"/>
+					<toggleMesh node="6_roofPlanks"			active="false"	updatePhysics="false"/>
+					<toggleMesh node="7_stairs"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="7_furniture"			active="false"	updatePhysics="false"/>
+					<toggleMesh node="7_door"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="farmhouseFeatures"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="wardrobe"				active="false"	updatePhysics="true"/>
+					<toggleHotspot index="1" isVisible="true" />
+					<toggleHotspot index="2" isVisible="false" />
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_1" class="ConstructibleStateBuilding" >
+					<toggleMesh node="oldDom"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="logPiles"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="sawhorseLogSaw"		active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_2" class="ConstructibleStateBuilding" >
+					<toggleMesh node="oldDom"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="logPiles"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="sawhorseLogSaw"		active="true"	updatePhysics="true"/>
+					<toggleMesh node="1_foundationPosts"	active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_3" class="ConstructibleStateBuilding" >
+					<toggleMesh node="transportBarrow"		active="true"	updatePhysics="true"/>
+					<toggleMesh node="boardAndBeams"		active="true"	updatePhysics="true"/>
+					<toggleMesh node="2_foundationFrame"	active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="BOARDS"				amount="1000"	usagePerHour="1000"/>
+					<input fillType="NAILS"					amount="27"		usagePerHour="30"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_4" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="3_floor"				active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<input fillType="NAILS"					amount="27"		usagePerHour="30"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_5" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_01"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_6" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_02"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_7" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_03"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_8" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_04"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_9" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_05"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_10" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_06"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_11" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_07"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_12" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_08"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_13" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_09"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_14" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_10"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_15" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_11"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_16" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_12"			active="true"	updatePhysics="true"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_17" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_01"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_02"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_03"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_04"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_05"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_06"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_07"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_08"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_09"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_10"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_11"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_log_12"			active="false"	updatePhysics="false" isVisible="false"/>
+					<toggleMesh  node="4_walls"				active="true"	updatePhysics="true"/>
+					<input fillType="PLANKS"				amount="995"	usagePerHour="500"/>
+					<input fillType="BOARDS"				amount="995"	usagePerHour="500"/>
+					<input fillType="NAILS"					amount="57"		usagePerHour="30"/>
+					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="25"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_18" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="logPiles"			active="false"	updatePhysics="false"/>
+					<toggleMesh  node="5_trusses"			active="true"	updatePhysics="true"/>
+					<toggleMesh  node="5_roofBase"			active="true"	updatePhysics="true"/>
+					<input fillType="ROOFPLATES"			amount="995"	usagePerHour="1000"/>
+					<input fillType="NAILS"					amount="57"		usagePerHour="60"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_19" class="ConstructibleStateBuilding" >
+					<toggleMesh node="6_roofPlanks"			active="true"	updatePhysics="true"/>
+					<input fillType="FURNITURE"				amount="499"	usagePerHour="500"/>
+					<input fillType="NAILS"					amount="87"		usagePerHour="90"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_20" class="ConstructibleStateBuilding" >
+					<toggleMesh node="7_stairs"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="7_furniture"			active="true"	updatePhysics="true"/>
+					<toggleMesh node="7_door"				active="true"	updatePhysics="true"/>
+					<input fillType="FURNITURE"				amount="499"	usagePerHour="500"/>
+					<input fillType="NAILS"					amount="28"		usagePerHour="30"/>
+					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="FINALIZE" class="ConstructibleStateFinalize" >
+					<toggleMesh node="7_stairs"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="7_furniture"			active="true"	updatePhysics="true"/>
+					<toggleMesh node="7_door"				active="true"	updatePhysics="true"/>
+					<toggleMesh node="sellingStation"		active="false"	updatePhysics="true"/> <!-- disable unload trigger -->
+					<toggleMesh node="props"				active="false" updatePhysics="true"/> <!-- disable construction fence -->
+					<toggleMesh node="farmhouseFeatures"	active="true"  updatePhysics="true"/> <!-- enable farmhouse -->
+					<toggleMesh node="wardrobe"				active="true"  updatePhysics="true"/> <!-- enable wardrobe -->
+					<toggleMesh node="infoTrigger"			active="false" updatePhysics="true"/> <!-- disable info trigger -->
+					<toggleHotspot index="1" isVisible="false" />
+					<toggleHotspot index="2" isVisible="true" />
+				</state>
+
+				<state name="DONE" class="ConstructibleState" isPreviewState="true"/>
+			</states>
+
+			<transitions>
+				<transition from="SETUP"		to="BUILDING_1"/>
+				<transition from="BUILDING_1"	to="BUILDING_2"/>
+				<transition from="BUILDING_2"	to="BUILDING_3"/>
+				<transition from="BUILDING_3"	to="BUILDING_4"/>
+				<transition from="BUILDING_4"	to="BUILDING_5"/>
+				<transition from="BUILDING_5"	to="BUILDING_6"/>
+				<transition from="BUILDING_6"	to="BUILDING_7"/>
+				<transition from="BUILDING_7"	to="BUILDING_8"/>
+				<transition from="BUILDING_8"	to="BUILDING_9"/>
+				<transition from="BUILDING_9"	to="BUILDING_10"/>
+				<transition from="BUILDING_10"	to="BUILDING_11"/>
+				<transition from="BUILDING_11"	to="BUILDING_12"/>
+				<transition from="BUILDING_12"	to="BUILDING_13"/>
+				<transition from="BUILDING_13"	to="BUILDING_14"/>
+				<transition from="BUILDING_14"	to="BUILDING_15"/>
+				<transition from="BUILDING_15"	to="BUILDING_16"/>
+				<transition from="BUILDING_16"	to="BUILDING_17"/>
+				<transition from="BUILDING_17"	to="BUILDING_18"/>
+				<transition from="BUILDING_18"	to="BUILDING_19"/>
+				<transition from="BUILDING_19"	to="BUILDING_20"/>
+				<transition from="BUILDING_20"	to="FINALIZE"/>
+				<transition from="FINALIZE"		to="DONE" />
+			</transitions>
+		</stateMachine>
+
+		<sellingStation node="sellingStation" supportsExtension="false" allowMissions="false" appearsOnStats="false">
+			<palletTrigger	triggerNode="palletTrigger" aiNode="unloadTriggerAINode"	fillTypes="INSTRUMENT PLANKS BOARDS ROOFPLATES FURNITURE NAILS" />
+			<woodTrigger	triggerNode="woodTrigger"	aiNode="unloadTriggerAINode"	fillTypes="WOOD"	activationTriggerNode="woodSellActivationTrigger"/>
+		</sellingStation>
+
+		<storage isExtension="false" fillLevelSyncThreshold="50">
+			<capacity fillType="INSTRUMENT"	capacity="1000" />
+			<capacity fillType="WOOD"		capacity="5000" />
+			<capacity fillType="BOARDS"		capacity="2000" />
+			<capacity fillType="PLANKS"		capacity="1000" />
+			<capacity fillType="ROOFPLATES"	capacity="1000" />
+			<capacity fillType="FURNITURE"	capacity="1000" />
+			<capacity fillType="NAILS"		capacity="300" />
+		</storage>
+	</constructible>
+
+	<animatedObjects>
+		<animatedObject saveId="door01" >
+			<animation duration="2.5">
+				<part node="door01">
+					<keyFrame time="0.0" rotation="0 0 0"/>
+					<keyFrame time="1.0" rotation="0 -115 0"/>
+				</part>
+			</animation>
+			<controls triggerNode="door01Trigger" posAction="ACTIVATE_HANDTOOL" posText="action_openDoor" negText="action_closeDoor" />
+			<sounds>
+				<moving linkNode="door01" template="woodDoorSqueaksSmall" pitchScale="0.8"/>
+				<posEnd linkNode="door01" template="woodDoorOpen" />
+				<negEnd linkNode="door01" template="woodDoorCloseRandom" />
+			</sounds>
+		</animatedObject>
+	</animatedObjects>
+
+	<i3dMappings>
+		<i3dMapping id="clearAreaStart01" node="0>0|0" />
+		<i3dMapping id="clearAreaWidth01" node="0>0|0|0" />
+		<i3dMapping id="clearAreaHeight01" node="0>0|0|1" />
+		<i3dMapping id="levelAreaStart01" node="0>1|0" />
+		<i3dMapping id="levelAreaWidth01" node="0>1|0|0" />
+		<i3dMapping id="levelAreaHeight01" node="0>1|0|1" />
+		<i3dMapping id="paintAreaStart01" node="0>2|0" />
+		<i3dMapping id="paintAreaWidth01" node="0>2|0|0" />
+		<i3dMapping id="paintAreaHeight01" node="0>2|0|1" />
+		<i3dMapping id="indoorAreaStart01" node="0>3|0" />
+		<i3dMapping id="indoorAreaWidth01" node="0>3|0|0" />
+		<i3dMapping id="indoorAreaHeight01" node="0>3|0|1" />
+		<i3dMapping id="testAreaStart01" node="0>4|0" />
+		<i3dMapping id="testAreaEnd01" node="0>4|0|0" />
+		<i3dMapping id="tipOcclusionUpdateAreaStart01" node="0>5|0" />
+		<i3dMapping id="tipOcclusionUpdateAreaEnd01" node="0>5|0|0" />
+		<i3dMapping id="infoTrigger" node="0>6" />
+		<i3dMapping id="sellingStation" node="0>7" />
+		<i3dMapping id="warningStripes01" node="0>7|0|0" />
+		<i3dMapping id="palletTrigger" node="0>7|1" />
+		<i3dMapping id="unloadTriggerMarker" node="0>7|2" />
+		<i3dMapping id="unloadTriggerAINode" node="0>7|3" />
+		<i3dMapping id="woodTrigger" node="0>7|4" />
+		<i3dMapping id="woodSellActivationTrigger" node="0>7|5" />
+		<i3dMapping id="woodSellActivationTriggerMarker" node="0>7|6" />
+
+		<i3dMapping id="farmhouseFeatures" node="0>8" />
+		<i3dMapping id="sleepCamera" node="0>8|0" />
+		<i3dMapping id="sleepingTrigger" node="0>8|1" />
+		<i3dMapping id="sleepTriggerMarker" node="0>8|2" />
+		<i3dMapping id="spawnPoint" node="0>8|3" />
+		<i3dMapping id="wardrobe" node="0>9" />
+		<i3dMapping id="wardrobeTrigger" node="0>9|0" />
+		<i3dMapping id="wardrobeTriggerMarker" node="0>9|1" />
+
+		<i3dMapping id="oldDom"				node="0>10|0|0|0|0" />
+		<i3dMapping id="sawhorseLogSaw"		node="0>10|1|0" />
+		<i3dMapping id="transportBarrow"	node="0>10|1|1" />
+		<i3dMapping id="boardAndBeams"		node="0>10|1|2" />
+		<i3dMapping id="logPiles"			node="0>10|1|3" />
+		<i3dMapping id="passport"			node="0>10|1|4" />
+
+		<i3dMapping id="1_foundationPosts"	node="0>10|0|0|1|0" />
+		<i3dMapping id="2_foundationFrame"	node="0>10|0|0|1|1" />
+		<i3dMapping id="3_floor"			node="0>10|0|0|1|2" />
+		<i3dMapping id="4_log_01"			node="0>10|0|0|1|3" />
+		<i3dMapping id="4_log_02"			node="0>10|0|0|1|4" />
+		<i3dMapping id="4_log_03"			node="0>10|0|0|1|5" />
+		<i3dMapping id="4_log_04"			node="0>10|0|0|1|6" />
+		<i3dMapping id="4_log_05"			node="0>10|0|0|1|7" />
+		<i3dMapping id="4_log_06"			node="0>10|0|0|1|8" />
+		<i3dMapping id="4_log_07"			node="0>10|0|0|1|9" />
+		<i3dMapping id="4_log_08"			node="0>10|0|0|1|10" />
+		<i3dMapping id="4_log_09"			node="0>10|0|0|1|11" />
+		<i3dMapping id="4_log_10"			node="0>10|0|0|1|12" />
+		<i3dMapping id="4_log_11"			node="0>10|0|0|1|13" />
+		<i3dMapping id="4_log_12"			node="0>10|0|0|1|14" />
+		<i3dMapping id="4_walls"			node="0>10|0|0|1|15" />
+		<i3dMapping id="5_trusses"			node="0>10|0|0|1|16" />
+		<i3dMapping id="5_roofBase"			node="0>10|0|0|1|17" />
+		<i3dMapping id="6_roofPlanks"		node="0>10|0|0|1|18" />
+		<i3dMapping id="7_stairs"			node="0>10|0|0|1|19" />
+		<i3dMapping id="7_furniture"		node="0>10|0|0|1|20" />
+		<i3dMapping id="7_door"				node="0>10|0|0|1|21" />
+		<i3dMapping id="door01"				node="0>10|0|0|1|21|1" />
+		<i3dMapping id="door01Trigger"		node="0>10|0|0|1|21|0" />
+		<i3dMapping id="props" node="0>10|1" />
+	</i3dMappings>
+</placeable>

@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<npc>
+	<class>NPC</class>
+	<title>Степаныч</title>
+	<imageFilename>map/npc/grandpa.png</imageFilename>
+	<filename>map/npc/npcBase.i3d</filename>
+	<sounds>
+		<voice linkNode="audioNode" innerRadius="0.2" outerRadius="10.0" supportsReverb="false">
+			<volume indoor="2.5" outdoor="2.5"/>
+			<pitch indoor="0.97" outdoor="0.97"/>
+			<lowpassGain indoor="0.7" outdoor="0.7"/>
+		</voice>
+		<phone supportsReverb="false">
+			<volume indoor="2.0" outdoor="2.0"/>
+			<pitch indoor="1.00" outdoor="1.00"/>
+			<lowpassGain indoor="0.8" outdoor="0.8"/>
+			<lowpassCutoffFrequency indoor="2000" outdoor="2000.0"/>
+			<lowpassResonance indoor="1.0" outdoor="1.0"/>
+		</phone>
+	</sounds>
+	<playerStyle filename="dataS/character/playerM/playerM.xml">
+		<facegear color="1"/>
+		<onepiece color="3" name="empty"/>
+		<bottom color="1" name="concretePants"/>
+		<face color="1" name="head01"/>
+		<top color="16" name="topPlaidShirt"/>
+		<gloves color="2" name="empty"/>
+		<headgear color="44" name="beanie"/>
+		<glasses color="1" name="empty"/>
+		<footwear color="32" name="sneakers"/>
+		<hairStyle color="13" name="hair02"/>
+		<beard color="13" name="goatee02_head01"/>
+	</playerStyle>
+	<interactionTrigger node="triggerNode"/>
+	<conversations></conversations>
+	<i3dMappings>
+		<i3dMapping id="audioNode" node="0>0"/>
+		<i3dMapping id="triggerNode" node="0>1"/>
+	</i3dMappings>
+</npc>

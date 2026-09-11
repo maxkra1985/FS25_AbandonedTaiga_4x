@@ -1,0 +1,854 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CustomShader version="5" description="Intendent to be used with placeables\nhas special placeableColorScale parameter, which used by lua code, to indicate in the game, if this object can be placed or not\nCan be used as a replacement for baseShader, if you need snow/wetnes">
+    <Groups>
+        <Group name="terrainSampleVT" define="TERRAIN_VT"/>
+        <Group name="alphaMap" define="ALPHA_MAP"/>
+        <Group name="rockDetail" define="ROCK_DETAIL"/>
+        <Group name="customParallax" define="CUSTOM_PARALLAX"/>
+        <Group name="customSnowMask" define="CUSTOM_SNOWMASK"/>
+        <Group name="vtxAnimTexture" define="VERTEX_ANIMATION_TEXTURE"/>
+        <Group name="vtxAnim" define="FLOATING_ANIMATION"/>
+        <Group name="vtxOffset" define="VERTEX_OFFSET"/>
+        <Group name="hideByIndex" define="MERGE_CHILDREN_HIDE_BY_INDEX"/>
+        <Group name="uv1Normal" define="NORMAL_UV1"/>
+        <Group name="harvestShake" define="HARVEST_SHAKE"/>
+        <Group name="customDiffuse" define="CUSTOM_BLEND"/>
+        <Group name="customMask" define="CUSTOM_MASK_BLEND"/>
+    </Groups>
+    <Parameters>
+        <Parameter name="placeableColorScale" target="placeableColorScale" type="float4" group="base" defaultValue="0.0 1.0 0.0 0.0" minValue="0.0 0.0 0.0 0.0" maxValue="1.0 1.0 1.0 1.0" description="W>0 - blend XYZ to diffuseColor, usually used for in-game placement color"/>
+        <Parameter name="snowScale" target="snowScale" type="float" group="base" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X - snow scale amount"/>
+        <Parameter name="wetnessScale" target="wetnessScale" type="float" group="base" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X - wetness scale amount"/>
+        <Parameter name="porosityBySmoothness" target="porosityBySmoothness" type="float2" group="base" defaultValue="0.0 1.0" minValue="0.0 0.0" maxValue="2.0 2.0" description="X - porosityAtZeroRoughness\nY - porosityRoughnessSlope (set it to 0.0 if you don&apos;t want darkening)\nporosity = X + roughness * Y;"/>
+        <Parameter name="yOffset" target="yOffset" type="float" group="vtxOffset" defaultValue="0.0" minValue="-10.0" maxValue="10.0" description="X - offset vertices of the mesh (localSpace) in {0,1,0} positive direction\nuses uv1.x (second UVset) as gradient to control offset intensity\nuv1.x == 0 - no offset, uv1.x == 1 - X offset"/>
+        <Parameter name="hideArea" target="hideArea" type="float4" group="hideArea" defaultValue="0.0 0.0 0.0 0.0" minValue="0.0 0.0 0.0 0.0" maxValue="1.0 1.0 1.0 1.0" description="area of uv0 (first UVset) which needs to be hidden\nuv0.x in range [X,Y]\nuv0.y in range [Z,W]"/>
+        <Parameter name="hideSectionStates" target="hideSectionStates" type="float4" group="hideSection" defaultValue="1.0 1.0 1.0 1.0" minValue="0.0 0.0 0.0 0.1" maxValue="1.0 1.0 1.0 100.0" description="uv0 placed in 4 udims (u1v1,u2v1,u3v1,u4v1)\nX - hides u2v1 (uv0.x in range 1..2)\nY - hides u3v1 (uv0.x in range 2..3)\nZ - hides u4v1 (uv0.x in range 3..4)"/>
+        <Parameter name="hideShiftOffset" target="hideShiftOffset" type="float" group="hideShift" defaultValue="0.0" minValue="-1.0" maxValue="1.0" description="moves uv0.y by X in the given rectangle (hideSection)"/>
+        <Parameter name="hideByIndex" target="hideByIndex" type="float2" group="hideByIndex" defaultValue="-1 -1" minValue="-1 -1" maxValue="32767 32767" description="hide sub-mesh with index > X\nY - amount of indexes"/>
+        <Parameter name="harvestPosition" target="harvestPosition" type="float4" group="harvestShake" defaultValue="0 1.5 0 0" minValue="0.0 0.0 0.0 0.0" maxValue="10.0 10.0 10.0 10.0" description="XYZ - current harvest world postion // shaking center point\nW   - harvest intensity"/>
+        <Parameter name="shakeScale" target="shakeScale" type="float4" group="harvestShake" defaultValue="0.15 0.0 1 1.5" minValue="0.0 0.0 0.0 0.0" maxValue="10.0 10.0 10.0 10.0" description="XY - max xz offset // localspace vector with built-in shaking intensity\nZ - max intensity\nW  - max distance  // controls shaking mask radius"/>
+        <Parameter name="mossLevel" target="mossLevel" type="float" group="rockDetail" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X - [0..1] control the intensity of the dirt/moss mask"/>
+        <Parameter name="bool_displacement" target="bool_displacement" type="float" group="terrainSampleVT" defaultValue="0" minValue="0" maxValue="1" description="X - use terrain displacement or not (1 - True, 0 - False)"/>
+        <Parameter name="heightMask" target="heightMask" type="float" group="terrainSampleVT" defaultValue="0.0" minValue="-100.0" maxValue="100.0" description="X - [-1..1] control the blending area between the mesh and VT Terrain"/>
+        <Parameter name="scrollPos" target="scrollPos" type="float" group="vtxAnimTexture" defaultValue="0.0" minValue="0.0" maxValue="1.0" description="X - [0..1] animation frame (scrolling time based parameter)"/>
+        <Parameter name="prevScrollPos" target="prevScrollPos" type="float" group="vtxAnimTexture" defaultValue="0.0" minValue="0.0" maxValue="1.0" description="X - [0..1] same as scrollPos, but from previous time step (set by LUA)"/>
+        <Parameter name="hidePieces" target="hidePieces" type="float" group="vtxAnimTexture" defaultValue="0" minValue="0" maxValue="1" description="X - [0..1] hides subElements of the mergeChildren "/>
+        <Parameter name="animationIntensity" target="animationIntensity" type="float" group="vtxAnim" defaultValue="1.0" minValue="0" maxValue="1" description="X - [0..1] controls the intensity of the vtx animation"/>
+        <Parameter name="blendScale" target="blendScale" type="float" group="customDiffuse" defaultValue="0.0" minValue="0.0" maxValue="1.0" description="X - [0..1] controls the blending for the mCustomDiffuse"/>
+    </Parameters>
+    <UvUsages>
+        <UvUsage textureName="baseMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="normalMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="glossMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="alphaMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mCustomSnowMask" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mParallaxMap" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mCustomDiffuse" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mAlphaMask" uvType="uv0" uvScale="1.0"/>
+        <UvUsage textureName="mSnowSpecular" uvType="worldspace"/>
+        <UvUsage textureName="mMossDetail" uvType="worldspace"/>
+        <UvUsage textureName="mNormalDetail" uvType="worldspace"/>
+        <UvUsage textureName="waterDroplets" uvType="worldspace"/>
+    </UvUsages>
+    <Textures>
+        <Texture name="mCustomDiffuse" group="customDiffuse" defaultColorProfile="sRGB" defaultFilename="default_diffuse.png" description="used for blending with diffuseColor"/>
+        <Texture name="mSnowSpecular" group="base" defaultColorProfile="linearRGB" defaultFilename="snow_specular.png" description="shared snow specular\nNote: mSnowSpecular.G - ambient occlusion used as alpha for snow blending gradient"/>
+        <Texture name="waterDroplets" group="base" defaultColorProfile="linearRGB" defaultFilename="waterDroplets_normal.png" description="shared water droplets normalMap"/>
+        <Texture name="alphaMap" group="alphaMap" defaultColorProfile="linearRGB" defaultFilename="default_alpha.png" description="custom alphaMap\nsingle-channel, BC4_UNORM"/>
+        <Texture name="mCustomSnowMask" group="customSnowMask" defaultColorProfile="linearRGB" defaultFilename="snowDefaultMask_diffuse.png" description="extra snow intensity control\nsingle-channel, BC4_UNORM"/>
+        <Texture name="mParallaxMap" group="customParallax" defaultColorProfile="linearRGB" defaultFilename="default_height.png" description="custom parallax heightMap\nsingle-channel, BC4_UNORM"/>
+        <Texture name="mMossDetail" group="rockDetail" defaultColorProfile="sRGB" defaultFilename="default_diffuse.png" description="moss detail diffuse"/>
+        <Texture name="mNormalDetail" group="rockDetail" defaultColorProfile="linearRGB" defaultFilename="default_normal.png" description="moss detail normal"/>
+        <Texture name="mAlphaMask" group="customMask" defaultColorProfile="linearRGB" defaultFilename="default_alpha.png" description="blend mCustomDiffuse to diffuseColor via mAlphaMask"/>
+        <Texture name="animationArray" group="vtxAnimTexture" defaultColorProfile="linearRGB" type="2dArray" defaultFilename="../effects/defaultArray.png" description="array of 2 R16G16B16A16_FLOAT textures\nanimationArray[0] - position(XYZ transaltion, localSpace) of the pieces\nanimationArray[1] - orient(XYZW quaternion rotation, localSpace) of the pieces\ntexture sampled using samplerBilinearClamp filter, so interpolation for values in-between(pixels) comes for free\nNote: quaternion rotations must be compatible (this should be done on content side)"/>
+    </Textures>
+    <VertexAttributes>
+        <VertexAttribute name="uv1" group="uv1Attr"/>
+        <VertexAttribute name="color" group="colorAttr"/>
+    </VertexAttributes>
+    <Variations>
+        <Variation name="customDiffuseBlend" groups="base customDiffuse" description="used for blending two diffuse textures (diffuseColor,mCustomDiffuse) using a lerp function"><![CDATA[
+    // used for blending two diffuse textures using a lerp function
+    #define CUSTOM_BLEND
+]]></Variation>
+        <Variation name="customAlphaBlend" groups="base customDiffuse customMask" description="used for blending two diffuse textures using a lerp function + a custom alpha mask"><![CDATA[
+    // used for blending two diffuse textures using a lerp function + a custom alpha mask
+    #define CUSTOM_BLEND
+    #define CUSTOM_MASK_BLEND
+]]></Variation>
+        <Variation name="floatingAnimationVS" groups="base vtxAnim" description="enable vertex shader animation around the pivot of the object to simulate water movement"><![CDATA[
+    // enable vertex shader animation around the pivot of the object to simulate water movement
+    #define FLOATING_ANIMATION
+]]></Variation>
+        <Variation name="terrainSampleVT" groups="base terrainSampleVT" description="blend diffuseColor,normal with terrainDiffuse,terrainNormal"><![CDATA[
+    // blend diffuseColor,normal with terrainDiffuse,terrainNormal
+    #define TERRAIN_VT
+]]></Variation>
+        <Variation name="alphaMap" groups="base alphaMap" description="alpha is loaded from alphaMap"><![CDATA[
+    // alpha is loaded from alphaMap
+    #define ALPHA_MAP
+]]></Variation>
+        <Variation name="alphaMap_floatingAnimationVS" groups="base vtxAnim alphaMap" description="enable vertex shader animation around the pivot of the object to simulate water movement"><![CDATA[ 
+    #define FLOATING_ANIMATION
+    #define ALPHA_MAP
+]]></Variation>
+        <Variation name="rockDetail" groups="base rockDetail" description="adds mNormalDetail.xy to normalMap, using snow tri-planar uv&apos;s\nadds mMossDetail to diffuse, using snow tri-planar uv&apos;s\nmNormalDetail.z - multiplied with roughness (mixing roughness with smoothness )\ndiffuseColor.rgb multiplied by snowSpecular.g (snowSpecular.g contain values between 0.7..1.0)"><![CDATA[
+    // adds mNormalDetail.xy to normalMap, using snow tri-planar uv's
+    // adds mMossDetail to diffuse, using snow tri-planar uv's
+    // mNormalDetail.z - multiplied with roughness (mixing roughness with smoothness )
+    // diffuseColor.rgb multiplied by snowSpecular.g (snowSpecular.g contain values between 0.7..1.0)
+    #define ROCK_DETAIL
+]]></Variation>
+        <Variation name="rockDetail_terrainSampleVT" groups="base rockDetail terrainSampleVT" description="rockDetail + terrainSampleVT"><![CDATA[
+    #define ROCK_DETAIL
+    #define TERRAIN_VT
+]]></Variation>
+        <Variation name="customParallax" groups="base customParallax" description="load bump heightMap from mParallaxMap texture"><![CDATA[
+    // load bump heightMap from mParallaxMap texture
+    #define CUSTOM_PARALLAX
+]]></Variation>
+        <Variation name="customParallax_alphaMap" groups="base customParallax alphaMap" description="customParallax + alphaMap"><![CDATA[
+    #define CUSTOM_PARALLAX
+    #define ALPHA_MAP
+]]></Variation>
+        <Variation name="customParallax_terrainSampleVT" groups="base customParallax terrainSampleVT" description="customParallax + terrainSampleVT"><![CDATA[
+    #define CUSTOM_PARALLAX
+    #define TERRAIN_VT
+]]></Variation>
+        <Variation name="vertexOffset" groups="base uv1Attr vtxOffset" description="offset the vertices of the mesh (localSpace) by yOffset in Y positive direction\nuses uv1.x as gradient to control offset intensity // uv1.x == 0 - no offset, uv1.x == 1 - yOffset offset"><![CDATA[
+    // offset the vertices of the mesh (localSpace) by yOffset in Y positive direction
+    // uses uv1.x as gradient to control offset intensity // uv1.x == 0 - no offset, uv1.x == 1 - yOffset offset
+    #define VERTEX_OFFSET
+]]></Variation>
+        <Variation name="vertexOffset_customParallax" groups="base uv1Attr vtxOffset customParallax" description="vertexOffset + customParallax"><![CDATA[
+    #define VERTEX_OFFSET
+    #define CUSTOM_PARALLAX
+]]></Variation>
+        <Variation name="vertexOffset_alphaMap" groups="base uv1Attr vtxOffset alphaMap" description="vertexOffset + alphaMap"><![CDATA[
+    #define VERTEX_OFFSET
+    #define ALPHA_MAP
+]]></Variation>
+        <Variation name="vertexOffset_Decal" groups="base uv1Attr vtxOffset" description="vertexOffset + Decal\nDecal - Removes reflection and specular for alphaBlended materials where alpha is 0.0"><![CDATA[
+    #define VERTEX_OFFSET
+    //Removes reflection and specular for alphaBlended materials where alpha is 0.0
+    #define DECAL_RENDER
+]]></Variation>
+        <Variation name="wind_vertexOffset" groups="base uv1Attr vtxOffset colorAttr" description="the same as vertexOffset but it has wind animation build-in\nalso uses cShared0, cShared1, cShared2 for wind control\nNote: vtxColor.R used as attenuation"><![CDATA[
+    // the same as vertexOffset but it has wind animation build-in
+    // also uses cShared0, cShared1, cShared2 for wind control
+    // Note: vtxColor.R used as attenuation
+    #define WIND
+    #define VERTEX_OFFSET
+]]></Variation>
+        <Variation name="wind_vertexOffset_hideAlpha" groups="base uv1Attr vtxOffset colorAttr hideArea hideSection" description="wind + vertexOffset + hideAlpha\nhideAlpha - intendent to be used with specificly made uv&apos;s\nif sectionState = 0 set alpha = 0 if texel is within a given rectangle defined by the shader parameter hideArea\nsectionIndex is taken from uv0.x > 1"><![CDATA[
+    // intendent to be used with specificly made uv's
+    // if sectionState = 0 set alpha = 0 if texel is within a given rectangle defined by the shader parameter hideArea
+    #define WIND
+    #define VERTEX_OFFSET
+    #define HIDE_ALPHA
+    #define SECTIONS
+    #define UV_BASED_SECTIONS // sectionIndex is taken from uv0.x > 1
+]]></Variation>
+        <Variation name="wind_vertexOffset_hideAlpha_harvestShake" groups="base uv1Attr vtxOffset colorAttr hideArea hideSection harvestShake" description="wind + vertexOffset + hideAlpha + harvestShake\nharvestShake - perform shaking vertex animation, animation happens only in local X direction"><![CDATA[
+    #define WIND
+    #define VERTEX_OFFSET
+    #define HIDE_ALPHA
+    #define SECTIONS
+    #define UV_BASED_SECTIONS
+    // perform shaking vertex animation, animation happens only in local X direction
+    #define HARVEST_SHAKE
+]]></Variation>
+        <Variation name="vertexOffset_hideUVShift" groups="base uv1Attr vtxOffset hideArea hideShift hideSection" description="vertexOffset + hideUVShift\nhideUVShift - intendent to be used with specificly made uv&apos;s for LOD&apos;s\nmoves uv&apos;s by hideShiftOffset in the given rectangle\nsectionIndex is hard-coded and equally spaced (uv0.x - divided on 3 parts)\ncontroled via hideSectionStates"><![CDATA[
+    // intendent to be used with specificly made uv's for LOD's
+    // moves uv's by hideShiftOffset in the given rectangle
+    // sectionIndex is hard-coded and equally spaced (uv0.x - divided on 3 parts)
+    // controled via hideSectionStates
+    #define VERTEX_OFFSET
+    #define HIDE_UV_SHIFT
+    #define SECTIONS
+]]></Variation>
+        <Variation name="wind_vertexOffset_hideUVShift_uvBasedSections" groups="base uv1Attr vtxOffset colorAttr hideArea hideShift hideSection" description="wind + vertexOffset + hideUVShift + uvBasedSections"><![CDATA[
+    #define WIND
+    #define VERTEX_OFFSET
+    #define HIDE_UV_SHIFT
+    #define SECTIONS
+    #define UV_BASED_SECTIONS
+]]></Variation>
+        <Variation name="wind_vertexOffset_hideUVShift_uvBasedSections_harvestShake" groups="base uv1Attr vtxOffset colorAttr hideArea hideShift hideSection harvestShake" description="wind + vertexOffset + hideUVShift + uvBasedSections + harvestShake"><![CDATA[
+    #define WIND
+    #define VERTEX_OFFSET
+    #define HIDE_UV_SHIFT
+    #define SECTIONS
+    #define UV_BASED_SECTIONS
+    #define HARVEST_SHAKE
+]]></Variation>
+        <Variation name="mergeChildren_hideByIndex" groups="base hideByIndex" description="intended to be used with FREEZED mergeChildren\nvisibility of the elements controlled via shader parameter hideByIndex\nif hideByIndex == -1 - all objects visible"><![CDATA[
+    // intended to be used with FREEZED mergeChildren
+    // visibility of the elements controlled via shader parameter hideByIndex
+    // if hideByIndex == -1 - all objects visible
+    #define MERGE_CHILDREN_HIDE_BY_INDEX
+]]></Variation>
+        <Variation name="mergeChildren_hideByIndex_customParallax" groups="base hideByIndex customParallax" description="mergeChildren_hideByIndex + customParallax"><![CDATA[
+    #define MERGE_CHILDREN_HIDE_BY_INDEX
+    #define CUSTOM_PARALLAX
+]]></Variation>
+        <Variation name="mergeChildren_hideByIndex_alphaMap" groups="base hideByIndex alphaMap" description="mergeChildren_hideByIndex + alphaMap"><![CDATA[
+    #define MERGE_CHILDREN_HIDE_BY_INDEX
+    #define ALPHA_MAP
+]]></Variation>
+        <Variation name="vertexAnimationTexture" groups="base vtxAnimTexture" description="intendent to be used with mergeChildren mesh which has vertex animation texture\nscrollPos     - [0..1] animation frame (scrolling time based parameter)\nprevScrollPos - [0..1] same as scrollPosition, but from previous time step (set by LUA)\nhidePieces    - [0..1] hides subElements of the mergeChildren\nanimationArray[0] - rgb   = position.xyz\nanimationArray[1] - rgba  = quaternion.xyzw rotation"><![CDATA[
+    // intendent to be used with mergeChildren mesh which has vertex animation texture
+    // scrollPos     - [0..1] animation frame (scrolling time based parameter)
+    // prevScrollPos - [0..1] same as scrollPosition, but from previous time step (set by LUA)
+    // hidePieces    - [0..1] hides subElements of the mergeChildren
+    // animationArray[0] - rgb   = position.xyz
+    //                     alpha = not used
+    // animationArray[1] - rgba  = quaternion.xyzw rotation
+]]></Variation>
+        <Variation name="vertexAnimationTexture_rockDetail" groups="base vtxAnimTexture rockDetail" description="vertexAnimationTexture + rockDetail"><![CDATA[
+    #define ROCK_DETAIL
+]]></Variation>
+        <Variation name="customSnowMask" groups="base customSnowMask" description="use mCustomSnowMask.R (single-channel,bc4) texture for cutting out areas where snow shouldn&apos;t be"><![CDATA[
+    // use mCustomSnowMask.R (single-channel,bc4) texture for cutting out areas where snow shouldn't be
+    #define CUSTOM_SNOWMASK
+]]></Variation>
+        <Variation name="customSnowMask_floatingAnimationVS" groups="base customSnowMask vtxAnim" description="customSnowMask + floatingAnimationVS"><![CDATA[
+    #define CUSTOM_SNOWMASK
+    #define FLOATING_ANIMATION
+]]></Variation>
+        <Variation name="vertexColor_floatingAnimationVS" groups="base colorAttr vtxAnim" description="floatingAnimationVS + extra vertexColor control\nvertexColor.R - controls intensity of animation\nvertexColor.G - offsets mTime"><![CDATA[
+    // extra vertexColor control for floatingAnimationVS
+    // vertexColor.R - controls intensity of animation
+    // vertexColor.G - offsets mTime
+    #define VERTEX_COLOR_ANIMATION
+    #define FLOATING_ANIMATION
+]]></Variation>
+        <Variation name="customSnowMask_customParallax" groups="base customParallax customSnowMask" description="customSnowMask + customParallax"><![CDATA[
+    #define CUSTOM_SNOWMASK
+    #define CUSTOM_PARALLAX
+]]></Variation>
+        <Variation name="normalMap_uv2" groups="base uv1Attr uv1Normal" description="normalMaskTexCoords = texCoords1 (second UVSet)"><![CDATA[
+    // normalMaskTexCoords = texCoords1 (second UVSet)
+    #define NORMAL_UV1
+]]></Variation>
+    </Variations>
+    <LodLevel startDistance="0">
+        <CodeInjections>
+            <CodeInjection position="SHARED_START"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+    #define PARALLAX_MAP
+#endif
+#if defined(PARALLAX_MAP)
+    #if GPU_PROFILE < GPU_PROFILE_HIGH
+        #undef PARALLAX_MAPPING
+    #endif
+    // use simple version of parallax
+    #undef PARALLAX_OCCLUSION_MAPPING
+#endif
+]]></CodeInjection>
+            <CodeInjection position="CONFIG_DEFINES"><![CDATA[
+#if defined(ALPHA_MAP) && !defined(ALPHA_BLENDED)
+    #define ALPHA_TESTED
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    // use alpha_test to toggle visibility
+    #define ALPHA_TESTED
+#endif
+#if defined(PARALLAX_MAP)
+    #if GPU_PROFILE >= GPU_PROFILE_HIGH
+        #define PARALLAX_OCCLUSION_MAPPING
+    #endif
+    #define PARALLAX_MAPPING_NON_SQUARE_TEXTURE
+#endif
+#define PARALLAX_MAPPING_REFERENCE_PLANE 0.5
+]]></CodeInjection>
+            <CodeInjection position="OBJECT_PARAMETERS"><![CDATA[
+    float4 placeableColorScale;
+    float  snowScale;
+    float  wetnessScale;
+/*
+    porosityBySmoothness.x - porosityAtZeroRoughness
+    porosityBySmoothness.y - porosityRoughnessSlope (set it to 0.0 if you don't want darkening)
+    porosity = porosityAtZeroRoughness + roughness * porosityRoughnessSlope;
+*/
+    float2 porosityBySmoothness;
+#if defined(VERTEX_OFFSET)
+    float yOffset;
+#endif
+#if defined(HIDE_ALPHA) || defined(HIDE_UV_SHIFT)
+    float4 hideArea;
+#endif
+#if defined(SECTIONS)
+    float4 hideSectionStates;
+#endif
+#if defined(HIDE_UV_SHIFT)
+    float hideShiftOffset;
+#endif
+#if defined(MERGE_CHILDREN_HIDE_BY_INDEX)
+/*
+    hide mesh with index > hideByIndex.x
+    hideByIndex.y - amount of indexes
+*/
+    float2 hideByIndex;
+#endif
+#if defined(HARVEST_SHAKE)
+/*
+    harvestPosition.xyz - current harvest world postion // shaking center point
+    harvestPosition.w   - harvest intensity
+*/
+    float4 harvestPosition;
+/*
+    shakeScale.xy - max xz offset // localspace vector with built-in shaking intensity
+    shakeScale.z  - max intensity
+    shakeScale.w  - max distance  // controls shaking mask radius
+*/
+    float4 shakeScale;
+#endif
+#if defined(ROCK_DETAIL)
+    float mossLevel;
+#endif
+#if defined(TERRAIN_VT)
+    // bool , True - use terrain displacement to get (1 - True, 0 - False)
+    float bool_displacement;
+    // heightMask -  -1.0 ... 1.0 to control the height of the getHeightAboveTerrain getWorldPosition(In) height.
+    float heightMask;
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    float scrollPos;     // animation frame (scrolling time based parameter)
+    float prevScrollPos; // same as scrollPos, but from previous time step!
+    float hidePieces;    // [0..1] hides subElements of the mergeChildren
+#endif
+#if defined(VERTEX_COLOR_ANIMATION) || defined(FLOATING_ANIMATION)
+    float4 animationIntensity;
+#endif
+#if defined(CUSTOM_BLEND)
+    float blendScale;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="LIB_FUNCTION"><![CDATA[
+// Custom pixel/vertex functions
+#include "$data/shaders/sharedFunctions.gsl"
+// Extra functions related to the placeableShader only
+]]></CodeInjection>
+            <CodeInjection position="LIB_FUNCTION_VS"><![CDATA[
+// Custom vertex functions
+#include "$data/shaders/sharedFunctions_vs.gsl"
+// Extra functions related to the placeableShader only
+
+//@description Deform In.position.xyz, the same vertex shader code which is re-used twice in GET_POSITION_VS and GET_PREV_POSITION_VS only with different values
+//@inParam In vertex shader input struct (vertex attributes like position,normal,color, etc)
+//@inParam instance mesh parameters struct (instance.modelMatrix,visibility etc)
+//@inParam object shader parameters struct (textures are here)
+//@inParam mTime cTime_s or cPrevTime_s
+float3 getCustomPositionVS(VS_INPUT In, PerInstanceParameters& instance, ObjectParameters& object, float mTime)
+{
+    // =================================
+    // cShared0 - wind strength
+    // cShared1 - wind vector x component
+    // cShared2 - wind vector z component
+    float3 deformedPos = In.position.xyz;
+#if defined(VERTEX_OFFSET)
+    float2 maskMapTexCoords = saturate(convertDefaultTexCoords(In, object, In.texCoords1.xy)); // bring textcoord to 0..1
+    // perform wind vertex animation
+#if defined(WIND) && !defined(DEPTH_VIS) // avoid shadow artefacts by not animating in the shadow map
+    float3 mObjPos = float3(instance.modelMatrix[0][3] + invViewMatrix[0][3],
+                            instance.modelMatrix[1][3] + invViewMatrix[1][3],
+                            instance.modelMatrix[2][3] + invViewMatrix[2][3]);
+    float mObjPosVarSeed = mObjPos.x + mObjPos.y + mObjPos.z;
+    // --------------------
+    float3 mFreq       = 5.0*In.position.xyz;
+    float mAttenuation = In.color.x;
+    float3 mOffset     = sin(mTime*8.15 + mFreq.x+mFreq.y+mFreq.z + mObjPosVarSeed)*cos(mTime*3.35 + 0.5*mFreq.x+mFreq.y+mFreq.z + mObjPosVarSeed);
+    float3 mOffset1    = 0.002*mOffset;
+    float3 mOffset2    =  0.01*mOffset;
+    deformedPos += lerp( mOffset1, mOffset2, saturate(cShared0) )*getWindDirection()*mAttenuation;
+#endif
+    // offset vertically by object.yOffset
+    deformedPos = lerp(deformedPos.xyz, deformedPos.xyz+float3(0,object.yOffset,0),maskMapTexCoords.x);
+#endif
+// perform shaking vertex animation
+#if defined(HARVEST_SHAKE)
+    float3 shakeOffset = float3(0.0,0.0,0.0); // do not shake vertically
+    shakeOffset.x = object.shakeScale.x * saturate(min(object.harvestPosition.w / object.shakeScale.z, 1.0));
+    deformedPos += In.gMask * sin(50*mTime) * shakeOffset;
+#endif
+    return deformedPos;
+}
+#if defined(FLOATING_ANIMATION)
+    //@description Deform In.position.xyz, the same vertex shader code which is re-used twice in GET_POSITION_VS and GET_PREV_POSITION_VS only with different values
+    //@inParam In vertex shader input struct (vertex attributes like position,normal,color, etc)
+    //@inParam instance mesh parameters struct (instance.modelMatrix,visibility etc)
+    //@inParam object shader parameters struct (textures are here)
+    //@inParam windStrength wind strength
+    //@inParam mTime cTime_s or cPrevTime_s
+    //@inParam intensity animation intensity
+    float3 getFloatingAnimation(VS_INPUT In, PerInstanceParameters& instance, ObjectParameters& object, float windStrength, float mTime, float intensity)
+    {
+        float mTimeOffset = 0.0;
+        #if defined(VERTEX_COLOR_ANIMATION)
+            /*
+            mVertexColor.r - controls intensity of animation
+            mVertexColor.g - offsets mTime
+            mVertexColor.b - unused
+            mVertexColor.a - unused
+            */
+            float4 mVertexColor = In.color.rgba;
+            intensity.r *= mVertexColor.r;
+            mTimeOffset += mVertexColor.g;
+        #endif
+        float3 mPos    = In.position.xyz;
+        float3 windSideDirection = cross(float3(0,1,0), getWindDirection());
+        float3 mObjPos = float3(instance.modelMatrix[0][3] + invViewMatrix[0][3],
+                                instance.modelMatrix[1][3] + invViewMatrix[1][3],
+                                instance.modelMatrix[2][3] + invViewMatrix[2][3]);
+        // Offset time for better animation
+        mTime += mTimeOffset;
+        // Precompute common terms to reduce redundant calculations
+        float3 mCombinedTime = mTime + (windSideDirection + mObjPos.x) + (windSideDirection + mObjPos.z);
+        float3 mTrigFactor = cos(mTime + 0.35) * sin(mCombinedTime * 2.0);
+
+        // Perform a Y animation offset using trigonometric functions
+        float3 mAnimation = intensity * (mTrigFactor * (windStrength * 0.5));
+
+        // Apply the animation offset to the vertex position
+        mPos += mAnimation;
+
+        #if GPU_PROFILE >= GPU_PROFILE_HIGH
+            // Calculate small roll to simulate rocking, scaled by wind strength and direction
+            float mRollAngle = intensity * windStrength * sin(mTime * 1.5) * 0.13; // Roll around Z-axis
+            // Apply roll rotation
+            mPos = rotateVectorAroundZ( mPos, mRollAngle );
+        #endif
+        return mPos;
+    }
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    //@description Calculate animation texture UV (u = keyframe index, v = object index)
+    //@inParam In vertex shader input struct (vertex attributes like position,normal,color, etc)
+    //@inParam animTexSize XY size of the texture (amount of pixels horizontally/vertically)
+    //@inParam animTime 0..1 scrolling time based parameter
+    float2 getAnimationKeyframeUV( VS_INPUT In, float2 animTexSize, float animTime) {
+        // Calculate animation texture UV (u = keyframe index, v = object index)
+        float2 uv;
+        uv.x = ((animTexSize.x-1)*saturate(animTime)+0.5) / animTexSize.x;
+        uv.y = (getMergeChildrenObjectDataIndexAsFloat(In) + 0.5) / animTexSize.y;
+        return uv;
+    }
+    //@description load position(XYZ transaltion, localSpace) of the pieces from the animationArray[0] texture\n
+    //texture sampled using samplerBilinearClamp filter, so interpolation for values in-between(pixels) comes for free
+    //@inParam object shader parameters struct (textures are here)
+    //@inParam uv animated texture UVs (u = keyframe index, v = object index)
+    float4 getPositionTex(ObjectParameters& object, float2 uv) {
+        return tex2DSampleLod( animationArray, samplerBilinearClamp, uv.xy, uint(0),0);
+    }
+    //@description load orient(XYZW quaternion rotation, localSpace) of the pieces from the animationArray[1] texture\n
+    //texture sampled using samplerBilinearClamp filter, so interpolation for values in-between(pixels) comes for free\n
+    //Note: quaternion rotations must be compatible (this should be done on content side)
+    //@inParam object shader parameters struct (textures are here)
+    //@inParam uv animated texture UVs (u = keyframe index, v = object index)
+    float4 getOrientTex(ObjectParameters& object, float2 uv) {
+        return tex2DSampleLod( animationArray, samplerBilinearClamp, uv.xy, uint(1),0);
+    }
+    //@description Deform In.position.xyz, the same vertex shader code which is re-used twice in GET_POSITION_VS and GET_PREV_POSITION_VS only with different values
+    //@inParam In vertex shader input struct (vertex attributes like position,normal,color, etc)
+    //@inParam object shader parameters struct (textures are here)
+    //@inParam mPosition XYZ transaltion, W not used
+    //@inParam mOrient XYZW quaternion rotation
+    float3 getVtxAnimTexturePositionVS( VS_INPUT In, ObjectParameters& object, float4 mPosition, float4 mOrient ){
+        float4 localPosition = mPosition;
+        float4 localOrient   = mOrient;
+        float3 mInitialPosition = In.position.xyz;
+        #if defined(VERTEX_OFFSET)
+            float2 maskMapTexCoords = saturate(convertDefaultTexCoords(In, object, In.texCoords1.xy)); // bring textcoord to 0..1
+            // offset vertically by object.yOffset
+            mInitialPosition = lerp(mInitialPosition.xyz, mInitialPosition.xyz+float3(0,object.yOffset,0),maskMapTexCoords.x);
+        #endif
+        // apply quaternion rotation
+        float3 mDeformed = quaternionRotate( localOrient, mInitialPosition );
+        // apply translation
+        mDeformed += localPosition.xyz;
+        return mDeformed;
+    }
+    //@description Deform mVector (In.normal.xyz,In.tangent.xyz), used in GET_NORMAL_VS, GET_TANGENT_VS
+    //@inParam In vertex shader input struct (vertex attributes like position,normal,color, etc)
+    //@inParam object shader parameters struct (textures are here)
+    //@inParam mVector vector to transform, usually In.normal.xyz, In.tangent.xyz
+    //@inParam mOrient XYZW quaternion rotation
+    float3 getVtxAnimTextureVectorVS( VS_INPUT In, ObjectParameters& object, float3 mVector, float4 mOrient ){
+        float4 localOrient = mOrient;
+        // apply quaternion rotation
+        float3 mDeformed = quaternionRotate( localOrient, mVector );
+        return mDeformed;
+    }
+#endif
+]]></CodeInjection>
+            <CodeInjection position="VS_INPUT"><![CDATA[
+#if defined(HARVEST_SHAKE)
+    float gMask;
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    uint2 gAnimTexSize;
+    float2 gAnimUV;
+    float2 gPrevAnimUV;
+    float4 gPosition;
+    float4 gPrevPosition;
+    float4 gOrient;
+    float4 gPrevOrient;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="FILL_VERTEX_INPUT_VS"><![CDATA[
+#if defined(HARVEST_SHAKE)
+    float3 fullWorldPosition = mul(instance.modelMatrix, float4(In.position.xyz, 1))+ float3(invViewMatrix[0][3], invViewMatrix[1][3], invViewMatrix[2][3]);
+    // sphere mask based on harvestPosition.xyz (worldSpace) and fullWorldPosition.xyz of the vertices
+    In.gMask = saturate(1.0-min(distance(object.harvestPosition.xyz,fullWorldPosition.xyz)/object.shakeScale.w,1.0));
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    In.gAnimTexSize  = tex2DSize(animationArray,0).xy;
+    In.gAnimUV       = getAnimationKeyframeUV(In, (float2)In.gAnimTexSize, object.scrollPos).xy;
+    In.gPrevAnimUV   = getAnimationKeyframeUV(In, (float2)In.gAnimTexSize, object.prevScrollPos).xy;
+    In.gPosition     = getPositionTex(object, In.gAnimUV);
+    In.gPrevPosition = getPositionTex(object, In.gPrevAnimUV);
+    In.gOrient       = getOrientTex(object, In.gAnimUV);
+    In.gPrevOrient   = getOrientTex(object, In.gPrevAnimUV);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_POSITION_VS"><![CDATA[
+{
+    float3 mDeformed = In.position.xyz;
+    #if defined(FLOATING_ANIMATION)
+        mDeformed = getFloatingAnimation(In, instance, object, cShared0, cTime_s, object.animationIntensity.r);
+    #elif defined(VERTEX_ANIMATION_TEXTURE)
+        mDeformed = getVtxAnimTexturePositionVS(In, object, In.gPosition, In.gOrient);
+    #else
+        // DEFAULT BEHAVIOUR
+        mDeformed = getCustomPositionVS(In, instance, object, cTime_s);
+    #endif
+    #if defined(SKINNING)
+        return skinPoint(mDeformed.xyz, In, instance, object);
+    #else
+        return mDeformed.xyz;
+    #endif
+}
+]]></CodeInjection>
+            <CodeInjection position="GET_PREV_POSITION_VS"><![CDATA[
+{
+    float3 mDeformed = In.position.xyz;
+    #if defined(FLOATING_ANIMATION)
+        mDeformed = getFloatingAnimation(In, instance, object, cShared0, cPrevTime_s, object.animationIntensity.r);
+    #elif defined(VERTEX_ANIMATION_TEXTURE)
+        mDeformed = getVtxAnimTexturePositionVS(In, object, In.gPrevPosition, In.gPrevOrient);
+    #else
+        // DEFAULT BEHAVIOUR
+        mDeformed = getCustomPositionVS(In, instance, object, cPrevTime_s);
+    #endif
+    #if defined(SKINNING)
+        return skinPrevPoint(mDeformed.xyz, In, instance, object);
+    #else
+        return mDeformed.xyz;
+    #endif
+}
+]]></CodeInjection>
+            <CodeInjection position="POST_GET_WORLD_POSE_VS"><![CDATA[
+#if !defined(SKINNING)
+    prevWorldPosition = mul(instance.prevModelMatrix, float4(prevPosition, 1));
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_NORMAL_VS"><![CDATA[
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    return getVtxAnimTextureVectorVS(In, object, In.normal.xyz, In.gOrient);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_TANGENT_VS"><![CDATA[
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    return getVtxAnimTextureVectorVS(In, object, In.tangent.xyz, In.gOrient);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="VS_OUTPUT"><![CDATA[
+    float3 localPosition : TEXCOORDn;
+    float3 localNormal   : TEXCOORDn;
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    float  hideIndex    : TEXCOORDn;
+#endif
+#if defined(NORMAL_UV1)
+    float2 normalMaskTexCoords : TEXCOORDn;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="POST_SET_TEXCOORDS_VS"><![CDATA[
+    Out.localPosition = In.position.xyz;
+    Out.localNormal = normalize(In.normal.xyz);
+#if defined(NORMAL_UV1)
+    Out.normalMaskTexCoords = convertDefaultTexCoords(In, object, In.texCoords1.xy); // Pass second UVSet to the Pixel Shader
+#endif
+]]></CodeInjection>
+            <CodeInjection position="VS_END"><![CDATA[
+#if defined(MERGE_CHILDREN_HIDE_BY_INDEX)
+    if (object.hideByIndex.x > getMergeChildrenObjectDataIndexAsFloat(In)){
+        //Out.position = float4(0,0,0,-1); // remove from pixel shader
+        Out.position = float4(-1000000.0f, -1000000.0f, -1000000.0f, 1.0f);
+    }
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    float mIndex = getMergeChildrenObjectDataIndexAsFloat(In);
+    Out.hideIndex = saturate( -1 + 2*object.hidePieces.x + mIndex/(float(In.gAnimTexSize.y) - 1)) * 4;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_BUMP_HEIGHT_AT_WITH_GRAD_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+    return fixDDSCompressionHeightMap(tex2DSampleGrad(mParallaxMap, standardMaterialSampler, uv, layer, gradX, gradY).x);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_BUMP_HEIGHT_AT_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+    return fixDDSCompressionHeightMap(tex2DSample(mParallaxMap, standardMaterialSampler, uv, layer).x);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_BUMP_HEIGHT_TEXTURE_SIZE_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+    return tex2DSize(mParallaxMap, 0);
+#endif
+]]></CodeInjection>
+            <CodeInjection position="LIB_FUNCTION_FS"><![CDATA[
+// Custom pixel functions
+#include "$data/shaders/sharedFunctions_fs.gsl"
+// Extra functions related to the placeableShader only
+
+#if defined(ROCK_DETAIL)
+    //@description Calculates top projected mask (worldSpace) based on worldSpace normal of the pixel shader
+    //@inParam mNormal worldSpace normal (already with normalMap)
+    //@inParam mMossLevel [0..1] control the intensity of the dirt/moss mask
+    float getMossMask(float3 mNormal, float mMossLevel){
+        float mTransition = 1 - (mMossLevel * mMossLevel);
+        float NdotY = mNormal.y ; // dot(mNormal, float3(0.0, 1.0, 0.0));
+        float mMossMask = saturate(NdotY - mTransition);
+        return mMossMask * mMossMask * mMossMask;
+    }
+#endif
+#if defined(VERTEX_ANIMATION_TEXTURE)
+    //@description Perform clip Screen-based alpha-test semi-transparent alpha\n
+    //Uses In.vs.hideIndex to control opacity, hideIndex pre-calculated from MergeChildren Index
+    //@inParam In pixel shader input struct (screenPos,worldNormal,vertexColor,etc)
+    void doAlphaMaskCustom(FS_INPUT In){
+        int2 pixelPos = int2(floor(viewportSize.xy * In.vs.screenPos.xy/In.vs.screenPosW)) & 1;
+        int N = (pixelPos.x + 2 * pixelPos.y + 1) & 3;  // 1 2
+                                                        // 3 0
+        if (round(In.vs.hideIndex) > (float)N) {
+            clip(-1);
+        }
+    }
+#endif
+]]></CodeInjection>
+            <CodeInjection position="FS_GLOBALS"><![CDATA[
+    float  gSnowMask;  // top-down projected snow-mask animated by cShared4
+    bool   gIsSnowing; // if its snowing or not
+    float3 gSnowDiffuse; 
+    float3 gSnowSpecular;
+    float  gSnowMaskGradient; // black-and-white mask where snow is
+    bool   gIsWetActivated;   // if its wet or not
+    float  gWetnessMask;
+    float2 gWaterDroplets;// water droplets normalMap
+#if defined(ROCK_DETAIL)
+    float3 gNormalMapDetail;
+    float3 gMossMapDetail;
+    float  gMossLevel;
+#endif
+#if defined(TERRAIN_VT)
+    float3 gTerrainNormal;
+    float3 gTerrainDiffuse;
+    float  gTerrainRoughness;
+    float  gTerrainHeightMask;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="START_FS"><![CDATA[
+{
+    float3 mAbsNormal   = abs(In.vs.localNormal);
+    mAbsNormal /= (mAbsNormal.x + mAbsNormal.y + mAbsNormal.z);
+    float2 texCoordsX = In.vs.localPosition.zy;
+    float2 texCoordsY = In.vs.localPosition.zx;
+    float2 texCoordsZ = In.vs.localPosition.xy;
+    float2 uvs = mAbsNormal.x > mAbsNormal.y ? (mAbsNormal.x > mAbsNormal.z ? texCoordsX : texCoordsZ) : (mAbsNormal.y > mAbsNormal.z ? texCoordsY : texCoordsZ);
+    globals.gSnowDiffuse  = float3(0.7300,0.7668,0.8356);
+    // snow texture is 1024x1024 so we need to scale uv's
+    globals.gSnowSpecular = tex2DSample( mSnowSpecular, standardMaterialSampler, 0.5*uvs ).rgb;
+    // the same scale like in vehicleShader
+    globals.gWaterDroplets.xy = tex2DSample( waterDroplets, standardMaterialSampler, 1.5*uvs ).xy;
+    #if defined(ROCK_DETAIL)
+        globals.gNormalMapDetail = tex2DSample(mNormalDetail,standardMaterialSampler,0.5*uvs ).rgb;
+        globals.gMossMapDetail   = tex2DSample(mMossDetail,standardMaterialSampler,2.0 * uvs).rgb;
+        globals.gMossLevel = object.mossLevel;
+    #endif
+    globals.gSnowMask  = 0.0;
+    globals.gSnowMaskGradient = 1.0;
+    bool snowWetnessUV = In.vs.defaultTexCoords.x > 0.0;
+    globals.gIsSnowing = cShared4 > 0.001 && object.snowScale > 0.0 && snowWetnessUV;
+    globals.gIsWetActivated = cWetness > 0.001 && object.wetnessScale > 0.0 && snowWetnessUV;
+    globals.gWetnessMask = cWetness * object.wetnessScale * getRainOcclusionFactor(getWorldPosition(In));
+    #if defined( GLOSS_MAP )
+        globals.gSnowMaskGradient = tex2DSample(glossMap, GLOSS_MAP_SAMPLER, GLOSS_MAP_TEXCOORDS).a;
+    #endif
+    #if defined(CUSTOM_SNOWMASK)
+        globals.gSnowMaskGradient *= tex2DSample(mCustomSnowMask, standardMaterialSampler, GLOSS_MAP_TEXCOORDS).r;
+    #endif
+}
+#if defined(TERRAIN_VT)
+    float3 worldPos = getWorldPosition(In);
+    worldPos.y = worldPos.y + object.heightMask;
+    float displacement = object.bool_displacement;
+    globals.gTerrainNormal  = getTerrainWorldspaceNormal(In, worldPos);
+    globals.gTerrainDiffuse = getTerrainDiffuse(In, worldPos);
+    globals.gTerrainRoughness = getTerrainRoughness(In, worldPos);
+    globals.gTerrainHeightMask = getHeightAboveTerrain(worldPos, displacement);
+#endif
+#if defined(HIDE_UV_SHIFT) || defined(HIDE_ALPHA)
+    float sectionIndex;
+    float4 hideSectionStates = object.hideSectionStates;
+
+    #if defined(UV_BASED_SECTIONS)
+        sectionIndex = floor(In.vs.defaultTexCoords.x);
+        float hideSectionState = float(sectionIndex  == 0) + hideSectionStates.x * float(sectionIndex  == 1) + hideSectionStates.y * float(sectionIndex  == 2) + hideSectionStates.z * float(sectionIndex  == 3);
+    #else
+        sectionIndex = floor(In.vs.defaultTexCoords.x * 3);
+        float hideSectionState = hideSectionStates.x * float(sectionIndex  == 0) + hideSectionStates.y * float(sectionIndex  == 1) + hideSectionStates.z * float(sectionIndex  == 2);
+    #endif
+
+    // check if uvs are in hide area
+    float2 uvs = In.vs.defaultTexCoords;
+    float4 hideArea = object.hideArea;
+    #if defined(UV_BASED_SECTIONS)
+        uvs.x -= sectionIndex;
+    #endif
+
+    float hideIsInArea = float((uvs.x > hideArea.x) && (uvs.x < hideArea.y) && (uvs.y > hideArea.z) && (uvs.y < hideArea.w));
+
+    #if defined(HIDE_UV_SHIFT)
+        // if hideSection is active we want to shift the uvs. otherwise take the original uvs
+        In.vs.defaultTexCoords.y += object.hideShiftOffset * hideSectionState * hideIsInArea;
+    #endif
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_UNNORMALIZED_TANGENT_SPACE_NORMAL_FS"><![CDATA[
+#if defined( NORMAL_MAP )
+    #if defined(NORMAL_UV1)
+        float3 mNormal = tex2DSample(normalMap,standardMaterialSampler,In.vs.normalMaskTexCoords).xyz - 0.5;
+    #else // DEFAULT BEHAVIOUR
+        float3 mNormal = tex2DSample(normalMap,standardMaterialSampler,NORMAL_MAP_TEXCOORDS).xyz - 0.5;
+    #endif
+    #if defined( ROCK_DETAIL )
+        mNormal.xy += globals.gNormalMapDetail.xy-0.5;
+    #endif
+    if (globals.gIsWetActivated) {
+        mNormal = makeWetNormal(mNormal,globals.gWaterDroplets.xy,globals.gWetnessMask);
+    }
+    return mNormal;
+#endif
+]]></CodeInjection>
+            <CodeInjection position="GET_TANGENT_SPACE_NORMAL_FS"><![CDATA[
+#if defined( NORMAL_MAP )
+    return normalize(getUnnormalizedTangentSpaceNormal(In, globals, instance, object));
+#endif
+]]></CodeInjection>
+            <CodeInjection position="POST_DIFFUSE_COLOR_FS"><![CDATA[
+#if defined(CUSTOM_BLEND)
+    float3 customDiffuse = tex2DSample(mCustomDiffuse, standardMaterialSampler, ALBEDO_MAP_TEXCOORDS).rgb;
+    #if defined(CUSTOM_MASK_BLEND)
+        float alphaMask = tex2DSample(mAlphaMask, standardMaterialSampler, ALBEDO_MAP_TEXCOORDS).r;
+        diffuseColor.rgb = lerp(diffuseColor.rgb, customDiffuse.rgb, alphaMask * object.blendScale).rgb;
+    #else
+        diffuseColor.rgb = lerp(diffuseColor.rgb, customDiffuse.rgb, object.blendScale);
+    #endif
+#endif
+#if defined(ROCK_DETAIL)
+    float gMossMask = getMossMask(normal, globals.gMossLevel);
+    diffuseColor.rgb = lerp(diffuseColor.rgb, globals.gMossMapDetail, gMossMask);
+    diffuseColor.rgb *= globals.gSnowSpecular.g; // added extra details from snow specular.g
+#endif
+#if defined(TERRAIN_VT)
+    // using a liniar interp function to mix original diffuse color using the function getHeightAboveTerrain as mask
+    diffuseColor = lerp(diffuseColor, globals.gTerrainDiffuse, 1 - saturate(globals.gTerrainHeightMask));
+    // mixing worldSpace normal
+    normal = lerp( normal, globals.gTerrainNormal, 1 - saturate(globals.gTerrainHeightMask));
+#endif
+    { // Snow mixing code
+        if (globals.gIsSnowing){
+            // pixelShader normal computed before this point, right after PARALLAX_MAPPING_FS
+            // globals.gSnowSpecular.g - ambient occlusion used as alpha (should be less than 1.0)
+            globals.gSnowMask = getSnowMaskFromWorldNormalNoiseMask(object.snowScale,normal,0.25,globals.gSnowSpecular.g,globals.gSnowMaskGradient).y;
+            diffuseColor.rgb = lerp( diffuseColor.rgb, globals.gSnowDiffuse.rgb, globals.gSnowMask );
+        }
+    }
+    // placeable Color
+    if (object.placeableColorScale.w > 0){
+        diffuseColor = lerp(diffuseColor,object.placeableColorScale.rgb,saturate(0.1+getFresnel( facing, 0.15 , 4.0 ))*object.placeableColorScale.w);
+    }
+]]></CodeInjection>
+            <CodeInjection position="POST_GLOSS_COLOR_FS"><![CDATA[
+#if defined(ROCK_DETAIL)
+    // mixing roughness with smoothness
+    roughness = saturate(roughness*globals.gNormalMapDetail.b);
+#endif
+#if defined(TERRAIN_VT)
+    //mixing roughness with terrain roughness
+    roughness = lerp(roughness, globals.gTerrainRoughness, 1 - saturate(globals.gTerrainHeightMask));
+#endif
+    { // Snow mixing code
+        if (globals.gIsSnowing){
+            float3 mPbrMapValues = lerp( float3(1-roughness,bakedAO,metalness), globals.gSnowSpecular, globals.gSnowMask );
+            roughness = 1-mPbrMapValues.x;
+            bakedAO   = mPbrMapValues.y;
+            metalness = mPbrMapValues.z;
+        }
+    }
+]]></CodeInjection>
+            <CodeInjection position="POST_WETNESS_FS"><![CDATA[
+porosityAtZeroRoughness = object.porosityBySmoothness.x;
+porosityRoughnessSlope  = object.porosityBySmoothness.y;
+// porosity = porosityAtZeroRoughness + roughness * porosityRoughnessSlope;
+if(globals.gIsWetActivated) {
+    //porosity = 0.25;
+    wetness = globals.gWetnessMask;
+}
+]]></CodeInjection>
+            <CodeInjection position="ALPHA_FS"><![CDATA[
+#if defined(ALPHA_MAP)
+    // load alpha from separate texture
+    alpha = tex2DSample(alphaMap, standardMaterialSampler, ALBEDO_MAP_TEXCOORDS).x;
+#endif
+#if defined(ALPHA_BLENDED) && defined(DECAL_RENDER)
+    reflectingLightingScale = alpha;
+#endif
+    { // Snow mixing code
+        #if defined(ALPHA_BLENDED)
+            if (globals.gIsSnowing){
+                alpha = lerp(alpha,1.0,globals.gSnowMask);
+            }
+        #endif
+        #if defined(HIDE_ALPHA)
+            alpha *= 1 - (hideIsInArea * (1 - hideSectionState));
+        #endif
+    }
+]]></CodeInjection>
+            <CodeInjection position="POST_ALPHA_FS"><![CDATA[
+#if defined(VERTEX_ANIMATION_TEXTURE)
+{
+    if ( object.hidePieces.x > 0 ){
+        doAlphaMaskCustom(In);
+    }
+}
+#endif
+]]></CodeInjection>
+            <CodeInjection position="FINAL_POS_FS"><![CDATA[
+#if defined(DEBUG_SHOW_CUSTOM1)
+    oColor.xyz *= 0.0001;
+    #if defined(ROCK_DETAIL)
+        oColor.xyz = lerp(oColor.xyz, float3(1.0,1.0,1.0), gMossMask);
+    #endif
+#endif
+#if defined(DEBUG_SHOW_CUSTOM2)
+    oColor.xyz *= 0.0001;
+    #if defined(TERRAIN_VT)
+        oColor.xyz = lerp(oColor.xyz, float3(1.0,1.0,1.0), 1 - saturate(globals.gTerrainHeightMask));
+    #endif
+#endif
+]]></CodeInjection>
+        </CodeInjections>
+    </LodLevel>
+</CustomShader>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="handPlantSaplings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>$l10n_shopItem_handPlantSaplings02</name>
+		<functions>
+			<function>$l10n_function_handPlantSaplings02</function>
+		</functions>
+		<image>map/placeables/HandPlantSaplings/placeables/store_handPlantSaplings02.dds</image>
+		<price>3150</price>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>1000</lifetime>
+		<rotation>0</rotation>
+		<brand>FARMING_INNOVATIONS</brand>
+		<species>PLACEABLE</species>
+		<category>placeableMisc</category>
+		<brush>
+			<type>placeable</type>
+			<category>buildings</category>
+			<tab>tools</tab>
+		</brush>
+		<canBeSold>true</canBeSold>
+		<showInStore>true</showInStore>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/HandPlantSaplings/placeables/handPlantSaplings02.i3d</filename>
+		<canBeRenamed>true</canBeRenamed>
+		<canBeDeleted>true</canBeDeleted>
+		<boughtWithFarmland>true</boughtWithFarmland>
+	</base>
+
+	<placement useRandomYRotation="false" useManualYRotation="true" >
+		<testAreas>
+			<testArea startNode="testAreaStart01" endNode="testAreaEnd01" />
+		</testAreas>
+		<sounds>
+			<place template="smallImp" pitchScale="1.6"/>
+			<placeLayered file="map/placeables/HandPlantSaplings/sounds/shovelSound.ogg" volumeScale="0.3" pitchScale="1" innerRadius="5.0" outerRadius="22.0"/>
+		</sounds>
+	</placement>
+
+	<clearAreas>
+		<clearArea startNode="clearAreaStart01" widthNode="clearAreaWidth01" heightNode="clearAreaHeight01"/>
+	</clearAreas>
+
+	<leveling requireLeveling="true" maxSmoothDistance="3" maxSlope="75" maxEdgeAngle="30">
+		<levelAreas>
+			<levelArea startNode="levelAreaStart01" widthNode="levelAreaWidth01" heightNode="levelAreaHeight01" groundType="dirt"/>
+		</levelAreas>
+	</leveling>
+
+	<indoorAreas>
+		<indoorArea startNode="indoorAreaStart01" widthNode="indoorAreaWidth01" heightNode="indoorAreaHeight01"/>
+	</indoorAreas>
+
+	<tipOcclusionUpdateAreas>
+		<tipOcclusionUpdateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+	</tipOcclusionUpdateAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="tipOcclusionUpdateAreaStart01" endNode="tipOcclusionUpdateAreaEnd01" />
+		</updateAreas>
+	</ai>
+
+	<hotspots>
+		<hotspot teleportNode="teleportNode">
+			<customType name="HAND_PLANT_SAPLINGS" filename="map/placeables/HandPlantSaplings/shared/mapHotspots.dds" imageUVs="13 15 100 100" imageResolution="128 128" category="OTHER"/>
+		</hotspot>
+	</hotspots>
+
+	<animatedObjects>
+		<animatedObject saveId="doors" >
+			<animation duration="3.5">
+				<part node="doorRightRot">
+					<keyFrame time="0.0" rotation="0 0 0"/>
+					<keyFrame time="1.0" rotation="0 130 0"/>
+				</part>
+				<part node="doorLeftRot">
+					<keyFrame time="0.2" rotation="0 0 0"/>
+					<keyFrame time="1.2" rotation="0 -130 0"/>
+				</part>
+
+				<!-- Lantern -->
+				<shader node="0>9|0|0|0" parameterName="lightControl">
+					<keyFrame time="0.0" values="0 0 0 0"/>
+					<keyFrame time="0.1" values="1.5 0 0 0"/>
+				</shader>
+				<shader node="0>9|0|0|0|0" parameterName="lightControl">
+					<keyFrame time="0.0" values="0 0 0 0"/>
+					<keyFrame time="0.1" values="0.5 0 0 0"/>
+				</shader>
+				<shader node="0>9|0|0|1" parameterName="lightControl">
+					<keyFrame time="0.0" values="0 0 0 0"/>
+					<keyFrame time="0.1" values="1.5 0 0 0"/>
+				</shader>
+				<part node="0>9|0|1">
+					<keyFrame time="0.0" visibility="false"/>
+					<keyFrame time="0.1" visibility="true"/>
+				</part>
+			</animation>
+			<controls triggerNode="doorTrigger" posAction="ACTIVATE_HANDTOOL" posText="action_openDoor" negText="action_closeDoor" />
+			<sounds>
+				<moving linkNode="teleportNode" template="woodDoorSqueaksMedium" />
+				<posEnd linkNode="teleportNode" template="woodDoorOpen" />
+				<negEnd linkNode="teleportNode" template="woodDoorClose" />
+			</sounds>
+		</animatedObject>
+	</animatedObjects>
+
+	<infoTrigger triggerNode="infoTrigger"/>
+
+	<handToolHolders>
+		<handToolHolder>
+			<holder type="HPS_LINKED_SHOVEL" node="shovelHolder01" dummyFilename="map/placeables/HandPlantSaplings/shared/dummyShovel.i3d"/>
+			<trigger node="playerTrigger01" distanceNode="distanceNode01"/>
+			<spawnedHandToolFilename>map/placeables/HandPlantSaplings/handTools/handPlantSaplingsShovel.xml</spawnedHandToolFilename>
+		</handToolHolder>
+		<handToolHolder>
+			<holder type="HPS_LINKED_SHOVEL" node="shovelHolder02" dummyFilename="map/placeables/HandPlantSaplings/shared/dummyShovel.i3d"/>
+			<trigger node="playerTrigger02" distanceNode="distanceNode02"/>
+			<spawnedHandToolFilename>map/placeables/HandPlantSaplings/handTools/handPlantSaplingsShovel.xml</spawnedHandToolFilename>
+		</handToolHolder>
+
+		<handToolHolder>
+			<holder type="SPRAYCAN" node="sprayCanHolder01" dummyFilename="$data/shared/visualization/dummySprayCan.i3d"/>
+			<trigger node="playerTrigger03" distanceNode="distanceNode03"/>
+		</handToolHolder>
+		<handToolHolder>
+			<holder type="SPRAYCAN" node="sprayCanHolder02" dummyFilename="$data/shared/visualization/dummySprayCan.i3d"/>
+			<trigger node="playerTrigger04" distanceNode="distanceNode04"/>
+		</handToolHolder>
+
+		<handToolHolder>
+			<holder type="CHAINSAW" node="chainsawHolder01" dummyFilename="$data/shared/visualization/dummyChainsaw.i3d"/>
+			<trigger node="playerTrigger05" distanceNode="distanceNode05"/>
+		</handToolHolder>
+	</handToolHolders>
+
+	<handPlantSaplings storeCapacity="60">
+		<backpacks>
+			<backpack capacity="10">
+				<saplingNodes node="saplingSack01" snowScale="0">
+					<saplingNode node="saplingSack01_sapling01" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.040 0.167 0.081"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling02" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.065 0.165 0.039"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling03" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.050 0.229 0.016"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling04" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.036 0.191 0.087"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling05" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.055 0.166 0.059"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling06" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.031 0.164 0.031"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling07" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.051 0.257 0.094"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling08" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.083 0.170 0.097"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling09" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.039 0.165 -0.005"/>
+					</saplingNode>
+					<saplingNode node="saplingSack01_sapling10" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.035 0.171 0.075"/>
+					</saplingNode>
+				</saplingNodes>
+			</backpack>
+
+			<backpack capacity="10">
+				<saplingNodes node="saplingSack02" snowScale="0">
+					<saplingNode node="saplingSack02_sapling01" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.040 0.167 0.081"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling02" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.065 0.165 0.039"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling03" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.050 0.229 0.016"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling04" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.036 0.191 0.087"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling05" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.055 0.166 0.059"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling06" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.031 0.164 0.031"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling07" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.051 0.257 0.094"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling08" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="-0.083 0.170 0.097"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling09" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.039 0.165 -0.005"/>
+					</saplingNode>
+					<saplingNode node="saplingSack02_sapling10" randomRotation="false" randomScale="true" minScale="70.00" maxScale="80.00">
+						<variation name="RISUTECSKB240" translation="0.035 0.171 0.075"/>
+					</saplingNode>
+				</saplingNodes>
+			</backpack>
+		</backpacks>
+
+		<storage capacity="40">
+			<saplingNodes snowScale="0">
+				<saplingNode node="storageArea_sapling01" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling02" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling03" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling04" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling05" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling06" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling07" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling08" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling09" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling10" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling11" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling12" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling13" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling14" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling15" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling16" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling17" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling18" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling19" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling20" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling21" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling22" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling23" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling24" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling25" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling26" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling27" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling28" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling29" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling30" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling31" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling32" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling33" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling34" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling35" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling36" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling37" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling38" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling39" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+				<saplingNode node="storageArea_sapling40" randomRotation="true" randomScale="true" minScale="80" maxScale="90"/>
+			</saplingNodes>
+		</storage>
+	</handPlantSaplings>
+
+	<i3dMappings>
+		<i3dMapping id="handPlantSaplings02" node="0>" />
+		<i3dMapping id="clearAreaStart01" node="0>0|0" />
+		<i3dMapping id="clearAreaWidth01" node="0>0|0|0" />
+		<i3dMapping id="clearAreaHeight01" node="0>0|0|1" />
+		<i3dMapping id="levelAreas" node="0>1" />
+		<i3dMapping id="levelAreaStart01" node="0>1|0" />
+		<i3dMapping id="levelAreaWidth01" node="0>1|0|0" />
+		<i3dMapping id="levelAreaHeight01" node="0>1|0|1" />
+		<i3dMapping id="indoorAreaStart01" node="0>2|0" />
+		<i3dMapping id="indoorAreaWidth01" node="0>2|0|0" />
+		<i3dMapping id="indoorAreaHeight01" node="0>2|0|1" />
+		<i3dMapping id="testAreaStart01" node="0>3|0" />
+		<i3dMapping id="testAreaEnd01" node="0>3|0|0" />
+		<i3dMapping id="tipOcclusionUpdateAreaStart01" node="0>4|0" />
+		<i3dMapping id="tipOcclusionUpdateAreaEnd01" node="0>4|0|0" />
+		<i3dMapping id="doorLeftRot" node="0>5|0" />
+		<i3dMapping id="doorRightRot" node="0>5|1" />
+		<i3dMapping id="doorTrigger" node="0>5|2" />
+		<i3dMapping id="teleportNode" node="0>5|3"/>
+		<i3dMapping id="shovelHolder01" node="0>6|0"/>
+		<i3dMapping id="playerTrigger01" node="0>6|0|0"/>
+		<i3dMapping id="distanceNode01" node="0>6|0|1"/>
+		<i3dMapping id="shovelHolder02" node="0>6|1"/>
+		<i3dMapping id="playerTrigger02" node="0>6|1|0"/>
+		<i3dMapping id="distanceNode02" node="0>6|1|1"/>
+		<i3dMapping id="sprayCanHolder01" node="0>6|2"/>
+		<i3dMapping id="playerTrigger03" node="0>6|2|0"/>
+		<i3dMapping id="distanceNode03" node="0>6|2|1"/>
+		<i3dMapping id="sprayCanHolder02" node="0>6|3"/>
+		<i3dMapping id="playerTrigger04" node="0>6|3|0"/>
+		<i3dMapping id="distanceNode04" node="0>6|3|1"/>
+		<i3dMapping id="chainsawHolder01" node="0>6|4"/>
+		<i3dMapping id="playerTrigger05" node="0>6|4|0"/>
+		<i3dMapping id="distanceNode05" node="0>6|4|1"/>
+		<i3dMapping id="storageArea_sapling01" node="0>7|0|0"/>
+		<i3dMapping id="storageArea_sapling02" node="0>7|0|1"/>
+		<i3dMapping id="storageArea_sapling03" node="0>7|0|2"/>
+		<i3dMapping id="storageArea_sapling04" node="0>7|0|3"/>
+		<i3dMapping id="storageArea_sapling05" node="0>7|0|4"/>
+		<i3dMapping id="storageArea_sapling06" node="0>7|0|5"/>
+		<i3dMapping id="storageArea_sapling07" node="0>7|0|6"/>
+		<i3dMapping id="storageArea_sapling08" node="0>7|0|7"/>
+		<i3dMapping id="storageArea_sapling09" node="0>7|0|8"/>
+		<i3dMapping id="storageArea_sapling10" node="0>7|0|9"/>
+		<i3dMapping id="storageArea_sapling11" node="0>7|0|10"/>
+		<i3dMapping id="storageArea_sapling12" node="0>7|0|11"/>
+		<i3dMapping id="storageArea_sapling13" node="0>7|0|12"/>
+		<i3dMapping id="storageArea_sapling14" node="0>7|0|13"/>
+		<i3dMapping id="storageArea_sapling15" node="0>7|0|14"/>
+		<i3dMapping id="storageArea_sapling16" node="0>7|0|15"/>
+		<i3dMapping id="storageArea_sapling17" node="0>7|0|16"/>
+		<i3dMapping id="storageArea_sapling18" node="0>7|0|17"/>
+		<i3dMapping id="storageArea_sapling19" node="0>7|0|18"/>
+		<i3dMapping id="storageArea_sapling20" node="0>7|0|19"/>
+		<i3dMapping id="storageArea_sapling21" node="0>7|0|20"/>
+		<i3dMapping id="storageArea_sapling22" node="0>7|0|21"/>
+		<i3dMapping id="storageArea_sapling23" node="0>7|0|22"/>
+		<i3dMapping id="storageArea_sapling24" node="0>7|0|23"/>
+		<i3dMapping id="storageArea_sapling25" node="0>7|0|24"/>
+		<i3dMapping id="storageArea_sapling26" node="0>7|0|25"/>
+		<i3dMapping id="storageArea_sapling27" node="0>7|0|26"/>
+		<i3dMapping id="storageArea_sapling28" node="0>7|0|27"/>
+		<i3dMapping id="storageArea_sapling29" node="0>7|0|28"/>
+		<i3dMapping id="storageArea_sapling30" node="0>7|0|29"/>
+		<i3dMapping id="storageArea_sapling31" node="0>7|0|30"/>
+		<i3dMapping id="storageArea_sapling32" node="0>7|0|31"/>
+		<i3dMapping id="storageArea_sapling33" node="0>7|0|32"/>
+		<i3dMapping id="storageArea_sapling34" node="0>7|0|33"/>
+		<i3dMapping id="storageArea_sapling35" node="0>7|0|34"/>
+		<i3dMapping id="storageArea_sapling36" node="0>7|0|35"/>
+		<i3dMapping id="storageArea_sapling37" node="0>7|0|36"/>
+		<i3dMapping id="storageArea_sapling38" node="0>7|0|37"/>
+		<i3dMapping id="storageArea_sapling39" node="0>7|0|38"/>
+		<i3dMapping id="storageArea_sapling40" node="0>7|0|39"/>
+		<i3dMapping id="saplingSack01" node="0>7|1"/>
+		<i3dMapping id="saplingSack01_sapling01" node="0>7|1|0|0"/>
+		<i3dMapping id="saplingSack01_sapling02" node="0>7|1|0|1"/>
+		<i3dMapping id="saplingSack01_sapling03" node="0>7|1|0|2"/>
+		<i3dMapping id="saplingSack01_sapling04" node="0>7|1|0|3"/>
+		<i3dMapping id="saplingSack01_sapling05" node="0>7|1|0|4"/>
+		<i3dMapping id="saplingSack01_sapling06" node="0>7|1|0|5"/>
+		<i3dMapping id="saplingSack01_sapling07" node="0>7|1|0|6"/>
+		<i3dMapping id="saplingSack01_sapling08" node="0>7|1|0|7"/>
+		<i3dMapping id="saplingSack01_sapling09" node="0>7|1|0|8"/>
+		<i3dMapping id="saplingSack01_sapling10" node="0>7|1|0|9"/>
+		<i3dMapping id="saplingSack02" node="0>7|2"/>
+		<i3dMapping id="saplingSack02_sapling01" node="0>7|2|0|0"/>
+		<i3dMapping id="saplingSack02_sapling02" node="0>7|2|0|1"/>
+		<i3dMapping id="saplingSack02_sapling03" node="0>7|2|0|2"/>
+		<i3dMapping id="saplingSack02_sapling04" node="0>7|2|0|3"/>
+		<i3dMapping id="saplingSack02_sapling05" node="0>7|2|0|4"/>
+		<i3dMapping id="saplingSack02_sapling06" node="0>7|2|0|5"/>
+		<i3dMapping id="saplingSack02_sapling07" node="0>7|2|0|6"/>
+		<i3dMapping id="saplingSack02_sapling08" node="0>7|2|0|7"/>
+		<i3dMapping id="saplingSack02_sapling09" node="0>7|2|0|8"/>
+		<i3dMapping id="saplingSack02_sapling10" node="0>7|2|0|9"/>
+		<i3dMapping id="infoTrigger" node="0>11"/>
+	</i3dMappings>
+</placeable>

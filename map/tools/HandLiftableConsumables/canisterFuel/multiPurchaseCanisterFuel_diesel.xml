@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="multipleItemPurchase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_shopItem_canisterFuelDiesel</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<functions>
+			<function>$l10n_function_canisterDiesel</function>
+		</functions>
+		<image>map/tools/HandLiftableConsumables/canisterFuel/store_canisterFuel_diesel.png</image>
+		<price>75</price>
+		<lifetime>600</lifetime>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<category>objectMisc</category>
+		<financeCategory>OTHER</financeCategory>
+		<vertexBufferMemoryUsage>512</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>256</indexBufferMemoryUsage>
+		<textureMemoryUsage>65536</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_shopItem_canisterFuelDiesel</typeDesc>
+		<filename>$data/objects/multiPurchaseItem/multiPurchaseItem.i3d</filename>
+		<size width="1.6" length="2.4" height="1"/>
+		<components>
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1"/>
+		</components>
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits>
+					<fillUnit fillTypes="DIESEL" capacity="50" />
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<multipleItemPurchase filename="map/tools/HandLiftableConsumables/canisterFuel/canisterFuel_diesel.xml" isVehicle="true">
+		<offsets>
+			<offset amount="2" offset="0.15 0 0"/>
+			<offset amount="3" offset="0.3 0 0"/>
+			<offset amount="4" offset="0.45 0 0"/>
+			<offset amount="5" offset="0.6 0 0"/>
+			<offset amount="6" offset="0.6 0 0.275"/>
+			<offset amount="11" offset="0.6 0 0.55"/>
+			<offset amount="16" offset="0.6 0 0.825"/>
+		</offsets>
+		<itemPositions>
+			<itemPosition position="0 0 0" rotation="0 -90 0"/>
+			<itemPosition position="-0.3 0 0" rotation="0 -90 0"/>
+			<itemPosition position="-0.6 0 0" rotation="0 -90 0"/>
+			<itemPosition position="-0.9 0 0" rotation="0 -90 0"/>
+			<itemPosition position="-1.2 0 0" rotation="0 -90 0"/>
+			<itemPosition position="0 0 -0.55" rotation="0 -90 0"/>
+			<itemPosition position="-0.3 0 -0.55" rotation="0 -90 0"/>
+			<itemPosition position="-0.6 0 -0.55" rotation="0 -90 0"/>
+			<itemPosition position="-0.9 0 -0.55" rotation="0 -90 0"/>
+			<itemPosition position="-1.2 0 -0.55" rotation="0 -90 0"/>
+			<itemPosition position="0 0 -1.1" rotation="0 -90 0"/>
+			<itemPosition position="-0.3 0 -1.1" rotation="0 -90 0"/>
+			<itemPosition position="-0.6 0 -1.1" rotation="0 -90 0"/>
+			<itemPosition position="-0.9 0 -1.1" rotation="0 -90 0"/>
+			<itemPosition position="-1.2 0 -1.1" rotation="0 -90 0"/>
+			<itemPosition position="0 0 -1.65" rotation="0 -90 0"/>
+			<itemPosition position="-0.3 0 -1.65" rotation="0 -90 0"/>
+			<itemPosition position="-0.6 0 -1.65" rotation="0 -90 0"/>
+			<itemPosition position="-0.9 0 -1.65" rotation="0 -90 0"/>
+			<itemPosition position="-1.2 0 -1.65" rotation="0 -90 0"/>
+		</itemPositions>
+	</multipleItemPurchase>
+
+	<multipleItemPurchaseAmountConfigurations>
+		<multipleItemPurchaseAmountConfiguration name="1" price="0"/>
+		<multipleItemPurchaseAmountConfiguration name="2" price="75"/>
+		<multipleItemPurchaseAmountConfiguration name="3" price="150"/>
+		<multipleItemPurchaseAmountConfiguration name="4" price="225"/>
+		<multipleItemPurchaseAmountConfiguration name="5" price="300"/>
+		<multipleItemPurchaseAmountConfiguration name="6" price="375"/>
+		<multipleItemPurchaseAmountConfiguration name="7" price="450"/>
+		<multipleItemPurchaseAmountConfiguration name="8" price="525"/>
+		<multipleItemPurchaseAmountConfiguration name="9" price="600"/>
+		<multipleItemPurchaseAmountConfiguration name="10" price="675"/>
+		<multipleItemPurchaseAmountConfiguration name="11" price="750"/>
+		<multipleItemPurchaseAmountConfiguration name="12" price="825"/>
+		<multipleItemPurchaseAmountConfiguration name="13" price="900"/>
+		<multipleItemPurchaseAmountConfiguration name="14" price="975"/>
+		<multipleItemPurchaseAmountConfiguration name="15" price="1050"/>
+		<multipleItemPurchaseAmountConfiguration name="16" price="1125"/>
+		<multipleItemPurchaseAmountConfiguration name="17" price="1200"/>
+		<multipleItemPurchaseAmountConfiguration name="18" price="1275"/>
+		<multipleItemPurchaseAmountConfiguration name="19" price="1350"/>
+		<multipleItemPurchaseAmountConfiguration name="20" price="1425"/>
+	</multipleItemPurchaseAmountConfigurations>
+</vehicle>

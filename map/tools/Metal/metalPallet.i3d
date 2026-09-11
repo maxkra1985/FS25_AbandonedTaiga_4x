@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="metalPallet.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="metalPallet_diffuse.png"/>
+    <File fileId="3" filename="metalPallet_normal.png"/>
+    <File fileId="4" filename="metalPallet_specular.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="lambert1" materialId="5" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="metalPallet_mat" materialId="6">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="metalPallet.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="metalPallet_main_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfffffbff" clipDistance="300" nodeId="16" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
+      <Shape name="metalPallet_vis" translation="0 0.144614 0" shapeId="2" clipDistance="300" nodeId="17" castsShadows="true" receiveShadows="true" materialIds="6">
+        <TransformGroup name="dischargeNode" translation="0 -0.144614 0" nodeId="39"/>
+      </Shape>
+      <Shape name="dynamicMountTrigger" translation="0 0.090475 0" shapeId="3" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x20000" nodeId="18" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      <TransformGroup name="contents" nodeId="19">
+        <Shape name="metalRoll" translation="0 0.144614 0" shapeId="4" clipDistance="300" nodeId="20" castsShadows="true" receiveShadows="true" materialIds="6">
+          <Shape name="metalRollTension" translation="0.007898 0.362075 -0.003297" shapeId="5" nodeId="21" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="collisions" clipDistance="10" nodeId="22">
+        <Shape name="floorCollision01" translation="-0.3 5.7e-05 0" shapeId="6" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.001" nodeId="23" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+        <Shape name="floorCollision02" translation="0.3 5.7e-05 0" shapeId="7" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.001" nodeId="24" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+        <Shape name="rollCollision01" translation="0.01139 0.541617 0" shapeId="8" compoundChild="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfffffbff" density="0.001" nodeId="25" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      </TransformGroup>
+    </Shape>
+  </Scene>
+
+</i3D>

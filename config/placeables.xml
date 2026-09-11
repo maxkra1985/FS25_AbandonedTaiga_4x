@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeables version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/savegame_placeables.xsd">
+	<!--====================================================================================================================================================-->
+	<!-- РЕКОНСТРУКЦИЯ ДОМА -->
+	<placeable isPreplaced="true" uniqueId="preplaced_buildableFarmHouse02_66c673edd9c0aa069f91ac7a5ab79b38" price="-750.000000" farmId="1"/>
+	<!-- САРАЙ С ИНСТРУМЕНТОМ -->
+	<placeable isPreplaced="true" uniqueId="preplaced_toolShed03_f4ba1999c5a61d009a5b146736c77196" price="-750.000000" farmId="1">
+		<handToolHolders>
+			<handToolHolder index="1" uniqueId="b817499b91e7797c474398d1e91ce511"/>
+			<handToolHolder index="2" uniqueId="27163030d1c51fa01b36563734b420b1"/>
+			<handToolHolder index="3" uniqueId="db066457670bf2b151f98a97c15ae1aa"/>
+			<handToolHolder index="4" uniqueId="429628e973680407cd8539b15ce9a49e"/>
+			<handToolHolder index="5" uniqueId="16fca021b4d363fcd46705fcc0556cfc"/>
+		</handToolHolders>
+	</placeable>
+	<placeable isPreplaced="true" uniqueId="preplaced_toolShed03_f4094496ed5fde82ac6958d749f7def4" price="-750.000000" farmId="1">
+		<handToolHolders>
+			<handToolHolder index="1" uniqueId="8c7661a345e1323448705e9c5dbfd29d"/>
+			<handToolHolder index="2" uniqueId="28a2fb46f24786c0e6f5bb199e045277"/>
+			<handToolHolder index="3" uniqueId="fff90a2dfe2c44fe6cedca136124eca6"/>
+			<handToolHolder index="4" uniqueId="aebbfed004957dadf797955a754af06f"/>
+			<handToolHolder index="5" uniqueId="5b920bb7a76449d0ce92649e787bbc40"/>
+		</handToolHolders>
+	</placeable>
+	<!-- САРАЙ ДЛЯ ЛЕСОПОСАДКИ -->
+	<placeable isPreplaced="true" uniqueId="preplaced_handPlantSaplings02_ad9ab79a820a65f8e89a427afc8f7342" price="-550.000000" farmId="1">
+		<handToolHolders>
+			<handToolHolder index="1" uniqueId="48ccbfbbefbf08d2b2469572a7970b34"/>
+			<handToolHolder index="2" uniqueId="c74f02620b6f46f92be631fab9f68984"/>
+			<handToolHolder index="3" uniqueId="0b1d579e3c5ef881ad0c4400ce556e93"/>
+		</handToolHolders>
+		<FS25_AbandonedTaiga_4x>
+			<handPlantSaplings>
+				<storage>
+					<node treeType="ASPEN" treeVariation="DEFAULT" fillLevel="20"/>
+					<node treeType="OAK" treeVariation="DEFAULT" fillLevel="20"/>
+				</storage>
+				<backpacks>
+					<backpack index="1">
+						<node treeType="LODGEPOLEPINE" treeVariation="DEFAULT" fillLevel="10"/>
+					</backpack>
+					<backpack index="2">
+						<node treeType="LODGEPOLEPINE" treeVariation="DEFAULT" fillLevel="10"/>
+					</backpack>
+				</backpacks>
+			</handPlantSaplings>
+		</FS25_AbandonedTaiga_4x>
+	</placeable>
+	<!-- КОЛОДЕЦ -->
+	<placeable isPreplaced="true" uniqueId="preplaced_waterpump_899a4c3c97dee0f2dfa5d158d699825f" price="-50.000000" farmId="1">
+		<productionPoint>
+			<production id="Water" isEnabled="true"/>
+			<storage farmId="1">
+				<node fillType="WATER" fillLevel="5000"/>
+			</storage>
+		</productionPoint>
+	</placeable>
+	<!-- ПОСТРОЙКА С НАВЕСОМ -->
+	<placeable isPreplaced="true" uniqueId="preplaced_BarracaoMadeiraVelho1_cd4abaf5c6154dd70225ee17ea8f2735" price="-150.000000" farmId="1"/>
+	<!-- НАВЕСЫ ДЛЯ ТЕХНИКИ -->
+	<placeable isPreplaced="true" uniqueId="preplaced_woodenShelter_61c67002097622d4a98173b778fa9921" price="-150.000000" farmId="1"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_shed_26cdb17a5d5ead728fd2cf8d61ef4f93" price="-50.000000" farmId="1"/>
+	<!-- МАЛАЯ ЛЕСОПИЛКА -->
+	<placeable isPreplaced="true" uniqueId="preplaced_smallSawMill_02d770eb1f436481ded1a82632b3d15a"/>
+	<!--====================================================================================================================================================-->
+	<!-- ОВОЩНОЙ ХУТОР																																		-->
+	<placeable isPreplaced="true" uniqueId="preplaced_fences_051044baac9c2a1ad8c469326100e8a87"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_gardenBed_17785f15122221a2eefbc8d0f06c67a1f"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_gardenBed_0b8064783ad22ca76e2e83737197d5b7a"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_woodenShelter_0fd458d7cce8849db9db5a7766b8e25ee"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_waterpump_07404ac6c046a10bf3857b8b92f373d39"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_shed_0f355e7e9350ad566d905e2780b770c12"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_canningShop_0915c8e2623de2f55b49db0a51e590cb0"/>
+	<!--====================================================================================================================================================-->
+	<!-- РЕКОНСТРУКЦИЯ КОРОВНИКА																															-->
+	<!--====================================================================================================================================================-->
+	<placeable isPreplaced="true" uniqueId="preplaced_BallamNewCattleshed_483d352be358e58d7acc1b4e27513c48"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_Fences_b72e79398d929d873fe427ec09c27f65"/>
+	<!--====================================================================================================================================================-->
+	<!-- РЕКОНСТРУКЦИЯ ЛЕСОПИЛКИ																															-->
+	<!--====================================================================================================================================================-->
+	<placeable isPreplaced="true" uniqueId="preplaced_fences_8ab5de10c0bc1bc5d0273c8c7ccdc90d"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_SawMillProductions_d06afb931bae145329b94f5b46eab330"/>
+	<!--====================================================================================================================================================-->
+	<!-- ЖД																																					-->
+	<!--====================================================================================================================================================-->
+	<placeable isPreplaced="true" uniqueId="preplaced_sellingStationProducts_9dd6c026f17646e284165d259581c97e"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_sellingStationProducts_0ca796a1ab8114513d99adfe983259f8a"/>
+	<!-- скрытая точка продажи -->
+	<placeable isPreplaced="true" uniqueId="preplaced_RailBulkSellPoint_22b676c5d05843409adca29b40ca3845" canBeSold="false" farmId="100"/>
+	<placeable isPreplaced="true" uniqueId="preplaced_sellingStationWood_6b9aa86c9073c3ef85c004cc8eb3b327" canBeSold="false" farmId="100"/>
+	<!--placeable isPreplaced="true" uniqueId="preplaced_warehouseLogisticUS_a2db5f42eafa7b5be70dfc1f4d6904f6" canBeSold="false" farmId="100"/-->
+	<placeable filename="$mapdir$/map/placeables/PalletBuyingStation/warehouseLogisticUS.xml" uniqueId="placeabled6a41aa237a1c1e05b30000ecb00a534" position="980.619 50.155 975.233" rotation="0.00 31.038 0.00"/>
+	<!--====================================================================================================================================================-->
+	<!-- ИНОЕ НЕСОРТИРОВАННОЕ																																-->
+	<!--====================================================================================================================================================-->
+</placeables>

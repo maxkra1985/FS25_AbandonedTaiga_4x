@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<texts>
+		<text name="fillType_instrument"	text="Tool Set"/>
+		<text name="typeDesc_instrument"	text="Tool Set for Construction and Repair Work"/>
+
+		<text name="NAILS"					text="Construction nails"/>
+		<text name="storeItem_nails"		text="Construction nails"/>
+		<text name="fillType_nails"			text="Construction nails"/>
+
+		<text name="PLYWOOD"				text="OSB boards"/>
+		<text name="storeItem_plywood"		text="OSB boards"/>
+		<text name="fillType_plywood"		text="OSB boards"/>
+
+		<text name="tool_axe"				text="Axe"/>
+		<text name="typeDesc_axe"			text="Hand tool for felling small and medium-sized trees with a trunk diameter of up to 80 cm."/>
+
+		<text name="fillType_building_metal"	text="Iron"/>
+		<text name="typeDesc_building_metal"	text="Iron for construction purposes (rebar, beams, pipes)"/>
+
+		<text name="fillType_metal"			text="Metal"/>
+		<text name="typeDesc_metal"			text="Sheet metal in rolls"/>
+
+		<text name="storeItem_jackhammer"	text="Jackhammer"/>
+
+		<text name="fillType_wheatClean"	text="Cleaned Wheat"/>
+		<text name="fillType_barleyClean"	text="Cleaned Barley"/>
+		<text name="fillType_oatClean"		text="Cleaned Oats"/>
+		<text name="fillType_sorghumClean"	text="Cleaned Sorghum"/>
+		<text name="fillType_grainWaste"	text="Grain Waste"/>
+		<text name="woodElevator_storageUsage"	text="Storage used"/>
+
+		<text name="fillType_sand"	text="SAND"/>
+
+		<!-- бренд и категории -->
+		<text name="ConstructibleBuildings"			text="Let's build it ourselves"/>
+		<text name="constructiblesProductionPoint"	text="Production facilities under construction"/>
+		<text name="constructiblesHusbandry"		text="The pens under construction"/>
+		<text name="constructiblesStorage"			text="Warehouses, storage facilities"/>
+		<text name="constructiblesTools"			text="Tools"/>
+
+		<text name="fillType_firewood"	text="Firewood"/>
+
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<text name="input_HPS_ACTION_SECONDRY" text="Remove Saplings"/>
+		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Toggle Free Plant"/>
+		<text name="ui_hps_loadError" text="Mod  %{modName}s  by  %{author}s  could not be loaded or is not supported!
+To avoid errors you should install the latest official version!
+
+Visit the Giants modHub download link below for the latest official release."/>
+		<text name="hps_warningStorageCapacityReached" text="Storage capacity reached!"/>
+		<text name="hps_warningStorageEmpty" text="Storage is empty!"/>
+		<text name="hps_warningBackpackCapacityReached" text="Backpack capacity reached!"/>
+		<text name="hps_warningBackpackEmpty" text="Backpack is empty!"/>
+		<text name="hps_warningPalletCapacityReached" text="Pallet capacity reached!"/>
+		<text name="hps_warningPalletEmpty" text="Pallet is empty!"/>
+		<text name="hps_warningFailed" text="Failed, unknown reason!"/>
+		<text name="hps_warningTreeTypeOrVariation" text="Tree type or variation does not match carried items."/>
+		<text name="hps_removeFromStorageDialog" text="Select sapling type and variation to remove."/>
+		<text name="hps_resetcounter" text="Reset counter"/>
+		<text name="hps_freeModeOn" text="Free-mode on"/>
+		<text name="hps_addToStorage" text="Add to storage"/>
+		<text name="hps_removeFromStorage" text="Remove from storage"/>
+		<text name="hps_addToPallet" text="Add to pallet"/>
+		<text name="hps_removeFromPallet" text="Remove from pallet"/>
+		<text name="hps_messageDuplicateEquipment" text="You are already carrying this type of equipment."/>
+		<text name="shopItem_handPlantSaplings01" text="Hand Plant Saplings Box"/>
+		<text name="shopItem_handPlantSaplings02" text="Hand Plant Saplings Shed"/>
+		<text name="shopItem_handPlantSaplingsShovel" text="Shovel &amp; Backpack"/> <!-- Example: Shovel & Backpack -->
+		<text name="function_handPlantSaplings01" text="A storage building with 1 shovel and space to store some extra tree saplings."/>
+		<text name="function_handPlantSaplings02" text="A storage building with 2 shovels and space to store some extra tree saplings."/>
+		<text name="function_handPlantSaplingsShovel" text="A shovel and backpack you are carrying, included as part of a 'Hand Plant Saplings' storage placeable."/>
+		<text name="hps_messageSellNotEmpty" text="The storage is not empty.
+The following number of saplings will also be sold:"/>
+		<text name="hps_messageFlightState" text="Flight State Active"/>
+
+		<!-- HandLiftableConsumables - ёмкости с топливом -->
+		<text name="function_canisterDiesel"			text="Diesel to refuel your vehicles"/>
+		<text name="shopItem_barrelIronDiesel"			text="Barrel with diesel"/>
+		<text name="shopItem_canisterFuelDiesel"		text="Canister with diesel"/>
+
+		<!-- Ёлки -->
+		<text name="treeType_spruce1n" text="Spruce" />
+		<text name="treeType_spruce2n" text="Spruce" />
+	</texts>
+</l10n>

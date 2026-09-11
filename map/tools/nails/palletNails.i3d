@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="palletNails.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="carton_diffuse.dds"/>
+    <File fileId="5" filename="factoryLogo.dds"/>
+    <File fileId="6" filename="interliningMaterial_diffuse.dds"/>
+    <File fileId="3" filename="nailsLogo.png"/>
+    <File fileId="4" filename="nailsLogoSmall.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="lambert1" materialId="5" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+    <Material name="UnnamedMaterial" materialId="6">
+      <Texture fileId="2"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="7">
+      <Texture fileId="5"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="8">
+      <Texture fileId="6"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="9">
+      <Texture fileId="3"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="10">
+      <Texture fileId="4"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="palletNails.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="nailsBoxPallet_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" clipDistance="150" nodeId="19" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
+      <Shape name="dynamicMountTrigger" translation="0 0.0904753 0" shapeId="2" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x20000" nodeId="20" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      <TransformGroup name="content" nodeId="21">
+        <Shape name="carton01" translation="0 0.204 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="22" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton01Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="23" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="24" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="25" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="26" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="27" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton02" translation="0 0.204 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="28" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton02Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="29" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="30" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="31" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="32" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton03" translation="0 0.204 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="33" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton03Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="34" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="35" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="36" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="37" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton04" translation="0 0.204 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="38" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton04Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="39" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="40" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="41" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="42" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton05" translation="0 0.204 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="43" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton05Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="44" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="45" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="46" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="47" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton06" translation="-0.202 0.204 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="48" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton06Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="49" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="50" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="51" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="52" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton07" translation="-0.202 0.204 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="53" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton07Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="54" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="55" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="56" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="57" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton08" translation="-0.202 0.204 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="58" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton08Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="59" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="60" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="61" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="62" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton09" translation="-0.202 0.204 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="63" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton09Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="64" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="65" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="66" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="67" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton10" translation="-0.202 0.204 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="68" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton10Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="69" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="70" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="71" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="72" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton11" translation="0.202 0.204 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="73" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton11Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="74" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="75" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="76" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="77" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton12" translation="0.202 0.204 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="78" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton12Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="79" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="80" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="81" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="82" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton13" translation="0.202 0.204 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="83" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton13Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="84" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="85" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="86" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="87" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton14" translation="0.202 0.204 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="88" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton14Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="89" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="90" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="91" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="92" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton15" translation="0.202 0.204 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="93" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton15Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="94" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="95" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="96" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="97" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton16" translation="-0.404 0.204 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="98" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton16Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="99" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="100" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="101" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="102" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton17" translation="-0.404 0.204 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="103" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton17Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="104" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="105" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="106" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="107" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton18" translation="-0.404 0.204 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="108" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton18Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="109" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="110" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="111" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="112" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton19" translation="-0.404 0.204 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="113" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton19Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="114" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="115" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="116" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="117" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton20" translation="-0.404 0.204 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="118" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton20Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="119" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="120" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="121" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="122" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton21" translation="0.404 0.204 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="123" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton21Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="124" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="125" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="126" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="127" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton22" translation="0.404 0.204 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="128" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton22Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="129" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="130" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="131" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="132" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton23" translation="0.404 0.204 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="133" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton23Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="134" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="135" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="136" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="137" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton24" translation="0.404 0.204 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="138" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton24Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="139" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="140" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="141" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="142" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton25" translation="0.404 0.204 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="143" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton25Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="144" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="145" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="146" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="147" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton26" translation="0 0.309 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="148" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton26Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="149" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="150" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="151" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="152" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="153" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton27" translation="0 0.309 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="154" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton27Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="155" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="156" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="157" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="158" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton28" translation="0 0.309 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="159" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton28Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="160" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="161" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="162" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="163" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton29" translation="0 0.309 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="164" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton29Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="165" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="166" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="167" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="168" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton30" translation="0 0.309 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="169" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton30Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="170" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="171" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="172" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="173" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton31" translation="-0.202 0.309 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="174" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton31Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="175" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="176" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="177" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="178" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton32" translation="-0.202 0.309 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="179" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton32Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="180" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="181" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="182" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="183" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton33" translation="-0.202 0.309 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="184" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton33Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="185" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="186" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="187" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="188" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton34" translation="-0.202 0.309 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="189" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton34Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="190" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="191" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="192" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="193" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton35" translation="-0.202 0.309 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="194" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton35Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="195" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="196" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="197" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="198" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton36" translation="0.202 0.309 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="199" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton36Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="200" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="201" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="202" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="203" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton37" translation="0.202 0.309 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="204" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton37Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="205" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="206" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="207" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="208" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton38" translation="0.202 0.309 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="209" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton38Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="210" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="211" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="212" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="213" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton39" translation="0.202 0.309 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="214" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton39Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="215" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="216" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="217" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="218" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton40" translation="0.202 0.309 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="219" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton40Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="220" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="221" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="222" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="223" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton41" translation="-0.404 0.309 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="224" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton41Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="225" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="226" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="227" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="228" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton42" translation="-0.404 0.309 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="229" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton42Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="230" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="231" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="232" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="233" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton43" translation="-0.404 0.309 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="234" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton43Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="235" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="236" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="237" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="238" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton44" translation="-0.404 0.309 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="239" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton44Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="240" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="241" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="242" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="243" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton45" translation="-0.404 0.309 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="244" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton45Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="245" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="246" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="247" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="248" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton46" translation="0.404 0.309 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="249" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton46Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="250" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="251" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="252" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="253" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton47" translation="0.404 0.309 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="254" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton47Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="255" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="256" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="257" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="258" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton48" translation="0.404 0.309 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="259" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton48Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="260" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="261" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="262" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="263" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton49" translation="0.404 0.309 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="264" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton49Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="265" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="266" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="267" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="268" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton50" translation="0.404 0.309 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="269" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton50Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="270" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="271" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="272" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="273" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton51" translation="0 0.414 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="274" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton51Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="275" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="276" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="277" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="278" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="279" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton52" translation="0 0.414 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="280" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton52Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="281" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="282" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="283" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="284" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton53" translation="0 0.414 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="285" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton53Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="286" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="287" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="288" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="289" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton54" translation="0 0.414 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="290" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton54Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="291" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="292" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="293" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="294" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton55" translation="0 0.414 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="295" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton55Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="296" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="297" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="298" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="299" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton56" translation="-0.202 0.414 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="300" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton56Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="301" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="302" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="303" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="304" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton57" translation="-0.202 0.414 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="305" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton57Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="306" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="307" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="308" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="309" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton58" translation="-0.202 0.414 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="310" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton58Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="311" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="312" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="313" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="314" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton59" translation="-0.202 0.414 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="315" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton59Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="316" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="317" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="318" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="319" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton60" translation="-0.202 0.414 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="320" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton60Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="321" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="322" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="323" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="324" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton61" translation="0.202 0.414 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="325" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton61Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="326" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="327" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="328" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="329" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton62" translation="0.202 0.414 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="330" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton62Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="331" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="332" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="333" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="334" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton63" translation="0.202 0.414 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="335" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton63Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="336" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="337" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="338" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="339" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton64" translation="0.202 0.414 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="340" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton64Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="341" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="342" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="343" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="344" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton65" translation="0.202 0.414 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="345" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton65Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="346" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="347" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="348" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="349" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton66" translation="-0.404 0.414 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="350" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton66Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="351" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="352" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="353" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="354" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton67" translation="-0.404 0.414 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="355" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton67Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="356" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="357" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="358" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="359" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton68" translation="-0.404 0.414 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="360" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton68Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="361" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="362" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="363" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="364" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton69" translation="-0.404 0.414 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="365" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton69Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="366" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="367" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="368" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="369" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton70" translation="-0.404 0.414 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="370" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton70Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="371" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="372" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="373" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="374" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton71" translation="0.404 0.414 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="375" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton71Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="376" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="377" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="378" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="379" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton72" translation="0.404 0.414 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="380" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton72Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="381" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="382" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="383" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="384" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton73" translation="0.404 0.414 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="385" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton73Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="386" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="387" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="388" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="389" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton74" translation="0.404 0.414 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="390" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton74Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="391" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="392" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="393" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="394" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton75" translation="0.404 0.414 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="395" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton75Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="396" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="397" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="398" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="399" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton76" translation="0 0.519 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="400" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton76Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="401" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="402" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="403" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="404" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="405" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton77" translation="0 0.519 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="406" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton77Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="407" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="408" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="409" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="410" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton78" translation="0 0.519 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="411" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton78Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="412" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="413" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="414" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="415" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton79" translation="0 0.519 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="416" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton79Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="417" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="418" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="419" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="420" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton80" translation="0 0.519 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="421" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton80Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="422" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="423" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="424" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="425" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton81" translation="-0.202 0.519 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="426" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton81Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="427" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="428" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="429" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="430" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton82" translation="-0.202 0.519 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="431" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton82Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="432" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="433" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="434" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="435" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton83" translation="-0.202 0.519 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="436" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton83Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="437" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="438" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="439" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="440" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton84" translation="-0.202 0.519 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="441" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton84Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="442" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="443" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="444" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="445" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton85" translation="-0.202 0.519 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="446" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton85Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="447" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="448" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="449" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="450" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton86" translation="0.202 0.519 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="451" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton86Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="452" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="453" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="454" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="455" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton87" translation="0.202 0.519 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="456" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton87Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="457" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="458" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="459" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="460" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton88" translation="0.202 0.519 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="461" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton88Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="462" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="463" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="464" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="465" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton89" translation="0.202 0.519 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="466" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton89Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="467" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="468" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="469" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="470" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton90" translation="0.202 0.519 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="471" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton90Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="472" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="473" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="474" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="475" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton91" translation="-0.404 0.519 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="476" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton91Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="477" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="478" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="479" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="480" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton92" translation="-0.404 0.519 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="481" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton92Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="482" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="483" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="484" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="485" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton93" translation="-0.404 0.519 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="486" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton93Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="487" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="488" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="489" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="490" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton94" translation="-0.404 0.519 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="491" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton94Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="492" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="493" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="494" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="495" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton95" translation="-0.404 0.519 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="496" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton95Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="497" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="498" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="499" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="500" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton96" translation="0.404 0.519 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="501" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton96Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="502" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="503" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="504" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="505" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton97" translation="0.404 0.519 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="506" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton97Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="507" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="508" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="509" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="510" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton98" translation="0.404 0.519 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="511" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton98Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="512" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="513" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="514" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="515" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton99" translation="0.404 0.519 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="516" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton99Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="517" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="518" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="519" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="520" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton100" translation="0.404 0.519 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="521" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton100Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="522" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="523" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="524" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="525" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton101" translation="0 0.624 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="526" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton101Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="527" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="528" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="529" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="530" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="531" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton102" translation="0 0.624 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="532" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton102Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="533" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="534" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="535" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="536" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton103" translation="0 0.624 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="537" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton103Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="538" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="539" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="540" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="541" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton104" translation="0 0.624 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="542" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton104Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="543" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="544" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="545" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="546" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton105" translation="0 0.624 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="547" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton105Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="548" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="549" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="550" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="551" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton106" translation="-0.202 0.624 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="552" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton106Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="553" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="554" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="555" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="556" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton107" translation="-0.202 0.624 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="557" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton107Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="558" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="559" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="560" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="561" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton108" translation="-0.202 0.624 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="562" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton108Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="563" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="564" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="565" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="566" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton109" translation="-0.202 0.624 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="567" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton109Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="568" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="569" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="570" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="571" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton110" translation="-0.202 0.624 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="572" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton110Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="573" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="574" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="575" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="576" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton111" translation="0.202 0.624 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="577" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton111Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="578" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="579" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="580" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="581" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton112" translation="0.202 0.624 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="582" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton112Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="583" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="584" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="585" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="586" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton113" translation="0.202 0.624 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="587" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton113Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="588" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="589" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="590" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="591" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton114" translation="0.202 0.624 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="592" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton114Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="593" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="594" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="595" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="596" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton115" translation="0.202 0.624 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="597" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton115Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="598" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="599" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="600" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="601" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton116" translation="-0.404 0.624 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="602" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton116Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="603" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="604" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="605" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="606" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton117" translation="-0.404 0.624 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="607" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton117Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="608" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="609" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="610" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="611" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton118" translation="-0.404 0.624 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="612" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton118Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="613" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="614" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="615" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="616" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton119" translation="-0.404 0.624 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="617" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton119Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="618" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="619" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="620" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="621" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton120" translation="-0.404 0.624 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="622" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton120Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="623" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="624" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="625" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="626" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton121" translation="0.404 0.624 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="627" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton121Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="628" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="629" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="630" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="631" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton122" translation="0.404 0.624 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="632" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton122Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="633" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="634" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="635" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="636" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton123" translation="0.404 0.624 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="637" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton123Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="638" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="639" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="640" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="641" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton124" translation="0.404 0.624 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="642" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton124Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="643" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="644" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="645" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="646" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton125" translation="0.404 0.624 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="647" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton125Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="648" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="649" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="650" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="651" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton26" translation="0 0.729 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="652" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton26Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="653" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="654" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="655" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="656" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="interlining material" translation="0 -0.525 0" rotation="-0 -90 0" scale="5.25 0.05 5.33333" shapeId="3" nodeId="657" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="8"/>
+        </Shape>
+        <Shape name="carton127" translation="0 0.729 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="658" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton127Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="659" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="660" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="661" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="662" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton128" translation="0 0.729 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="663" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton128Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="664" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="665" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="666" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="667" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton129" translation="0 0.729 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="668" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton129Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="669" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="670" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="671" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="672" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton130" translation="0 0.729 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="673" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton130Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="674" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="675" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="676" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="677" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton131" translation="-0.202 0.729 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="678" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton131Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="679" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="680" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="681" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="682" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton132" translation="-0.202 0.729 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="683" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton132Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="684" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="685" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="686" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="687" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton133" translation="-0.202 0.729 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="688" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton133Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="689" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="690" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="691" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="692" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton134" translation="-0.202 0.729 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="693" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton134Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="694" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="695" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="696" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="697" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton135" translation="-0.202 0.729 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="698" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton135Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="699" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="700" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="701" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="702" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton136" translation="0.202 0.729 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="703" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton136Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="704" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="705" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="706" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="707" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton137" translation="0.202 0.729 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="708" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton137Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="709" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="710" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="711" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="712" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton138" translation="0.202 0.729 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="713" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton138Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="714" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="715" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="716" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="717" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton139" translation="0.202 0.729 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="718" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton139Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="719" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="720" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="721" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="722" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton140" translation="0.202 0.729 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="723" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton140Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="724" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="725" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="726" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="727" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton141" translation="-0.404 0.729 2.42944e-08" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="728" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton141Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="729" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="730" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="731" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="732" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton142" translation="-0.404 0.729 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="733" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton142Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="734" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="735" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="736" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="737" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton143" translation="-0.404 0.729 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="738" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton143Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="739" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="740" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="741" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="742" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton144" translation="-0.404 0.729 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="743" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton144Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="744" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="745" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="746" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="747" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton145" translation="-0.404 0.729 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="748" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton145Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="749" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="750" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="751" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="752" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton146" translation="0.404 0.729 0" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="753" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton146Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="754" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="755" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="756" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="757" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton147" translation="0.404 0.729 -0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="758" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton147Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="759" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="760" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="761" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="762" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton148" translation="0.404 0.729 0.152" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="763" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton148Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="764" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="765" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="766" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="767" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton149" translation="0.404 0.729 -0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="768" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton149Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="769" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="770" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="771" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="772" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+        <Shape name="carton150" translation="0.404 0.729 0.304" rotation="0 90 0" scale="0.15 0.1 0.2" shapeId="3" nodeId="773" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6">
+          <Shape name="carton150Tension" translation="0 -0.5 0" scale="1.65572 4.93394 2.48735" shapeId="4" nodeId="774" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="bigLogo" translation="0 0.51 0" scale="0.793872 10 0.748774" shapeId="5" nodeId="775" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="9"/>
+          <Shape name="smallLogo" translation="-0.506667 5.2259e-08 0" rotation="90 -90 0" scale="0.731918 6.66667 0.451575" shapeId="5" nodeId="776" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="factoryLogo" translation="0 0 0.505" rotation="90 -0 0" scale="0.655881 5 0.455505" shapeId="5" nodeId="777" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="collisions" clipDistance="10" nodeId="778">
+        <Shape name="floorCollision01" translation="-0.3 0 0" shapeId="6" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="779" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+        <Shape name="floorCollision02" translation="0.3 0 0" shapeId="7" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="780" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      </TransformGroup>
+    </Shape>
+  </Scene>
+
+</i3D>

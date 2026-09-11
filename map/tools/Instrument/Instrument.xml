@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_fillType_instrument</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>map/tools/Instrument/Instrument.dds</image>
+		<price>1500</price>
+		<showInStore>true</showInStore>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<category>pallets</category>
+		<financeCategory>OTHER</financeCategory>
+		<brand>LIZARD</brand>
+		<rotation>0</rotation>
+		<vertexBufferMemoryUsage>26368</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>8960</indexBufferMemoryUsage>
+		<textureMemoryUsage>851968</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_instrument</typeDesc>
+		<filename>map/tools/Instrument/Instrument.i3d</filename>
+		<size width="1" length="0.6" height="1.2" />
+		<input allowed="false"/>
+		<canBeReset>false</canBeReset>
+		<supportsPickUp>true</supportsPickUp>
+		<components maxMass="150">
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1" />
+		</components>
+		<showInVehicleMenu>true</showInVehicleMenu>
+		<mapHotspot available="false" />
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration name="$l10n_configuration_valueDefault">
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="INSTRUMENT" capacity="250" startFillType="INSTRUMENT" startFillLevel="250" ignoreFillLimit="true"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<pallet fillUnitIndex="1" linkNode="Instrument">
+		<content>
+			<object node="content_01" tensionBeltNode="ContentTension01"/>
+			<object node="content_02" tensionBeltNode="ContentTension02"/>
+			<object node="content_03" tensionBeltNode="ContentTension03"/>
+			<object node="content_04" tensionBeltNode="ContentTension04"/>
+			<object node="content_05" tensionBeltNode="ContentTension05"/>
+			<object node="content_06" tensionBeltNode="ContentTension06"/>
+			<object node="content_07" tensionBeltNode="ContentTension07"/>
+		</content>
+		<sounds>
+			<unload template="palletsFillBag" pitchScale="0.9" />
+		</sounds>
+	</pallet>
+
+
+	<i3dMappings>
+		<i3dMapping id="Instrument" node="0>" />
+		<i3dMapping id="content_01" node="0>1|0" />
+		<i3dMapping id="ContentTension01" node="0>1|0|0" />
+		<i3dMapping id="content_02" node="0>1|1" />
+		<i3dMapping id="ContentTension02" node="0>1|1|0" />
+		<i3dMapping id="content_03" node="0>1|2" />
+		<i3dMapping id="ContentTension03" node="0>1|2|0" />
+		<i3dMapping id="content_04" node="0>1|3" />
+		<i3dMapping id="ContentTension04" node="0>1|3|0" />
+		<i3dMapping id="content_05" node="0>1|4" />
+		<i3dMapping id="ContentTension05" node="0>1|4|0" />
+		<i3dMapping id="content_06" node="0>1|5" />
+		<i3dMapping id="ContentTension06" node="0>1|5|0" />
+		<i3dMapping id="content_07" node="0>1|6" />
+		<i3dMapping id="ContentTension07" node="0>1|6|0" />
+	</i3dMappings>
+</vehicle>

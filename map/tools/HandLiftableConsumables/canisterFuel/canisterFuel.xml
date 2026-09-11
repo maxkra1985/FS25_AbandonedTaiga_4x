@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_shopItem_canisterFuel</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>$data/store/store_empty.png</image>
+		<price>100</price>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<category>objectMisc</category>
+		<financeCategory>OTHER</financeCategory>
+		<showInStore>false</showInStore>
+		<vertexBufferMemoryUsage>26368</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>8960</indexBufferMemoryUsage>
+		<textureMemoryUsage>851968</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>map/tools/HandLiftableConsumables/canisterFuel/canisterFuel.i3d</filename>
+		<size width="0.55" length="0.3" height="0.8" />
+		<input allowed="false"/>
+		<canBeReset>false</canBeReset>
+		<supportsPickUp>true</supportsPickUp>
+		<components maxMass="50">
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1" />
+		</components>
+		<showInVehicleMenu>false</showInVehicleMenu>
+		<mapHotspot available="false" />
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration name="$l10n_configuration_valueDefault">
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="DIESEL DEF" capacity="50" startFillType="DIESEL" startFillLevel="50" ignoreFillLimit="true">
+						<fillRootNode node="0>" />
+						<fillTypeMaterials>
+							<material fillType="DIESEL" node="canisterFuel_vis_LOD0" refNode="canisterFuelDiesel_mat"/>
+							<material fillType="DIESEL" node="canisterFuel_vis_LOD1" refNode="canisterFuelDiesel_mat"/>
+							<material fillType="DEF" node="canisterFuel_vis_LOD0" refNode="canisterFuelDef_mat"/>
+							<material fillType="DEF" node="canisterFuel_vis_LOD1" refNode="canisterFuelDef_mat"/>
+						</fillTypeMaterials>
+					</fillUnit>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<dischargeable requiresTipOcclusionArea="false">
+		<dischargeNode node="dischargeNode" emptySpeed="10" fillUnitIndex="1" maxDistance="3" canStartDischargeAutomatically="true">
+			<raycast useWorldNegYDirection="true" />
+			<info width="0.2" length="0.2" />
+		</dischargeNode>
+	</dischargeable>
+
+	<fillTriggerVehicle triggerNode="fillTrigger" fillUnitIndex="1" litersPerSecond="50"/>
+
+	<tensionBeltObject>
+		<meshNodes>
+			<meshNode node="tensionBeltShape"/>
+		</meshNodes>
+	</tensionBeltObject>
+
+	<i3dMappings>
+		<i3dMapping id="canisterFuel_vis_LOD0" node="0>0|0|0" />
+		<i3dMapping id="canisterFuel_vis_LOD1" node="0>0|0|1" />
+		<i3dMapping id="canisterFuelDiesel_mat" node="0>0|1" />
+		<i3dMapping id="canisterFuelDef_mat" node="0>0|2" />
+		<i3dMapping id="tensionBeltShape" node="0>1" />
+		<i3dMapping id="dischargeNode" node="0>2" />
+		<i3dMapping id="fillTrigger" node="0>3" />
+	</i3dMappings>
+</vehicle>

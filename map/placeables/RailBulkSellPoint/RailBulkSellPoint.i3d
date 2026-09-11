@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="RailBulkSellPoint.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
+  </Asset>
+
+  <Files>
+    <File fileId="1" filename="textures/elevator01_diffuse.dds"/>
+    <File fileId="2" filename="textures/elevator02_diffuse.dds"/>
+    <File fileId="5" filename="textures/universalSiloAlpha_diffuse.dds"/>
+    <File fileId="6" filename="textures/universalSiloAlpha_normal.dds"/>
+    <File fileId="4" filename="textures/wheatBottom_diffuse.dds"/>
+    <File fileId="12" filename="$data/maps/mapEU/textures/props/fluorescentLight02.i3d"/>
+    <File fileId="13" filename="$data/maps/mapEU/textures/props/fluorescentLight03.i3d"/>
+    <File fileId="11" filename="$data/maps/mapEU/textures/props/industrialLight03.i3d"/>
+    <File fileId="14" filename="$data/maps/mapEU/textures/props/industrialLight05.i3d"/>
+    <File fileId="17" filename="$data/shaders/glowShader.xml"/>
+    <File fileId="16" filename="$data/shared/assets/marker/markerIcons_diffuse.png"/>
+    <File fileId="8" filename="$data/shared/warningStripes_diffuse.dds"/>
+    <File fileId="9" filename="$data/shared/warningStripes_normal.dds"/>
+    <File fileId="10" filename="$data/shared/warningStripes_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="01 - Default" materialId="5">
+      <Texture fileId="1"/>
+    </Material>
+    <Material name="bild" materialId="6" specularColor="0.501961 1 0">
+      <Texture fileId="2"/>
+    </Material>
+    <Material name="bild" materialId="7" diffuseColor="1 1 1 1" specularColor="0.501961 1 0">
+    </Material>
+    <Material name="lambert1" materialId="8" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="markerIcons_mat" materialId="9" alphaBlending="true" customShaderId="17" customShaderVariation="additive_billboard_pulsating">
+      <Emissivemap fileId="16"/>
+      <CustomParameter name="lightControl" value="0.25"/>
+    </Material>
+    <Material name="universalSiloAlpha_mat" materialId="10">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="11" diffuseColor="1 1 1 1">
+    </Material>
+    <Material name="warningStripes_mat" materialId="13">
+      <Texture fileId="4"/>
+    </Material>
+    <Material name="warningStripes_mat" materialId="12">
+      <Texture fileId="8"/>
+      <Normalmap fileId="9"/>
+      <Glossmap fileId="10"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="RailBulkSellPoint.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="RailBulkSellPoint" clipDistance="600" nodeId="25">
+      <TransformGroup name="Visuals" translation="0.116379 5.14774e-09 0.9978" nodeId="26">
+        <Shape name="Elevator" translation="-0.116379 -5.14774e-09 -0.9978" rotation="-180 -5.00896e-06 -180" shapeId="1" clipDistance="400" nodeId="27" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="5">
+          <Shape name="Rampa" rotation="-90 5.00896e-06 180" shapeId="2" nodeId="28" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6"/>
+          <Shape name="grain" translation="6.07995e-16 0.973839 -6.93889e-16" shapeId="3" nodeId="29" castsShadows="true" receiveShadows="true" materialIds="13"/>
+          <Shape name="rehotka" rotation="-4.07111e-13 -4.07111e-13 -3.07862e-14" shapeId="4" nodeId="30" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="Elevator_col" rotation="4.07111e-13 -4.07111e-13 3.07862e-14" shapeId="1" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" clipDistance="400" nodeId="31" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+          <Shape name="Rampa_col" rotation="-90 5.00896e-06 180" shapeId="2" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" nodeId="32" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7"/>
+          <Shape name="rehotka_col" shapeId="4" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" nodeId="33" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+        </Shape>
+        <TransformGroup name="warningStries" translation="5.4296 1.59056 -1.6565" rotation="-2.9479e-07 90 0" nodeId="34">
+          <Shape name="warningStripesCorner1" translation="7.45257 7.0462e-07 2.97437" rotation="180 -5.00896e-06 180" shapeId="5" clipDistance="150" nodeId="35" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="12">
+            <Shape name="warningStripesCorner2" translation="0 -1.19209e-07 5.8" rotation="-180 5.00896e-06 -180" shapeId="6" clipDistance="150" nodeId="36" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="12">
+              <Shape name="warningStripesCorner3" translation="-15 -9.94609e-07 3.48943e-13" rotation="-3.64247e-06 1.62844e-12 3.64247e-06" shapeId="5" clipDistance="150" nodeId="37" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="12">
+                <Shape name="warningStripesCorner4" translation="0 -4.76837e-07 5.8" rotation="-180 -0 -180" shapeId="6" clipDistance="150" nodeId="38" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="12"/>
+              </Shape>
+            </Shape>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="lights" translation="-0.116379 -5.14774e-09 -0.9978" nodeId="39">
+          <ReferenceNode name="industrialLight03" translation="-4.11372 20.5077 22.2016" referenceId="11" nodeId="49"/>
+          <ReferenceNode name="industrialLight03" translation="-7.43241 3.02211 13.2968" rotation="0 -90 0" referenceId="11" nodeId="61"/>
+          <ReferenceNode name="industrialLight03" translation="-4.12734 20.5289 -23.5218" rotation="0 180 0" referenceId="11" nodeId="73"/>
+          <ReferenceNode name="fluorescentLight02" translation="4.01949 9.51718 2.61997" rotation="0 90 0" referenceId="12" nodeId="93"/>
+          <ReferenceNode name="fluorescentLight02" translation="7.92803 9.51718 2.61997" rotation="0 90 0" referenceId="12" nodeId="104"/>
+          <ReferenceNode name="fluorescentLight02" translation="4.01949 9.51718 -0.11056" rotation="0 90 0" referenceId="12" nodeId="115"/>
+          <ReferenceNode name="fluorescentLight02" translation="7.92803 9.51718 -0.11056" rotation="0 90 0" referenceId="12" nodeId="126"/>
+          <ReferenceNode name="fluorescentLight02" translation="4.01949 9.51718 -2.57126" rotation="0 90 0" referenceId="12" nodeId="137"/>
+          <ReferenceNode name="fluorescentLight02" translation="7.92803 9.51718 -2.57126" rotation="0 90 0" referenceId="12" nodeId="148"/>
+          <ReferenceNode name="fluorescentLight02" translation="4.01949 9.51718 -4.62669" rotation="0 90 0" referenceId="12" nodeId="159"/>
+          <ReferenceNode name="fluorescentLight02" translation="7.92803 9.51718 -4.62669" rotation="0 90 0" referenceId="12" nodeId="170"/>
+          <ReferenceNode name="fluorescentLight02" translation="4.77071 9.63121 4.44799" referenceId="12" nodeId="181"/>
+          <ReferenceNode name="fluorescentLight02" translation="7.15783 9.63121 4.44799" referenceId="12" nodeId="192"/>
+          <ReferenceNode name="fluorescentLight03" translation="2.12738 3.88756 3.64197" rotation="0 -0 -90" referenceId="13" nodeId="212"/>
+          <ReferenceNode name="fluorescentLight03" translation="2.12738 3.88756 -2.43096" rotation="0 -0 -90" referenceId="13" nodeId="224"/>
+          <TransformGroup name="Silo_01" translation="-1.04315 15.0774 18.8501" nodeId="236">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="246"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="257"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="268"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="279"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="290"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="301"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="312"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="323"/>
+          </TransformGroup>
+          <TransformGroup name="Silo_02" translation="-1.04315 15.0774 11.8558" nodeId="334">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="335"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="346"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="357"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="368"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="379"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="390"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="401"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="412"/>
+          </TransformGroup>
+          <TransformGroup name="Silo_03" translation="-1.04315 15.0774 4.88471" nodeId="423">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="424"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="435"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="446"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="457"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="468"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="479"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="490"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="501"/>
+          </TransformGroup>
+          <TransformGroup name="Silo_04" translation="-1.04315 15.0774 -6.17077" nodeId="512">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="513"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="524"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="535"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="546"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="557"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="568"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="579"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="590"/>
+          </TransformGroup>
+          <TransformGroup name="Silo_05" translation="-1.04315 15.0774 -13.1661" nodeId="601">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="602"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="613"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="624"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="635"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="646"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="657"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="668"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="679"/>
+          </TransformGroup>
+          <TransformGroup name="Silo_06" translation="-1.04315 15.0774 -20.1478" nodeId="690">
+            <ReferenceNode name="industrialLight05" translation="-0.744787 0 3.34997" rotation="90 38.4012 0" referenceId="14" nodeId="691"/>
+            <ReferenceNode name="industrialLight05" translation="0.744199 -9.53674e-07 1.28551" rotation="90 71.7333 2.08161e-05" referenceId="14" nodeId="702"/>
+            <ReferenceNode name="industrialLight05" translation="0.773839 0 -1.29657" rotation="-90 74.4536 -180" referenceId="14" nodeId="713"/>
+            <ReferenceNode name="industrialLight05" translation="-0.773251 0 -3.33891" rotation="-90 39.4542 -180" referenceId="14" nodeId="724"/>
+            <ReferenceNode name="industrialLight05" translation="-5.63983 0 -3.34997" rotation="-90 -38.4013 180" referenceId="14" nodeId="735"/>
+            <ReferenceNode name="industrialLight05" translation="-7.12882 -9.53674e-07 -1.28551" rotation="-90 -71.7334 180" referenceId="14" nodeId="746"/>
+            <ReferenceNode name="industrialLight05" translation="-7.15846 0 1.29657" rotation="90 -74.4536 -8.65141e-06" referenceId="14" nodeId="757"/>
+            <ReferenceNode name="industrialLight05" translation="-5.61137 0 3.33891" rotation="90 -39.4542 -8.65142e-06" referenceId="14" nodeId="768"/>
+          </TransformGroup>
+          <ReferenceNode name="fluorescentLight03" translation="-7.43348 3.88301 -12.2335" rotation="0 -0 -90" referenceId="13" nodeId="779"/>
+          <ReferenceNode name="fluorescentLight03" translation="-7.43319 3.89647 -5.53596" rotation="0 -0 -90" referenceId="13" nodeId="791"/>
+          <ReferenceNode name="fluorescentLight03" translation="-7.43025 3.89326 4.25854" rotation="0 -0 -90" referenceId="13" nodeId="803"/>
+          <ReferenceNode name="fluorescentLight03" translation="-7.43025 3.88615 10.807" rotation="0 -0 -90" referenceId="13" nodeId="815"/>
+          <ReferenceNode name="industrialLight05" translation="-0.580329 17.945 4.37807" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="827"/>
+          <ReferenceNode name="industrialLight05" translation="-0.58033 17.945 3.08737" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="838"/>
+          <ReferenceNode name="industrialLight05" translation="-0.58033 17.945 1.74931" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="849"/>
+          <ReferenceNode name="industrialLight05" translation="-0.58033 17.945 0.314458" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="860"/>
+          <ReferenceNode name="industrialLight05" translation="-0.580331 17.945 -1.17568" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="871"/>
+          <ReferenceNode name="industrialLight05" translation="-0.580331 17.945 -2.6483" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="882"/>
+          <ReferenceNode name="industrialLight05" translation="-0.580332 17.945 -4.16007" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="893"/>
+          <ReferenceNode name="industrialLight05" translation="-0.580332 17.945 -5.96013" rotation="0 90 -8.65142e-06" referenceId="14" nodeId="904"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="Areas" nodeId="915">
+        <TransformGroup name="testAreas" nodeId="916">
+          <TransformGroup name="testArea1Start" translation="-10 0 -25" nodeId="917">
+            <TransformGroup name="testArea1End" translation="19.1144 4.54 48.5585" nodeId="918"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="clearAreas" nodeId="919">
+          <TransformGroup name="clearArea1Start" translation="9.073 0 -24.767" nodeId="920">
+            <TransformGroup name="clearArea1Width" translation="0 0 48.26" nodeId="921"/>
+            <TransformGroup name="clearArea1Height" translation="-19.335 0 0" nodeId="922"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="leveling" nodeId="923">
+          <TransformGroup name="levelArea1Start" translation="9.073 0 -24.767" nodeId="924">
+            <TransformGroup name="levelArea1Width" translation="0 0 48.26" nodeId="925"/>
+            <TransformGroup name="levelArea1Height" translation="-19.335 0 0" nodeId="926"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="tipOcclusionUpdateAreas" nodeId="927">
+          <TransformGroup name="tipOcclusionUpdateArea1Start" translation="-10.4051 0 23.5229" nodeId="928">
+            <TransformGroup name="tipOcclusionUpdateArea1End" translation="19.584 0 -48.3681" nodeId="929"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="indoorAreas" nodeId="930">
+          <TransformGroup name="indoorArea1Start" translation="8.5778 0 -21.0377" nodeId="931">
+            <TransformGroup name="indoorArea1Width" translation="0 0 40.6581" nodeId="932"/>
+            <TransformGroup name="indoorArea1Height" translation="-6 0 0" nodeId="933"/>
+          </TransformGroup>
+          <TransformGroup name="indoorArea2Start" translation="0.813912 0 -24.8787" nodeId="934">
+            <TransformGroup name="indoorArea2Width" translation="0 0 48.381" nodeId="935"/>
+            <TransformGroup name="indoorArea2Height" translation="-9.87961 0 0" nodeId="936"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="sellingStation" nodeId="937">
+        <Shape name="infoTrigger" translation="5.05624 1.59056 -0.900153" shapeId="7" static="true" trigger="true" collisionFilterGroup="0x100000" collisionFilterMask="0x100000" nodeId="938" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11"/>
+        <Shape name="playerTrigger" translation="1.91229 2.5819 6.44404" shapeId="8" static="true" trigger="true" collisionFilterGroup="0x300000" collisionFilterMask="0x300000" nodeId="939" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="11">
+          <TransformGroup name="playerTriggerMarker" translation="0 -1 0" nodeId="940"/>
+        </Shape>
+        <Shape name="unloadTrigger" translation="5.53564 1.59056 -0.756673" rotation="-0 90 0" scale="1.15 1 1.3" shapeId="9" static="true" trigger="true" collisionFilterGroup="0x40000000" collisionFilterMask="0x40000000" density="0.0001" nodeId="941" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8">
+          <TransformGroup name="unloadTriggerMarker" translation="-3 1 0" rotation="-0 -90 0" scale="0.769231 0.333333 0.869565" nodeId="942"/>
+          <TransformGroup name="markerIconUnload" translation="-3.58585e-09 0 0" rotation="-0 -90 0" scale="0.769231 1 0.869565" nodeId="943">
+            <Shape name="iconUnload" translation="0 1 0" shapeId="10" clipDistance="300" nodeId="944" castsShadows="true" receiveShadows="true" materialIds="9"/>
+            <Light name="pointLight" translation="0 1 0" clipDistance="100" nodeId="945" type="point" color="0.417119 0.506314 0.0445976" emitDiffuse="true" emitSpecular="true" range="1.5"/>
+          </TransformGroup>
+        </Shape>
+        <TransformGroup name="unloadTriggerAINode" translation="5.63651 1.59912 -1.35807" nodeId="946"/>
+        <TransformGroup name="mapPosition" translation="2.08376 1.60004 6.51509" nodeId="947"/>
+        <TransformGroup name="teleportNode" translation="0.468923 2.60867 -2.45525" nodeId="948"/>
+        <Shape name="baleTrigger" translation="0 -100 0" shapeId="11" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x40040000" nodeId="952" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

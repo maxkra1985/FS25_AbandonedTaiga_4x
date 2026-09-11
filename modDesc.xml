@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="90">
+	<author>MaxKra1985</author>
+	<version>1.2.0.0</version>
+	<title>
+		<ru>Заброшенная тайга</ru>
+		<en>Abandoned taiga</en>
+		<de>Verlassene Taiga</de>
+	</title>
+	<description>
+		<ru>Заброшенная тайга</ru>
+		<en>Abandoned taiga</en>
+		<de>Verlassene Taiga</de>
+	</description>
+	<iconFilename>icon.png</iconFilename>
+	<multiplayer supported="true"/>
+	<maps>
+		<map id="SampleModMap" className="Mission00" filename="$dataS/scripts/mission00.lua" configFilename="map/map.xml" defaultVehiclesXMLFilename="config/vehicles.xml" defaultHandToolsXMLFilename="config/handTools.xml" defaultPlaceablesXMLFilename="config/placeables.xml" defaultItemsXMLFilename="config/items.xml">
+			<title>
+				<ru>Заброшенная тайга</ru>
+				<en>Abandoned taiga</en>
+				<de>Verlassene Taiga</de>
+			</title>
+			<description>
+				<ru>Заброшенная тайга</ru>
+				<en>Abandoned taiga</en>
+				<de>Verlassene Taiga</de>
+			</description>
+			<iconFilename>preview.png</iconFilename>
+		</map>
+	</maps>
+
+	<l10n filenamePrefix="lang/l10n"/>
+
+	<loadAfter>
+		<className>Mission</className>
+		<className>SalePoint</className>
+		<className>Warehouse</className>
+		<className>Dealer</className>
+		<className>VehicleDealer</className>
+		<className>RentalSystem</className>
+	</loadAfter>
+
+	<extraSourceFiles>
+		<sourceFile filename="map/placeables/HandPlantSaplings/scripts/main.lua"/>
+		<sourceFile filename="scripts/addTreeTypes.lua"/>
+		<sourceFile filename="scripts/licensePlatesStandalone.lua"/>
+		<sourceFile filename="scripts/addStoreCategory.lua"/>
+		<sourceFile filename="scripts/IncreaseTreeLimit.lua"/>
+		<sourceFile filename="scripts/DinamycalPrice.lua"/>
+		<sourceFile filename="scripts/DynamicRoadMap.lua"/>
+		<sourceFile filename="scripts/ConstructionLifecycleFix.lua" />
+		<sourceFile filename="scripts/ProductionOptionalBoost.lua" />
+		<sourceFile filename="scripts/ProductionActiveVisuals.lua" />
+		<sourceFile filename="scripts/ObjectStorageAreaFillTypeFilter.lua" />
+	</extraSourceFiles>
+
+	<vehicleTypes>
+		<type name="squigglzeJackhammer" parent="base" filename="$dataS/scripts/vehicles/Vehicle.lua">
+			<specialization name="turnOnVehicle"/>
+			<specialization name="hydraulicHammer"/>
+		</type>
+		<type name="UazForester" parent="tractor" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
+			<specialization name="tensionBelts"/>
+			<specialization name="dynamicMountAttacher"/>
+		</type>
+		<type name="mapVehicleGoodie" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
+			<specialization name="vehicleSettings" />
+			<specialization name="animatedVehicle" />
+			<specialization name="enterable" />
+			<specialization name="enterablePassenger"/>
+			<!--specialization name="enterableEnterText" /-->
+		</type>
+	</vehicleTypes>
+
+	<placeableSpecializations>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<specialization name="handPlantSaplings" className="PlaceableHandPlantSaplings" filename="map/placeables/HandPlantSaplings/scripts/specializations/PlaceableHandPlantSaplings.lua"/>
+		<specialization name="hotspotsExtension" className="PlaceableHotspotsExtension" filename="map/placeables/HandPlantSaplings/scripts/specializations/PlaceableHotspotsExtension.lua"/>
+		<specialization name="extendedProductionPoint" 	className="PlaceableExtendedProductionPoint" filename="scripts/PlaceableExtendedProductionPoint.lua"/>
+		<specialization name="greenhouseSeasonal" className="PlaceableGreenhouseSeasonal" filename="scripts/PlaceableGreenhouseSeasonal.lua"/>
+		<specialization name="productionWarehouseSupply" className="PlaceableProductionWarehouseSupply" filename="scripts/PlaceableProductionWarehouseSupply.lua"/>
+	</placeableSpecializations>
+
+	<placeableTypes>
+		<type name="handPlantSaplings"
+			  parent="simplePlaceable"
+			  className="Placeable"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="infoTrigger"/>
+			<specialization name="handToolHolders"/>
+			<specialization name="handPlantSaplings"/>
+			<specialization name="hotspotsExtension"/>
+		</type>
+
+		<type name="hiddenWoodenWell"
+			  parent="simplePlaceable"
+			  className="Placeable"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="extendedProductionPoint"/>
+			<specialization name="infoTrigger"/>
+			<specialization name="hotspotsExtension"/>
+		</type>
+
+		<type name="productionPointWithStorage"
+			  parent="productionPoint"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="objectStorage"/>
+			<specialization name="productionWarehouseSupply"/>
+		</type>
+
+		<type name="constructibleCowHusbandryBarnMilk"
+			  parent="constructible"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="husbandry"/>
+			<specialization name="husbandryAnimals"/>
+			<specialization name="husbandryFood"/>
+			<specialization name="husbandryWater"/>
+			<specialization name="husbandryStraw"/>
+			<specialization name="hotspotsExtension"/>
+			<specialization name="husbandryMilk"/>
+			<specialization name="husbandryLiquidManure"/>
+		</type>
+
+		<type name="constructibleSmallSawmill"
+			  parent="constructible"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="productionPoint"/>
+			<specialization name="hotspotsExtension"/>
+		</type>
+
+		<!-- Greenhouse -->
+		<type name="greenhouseSeasonal"
+			  parent="greenhouse"
+			  filename="$dataS/scripts/placeables/Placeable.lua">
+			<specialization name="greenhouseSeasonal"/>
+		</type>
+
+	</placeableTypes>
+
+	<handToolSpecializations>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<specialization name="hpsShovel" className="HandToolHPSShovel" filename="map/placeables/HandPlantSaplings/scripts/handTools/specializations/HandToolHPSShovel.lua"/>
+	</handToolSpecializations>
+	<handToolTypes>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<type name="hpsShovel" className="HandTool" filename="$dataS/scripts/handTools/HandTool.lua">
+			<specialization name="storable"/>
+			<specialization name="hpsShovel"/>
+		</type>
+	</handToolTypes>
+	<brands>
+		<brand name="FARMING_INNOVATIONS" title="Farming Innovations" image="map/placeables/HandPlantSaplings/shared/brand_farmingInnovations.dds"/>
+		<brand name="UAZ" title="UAZ" image="map/vehicles/UAZ_Forester/brand.dds"/>
+		<brand name="ConstructibleBuildings" title="$l10n_ConstructibleBuildings" image="map/placeables/brandConstructibleBuildings.dds"/>
+	</brands>
+	<storeItems>
+		<!--==============================================================================================================================-->
+		<!-- ИНСТРУМЕНТЫ И ПОДДОНЫ МАТЕРИАЛОВ -->
+		<!-- ТОПОР -->
+		<storeItem xmlFilename="map/tools/axe/axe.xml"/>
+		<!-- ОТБОЙНЫЙ МОЛОТОК -->
+		<storeItem xmlFilename="map/tools/Jackhammer/jackhammer.xml"/>
+		<!-- МАТЕРИАЛЫ ДЛЯ СТРОИТЕЛЬСТВА -->
+		<storeItem xmlFilename="map/tools/Instrument/Instrument.xml"/>
+		<storeItem xmlFilename="map/tools/nails/palletNails.xml"/>
+		<storeItem xmlFilename="map/tools/plywood/plywood.xml"/>
+		<storeItem xmlFilename="map/tools/BuildingMetal/BuildingMetal.xml"/>
+		<storeItem xmlFilename="map/tools/Metal/metalPallet.xml"/>
+		<!-- ОВОЩИ -->
+		<storeItem xmlFilename="map/placeables/GardenBeds/pallets/cucumbersBoxPallet/cucumbersBoxPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/GardenBeds/pallets/cabbageBox/cabbagePallet.xml"/>
+		<!--==============================================================================================================================-->
+		<!-- ПОСТРОЙКИ -->
+		<!-- СТАРЫЙ САРАЙ ДЛЯ ИНСТРУМЕНТА -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/toolShed03.xml"/>
+		<!-- СТАРЫЙ КОЛОДЕЦ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/WoodenWell/Woodenfountain.xml"/>
+		<!-- СТАРОЕ ЗДАНИЕ С НАВЕСОМ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/BarracaoMadeiraVelho/Casa.xml"/>
+		<!-- ДЕРЕВЯННЫЕ НАВЕСЫ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/SmallWoodenShelter/woodenShelter.xml"/>
+		<!-- СТАРЫЙ ДЕРЕВЯННЫЙ НАВЕС -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/SmallOldWoodenShed/shed.xml"/>
+		<!-- РЕКОНСТРУКЦИЯ ДОМА -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/ConstructibleLogHouse/constructibleLogCabin.xml"/>
+		<!-- ПОСТРОЙКА НЕБОЛЬШОЙ ЛЕСОПИЛКИ -->
+		<storeItem xmlFilename="map/placeables/ConstructibleSmallSawmill/ConstructibleSmallSawmill.xml" />
+		<storeItem xmlFilename="map/tools/bigBagFirewood/bigBagFirewood.xml" />
+		<!-- РЕСТАВРАЦИЯ СТАРОЙ ЛЕСОПИЛКИ -->
+		<storeItem xmlFilename="map/placeables/ConstructibleSawmill/constructibleFences.xml" />
+		<storeItem xmlFilename="map/placeables/ConstructibleSawmill/constructibleSawmill.xml" />
+		<!-- ЖД ЭЛЕВАТОР СКУПКА СЫПУЧКИ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/RailBulkSellPoint/RailBulkSellPoint.xml"/>
+		<!-- ЖД СКУПКА ДЕРЕВА -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/Woodsellpoint/Woodsellpoint.xml"/>
+		<!-- ЖД ТОЧКА ПРОДАЖИ ПАЛЛЕТ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/PalletBuyingStation/warehouseLogisticUS.xml"/>
+		<!-- ЖД ТОЧКА СКУПКИ ПАЛЛЕТ -->
+		<storeItem rootNode="placeable" xmlFilename="map/placeables/PalletSellerStation/PalletSellerStation.xml"/>
+		<!-- ЖД РЕКОНСТРУИРУЕМЫЙ КОРОВНИК -->
+		<storeItem xmlFilename="map/placeables/CowBarnConstructibles/constructibleFences.xml"/>
+		<storeItem xmlFilename="map/placeables/CowBarnConstructibles/FS25_BallamNewCattleshed.xml"/>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<storeItem xmlFilename="map/placeables/HandPlantSaplings/handTools/handPlantSaplingsShovel.xml"/>
+		<storeItem xmlFilename="map/placeables/HandPlantSaplings/placeables/handPlantSaplings01.xml"/>
+		<storeItem xmlFilename="map/placeables/HandPlantSaplings/placeables/handPlantSaplings02.xml"/>
+		<!-- Грядки -->
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/farmWithBedsFences.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/canningShop.xml" />
+		<!--storeItem xmlFilename="map/placeables/FarmWithBeds/canningShopProduction.xml" />
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/canningShopStorage.xml" /-->
+		<storeItem xmlFilename="map/placeables/GardenSwing/gardenSwing.xml"/>
+		<storeItem xmlFilename="map/placeables/GardenBeds/gardenBeds.xml"/>
+		<storeItem xmlFilename="map/placeables/GardenBeds/gardenBedsMirror.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/salt/saltPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_tomatoes/barrel_tomatoesPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_cucumbers/barrel cucumbersPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_cabbage/BarrelCabbagepPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/StrawberryJam/palletStrawberryJam.xml"/>
+		<!-- HandLiftableConsumables - ёмкости с топливом -->
+		<storeItem xmlFilename="map/tools/HandLiftableConsumables/canisterFuel/canisterFuel_diesel.xml"/>
+		<storeItem xmlFilename="map/tools/HandLiftableConsumables/canisterFuel/multiPurchaseCanisterFuel_diesel.xml"/>
+		<storeItem xmlFilename="map/tools/HandLiftableConsumables/barrelIron/barrelIron_diesel.xml"/>
+		<storeItem xmlFilename="map/tools/HandLiftableConsumables/barrelIron/multiPurchaseBarrelIron_diesel.xml"/>
+		<!--==============================================================================================================================-->
+		<!-- ЁЛКИ -->
+		<storeItem xmlFilename="map/trees/spruce/spruceVar1_stage01.xml"/>
+		<storeItem xmlFilename="map/trees/spruce/spruceVar1_stage02.xml"/>
+		<storeItem xmlFilename="map/trees/spruce/spruceVar1_stage03.xml"/>
+		<storeItem xmlFilename="map/trees/spruce/spruceVar2_stage01.xml"/>
+		<storeItem xmlFilename="map/trees/spruce/spruceVar2_stage02.xml"/>
+		<storeItem xmlFilename="map/trees/spruce/spruceVar2_stage03.xml"/>
+		<!--==============================================================================================================================-->
+		<!-- ТРАНСПОРТ -->
+		<storeItem xmlFilename="map/vehicles/UAZ_Forester/UAZ_3303_forester.xml"/>
+		<storeItem xmlFilename="map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml"/>
+	</storeItems>
+	<actions>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<action name="HPS_ACTION_SECONDRY" axisType="HALF"/>
+		<action name="HPS_TOGGLE_FREE_PLANT" axisType="HALF"/>
+	</actions>
+	<inputBinding>
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<actionBinding action="HPS_ACTION_SECONDRY">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_c" index="1"/>
+			<binding device="KB_MOUSE_DEFAULT" input="MOUSE_BUTTON_RIGHT" index="3"/>
+			<binding device="GAMEPAD_DEFAULT" input="BUTTON_1"/>
+		</actionBinding>
+		<actionBinding action="HPS_TOGGLE_FREE_PLANT">
+			<binding device="KB_MOUSE_DEFAULT" input="KEY_comma" index="1"/>
+			<binding device="GAMEPAD_DEFAULT" input="BUTTON_5 BUTTON_18"/>
+		</actionBinding>
+	</inputBinding>
+
+	<constructionCategories>
+		<constructionType iconFilename="map/placeables/ConstructibleBuildings.dds"	name="ConstructibleBuildings"			title="$l10n_ConstructibleBuildings" />
+		<constructionCategory type="ConstructibleBuildings"							name="constructiblesProductionPoint"	title="$l10n_constructiblesProductionPoint"/>
+		<constructionCategory type="ConstructibleBuildings"							name="constructiblesHusbandry"			title="$l10n_constructiblesHusbandry"/>
+		<constructionCategory type="ConstructibleBuildings"							name="constructiblesStorage"			title="$l10n_constructiblesStorage"/>
+		<constructionCategory type="ConstructibleBuildings"							name="constructiblesTools"				title="$l10n_constructiblesTools"/>
+	</constructionCategories>
+
+</modDesc>

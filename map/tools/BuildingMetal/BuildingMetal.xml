@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_fillType_building_metal</name>
+		<image>map/tools/BuildingMetal/store_BuildingMetal.png</image>
+		<price>10000</price>
+		<category>pallets</category>
+		<brand>ConstructibleBuildings</brand>
+		<showInStore>true</showInStore>
+		<canBeSold>false</canBeSold>
+		<financeCategory>OTHER</financeCategory>
+		<vertexBufferMemoryUsage>35840</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>8960</indexBufferMemoryUsage>
+		<textureMemoryUsage>1245184</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+		<storeIconRendering>
+			<settings centerIcon="true" cameraXRot="-15" cameraYRot="35"/>
+		</storeIconRendering>
+		<audioMemoryUsage>0</audioMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_building_metal</typeDesc>
+		<filename>map/tools/BuildingMetal/BuildingMetal.i3d</filename>
+		<size width="0.8" length="7.6" height="0.8" />
+		<canBeReset>false</canBeReset>
+		<components>
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="60"/>
+		</components>
+		<showInVehicleMenu>false</showInVehicleMenu>
+		<mapHotspot available="false" />
+		<input allowed="false"/>
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="BUILDING_METAL" startFillType="BUILDING_METAL" startFillLevel="5000" capacity="5000"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<dischargeable requiresTipOcclusionArea="false">
+		<dischargeNode node="dischargeNode" emptySpeed="1000" fillUnitIndex="1" maxDistance="6" canStartDischargeAutomatically="true" playSound="false"/>
+	</dischargeable>
+
+	<pallet fillUnitIndex="1" node="pallet_vis">
+		<content>
+			<object node="metal" tensionBeltNode="metal"/>
+		</content>
+		<sounds>
+			<unload template="palletsFillPaper" pitchScale="0.8" volumeScale="1.5" supportsReverb="false"/>
+		</sounds>
+	</pallet>
+
+	<i3dMappings>
+		<i3dMapping id="clothesBoxPallet_component1" node="0>" />
+		<i3dMapping id="pallet_vis" node="0>0" />
+		<i3dMapping id="dischargeNode" node="0>0|0" />
+		<i3dMapping id="metal" node="0>0|1|0" />
+	</i3dMappings>
+</vehicle>

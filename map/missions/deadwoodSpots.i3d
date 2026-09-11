@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?>
+<i3D name="deadwoodSpots.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+    <Asset>
+        <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+    </Asset>
+    <Files/>
+    <Materials/>
+    <Shapes/>
+    <Scene>
+        <TransformGroup name="deadwoodMissionSpots" nodeId="26365">
+            <TransformGroup name="spot1" translation="1165.66 47.6511 1164.28" nodeId="26366"/>
+            <TransformGroup name="spot2" translation="1163.49 50 801.761" nodeId="26367"/>
+            <TransformGroup name="spot3" translation="1161.31 50 597.736" scale="1.00187 1.00187 1.00187" nodeId="26368"/>
+            <TransformGroup name="spot4" translation="1161.14 50 350.681" nodeId="26369"/>
+            <TransformGroup name="spot5" translation="1160.97 50 130.272" nodeId="26370"/>
+            <TransformGroup name="spot6" translation="1167.08 55.6446 -147.737" nodeId="26371"/>
+            <TransformGroup name="spot7" translation="1160.44 56.1581 -567.168" nodeId="26372"/>
+            <TransformGroup name="spot8" translation="1159.31 50 -980.126" nodeId="26373"/>
+            <TransformGroup name="spot9" translation="795.943 50 -1159.61" nodeId="26374"/>
+            <TransformGroup name="spot10" translation="386.583 50 -1159.87" nodeId="26375"/>
+            <TransformGroup name="spot11" translation="4.87752 50 -1163.38" nodeId="26376"/>
+            <TransformGroup name="spot12" translation="-432.316 50 -1159.17" nodeId="26377"/>
+            <TransformGroup name="spot13" translation="-968.14 50 -1159.71" nodeId="26378"/>
+            <TransformGroup name="spot14" translation="-1158.85 50 -894.481" nodeId="26379"/>
+            <TransformGroup name="spot15" translation="-1158.65 50.9558 -442.388" nodeId="26380"/>
+            <TransformGroup name="spot16" translation="-1161.82 51.0914 -31.2407" nodeId="26381"/>
+            <TransformGroup name="spot17" translation="-1157.06 50 322.668" nodeId="26382"/>
+            <TransformGroup name="spot18" translation="-1160.97 50 669.179" nodeId="26786"/>
+            <TransformGroup name="spot19" translation="-1156.49 50 1014.45" nodeId="26787"/>
+            <TransformGroup name="spot20" translation="-800.041 50 1157.59" scale="1.00187 1.00187 1.00187" nodeId="26788"/>
+            <TransformGroup name="spot21" translation="-548.456 50 1010.31" nodeId="26789"/>
+            <TransformGroup name="spot22" translation="-334.997 50 1152.17" nodeId="26790"/>
+            <TransformGroup name="spot23" translation="-111.009 50 1005.7" nodeId="26791"/>
+            <TransformGroup name="spot24" translation="113.521 50 1155.63" nodeId="26792"/>
+            <TransformGroup name="spot25" translation="330.612 50 999.268" nodeId="26793"/>
+            <TransformGroup name="spot26" translation="548.153 50 1143.49" nodeId="26794"/>
+            <TransformGroup name="spot27" translation="707.742 50 1005.96" nodeId="26795"/>
+        </TransformGroup>
+    </Scene>
+    <UserAttributes>
+        <UserAttribute nodeId="26366">
+            <Attribute name="radius" type="float" value="95"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26367">
+            <Attribute name="radius" type="float" value="65"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26368">
+            <Attribute name="radius" type="float" value="90"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26369">
+            <Attribute name="radius" type="float" value="90"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26370">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26371">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26372">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26373">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26374">
+            <Attribute name="radius" type="float" value="50"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26375">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26376">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26377">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26378">
+            <Attribute name="radius" type="float" value="70"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26379">
+            <Attribute name="radius" type="float" value="70"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26380">
+            <Attribute name="radius" type="float" value="60"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26381">
+            <Attribute name="radius" type="float" value="70"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26382">
+            <Attribute name="radius" type="float" value="50"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26786">
+            <Attribute name="radius" type="float" value="95"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26787">
+            <Attribute name="radius" type="float" value="65"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26788">
+            <Attribute name="radius" type="float" value="90"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26789">
+            <Attribute name="radius" type="float" value="90"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26790">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26791">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26792">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26793">
+            <Attribute name="radius" type="float" value="80"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26794">
+            <Attribute name="radius" type="float" value="70"/>
+        </UserAttribute>
+        <UserAttribute nodeId="26795">
+            <Attribute name="radius" type="float" value="70"/>
+        </UserAttribute>
+    </UserAttributes>
+</i3D>

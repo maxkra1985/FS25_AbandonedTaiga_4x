@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="mapVehicleGoodie" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+	<storeData>
+		<name>Качели</name>
+		<functions>
+			<function>Садовые качели для отдыха</function>
+		</functions>
+		<image>map/placeables/GardenSwing/gardenSwing.dds</image>
+		<price>0</price>
+		<showInStore>false</showInStore>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>1000</lifetime>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<category>trailers</category>
+		<canBeSold>true</canBeSold>
+	</storeData>
+
+	<base>
+		<typeDesc>Садовые качели</typeDesc>
+		<filename>map/placeables/GardenSwing/gardenSwing.i3d</filename>
+		<size width="2" length="6" height="2"/>
+		<components>
+			<component centerOfMass="0 0 -0.314" solverIterationCount="20" mass="1200" />
+		</components>
+		<showInVehicleMenu>false</showInVehicleMenu>
+		<mapHotspot available="false" />
+		<supportsRadio>false</supportsRadio>
+	</base>
+
+	<enterable isTabbable="false" enterText="сесть на качели">
+		<enterReferenceNode node="enterReferenceNode" interactionRadius="1.5" />
+		<exitPoint node="passengerSeat01ExitPoint"/>
+
+		<cameras>
+			<camera node="outdoorCamera" rotatable="true" rotateNode="outdoorCameraTarget" limit="true" useWorldXZRotation="true" rotMinX="-1.4" rotMaxX="10" transMin="4" transMax="40" translation="0 0 5.4" rotation="-17.5 180 0">
+				<raycastNode node="cameraRaycastNode1"/>
+				<raycastNode node="cameraRaycastNode2"/>
+				<raycastNode node="cameraRaycastNode3"/>
+			</camera>
+			<camera node="indoorCamera" rotatable="true" limit="true" rotMinX="-1.1" rotMaxX="0.4" transMin="0" transMax="0" useMirror="false" useOutdoorSounds="true" isInside="true" positionSmoothingParameter="0" />
+		</cameras>
+
+		<!-- Finger poseIds= flatFingers, narrowFingers and wideFingers -->
+		<characterNode node="passengerSeat01PlayerSkin" cameraMinDistance="1.5" spineRotation="-90 0 90" >
+			<target ikChain="rightFoot"	targetNode="passengerSeat01PlayerRightFoot" />
+			<target ikChain="leftFoot"	targetNode="passengerSeat01PlayerLeftFoot" />
+			<target ikChain="rightArm"	targetNode="passengerSeat01PlayerRightHand" />
+			<target ikChain="leftArm"	targetNode="passengerSeat01PlayerLeftHand" poseId="wideFingers"/>
+		</characterNode>
+
+		<passengerSeats>
+			<passengerSeat node="passengerSeat02" exitPoint="passengerSeat02ExitPoint" outdoorCameraIndex="1">
+				<camera node="passengerSeat02Camera" rotatable="true" limit="true" rotMinX="-1.1" rotMaxX="0.4" transMin="0" transMax="0" useMirror="false" isInside="true" positionSmoothingParameter="0"/>
+				<characterNode node="passengerSeat02PlayerSkin" cameraMinDistance="0.5" spineRotation="-90 0 90">
+					<target ikChain="leftArm" targetNode="passengerSeat02PlayerLeftHand" poseId="flatFingers"/>
+					<target ikChain="rightArm" targetNode="passengerSeat02PlayerRightHand" poseId="wideFingers"/>
+					<target ikChain="leftFoot" targetNode="passengerSeat02PlayerLeftFoot"/>
+					<target ikChain="rightFoot" targetNode="passengerSeat02PlayerRightFoot"/>
+				</characterNode>
+			</passengerSeat>
+			<passengerSeat node="passengerSeat03" exitPoint="passengerSeat03ExitPoint" outdoorCameraIndex="1">
+				<camera node="passengerSeat03Camera" rotatable="true" limit="true" rotMinX="-1.1" rotMaxX="0.4" transMin="0" transMax="0" useMirror="false" isInside="true" positionSmoothingParameter="0"/>
+				<characterNode node="passengerSeat03PlayerSkin" cameraMinDistance="0.5" spineRotation="-90 0 90">
+					<target ikChain="leftArm" targetNode="passengerSeat03PlayerLeftHand" poseId="flatFingers"/>
+					<target ikChain="rightArm" targetNode="passengerSeat03PlayerRightHand" poseId="wideFingers"/>
+					<target ikChain="leftFoot" targetNode="passengerSeat03PlayerLeftFoot"/>
+					<target ikChain="rightFoot" targetNode="passengerSeat03PlayerRightFoot"/>
+				</characterNode>
+			</passengerSeat>
+		</passengerSeats>
+	</enterable>
+
+	<i3dMappings>
+		<i3dMapping id="armChair_main_component1" node="0>" />
+		<i3dMapping id="cameras" node="0>0" />
+		<i3dMapping id="outdoorCameraTarget" node="0>0|0" />
+		<i3dMapping id="outdoorCamera" node="0>0|0|0" />
+		<i3dMapping id="indoorCamera" node="0>0|1" />
+		<i3dMapping id="cameraRaycastNode1" node="0>0|2" />
+		<i3dMapping id="cameraRaycastNode2" node="0>0|3" />
+		<i3dMapping id="cameraRaycastNode3" node="0>0|4" />
+		<i3dMapping id="player" node="0>1|0" />
+		<i3dMapping id="passengerSeat01ExitPoint" node="0>1|0|1" />
+		<i3dMapping id="passengerSeat01PlayerSkin" node="0>1|0|2" />
+		<i3dMapping id="passengerSeat01PlayerLeftFoot" node="0>1|0|3" />
+		<i3dMapping id="passengerSeat01PlayerRightFoot" node="0>1|0|4" />
+		<i3dMapping id="passengerSeat01PlayerLeftHand" node="0>1|0|5" />
+		<i3dMapping id="passengerSeat01PlayerRightHand" node="0>1|0|6" />
+		<i3dMapping id="passengerSeat02" node="0>1|1" />
+		<i3dMapping id="passengerSeat02Camera" node="0>1|1|0" />
+		<i3dMapping id="passengerSeat02ExitPoint" node="0>1|1|1" />
+		<i3dMapping id="passengerSeat02PlayerSkin" node="0>1|1|2" />
+		<i3dMapping id="passengerSeat02PlayerLeftFoot" node="0>1|1|3" />
+		<i3dMapping id="passengerSeat02PlayerRightFoot" node="0>1|1|4" />
+		<i3dMapping id="passengerSeat02PlayerLeftHand" node="0>1|1|5" />
+		<i3dMapping id="passengerSeat02PlayerRightHand" node="0>1|1|6" />
+		<i3dMapping id="passengerSeat03" node="0>1|2" />
+		<i3dMapping id="passengerSeat03Camera" node="0>1|2|0" />
+		<i3dMapping id="passengerSeat03ExitPoint" node="0>1|2|1" />
+		<i3dMapping id="passengerSeat03PlayerSkin" node="0>1|2|2" />
+		<i3dMapping id="passengerSeat03PlayerLeftFoot" node="0>1|2|3" />
+		<i3dMapping id="passengerSeat03PlayerRightFoot" node="0>1|2|4" />
+		<i3dMapping id="passengerSeat03PlayerLeftHand" node="0>1|2|5" />
+		<i3dMapping id="passengerSeat03PlayerRightHand" node="0>1|2|6" />
+		<i3dMapping id="enterReferenceNode" node="0>3" />
+	</i3dMappings>
+</vehicle>

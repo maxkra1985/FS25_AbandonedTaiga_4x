@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="toolShed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>Старая постройка с навесом</name>
+		<functions>
+			<function>небольшое здание с навесом</function>
+		</functions>
+		<image>map/placeables/BarracaoMadeiraVelho/Casa.dds</image>
+		<price>0</price>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>10000</lifetime>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<species>PLACEABLE</species>
+		<category>sheds</category>
+		<brush>
+			<type>placeable</type>
+			<category>decoration</category>
+			<tab>uncategorized</tab>
+		</brush>
+		<canBeSold>true</canBeSold>
+		<showInStore>true</showInStore>
+		<vertexBufferMemoryUsage>67072</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>23552</indexBufferMemoryUsage>
+		<textureMemoryUsage>1703936</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/BarracaoMadeiraVelho/Casa.i3d</filename>
+		<canBeRenamed>true</canBeRenamed>
+		<canBeDeleted>true</canBeDeleted>
+		<boughtWithFarmland>true</boughtWithFarmland>
+	</base>
+
+	<clearAreas>
+		<clearArea startNode="0>0|0" widthNode="0>0|0|0" heightNode="0>0|0|1"/>
+	</clearAreas>
+
+	<leveling requireLeveling="true" maxSmoothDistance="10" maxSlope="75" maxEdgeAngle="30" >
+		<levelAreas>
+			<levelArea startNode="0>1|0" widthNode="0>1|0|0" heightNode="0>1|0|1" groundType="grass01"/>
+		</levelAreas>
+	</leveling>
+
+	<indoorAreas>
+		<indoorArea startNode="0>2|0" widthNode="0>2|0|0" heightNode="0>2|0|1"/>
+	</indoorAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="0>4|0" endNode="0>4|0|0" />
+		</updateAreas>
+	</ai>
+
+	<placement useRandomYRotation="false" useManualYRotation="true" >
+		<testAreas>
+			<testArea startNode="0>3|0" endNode="0>3|0|0" />
+		</testAreas>
+		<sounds>
+			<place template="smallImp" pitchScale="1.6"/>
+		</sounds>
+	</placement>
+</placeable>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="bigBag" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../shared/xml/schema/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>Мешок дров</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>map/tools/bigBagFirewood/store_bigBagFirewood.dds</image>
+		<price>1500</price>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<category>bigbags</category>
+		<shopHeight>2</shopHeight>
+		<showInStore>false</showInStore>
+		<financeCategory>OTHER</financeCategory>
+
+		<storeIconRendering>
+			<settings cameraXRot="-15" cameraYRot="35"/>
+		</storeIconRendering>
+		<vertexBufferMemoryUsage>50688</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>13568</indexBufferMemoryUsage>
+		<textureMemoryUsage>786432</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>map/tools/bigBagFirewood/bigBagFirewood.i3d</filename>
+		<size width="1" length="1" height="1.75"/>
+		<input allowed="false"/>
+		<canBeReset>false</canBeReset>
+		<components maxMass="320">
+			<component centerOfMass="0 0.1 0" solverIterationCount="40" mass="200" />
+			<component centerOfMass="0 0 0"   solverIterationCount="40" mass="150" />
+
+			<joint component1="2" component2="1" node="componentJointHook" rotLimit="0 0 0" transLimit="0 0 0" rotLimitSpring="45 45 45" rotLimitDamping="50 50 50"/>
+		</components>
+		<showInVehicleMenu>true</showInVehicleMenu>
+		<mapHotspot available="false" />
+		<schemaOverlay attacherJointPosition="0 0" name="IMPLEMENT" />
+	</base>
+
+	<attachable>
+		<inputAttacherJoints>
+			<inputAttacherJoint node="attacherJoint01" rootNode="bigBagFirewood_palletHook_component2" jointType="bigBag" lowerRotLimitScale="1 1 1" upperRotLimitScale="1 1 1" attachAngleLimitAxis="3">
+				<objectChange node="liftingFrame" visibilityActive="true" visibilityInactive="false"/>
+			</inputAttacherJoint>
+			<inputAttacherJoint node="attacherJoint02" rootNode="bigBagFirewood_palletHook_component2" jointType="bigBag" lowerRotLimitScale="1 1 1" upperRotLimitScale="1 1 1" attachAngleLimitAxis="3">
+				<objectChange node="liftingFrame" visibilityActive="true" visibilityInactive="false"/>
+			</inputAttacherJoint>
+		</inputAttacherJoints>
+	</attachable>
+
+	<bigBag fillUnitIndex="1">
+		<componentJoint index="1" minRotLimit="0 0 0" maxRotLimit="0 55 55" minTransLimit="0.12 0 0" maxTransLimit="0.05 0 0" angularDamping="1"/>
+	</bigBag>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="FIREWOOD" capacity="1500"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<tensionBeltObject>
+		<meshNodes>
+			<meshNode node="tensionBeltMesh"/>
+		</meshNodes>
+	</tensionBeltObject>
+
+	<i3dMappings>
+		<i3dMapping id="bigBagFirewood_main_component1" node="0>" />
+		<i3dMapping id="bigBagFirewood_vis" node="0>0" />
+		<i3dMapping id="tensionBeltMesh" node="0>1" />
+		<i3dMapping id="bigBagFirewood_palletHook_component2" node="1>" />
+		<i3dMapping id="componentJointHook" node="1>0" />
+		<i3dMapping id="liftingFrame" node="1>1" />
+		<i3dMapping id="attacherJoint01" node="1>1|1" />
+		<i3dMapping id="attacherJoint02" node="1>1|2" />
+		<i3dMapping id="colPart01" node="1>3" />
+		<i3dMapping id="colPart02" node="1>4" />
+	</i3dMappings>
+</vehicle>

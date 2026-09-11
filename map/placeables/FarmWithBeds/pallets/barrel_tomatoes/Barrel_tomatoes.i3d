@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Barrel_tomatoes.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="$data/maps/mapUS/textures/props/rainBarrelPump_diffuse.png"/>
+    <File fileId="3" filename="$data/maps/mapUS/textures/props/rainBarrelPump_normal.png"/>
+    <File fileId="4" filename="$data/maps/mapUS/textures/props/rainBarrelPump_specular.png"/>
+    <File fileId="5" filename="$data/shaders/placeableShader.xml"/>
+    <File fileId="8" filename="textures/Nachinka_Bochki.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="lambert1" materialId="5" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+    <Material name="Nachinka_Bochki" materialId="6">
+      <Texture fileId="8"/>
+    </Material>
+    <Material name="rainBarrelPump_mat" materialId="7" customShaderId="5">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="8" diffuseColor="1 1 1 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Barrel_tomatoes.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="Barrel_tomatoes_main_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.2" clipDistance="200" nodeId="16" castsShadows="false" receiveShadows="false" nonRenderable="true" distanceBlending="false" materialIds="8">
+      <TransformGroup name="barrel_vis" translation="0 7.63163e-06 0" lodDistance="0 8" lodBlending="false" clipDistance="100" nodeId="17">
+        <Shape name="LOD0" shapeId="2" nodeId="18" castsShadows="true" receiveShadows="true" materialIds="7"/>
+        <Shape name="LOD1" shapeId="3" nodeId="19" castsShadows="true" receiveShadows="true" materialIds="7"/>
+        <Shape name="Tension_vis" translation="0 0.936302 0" shapeId="4" nodeId="20" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      </TransformGroup>
+      <TransformGroup name="visibilityNodes" nodeId="21">
+        <Shape name="Nachinka_Bochki1" translation="-0.00777245 0.873 0.00418699" rotation="1.05723e-05 -3.12513 -1.03063e-05" shapeId="5" nodeId="22" castsShadows="true" receiveShadows="true" distanceBlending="false" materialIds="6"/>
+      </TransformGroup>
+      <TransformGroup name="dischargeNode" translation="0 0.981181 0" nodeId="23"/>
+      <Shape name="solidColi" shapeId="6" compoundChild="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.7" nodeId="24" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+    </Shape>
+  </Scene>
+
+</i3D>

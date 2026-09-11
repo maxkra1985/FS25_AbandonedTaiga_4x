@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="plywood.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
+  </Asset>
+
+  <Files>
+    <File fileId="3" filename="decal_2.dds"/>
+    <File fileId="5" filename="label.dds"/>
+    <File fileId="2" filename="spannplatte.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="acmat_0" materialId="5">
+      <Texture fileId="2"/>
+    </Material>
+    <Material name="blinn1" materialId="6" specularColor="0.494118 1 0.494118">
+      <Texture fileId="3"/>
+    </Material>
+    <Material name="blinn1" materialId="7" specularColor="0.494118 1 0.494118">
+      <Texture fileId="5"/>
+    </Material>
+    <Material name="lambert1" materialId="8" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="plywood.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="plywoodBoxPallet_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" clipDistance="150" nodeId="104" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8">
+      <Shape name="dynamicMountTrigger" translation="0 0.0904753 0" shapeId="2" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x20000" nodeId="105" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      <TransformGroup name="content" clipDistance="100" nodeId="106">
+        <Shape name="plywoodBox0" shapeId="3" clipDistance="100" nodeId="107" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.144913 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="108" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="5" clipDistance="100" nodeId="109" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="6" clipDistance="100" nodeId="110" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="7" clipDistance="100" nodeId="111" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="8" clipDistance="100" nodeId="112" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="9" clipDistance="100" nodeId="113" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="10" clipDistance="100" nodeId="114" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="11" clipDistance="100" nodeId="115" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="12" clipDistance="100" nodeId="116" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="13" clipDistance="100" nodeId="117" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox1" shapeId="14" clipDistance="100" nodeId="118" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.3083 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="119" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="15" clipDistance="100" nodeId="120" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="16" clipDistance="100" nodeId="121" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="17" clipDistance="100" nodeId="122" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="18" clipDistance="100" nodeId="123" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="19" clipDistance="100" nodeId="124" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="20" clipDistance="100" nodeId="125" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="21" clipDistance="100" nodeId="126" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="22" clipDistance="100" nodeId="127" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="23" clipDistance="100" nodeId="128" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox2" shapeId="24" clipDistance="100" nodeId="129" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.463416 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="130" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="25" clipDistance="100" nodeId="131" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="26" clipDistance="100" nodeId="132" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="27" clipDistance="100" nodeId="133" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="28" clipDistance="100" nodeId="134" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="29" clipDistance="100" nodeId="135" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="30" clipDistance="100" nodeId="136" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="31" clipDistance="100" nodeId="137" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="32" clipDistance="100" nodeId="138" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="33" clipDistance="100" nodeId="139" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox3" shapeId="34" clipDistance="100" nodeId="140" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.619476 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="141" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="35" clipDistance="100" nodeId="142" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="36" clipDistance="100" nodeId="143" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="37" clipDistance="100" nodeId="144" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="38" clipDistance="100" nodeId="145" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="39" clipDistance="100" nodeId="146" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="40" clipDistance="100" nodeId="147" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="41" clipDistance="100" nodeId="148" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="42" clipDistance="100" nodeId="149" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="43" clipDistance="100" nodeId="150" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox4" shapeId="44" clipDistance="100" nodeId="151" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.776313 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="152" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="45" clipDistance="100" nodeId="153" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="46" clipDistance="100" nodeId="154" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="47" clipDistance="100" nodeId="155" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="48" clipDistance="100" nodeId="156" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="49" clipDistance="100" nodeId="157" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="50" clipDistance="100" nodeId="158" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="51" clipDistance="100" nodeId="159" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="52" clipDistance="100" nodeId="160" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="53" clipDistance="100" nodeId="161" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox5" shapeId="54" clipDistance="100" nodeId="162" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 0.932182 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="163" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="55" clipDistance="100" nodeId="164" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="56" clipDistance="100" nodeId="165" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="57" clipDistance="100" nodeId="166" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="58" clipDistance="100" nodeId="167" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="59" clipDistance="100" nodeId="168" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="60" clipDistance="100" nodeId="169" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="61" clipDistance="100" nodeId="170" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="62" clipDistance="100" nodeId="171" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="63" clipDistance="100" nodeId="172" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox6" shapeId="64" clipDistance="100" nodeId="173" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 1.10007 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="174" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="65" clipDistance="100" nodeId="175" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="66" clipDistance="100" nodeId="176" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="67" clipDistance="100" nodeId="177" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="68" clipDistance="100" nodeId="178" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="69" clipDistance="100" nodeId="179" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="70" clipDistance="100" nodeId="180" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="71" clipDistance="100" nodeId="181" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="72" clipDistance="100" nodeId="182" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="73" clipDistance="100" nodeId="183" castsShadows="true" receiveShadows="true" materialIds="5"/>
+        </Shape>
+        <Shape name="plywoodBox7" shapeId="74" clipDistance="100" nodeId="184" castsShadows="true" receiveShadows="true" materialIds="5">
+          <Shape name="plywoodBoxTension" translation="0 1.27468 0.0067808" scale="1 0.113506 1" shapeId="4" clipDistance="100" nodeId="185" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="carton0" shapeId="75" clipDistance="100" nodeId="186" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="76" clipDistance="100" nodeId="187" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="77" clipDistance="100" nodeId="188" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="78" clipDistance="100" nodeId="189" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="79" clipDistance="100" nodeId="190" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="80" clipDistance="100" nodeId="191" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="81" clipDistance="100" nodeId="192" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="82" clipDistance="100" nodeId="193" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <Shape name="carton0" shapeId="83" clipDistance="100" nodeId="194" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          <TransformGroup name="transform" clipDistance="100" nodeId="195">
+            <Shape name="decal_1" shapeId="84" clipDistance="100" nodeId="196" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" shapeId="85" clipDistance="100" nodeId="197" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" shapeId="86" clipDistance="100" nodeId="198" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" shapeId="87" clipDistance="100" nodeId="199" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" shapeId="88" clipDistance="100" nodeId="200" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" shapeId="89" clipDistance="100" nodeId="201" castsShadows="true" receiveShadows="true" materialIds="6"/>
+            <Shape name="decal_1" translation="0.00213417 0 -0.143709" scale="1 0.866136 1.33045" shapeId="90" clipDistance="100" nodeId="202" castsShadows="true" receiveShadows="true" materialIds="7"/>
+            <Shape name="decal_1" translation="0 0.305784 -0.0161551" scale="1.12295 0.8126 1.04713" shapeId="91" clipDistance="100" nodeId="203" castsShadows="true" receiveShadows="true" materialIds="7"/>
+            <Shape name="decal_1" translation="0 0.399277 0.0987439" scale="1 0.708771 1.28432" shapeId="92" clipDistance="100" nodeId="204" castsShadows="true" receiveShadows="true" materialIds="7"/>
+            <Shape name="decal_1" translation="0.0709801 0 -0.00285378" scale="1.10611 0.900343 1" shapeId="93" clipDistance="100" nodeId="205" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          </TransformGroup>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="collisions" clipDistance="10" nodeId="206">
+        <Shape name="floorCollision01" translation="0.3 0 0" shapeId="94" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="207" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <Shape name="floorCollision02" translation="-0.3 0 0" shapeId="94" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="208" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      </TransformGroup>
+    </Shape>
+  </Scene>
+
+</i3D>

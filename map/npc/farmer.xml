@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<npc>
+	<class>NPC</class>
+	<title>Дмитрич</title>
+	<imageFilename>map/npc/farmer.png</imageFilename>
+	<filename>map/npc/npcBase.i3d</filename>
+	<sounds>
+		<voice linkNode="audioNode" innerRadius="0.2" outerRadius="10.0" supportsReverb="false">
+			<volume indoor="2.8" outdoor="2.8"/>
+			<pitch indoor="1.00" outdoor="1.0"/>
+			<lowpassGain indoor="0.60" outdoor="0.60"/>
+		</voice>
+		<phone supportsReverb="false">
+			<volume indoor="0.9" outdoor="1.0"/>
+			<pitch indoor="1.00" outdoor="1.00"/>
+			<lowpassGain indoor="1.00" outdoor="1.00"/>
+			<lowpassCutoffFrequency indoor="2000" outdoor="2000.0"/>
+			<lowpassResonance indoor="1.0" outdoor="1.0"/>
+		</phone>
+	</sounds>
+	<playerStyle filename="dataS/character/playerM/playerM.xml">
+		<facegear color="1"/>
+		<onepiece color="3" name="empty"/>
+		<bottom color="2" name="waterProof"/>
+		<face color="1" name="head04"/>
+		<top color="9" name="zipNeckPullover"/>
+		<gloves color="2" name="empty"/>
+		<headgear color="12" name="empty"/>
+		<glasses color="1" name="reading"/>
+		<footwear color="1" name="workBoots1"/>
+		<hairStyle color="13" name="hair06"/>
+		<beard color="13" name="empty"/>
+	</playerStyle>
+	<interactionTrigger node="triggerNode"/>
+	<conversations></conversations>
+	<i3dMappings>
+		<i3dMapping id="audioNode" node="0>0"/>
+		<i3dMapping id="triggerNode" node="0>1"/>
+	</i3dMappings>
+</npc>

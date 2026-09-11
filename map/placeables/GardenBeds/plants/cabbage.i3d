@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?>
+<i3D name="cabbage.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+    <Asset>
+        <Export program="GIANTS Editor 64bit" version="9.0.6"/>
+    </Asset>
+    <Files>
+        <File fileId="5" filename="cabbageDCD_diffuse.dds"/>
+        <File fileId="3" filename="cabbage_diffuse.dds"/>
+        <File fileId="4" filename="cabbage_normal.dds"/>
+        <File fileId="1" filename="cabbagelist_diffuse.dds"/>
+        <File fileId="2" filename="cabbagelist_normal.dds"/>
+    </Files>
+    <Materials>
+        <Material name="kachankapusty" materialId="5">
+            <Texture fileId="3"/>
+            <Normalmap fileId="4"/>
+        </Material>
+        <Material name="kachankapusty" materialId="23">
+            <Texture fileId="5"/>
+            <Normalmap fileId="4"/>
+        </Material>
+        <Material name="kapusta" materialId="24">
+            <Texture fileId="1"/>
+            <Normalmap fileId="4"/>
+        </Material>
+        <Material name="kapusta" materialId="6">
+            <Texture fileId="1"/>
+            <Normalmap fileId="2"/>
+        </Material>
+    </Materials>
+    <Shapes externalShapesFile="cabbage.i3d.shapes"/>
+    <Dynamics/>
+    <Scene>
+        <TransformGroup name="transform" nodeId="11">
+            <Shape shapeId="1" name="CabbageBig" translation="0 0.0321425 -2.42669e-09" rotation="-4.32571e-06 -0 0" clipDistance="60" nodeId="12" materialIds="6,5" castsShadows="true" receiveShadows="true"/>
+            <Shape shapeId="1" name="CabbageDCD" translation="0 0.0321425 -2.42669e-09" rotation="-4.32571e-06 -0 0" clipDistance="60" nodeId="27" materialIds="24,23" castsShadows="true" receiveShadows="true"/>
+        </TransformGroup>
+    </Scene>
+</i3D>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="BuildingMetal.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="3" filename="textures/cargoBox01_diffuse.dds"/>
+    <File fileId="4" filename="textures/cargoBox01_normal.dds"/>
+    <File fileId="5" filename="textures/cargoBox01_specular.dds"/>
+    <File fileId="6" filename="textures/rebar_diffuse.dds"/>
+    <File fileId="7" filename="textures/rebar_normal.dds"/>
+    <File fileId="8" filename="textures/rebar_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="cargoBox01_diffuse" materialId="5">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+    </Material>
+    <Material name="lambert1" materialId="6" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+    <Material name="lambert1" materialId="7" diffuseColor="0.8 0.8 0.8 1" specularColor="0.6 1 0">
+    </Material>
+    <Material name="rebar_mat" materialId="8">
+      <Texture fileId="6"/>
+      <Normalmap fileId="7"/>
+      <Glossmap fileId="8"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="BuildingMetal.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="building_metal" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" clipDistance="300" nodeId="14" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7">
+      <Shape name="pallet_vis" shapeId="2" nodeId="15" castsShadows="true" receiveShadows="true" materialIds="5">
+        <TransformGroup name="dischargeNode" translation="0 0.757911 0" nodeId="16"/>
+        <TransformGroup name="content" nodeId="17">
+          <Shape name="metal" shapeId="3" nodeId="18" castsShadows="true" receiveShadows="true" materialIds="8"/>
+        </TransformGroup>
+        <TransformGroup name="collisions" clipDistance="10" nodeId="19">
+          <Shape name="floorCollision01" translation="0.0120274 0 -1.24827" scale="1.13635 0.854991 0.498908" shapeId="4" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="20" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+          <Shape name="floorCollision01" translation="0.0120274 0 -3.68996" scale="1.13635 0.854991 0.498908" shapeId="4" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="21" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+          <Shape name="floorCollision01" translation="0.0120274 0 1.2184" scale="1.13635 0.854991 0.498908" shapeId="4" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="22" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+          <Shape name="floorCollision01" translation="0.0120274 0 3.67553" scale="1.13635 0.854991 0.498908" shapeId="4" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="23" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+        </TransformGroup>
+      </Shape>
+    </Shape>
+  </Scene>
+
+</i3D>

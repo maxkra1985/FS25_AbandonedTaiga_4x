@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="canisterFuel.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.3"/>
+  </Asset>
+
+  <Files>
+    <File fileId="5" filename="canisterFuelDef_diffuse.dds"/>
+    <File fileId="2" filename="canisterFuelDiesel_diffuse.dds"/>
+    <File fileId="3" filename="fuelCanister_normal.dds"/>
+    <File fileId="4" filename="fuelCanister_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="canisterFuelDef_mat" materialId="5">
+      <Texture fileId="5"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="canisterFuelDiesel_mat" materialId="6">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="lambert1" materialId="7" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="canisterFuel.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="canisterFuel" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" density="0.0001" clipDistance="70" nodeId="15" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7">
+      <TransformGroup name="visual" nodeId="16">
+        <TransformGroup name="visual_LODs" lodDistance="0 10" nodeId="17">
+          <Shape name="canisterFuel_vis_LOD0" shapeId="2" nodeId="18" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          <Shape name="canisterFuel_vis_LOD1" shapeId="3" nodeId="19" castsShadows="true" receiveShadows="true" materialIds="6"/>
+        </TransformGroup>
+        <Shape name="canisterFuelDiesel_mat" shapeId="4" visibility="false" clipDistance="1" nodeId="20" castsShadows="true" receiveShadows="true" materialIds="6"/>
+        <Shape name="canisterFuelDef_mat" shapeId="4" visibility="false" clipDistance="1" nodeId="21" castsShadows="true" receiveShadows="true" materialIds="5"/>
+      </TransformGroup>
+      <Shape name="tensionBeltShape" shapeId="5" nodeId="22" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7"/>
+      <TransformGroup name="dischargeNode" translation="0 0.35 0" nodeId="23"/>
+      <Shape name="fillTrigger" translation="0 0.35 0" shapeId="6" kinematic="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x40000000" nodeId="24" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7"/>
+    </Shape>
+  </Scene>
+
+</i3D>

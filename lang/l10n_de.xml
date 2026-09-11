@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<texts>
+		<text name="fillType_instrument"	text="Werkzeugsatz"/>
+		<text name="typeDesc_instrument"	text="Werkzeugsatz für Bau- und Reparaturarbeiten"/>
+
+		<text name="NAILS"					text="Konstruktionsnägel"/>
+		<text name="storeItem_nails"		text="Konstruktionsnägel"/>
+		<text name="fillType_nails"			text="Konstruktionsnägel"/>
+
+		<text name="PLYWOOD"				text="OSB-Platten"/>
+		<text name="storeItem_plywood"		text="OSB-Platten"/>
+		<text name="fillType_plywood"		text="OSB-Platten"/>
+
+		<text name="tool_axe"				text="Axt"/>
+		<text name="typeDesc_axe"			text="Handwerkzeug zum Fällen kleiner und mittelgroßer Bäume mit einem Stammdurchmesser von bis zu 80 cm."/>
+
+		<text name="fillType_building_metal"	text="Eisen"/>
+		<text name="typeDesc_building_metal"	text="Eisen für Bauzwecke (Bewehrungsstahl, Balken, Rohre)"/>
+
+		<text name="fillType_metal"			text="Blech"/>
+		<text name="typeDesc_metal"			text="Blech in Rollen"/>
+
+		<text name="storeItem_jackhammer"	text="Presslufthammer"/>
+
+		<text name="fillType_wheatClean"	text="Gereinigter Weizen"/>
+		<text name="fillType_barleyClean"	text="Gereinigte Gerste"/>
+		<text name="fillType_oatClean"		text="Gereinigter Hafer"/>
+		<text name="fillType_sorghumClean"	text="Gereinigte Sorghumhirse"/>
+		<text name="fillType_grainWaste"	text="Getreideabfälle"/>
+		<text name="woodElevator_storageUsage"	text="Belegt"/>
+
+		<!-- бренд и категории -->
+		<text name="ConstructibleBuildings"			text="Lasst es uns selbst bauen"/>
+		<text name="constructiblesProductionPoint"	text="Produktionsanlagen im Bau"/>
+		<text name="constructiblesHusbandry"		text="Die im Bau befindlichen Gehege"/>
+		<text name="constructiblesStorage"			text="Lagerhallen, Lagereinrichtungen"/>
+		<text name="constructiblesTools"			text="Werkzeuge"/>
+
+		<text name="fillType_sand"	text="SAND"/>
+
+		<text name="fillType_firewood"	text="Brennholz"/>
+
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<text name="input_HPS_ACTION_SECONDRY" text="Setzlinge entfernen"/>
+		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Freies Pflanzen umschalten"/>
+		<text name="ui_hps_loadError" text="Mod %{modName}s von %{author}s konnte nicht geladen werden oder wird nicht unterstützt!
+Um Fehler zu vermeiden, sollte dieser Mod entfernt werden!
+
+Besuchen Sie den Giants modHub-Downloadlink unten, um die neueste offizielle Version zu erhalten."/>
+		<text name="hps_warningStorageCapacityReached" text="Speicherkapazität erreicht!"/>
+		<text name="hps_warningStorageEmpty" text="Speicher ist leer!"/>
+		<text name="hps_warningBackpackCapacityReached" text="Rucksackkapazität erreicht!"/>
+		<text name="hps_warningBackpackEmpty" text="Rucksack ist leer!"/>
+		<text name="hps_warningPalletCapacityReached" text="Palettenkapazität erreicht!"/>
+		<text name="hps_warningPalletEmpty" text="Palette ist leer!"/>
+		<text name="hps_warningFailed" text="Unbekannter Fehler!"/>
+		<text name="hps_warningTreeTypeOrVariation" text="Baumart oder -variante stimmt nicht mit den mitgeführten Artikeln überein."/>
+		<text name="hps_removeFromStorageDialog" text="Wählen Sie den zu entfernenden Setzlingstyp aus."/>
+		<text name="hps_resetcounter" text="Zähler zurücksetzen"/>
+		<text name="hps_freeModeOn" text="Freier Modus aktiviert"/>
+		<text name="hps_addToStorage" text="Zum Speicher hinzufügen"/>
+		<text name="hps_removeFromStorage" text="Aus dem Speicher nehmen"/>
+		<text name="hps_addToPallet" text="Zur Palette hinzufügen"/>
+		<text name="hps_removeFromPallet" text="Von der Palette nehmen"/>
+		<text name="hps_messageDuplicateEquipment" text="Sie tragen diese Art von Ausrüstung bereits."/>
+		<text name="shopItem_handPlantSaplings01" text="Handpflanz-Setzlingsbox"/>
+		<text name="shopItem_handPlantSaplings02" text="Handpflanzen-Setzlingsschuppen"/>
+		<text name="shopItem_handPlantSaplingsShovel" text="Schaufel &amp; Rucksack"/> <!-- Shovel & Backpack -->
+		<text name="function_handPlantSaplings01" text="Ein Lagergebäude mit 1 Schaufel und Platz zur Lagerung einiger zusätzlicher Baumsetzlinge."/>
+		<text name="function_handPlantSaplings02" text="Ein Lagergebäude mit 2 Schaufeln und Platz zur Lagerung einiger zusätzlicher Baumsetzlinge."/>
+		<text name="function_handPlantSaplingsShovel" text="Die Schaufel und der Rucksack, die du bei dir trägst, gehören zum 'Setzlinge selbst pflanzen'-Lagerplatz."/>
+		<text name="hps_messageSellNotEmpty" text="Der Speicher ist nicht leer.
+Die folgende Anzahl von Setzlingen wird ebenfalls verkauft:"/>
+		<text name="hps_messageFlightState" text="Flugstatus aktiv"/>
+
+		<!-- HandLiftableConsumables - ёмкости с топливом -->
+		<text name="function_canisterDiesel"			text="Diesel zum Betanken Ihrer Fahrzeuge"/>
+		<text name="shopItem_barrelIronDiesel"			text="Fass mit Diesel"/>
+		<text name="shopItem_canisterFuelDiesel"		text="Kanister mit Diesel"/>
+
+		<!-- Ёлки -->
+		<text name="treeType_spruce1n" text="Fichte" />
+		<text name="treeType_spruce2n" text="Fichte" />
+	</texts>
+</l10n>

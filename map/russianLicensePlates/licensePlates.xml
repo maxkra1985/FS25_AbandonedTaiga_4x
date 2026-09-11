@@ -1,0 +1,169 @@
+<licensePlates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/mapLicensePlates.xsd">
+	<font name="LICENSE_PLATE_RUS" />
+
+	<licensePlate filename="map/russianLicensePlates/licensePlatesRUS.i3d" node="0" type="ELONGATED" width="0.52" height="0.11">
+		<font size="0.076"/>
+
+		<variations>
+			<!-- тип 1 (однострочный) М 000 ММ 55; -->
+			<variation>
+				<value node="0|0" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|1" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|4" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|5" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|6" character="_" locked="true"/>
+				<value node="0|7" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|8" numerical="true" alphabetical="false" special="false"/>
+
+				<value node="3|0" locked="true" position="ANY"/>
+				<value node="3|0|0" locked="true" position="ANY"/>
+				<value node="3|1" locked="true" position="NONE"/>
+				<value node="3|1|0" locked="true" position="NONE"/>
+			</variation>
+			<!-- тип 1 (однострочный) М 000 ММ 555; -->
+			<variation>
+				<value node="0|0" numerical="false" alphabetical="true"  special="false" posX="-0.207"/>
+				<value node="0|1" numerical="true" alphabetical="false" special="false" posX="-0.15"/>
+				<value node="0|2" numerical="true" alphabetical="false" special="false" posX="-0.094"/>
+				<value node="0|3" numerical="true" alphabetical="false" special="false" posX="-0.038"/>
+				<value node="0|4" numerical="false" alphabetical="true"  special="false" posX="0.018"/>
+				<value node="0|5" numerical="false" alphabetical="true"  special="false" posX="0.074"/>
+				<value node="0|6" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|7" numerical="true" alphabetical="false" special="false" posX="0.179"/>
+				<value node="0|8" numerical="true" alphabetical="false" special="false" posX="0.215"/>
+
+				<value node="3|0" locked="true" position="NONE"/>
+				<value node="3|0|0" locked="true" position="NONE"/>
+				<value node="3|1" locked="true" position="ANY"/>
+				<value node="3|1|0" locked="true" position="ANY"/>
+			</variation>
+
+			<!-- тип 2 (однострочный) ММ 0000 55; -->
+			<variation>
+				<value node="1|0" numerical="false" alphabetical="true"  special="false"/>
+				<value node="1|1" numerical="false" alphabetical="true"  special="false"/>
+				<value node="1|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="1|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="1|4" numerical="true" alphabetical="false" special="false"/>
+				<value node="1|5" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|6" character="_" locked="true"/>
+				<value node="0|7" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|8" numerical="true" alphabetical="false" special="false"/>
+
+				<value node="3|0" locked="true" position="ANY"/>
+				<value node="3|0|0" locked="true" position="ANY"/>
+				<value node="3|1" locked="true" position="NONE"/>
+				<value node="3|1|0" locked="true" position="NONE"/>
+			</variation>
+			<!-- тип 2 (однострочный) ММ 0000 555; -->
+			<variation>
+				<value node="1|0" numerical="false" alphabetical="true"  special="false"/>
+				<value node="1|1" numerical="false" alphabetical="true"  special="false" posX="-0.142"/>
+				<value node="1|2" numerical="true" alphabetical="false" special="false" posX="-0.086"/>
+				<value node="1|3" numerical="true" alphabetical="false" special="false" posX="-0.03"/>
+				<value node="1|4" numerical="true" alphabetical="false" special="false" posX="0.024"/>
+				<value node="1|5" numerical="true" alphabetical="false" special="false" posX="0.08"/>
+				<value node="0|6" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|7" numerical="true" alphabetical="false" special="false" posX="0.179"/>
+				<value node="0|8" numerical="true" alphabetical="false" special="false" posX="0.215"/>
+
+				<value node="3|0" locked="true" position="NONE"/>
+				<value node="3|0|0" locked="true" position="NONE"/>
+				<value node="3|1" locked="true" position="ANY"/>
+				<value node="3|1|0" locked="true" position="ANY"/>
+			</variation>
+		</variations>
+
+		<frame node="2" widthOffset="0.005" heightOffsetTop="0.005" heightOffsetBot="0.015"/>
+	</licensePlate>
+
+	<licensePlate filename="map/russianLicensePlates/licensePlatesRUS.i3d" node="1" type="SQUARISH" width="0.288" height="0.206">
+		<font size="0.076"/>
+
+		<variations>
+			<!-- тип 1А (двухстрочный) М 000 ММ 55; -->
+			<variation>
+				<value node="0|0|0" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|0|1" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|4" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|0|5" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|0|6" character="_" locked="true"/>
+				<value node="0|0|7" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|8" numerical="true" alphabetical="false" special="false"/>
+
+				<value node="2|0|0" locked="true" position="ANY"/>
+				<value node="2|0|1" locked="true" position="NONE"/>
+
+				<value node="1|1" locked="true" position="NONE"/>
+				<value node="2|1" locked="true" position="NONE"/>
+			</variation>
+			<!-- тип 1А (двухстрочный) М 000 ММ 555; -->
+			<variation>
+				<value node="0|0|0" numerical="false" alphabetical="true"  special="false"/>
+				<value node="0|0|1" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|4" numerical="false" alphabetical="true"  special="false" posX="-0.091"/>
+				<value node="0|0|5" numerical="false" alphabetical="true"  special="false" posX="-0.04"/>
+				<value node="0|0|6" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|0|7" numerical="true" alphabetical="false" special="false" posX="0.071"/>
+				<value node="0|0|8" numerical="true" alphabetical="false" special="false" posX="0.104"/>
+
+				<value node="2|0|0" locked="true" position="NONE"/>
+				<value node="2|0|1" locked="true" position="ANY"/>
+
+				<value node="1|1" locked="true" position="NONE"/>
+				<value node="2|1" locked="true" position="NONE"/>
+			</variation>
+
+			<!-- тип 3 (двухстрочный) 0000 ММ 55; -->
+			<variation>
+				<value node="0|1|4" numerical="false" alphabetical="true" special="false"/>
+				<value node="0|1|5" numerical="false" alphabetical="true" special="false"/>
+				<value node="0|1|0" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|1" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|6" character="_" locked="true"/>
+				<value node="0|1|7" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|8" numerical="true" alphabetical="false" special="false"/>
+
+				<value node="2|1|0" locked="true" position="NONE"/>
+				<value node="2|1|1" locked="true" position="ANY"/>
+
+				<value node="1|0" locked="true" position="NONE"/>
+				<value node="2|0" locked="true" position="NONE"/>
+			</variation>
+			<!-- тип 3 (двухстрочный) 0000 ММ 555; -->
+			<variation>
+				<value node="0|1|4" numerical="false" alphabetical="true" special="false" posX="-0.091"/>
+				<value node="0|1|5" numerical="false" alphabetical="true" special="false" posX="-0.04"/>
+				<value node="0|1|0" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|1" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|2" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|3" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|6" numerical="true" alphabetical="false" special="false"/>
+				<value node="0|1|7" numerical="true" alphabetical="false" special="false" posX="0.071"/>
+				<value node="0|1|8" numerical="true" alphabetical="false" special="false" posX="0.104"/>
+
+				<value node="2|1|0" locked="true" position="NONE"/>
+				<value node="2|1|1" locked="true" position="ANY"/>
+
+				<value node="1|0" locked="true" position="NONE"/>
+				<value node="2|0" locked="true" position="NONE"/>
+			</variation>
+		</variations>
+
+		<frame node="1" widthOffset="0.005" heightOffsetTop="0.005" heightOffsetBot="0.015"/>
+	</licensePlate>
+
+	<colorConfigurations materialName="licensePlatesRUS_colorMask1_mat" useDefaultColors="true">
+		<colorConfiguration name="$l10n_ui_colorBlack" color="0.021 0.021 0.021"/>
+	</colorConfigurations>
+
+	<placement defaultType="both"/>
+</licensePlates>

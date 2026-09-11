@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Woodsellpoint.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="6" filename="$data/shared/assets/marker/markerIconExclamationMark.i3d"/>
+    <File fileId="3" filename="$data/shared/warningStripes_diffuse.dds"/>
+    <File fileId="4" filename="$data/shared/warningStripes_normal.dds"/>
+    <File fileId="5" filename="$data/shared/warningStripes_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="lambert1" materialId="5" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+    <Material name="UnnamedMaterial" materialId="6" diffuseColor="1 1 1 1">
+    </Material>
+    <Material name="warningStripes_mat" materialId="7">
+      <Texture fileId="3"/>
+      <Normalmap fileId="4"/>
+      <Glossmap fileId="5"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Woodsellpoint.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="sellingStationWood" clipDistance="100" nodeId="14">
+      <Shape name="woodTrigger" translation="-3.789 -0.7 -7.528" scale="0.4 4 1.1" shapeId="1" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x800" nodeId="15" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      <Shape name="playerInteractionTrigger" translation="-3.474 2.72095e-13 -0.151" scale="3 1 3" shapeId="2" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="16" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+      <TransformGroup name="areaDefinitions" nodeId="17">
+        <TransformGroup name="start" translation="2.49253 0 -11" nodeId="18">
+          <TransformGroup name="width" translation="5 0 0" nodeId="19"/>
+          <TransformGroup name="height" translation="0 0 5" nodeId="20"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="logstack" translation="4.27697 0.235599 -3.7402" rotation="1.71307e-06 0 1.68995e-06" nodeId="21"/>
+      <TransformGroup name="tipOcclusionUpdateAreas" nodeId="22">
+        <TransformGroup name="tipOcclusionUpdateAreaStart1" translation="-21.37 0 -27.27" nodeId="23">
+          <TransformGroup name="tipOcclusionUpdateAreaEnd1" translation="25.0288 0 39.0948" nodeId="24"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="aiNode" translation="-6.82376 1.42664e-13 4.94532e-07" nodeId="25"/>
+      <TransformGroup name="hotspot" translation="-3.474 0.676672 -0.151" nodeId="26"/>
+      <Shape name="infoTrigger" translation="-3.474 0 -0.151" shapeId="3" static="true" trigger="true" collisionFilterGroup="0x100000" collisionFilterMask="0x100000" nodeId="27" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="6"/>
+      <TransformGroup name="props" nodeId="28">
+        <TransformGroup name="warningStripesVehicleSelling" translation="-3.552 0.01 -7.55" rotation="-0 90 0" scale="1.9 1 2" static="true" collision="false" nodeId="29">
+          <Shape name="warningStripesCorner2" translation="-3.1353 -8.47809e-06 1.34964" rotation="180 -5.00896e-06 180" scale="0.5 0.5 0.5" shapeId="4" clipDistance="200" nodeId="30" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="7"/>
+          <Shape name="warningStripesCorner1" translation="-3.14598 -6.85079e-07 -1.60353" scale="0.5 0.5 0.5" shapeId="5" clipDistance="200" nodeId="31" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="7"/>
+          <Shape name="warningStripesCorner2" translation="3.16804 7.6986e-07 -1.60197" scale="0.5 0.5 0.5" shapeId="4" clipDistance="200" nodeId="32" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="7"/>
+          <Shape name="warningStripesCorner1" translation="3.18571 4.29145e-07 1.31083" rotation="180 -5.00896e-06 180" scale="0.5 0.5 0.5" shapeId="5" clipDistance="200" nodeId="33" castsShadows="false" receiveShadows="true" decalLayer="1" materialIds="7"/>
+        </TransformGroup>
+        <ReferenceNode name="markerIconExclamationMark" translation="-3.474 1 -0.151" referenceId="6" nodeId="37"/>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

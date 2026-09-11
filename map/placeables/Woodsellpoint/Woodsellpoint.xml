@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="sellingStation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>Лесник Михалыч</name>
+		<functions>
+			<function>Здесь можно продать дерево</function>
+		</functions>
+		<image>map/placeables/Woodsellpoint/sellpoint.png</image>
+		<price>0</price>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>100000</lifetime>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<species>placeable</species>
+		<category>sellingPoints</category>
+		<brush>
+			<type>placeable</type>
+			<category>production</category>
+			<tab>sellingPoints</tab>
+		</brush>
+		<canBeSold>false</canBeSold>
+		<showInStore>true</showInStore>
+		<vertexBufferMemoryUsage>1464</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>216</indexBufferMemoryUsage>
+		<textureMemoryUsage>174864</textureMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/Woodsellpoint/Woodsellpoint.i3d</filename>
+		<canBeRenamed>false</canBeRenamed>
+		<canBeDeleted>false</canBeDeleted>
+		<boughtWithFarmland>false</boughtWithFarmland>
+	</base>
+
+	<placement useRandomYRotation="false" useManualYRotation="true" />
+	<clearAreas></clearAreas>
+	<leveling></leveling>
+	<indoorAreas></indoorAreas>
+
+	<tipOcclusionUpdateAreas>
+		<tipOcclusionUpdateArea startNode="tipOcclusionUpdateAreaStart1" endNode="tipOcclusionUpdateAreaEnd1" />
+	</tipOcclusionUpdateAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="tipOcclusionUpdateAreaStart1" endNode="tipOcclusionUpdateAreaEnd1"/>
+		</updateAreas>
+	</ai>
+
+	<!--infoTrigger triggerNode="infoTrigger"/-->
+
+	<sellingStation>
+		<woodTrigger fillTypes="WOOD" aiNode="aiNode" triggerNode="woodTrigger" activationTriggerNode="playerInteractionTrigger"/>
+	</sellingStation>
+
+	<hotspots>
+		<hotspot type="UNLOADING" linkNode="mapPosition" teleportNode="mapPosition" />
+	</hotspots>
+
+	<i3dMappings>
+		<i3dMapping id="woodTrigger" node="0>0" />
+		<i3dMapping id="playerInteractionTrigger" node="0>1" />
+		<i3dMapping id="tipOcclusionUpdateAreaStart1" node="0>4" />
+		<i3dMapping id="tipOcclusionUpdateAreaEnd1" node="0>4|0" />
+		<i3dMapping id="aiNode" node="0>5" />
+		<i3dMapping id="mapPosition" node="0>6" />
+		<i3dMapping id="infoTrigger" node="0>7" />
+	</i3dMappings>
+
+</placeable>

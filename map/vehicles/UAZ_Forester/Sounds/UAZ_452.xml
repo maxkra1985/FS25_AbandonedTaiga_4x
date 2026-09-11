@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<sounds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../shared/xml/schema/vehicle_sounds.xsd">
+	<motorized>
+		<sounds>
+			<!-- motorStart -->
+			<motorstart file="map/vehicles/UAZ_Forester/Sounds/start.ogg" innerRadius="10.0" outerRadius="110.0" linkNode="0>">
+				<volume indoor="0.80" outdoor="1.00"/>
+				<lowpassGain indoor="0.85" outdoor="1.0"/>
+			</motorstart>
+			<!-- motorStop -->
+			<motorStop file="map/vehicles/UAZ_Forester/Sounds/stop.ogg" innerRadius="10.0" outerRadius="110.0" linkNode="0>">	
+				<volume indoor="0.80" outdoor="1.00"/>
+				<lowpassGain indoor="0.85" outdoor="1.0"/>
+			</motorStop>
+			<!-- motorIdle -->
+			<motor file="map/vehicles/UAZ_Forester/Sounds/idle_loop.ogg" innerRadius="10.0" outerRadius="110.0" linkNode="0>">
+				<volume indoor="1.0" outdoor="1.00">
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="0.50"/>
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="0.50"/>
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="0.50"/>
+				</volume>
+				<pitch indoor="1.0" outdoor="1.0" >
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="1.00"/>
+					<modifier type="MOTOR_RPM" value="0.75" modifiedValue="2.00"/>
+				</pitch>
+			</motor>
+			<!-- motorRun -->
+			<motor file="map/vehicles/UAZ_Forester/Sounds/offload_loop.ogg" innerRadius="10.0" outerRadius="110.0" linkNode="0>">
+				<volume indoor="0.00" outdoor="1.15" >
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="0.00" />
+					<modifier type="MOTOR_RPM" value="0.80" modifiedValue="1.00" />	
+				</volume>
+				<pitch indoor="1.0" outdoor="1.0" >
+					<modifier type="SPEED" value="15" modifiedValue="0.75" />
+					<modifier type="SPEED" value="25" modifiedValue="1.10" />
+					<modifier type="MOTOR_RPM" value="0.25" modifiedValue="0.75" />
+					<modifier type="MOTOR_RPM" value="1.00" modifiedValue="1.10" />
+				</pitch>
+			</motor>
+			<!-- motorLoad -->
+			<motor file="map/vehicles/UAZ_Forester/Sounds/load_loop.ogg" innerRadius="10.0" outerRadius="110.0" linkNode="0>">
+				<volume indoor="0.0" outdoor="1.00" >
+					<modifier type="MOTOR_RPM" value="0.00" modifiedValue="0.00" />
+					<modifier type="MOTOR_RPM" value="0.80" modifiedValue="1.15" />			
+				</volume>
+				<pitch indoor="1.0" outdoor="1.0" >
+					<modifier type="SPEED" value="0.0"   modifiedValue="0.8" />
+					<modifier type="SPEED" value="25.0"  modifiedValue="1.15" />
+					<modifier type="MOTOR_RPM" value="0.25" modifiedValue="0.75"/>
+					<modifier type="MOTOR_RPM" value="1.00" modifiedValue="1.10"/>
+				</pitch>
+			</motor>
+			<motor file="map/vehicles/UAZ_Forester/Sounds/kamazBFmod_cabin_eSounds_loop.gls" volumeScale="0.6" pitchScale="1.0" innerRadius="5" fadeIn="0.2" fadeOut="0.5" supportsReverb="false" linkNodeOffset="-0.65 2.25 2.6">
+				<volume indoor="1" outdoor="0" >
+					<modifier type="DIFFERENTIAL_SPEED" value="0.0"  modifiedValue="0.10" />
+					<modifier type="DIFFERENTIAL_SPEED" value="20.0" modifiedValue="1.00" />
+					<modifier type="DIFFERENTIAL_SPEED" value="40.0" modifiedValue="1.30" />
+					<modifier type="DIFFERENTIAL_SPEED" value="85.0" modifiedValue="1.40" />
+				</volume>
+				<pitch indoor="1.0" outdoor="1.0" >
+					<modifier type="SUSPENSION" value="-0.08" modifiedValue="1.05" />
+					<modifier type="SUSPENSION" value="-0.02" modifiedValue="1.03" />
+					<modifier type="SUSPENSION" value="0.0"   modifiedValue="1.0" />
+					<modifier type="SUSPENSION" value="0.02"  modifiedValue="0.98" />
+					<modifier type="SUSPENSION" value="0.08"  modifiedValue="0.95" />
+				</pitch>
+				<loopSynthesisRpm>
+					<modifier type="DIFFERENTIAL_SPEED" value="0.0" modifiedValue="0.0" />
+					<modifier type="DIFFERENTIAL_SPEED" value="40.0" modifiedValue="0.5" />
+					<modifier type="DIFFERENTIAL_SPEED" value="85.0" modifiedValue="1.0" />
+				</loopSynthesisRpm>
+			</motor>
+			<gearbox template="engineLarge" file="map/vehicles/UAZ_Forester/Sounds/kamazBFmod_transmission_eSounds_loop.gls" volumeScale="1.3" fadeIn="1.0" fadeOut="1.0" linkNodeOffset="0 1 0.5">
+				<volume indoor="0.0" outdoor="1.0" >
+					<modifier type="SPEED" value="0.0"  modifiedValue="0.00" />
+					<modifier type="SPEED" value="0.40"  modifiedValue="0.25" />
+					<modifier type="SPEED" value="85.0" modifiedValue="1.00" />
+					<modifier type="DRIVING_DIRECTION" value="-1.0" modifiedValue="0.5" />
+					<modifier type="DRIVING_DIRECTION" value="0.00" modifiedValue="0.0" />
+					<modifier type="DRIVING_DIRECTION" value="1.00" modifiedValue="1.0" />
+				</volume>
+				<pitch>
+					<modifier type="SUSPENSION" value="-0.08" modifiedValue="1.05" />
+					<modifier type="SUSPENSION" value="-0.02" modifiedValue="1.03" />
+					<modifier type="SUSPENSION" value="0.0"   modifiedValue="1.0" />
+					<modifier type="SUSPENSION" value="0.02"  modifiedValue="0.98" />
+					<modifier type="SUSPENSION" value="0.08"  modifiedValue="0.95" />
+				</pitch>
+				<loopSynthesisRpm>
+					<modifier type="DIFFERENTIAL_SPEED" value="0.0" modifiedValue="0.0" />
+					<modifier type="DIFFERENTIAL_SPEED" value="40.0" modifiedValue="0.5" />
+					<modifier type="DIFFERENTIAL_SPEED" value="85.0" modifiedValue="1.0" />
+				</loopSynthesisRpm>
+			</gearbox>
+			<gearGroupLeverStart template="gearDisengaged" linkNode="0>" supportsReverb="false" volumeScale="0.15"/>
+			<gearGroupLeverEnd template="gearEngaged" linkNode="0>" supportsReverb="false" volumeScale="0.15"/>
+			<gearLeverStart template="gearDisengaged" linkNode="0>" supportsReverb="false" volumeScale="0.15"/>
+			<gearLeverEnd template="gearEngaged" linkNode="0>" supportsReverb="false" volumeScale="0.15" />
+			<brake file="map/vehicles/UAZ_Forester/Sounds/brake.ogg" linkNode="0>" innerRadius="7.0" outerRadius="70.0" fadeOut="0.03" >
+				<volume indoor="0.3" outdoor="0.8" />
+				<pitch indoor="0.8" outdoor="0.8" />
+				<lowpassGain indoor="0.5" outdoor="1.0" />
+			</brake>
+		</sounds>
+	</motorized>
+	
+	<lights>
+		<sounds>
+			<toggleLights template="switch01"  />
+			<turnLight template="switchTurnlight"  />
+		</sounds>
+	</lights>
+
+	<attacherJoints>
+		<sounds>
+			<attach template="attach01" />
+			<hydraulic template="hydraulicOpen02" volumeScale="2.4" />
+		</sounds>
+	</attacherJoints>
+
+	<drivable>
+		<sounds>
+			<waterSplash template="waterSplash01" />
+		</sounds>
+	</drivable>
+
+	<honk>
+		<sound template="hornDefault"/>
+	</honk>
+</sounds>

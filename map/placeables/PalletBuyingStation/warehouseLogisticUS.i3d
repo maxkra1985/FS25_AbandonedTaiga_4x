@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?>
+<i3D name="warehouseLogisticUS.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+    <Asset>
+        <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+    </Asset>
+    <Files>
+        <File fileId="5" filename="$data/shared/assets/marker/markerIconPallet.i3d"/>
+        <File fileId="1" filename="$data/shared/warningStripes_diffuse.dds"/>
+        <File fileId="2" filename="$data/shared/warningStripes_normal.dds"/>
+        <File fileId="3" filename="$data/shared/warningStripes_specular.dds"/>
+    </Files>
+    <Materials>
+        <Material name="default" materialId="39" diffuseColor="0.501961 0.501961 0.501961 1"/>
+        <Material name="warningStripes_mat" materialId="159">
+            <Texture fileId="1"/>
+            <Normalmap fileId="2"/>
+            <Glossmap fileId="3"/>
+        </Material>
+    </Materials>
+    <Shapes externalShapesFile="warehouseLogisticUS.i3d.shapes"/>
+    <Scene>
+        <TransformGroup name="warehouseLogisticUS" lockedgroup="true" nodeId="2652">
+            <TransformGroup name="indoorAreas" rotation="0 90 0" nodeId="2653">
+                <TransformGroup name="indoorAreaStart01" translation="-2.04738 0 5.59608" nodeId="2654">
+                    <TransformGroup name="indoorAreaWidth01" translation="4.13927 0 -1.86265e-09" nodeId="2655"/>
+                    <TransformGroup name="indoorAreaHeight01" translation="-5.82077e-09 0 -11.1232" nodeId="2656"/>
+                </TransformGroup>
+            </TransformGroup>
+            <TransformGroup name="tipOcclusionUpdateAreas" nodeId="2657">
+                <TransformGroup name="tipOcclusionUpdateAreaStart01" translation="-6.76618 0 -4.88557" nodeId="2658">
+                    <TransformGroup name="tipOcclusionUpdateAreaEnd01" translation="12.3058 0 6.84184" nodeId="2659"/>
+                </TransformGroup>
+            </TransformGroup>
+            <TransformGroup name="lights" nodeId="2660"/>
+            <TransformGroup name="warningStripes" nodeId="2661">
+                <Shape name="warningStripes01" translation="0 0.03 0" shapeId="1" clipDistance="200" nodeId="2662" castsShadows="true" receiveShadows="true" materialIds="159"/>
+            </TransformGroup>
+            <TransformGroup name="palletSpawner" nodeId="2663">
+                <TransformGroup name="palletAreaStart01" translation="4.61162 0.05 5.06989e-07" rotation="0 -90 0" nodeId="2664">
+                    <TransformGroup name="palletAreaEnd01" translation="0 0 9" nodeId="2665"/>
+                </TransformGroup>
+                <TransformGroup name="palletAreaStart02" translation="4.61162 1.15 5.06989e-07" rotation="0 -90 0" nodeId="2666">
+                    <TransformGroup name="palletAreaEnd02" translation="0 0 9" nodeId="2667"/>
+                </TransformGroup>
+                <TransformGroup name="palletAreaStart03" translation="4.61162 2.25 5.06989e-07" rotation="0 -90 0" nodeId="2668">
+                    <TransformGroup name="palletAreaEnd03" translation="0 0 9" nodeId="2669"/>
+                </TransformGroup>
+                <TransformGroup name="palletAreaStart04" translation="4.61162 3.35 5.06989e-07" rotation="0 -90 0" nodeId="2670">
+                    <TransformGroup name="palletAreaEnd04" translation="0 0 9" nodeId="2671"/>
+                </TransformGroup>
+                <Shape name="palletBuyingActivationTrigger" translation="-1.93354 1 -4.17852" shapeId="2" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="2672" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="39"/>
+                <ReferenceNode name="markerIconPallet" translation="-1.93354 0 -4.17852" referenceId="5" nodeId="2675"/>
+            </TransformGroup>
+            <TransformGroup name="teleportNode" translation="0.002 1 -3.042" nodeId="2678"/>
+        </TransformGroup>
+    </Scene>
+</i3D>

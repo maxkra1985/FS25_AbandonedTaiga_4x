@@ -1,0 +1,1264 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="farmWithBedsFences.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.12"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="$data/placeables/brandless/fences/EU/fence01/fence01_diffuse.png"/>
+    <File fileId="3" filename="$data/placeables/brandless/fences/EU/fence01/fence01_normal.png"/>
+    <File fileId="4" filename="$data/placeables/brandless/fences/EU/fence01/fence01_specular.png"/>
+    <File fileId="5" filename="$data/shaders/placeableShader.xml"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="default" materialId="5" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="fence01_01_mat" materialId="6" customShaderId="5">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="fence01_02_mat" materialId="7" customShaderId="5" customShaderVariation="vertexOffset">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+  </Materials>
+
+
+  <PerInstanceMaterialParameters>
+  </PerInstanceMaterialParameters>
+
+
+  <Shapes externalShapesFile="farmWithBedsFences.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="fences" nodeId="20">
+      <TransformGroup name="gates" nodeId="21">
+        <TransformGroup name="gate6m" translation="-14.1748 0 -32.5477" rotation="0 -90 0" static="true" nodeId="22">
+          <Shape name="gate6mOpenA" translation="-0.0125 0.792087 0.032304" shapeId="1" kinematic="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="23" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
+            <Shape name="visual" shapeId="2" clipDistance="300" nodeId="24" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </Shape>
+          <Shape name="gate6mOpenB" translation="-0.0125 0.789129 5.96772" shapeId="3" kinematic="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="25" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
+            <Shape name="visual" shapeId="4" clipDistance="300" nodeId="26" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </Shape>
+          <Shape name="poles" shapeId="5" clipDistance="50" nodeId="27" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          <Shape name="col" translation="0.006124 0 0" shapeId="6" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" nodeId="28" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="gate6mTrigger" translation="0 0.847845 3.01593" shapeId="7" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="29" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <TransformGroup name="gate6mSound" translation="0 0 2.93468" nodeId="30"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="panels01" nodeId="31">
+        <TransformGroup name="panel01" translation="-32.177 0 -32.5217" static="true" nodeId="32">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="33" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="34" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="35">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="36" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="37" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -30.5216" static="true" nodeId="38">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="39" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="40" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="41">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="42" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="43" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -28.4639" static="true" nodeId="44">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="45" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="46" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="47">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="48" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="49" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -26.4637" static="true" nodeId="50">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="51" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="52" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="53">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="54" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="55" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -24.4053" static="true" nodeId="56">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="57" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="58" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="59">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="60" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="61" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -22.4052" static="true" nodeId="62">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="63" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="64" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="65">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="66" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="67" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -20.3474" static="true" nodeId="68">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="69" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="70" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="71">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="72" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="73" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -18.3473" static="true" nodeId="74">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="75" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="76" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="77">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="78" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="79" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -16.2921" static="true" nodeId="80">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="81" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="82" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="83">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="84" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="85" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -14.292" static="true" nodeId="86">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="87" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="88" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="89">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="90" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="91" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -12.2342" static="true" nodeId="92">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="93" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="94" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="95">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="96" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="97" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -10.2341" static="true" nodeId="98">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="99" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="100" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="101">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="102" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="103" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -8.17564" static="true" nodeId="104">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="105" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="106" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="107">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="108" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="109" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -6.1755" static="true" nodeId="110">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="111" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="112" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="113">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="114" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="115" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -4.11774" static="true" nodeId="116">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="117" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="118" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="119">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="120" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="121" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -2.1176" static="true" nodeId="122">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="123" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="124" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="125">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="126" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="127" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -0.0613219" static="true" nodeId="128">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="129" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="130" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="131">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="132" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="133" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 1.93881" static="true" nodeId="134">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="135" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="136" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="137">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="138" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="139" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 3.99657" static="true" nodeId="140">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="141" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="142" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="143">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="144" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="145" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 5.99671" static="true" nodeId="146">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="147" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="148" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="149">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="150" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="151" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 8.05513" static="true" nodeId="152">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="153" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="154" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="155">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="156" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="157" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 10.0553" static="true" nodeId="158">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="159" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="160" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="161">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="162" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="163" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 12.113" static="true" nodeId="164">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="165" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="166" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="167">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="168" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="169" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 14.1132" static="true" nodeId="170">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="171" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="172" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="173">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="174" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="175" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 16.1683" static="true" nodeId="176">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="177" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="178" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="179">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="180" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="181" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 18.1684" static="true" nodeId="182">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="183" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="184" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="185">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="186" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="187" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 20.2262" static="true" nodeId="188">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="189" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="190" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="191">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="192" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="193" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 22.2263" static="true" nodeId="194">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="195" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="196" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="197">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="198" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="199" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 24.2848" static="true" nodeId="200">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="201" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="202" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="203">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="204" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="205" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 26.2849" static="true" nodeId="206">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="207" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="208" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="209">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="210" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="211" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 28.3427" static="true" nodeId="212">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="213" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="214" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="215">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="216" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="217" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 30.3428" static="true" nodeId="218">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="219" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="220" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="221">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="222" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="223" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 32.4012" static="true" nodeId="224">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="225" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="226" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="227">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="228" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="229" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 34.4013" static="true" nodeId="230">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="231" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="232" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="233">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="234" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="235" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 36.4591" static="true" nodeId="236">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="237" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="238" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="239">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="240" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="241" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 38.4592" static="true" nodeId="242">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="243" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="244" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="245">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="246" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="247" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 40.5177" static="true" nodeId="248">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="249" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="250" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="251">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="252" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="253" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 42.5178" static="true" nodeId="254">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="255" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="256" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="257">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="258" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="259" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 44.5756" static="true" nodeId="260">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="261" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="262" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="263">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="264" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="265" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 46.5757" static="true" nodeId="266">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="267" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="268" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="269">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="270" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="271" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 48.6246" static="true" nodeId="272">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="273" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="274" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="275">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="276" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="277" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="panels02" translation="-32.1647 0 50.6248" rotation="-0 90 0" nodeId="278">
+        <TransformGroup name="panel01" translation="-1.53891e-05 0 0" static="true" nodeId="279">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="280" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="281" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="282">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="283" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="284" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.60407e-05 0 2" static="true" nodeId="285">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="286" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="287" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="288">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="289" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="290" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.66924e-05 0 4" static="true" nodeId="291">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="292" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="293" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="294">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="295" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="296" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.73441e-05 0 6" static="true" nodeId="297">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="298" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="299" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="300">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="301" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="302" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.79958e-05 0 8" static="true" nodeId="303">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="304" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="305" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="306">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="307" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="308" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.86475e-05 0 10" static="true" nodeId="309">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="310" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="311" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="312">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="313" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="314" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.92991e-05 0 12" static="true" nodeId="315">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="316" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="317" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="318">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="319" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="320" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.99508e-05 0 14" static="true" nodeId="321">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="322" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="323" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="324">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="325" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="326" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.06025e-05 0 16" static="true" nodeId="327">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="328" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="329" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="330">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="331" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="332" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.12542e-05 0 18" static="true" nodeId="333">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="334" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="335" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="336">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="337" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="338" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.19059e-05 0 20" static="true" nodeId="339">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="340" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="341" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="342">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="343" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="344" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.25576e-05 0 22" static="true" nodeId="345">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="346" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="347" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="348">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="349" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="350" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.32092e-05 0 24" static="true" nodeId="351">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="352" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="353" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="354">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="355" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="356" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.38609e-05 0 26" static="true" nodeId="357">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="358" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="359" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="360">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="361" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="362" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.45126e-05 0 28" static="true" nodeId="363">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="364" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="365" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="366">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="367" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="368" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.51643e-05 0 30" static="true" nodeId="369">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="370" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="371" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="372">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="373" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="374" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.5816e-05 0 32" static="true" nodeId="375">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="376" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="377" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="378">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="379" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="380" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.64677e-05 0 34" static="true" nodeId="381">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="382" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="383" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="384">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="385" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="386" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.71193e-05 0 36" static="true" nodeId="387">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="388" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="389" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="390">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="391" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="392" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.7771e-05 0 38" static="true" nodeId="393">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="394" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="395" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="396">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="397" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="398" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.84227e-05 0 40" static="true" nodeId="399">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="400" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="401" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="402">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="403" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="404" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.90744e-05 0 42" static="true" nodeId="405">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="406" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="407" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="408">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="409" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="410" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.97261e-05 0 44" static="true" nodeId="411">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="412" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="413" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="414">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="415" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="416" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.03777e-05 0 46" static="true" nodeId="417">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="418" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="419" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="420">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="421" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="422" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.10294e-05 0 48" static="true" nodeId="423">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="424" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="425" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="426">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="427" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="428" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.16811e-05 0 50" static="true" nodeId="429">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="430" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="431" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="432">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="433" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="434" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.23328e-05 0 52" static="true" nodeId="435">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="436" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="437" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="438">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="439" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="440" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.29845e-05 0 54" static="true" nodeId="441">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="442" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="443" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="444">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="445" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="446" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.36362e-05 0 56" static="true" nodeId="447">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="448" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="449" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="450">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="451" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="452" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.42878e-05 0 58" static="true" nodeId="453">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="454" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="455" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="456">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="457" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="458" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.49395e-05 0 60" static="true" nodeId="459">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="460" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="461" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="462">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="463" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="464" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.55912e-05 0 62" static="true" nodeId="465">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="466" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="467" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="468">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="469" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="470" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.62429e-05 0 64" static="true" nodeId="471">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="472" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="473" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="474">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="475" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="476" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.68946e-05 0 66" static="true" nodeId="477">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="478" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="479" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="480">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="481" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="482" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.75463e-05 0 68" static="true" nodeId="483">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="484" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="485" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="486">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="487" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="488" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="panels03" translation="5.65 0 18.1" rotation="0 180 0" nodeId="489">
+        <TransformGroup name="panel01" translation="-32.177 0 -32.5217" static="true" nodeId="490">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="491" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="492" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="493">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="494" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="495" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -30.5216" static="true" nodeId="496">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="497" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="498" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="499">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="500" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="501" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -28.4639" static="true" nodeId="502">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="503" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="504" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="505">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="506" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="507" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -26.4637" static="true" nodeId="508">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="509" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="510" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="511">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="512" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="513" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -24.4053" static="true" nodeId="514">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="515" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="516" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="517">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="518" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="519" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -22.4052" static="true" nodeId="520">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="521" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="522" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="523">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="524" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="525" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -20.3474" static="true" nodeId="526">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="527" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="528" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="529">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="530" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="531" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -18.3473" static="true" nodeId="532">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="533" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="534" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="535">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="536" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="537" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -16.2921" static="true" nodeId="538">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="539" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="540" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="541">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="542" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="543" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -14.292" static="true" nodeId="544">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="545" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="546" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="547">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="548" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="549" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -12.2342" static="true" nodeId="550">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="551" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="552" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="553">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="554" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="555" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -10.2341" static="true" nodeId="556">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="557" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="558" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="559">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="560" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="561" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -8.17564" static="true" nodeId="562">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="563" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="564" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="565">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="566" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="567" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -6.1755" static="true" nodeId="568">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="569" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="570" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="571">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="572" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="573" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -4.11774" static="true" nodeId="574">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="575" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="576" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="577">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="578" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="579" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -2.1176" static="true" nodeId="580">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="581" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="582" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="583">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="584" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="585" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 -0.0613219" static="true" nodeId="586">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="587" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="588" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="589">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="590" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="591" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 1.93881" static="true" nodeId="592">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="593" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="594" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="595">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="596" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="597" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 3.99657" static="true" nodeId="598">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="599" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="600" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="601">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="602" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="603" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 5.99671" static="true" nodeId="604">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="605" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="606" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="607">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="608" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="609" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 8.05513" static="true" nodeId="610">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="611" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="612" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="613">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="614" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="615" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 10.0553" static="true" nodeId="616">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="617" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="618" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="619">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="620" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="621" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 12.113" static="true" nodeId="622">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="623" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="624" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="625">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="626" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="627" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 14.1132" static="true" nodeId="628">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="629" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="630" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="631">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="632" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="633" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 16.1683" static="true" nodeId="634">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="635" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="636" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="637">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="638" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="639" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 18.1684" static="true" nodeId="640">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="641" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="642" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="643">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="644" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="645" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 20.2262" static="true" nodeId="646">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="647" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="648" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="649">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="650" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="651" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 22.2263" static="true" nodeId="652">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="653" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="654" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="655">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="656" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="657" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 24.2848" static="true" nodeId="658">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="659" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="660" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="661">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="662" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="663" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 26.2849" static="true" nodeId="664">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="665" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="666" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="667">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="668" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="669" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 28.3427" static="true" nodeId="670">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="671" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="672" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="673">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="674" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="675" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 30.3428" static="true" nodeId="676">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="677" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="678" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="679">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="680" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="681" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 32.4012" static="true" nodeId="682">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="683" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="684" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="685">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="686" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="687" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 34.4013" static="true" nodeId="688">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="689" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="690" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="691">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="692" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="693" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 36.4591" static="true" nodeId="694">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="695" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="696" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="697">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="698" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="699" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 38.4592" static="true" nodeId="700">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="701" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="702" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="703">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="704" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="705" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 40.5177" static="true" nodeId="706">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="707" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="708" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="709">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="710" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="711" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 42.5178" static="true" nodeId="712">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="713" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="714" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="715">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="716" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="717" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 44.5756" static="true" nodeId="718">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="719" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="720" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="721">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="722" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="723" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 46.5757" static="true" nodeId="724">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="725" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="726" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="727">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="728" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="729" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-32.177 0 48.6246" static="true" nodeId="730">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="731" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="732" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="733">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="734" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="735" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="panels04" translation="37.8116 0 -32.5251" rotation="-0 -90 0" nodeId="736">
+        <TransformGroup name="panel01" translation="-1.53891e-05 0 0" static="true" nodeId="737">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="738" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="739" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="740">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="741" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="742" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.60407e-05 0 2" static="true" nodeId="743">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="744" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="745" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="746">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="747" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="748" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.66924e-05 0 4" static="true" nodeId="749">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="750" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="751" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="752">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="753" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="754" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.73441e-05 0 6" static="true" nodeId="755">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="756" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="757" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="758">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="759" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="760" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.79958e-05 0 8" static="true" nodeId="761">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="762" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="763" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="764">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="765" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="766" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.86475e-05 0 10" static="true" nodeId="767">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="768" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="769" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="770">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="771" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="772" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.92991e-05 0 12" static="true" nodeId="773">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="774" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="775" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="776">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="777" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="778" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-1.99508e-05 0 14" static="true" nodeId="779">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="780" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="781" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="782">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="783" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="784" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.06025e-05 0 16" static="true" nodeId="785">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="786" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="787" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="788">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="789" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="790" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.12542e-05 0 18" static="true" nodeId="791">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="792" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="793" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="794">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="795" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="796" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.19059e-05 0 20" static="true" nodeId="797">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="798" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="799" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="800">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="801" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="802" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.25576e-05 0 22" static="true" nodeId="803">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="804" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="805" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="806">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="807" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="808" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.32092e-05 0 24" static="true" nodeId="809">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="810" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="811" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="812">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="813" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="814" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.38609e-05 0 26" static="true" nodeId="815">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="816" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="817" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="818">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="819" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="820" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.45126e-05 0 28" static="true" nodeId="821">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="822" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="823" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="824">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="825" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="826" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.51643e-05 0 30" static="true" nodeId="827">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="828" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="829" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="830">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="831" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="832" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.5816e-05 0 32" static="true" nodeId="833">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="834" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="835" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="836">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="837" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="838" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.64677e-05 0 34" static="true" nodeId="839">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="840" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="841" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="842">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="843" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="844" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.71193e-05 0 36" static="true" nodeId="845">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="846" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="847" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="848">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="849" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="850" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.7771e-05 0 38" static="true" nodeId="851">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="852" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="853" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="854">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="855" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="856" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.84227e-05 0 40" static="true" nodeId="857">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="858" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="859" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="860">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="861" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="862" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.90744e-05 0 42" static="true" nodeId="863">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="864" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="865" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="866">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="867" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="868" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-2.97261e-05 0 44" static="true" nodeId="869">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="870" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="871" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="872">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="873" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="874" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.03777e-05 0 46" static="true" nodeId="875">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="876" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="877" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="878">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="879" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="880" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.10294e-05 0 48" static="true" nodeId="881">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="882" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="883" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="884">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="885" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="886" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.16811e-05 0 50" static="true" nodeId="887">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="888" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="889" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="890">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="891" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="892" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.42878e-05 0 58" static="true" nodeId="893">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="894" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="895" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="896">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="897" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="898" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.49395e-05 0 60" static="true" nodeId="899">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="900" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="901" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="902">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="903" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="904" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.55912e-05 0 62" static="true" nodeId="905">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="906" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="907" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="908">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="909" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="910" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.62429e-05 0 64" static="true" nodeId="911">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="912" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="913" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="914">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="915" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="916" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.68946e-05 0 66" static="true" nodeId="917">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="918" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="919" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="920">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="921" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="922" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="panel01" translation="-3.75463e-05 0 68" static="true" nodeId="923">
+          <Shape name="col" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="924" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+          <Shape name="visual" shapeId="9" clipDistance="300" nodeId="925" castsShadows="true" receiveShadows="true" materialIds="7"/>
+          <TransformGroup name="pole01" static="true" nodeId="926">
+            <Shape name="col" shapeId="10" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="927" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5"/>
+            <Shape name="visual" shapeId="11" clipDistance="300" nodeId="928" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+  <UserAttributes>
+    <UserAttribute nodeId="20">
+      <Attribute name="uniqueId" type="string" value="preplaced_fences_051044baac9c2a1ad8c469326100e8a87"/>
+    </UserAttribute>
+  </UserAttributes>
+
+</i3D>

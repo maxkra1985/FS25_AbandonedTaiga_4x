@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_storeItem_nails</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>map/tools/nails/store_nails.dds</image>
+		<price>225</price>
+		<showInStore>true</showInStore>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>true</canBeSold>
+		<category>pallets</category>
+		<financeCategory>PURCHASE_PALLETS OTHER</financeCategory>
+		<brand>LIZARD</brand>
+		<rotation>0</rotation>
+		<vertexBufferMemoryUsage>13568</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>5888</indexBufferMemoryUsage>
+		<textureMemoryUsage>262144</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>map/tools/nails/palletNails.i3d</filename>
+		<size width="1.1" length="0.7" height="1.3" />
+		<input allowed="false"/>
+		<canBeReset>false</canBeReset>
+		<supportsPickUp>true</supportsPickUp>
+		<components maxMass="150">
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="150"/>
+		</components>
+		<showInVehicleMenu>false</showInVehicleMenu>
+		<mapHotspot available="false" />
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration name="$l10n_configuration_valueDefault">
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="NAILS" capacity="150" startFillType="NAILS" startFillLevel="150" ignoreFillLimit="true" />
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<pallet fillUnitIndex="1" linkNode="nailsBoxPallet_component1">
+		<content>
+			<object node="carton01" tensionBeltNode="carton01Tension" />
+			<object node="carton02" tensionBeltNode="carton02Tension" />
+			<object node="carton03" tensionBeltNode="carton03Tension" />
+			<object node="carton04" tensionBeltNode="carton04Tension" />
+			<object node="carton05" tensionBeltNode="carton05Tension" />
+			<object node="carton06" tensionBeltNode="carton06Tension" />
+			<object node="carton07" tensionBeltNode="carton07Tension" />
+			<object node="carton08" tensionBeltNode="carton08Tension" />
+			<object node="carton09" tensionBeltNode="carton09Tension" />
+			<object node="carton10" tensionBeltNode="carton10Tension" />
+			<object node="carton11" tensionBeltNode="carton11Tension" />
+			<object node="carton12" tensionBeltNode="carton12Tension" />
+			<object node="carton13" tensionBeltNode="carton13Tension" />
+			<object node="carton14" tensionBeltNode="carton14Tension" />
+			<object node="carton15" tensionBeltNode="carton15Tension" />
+			<object node="carton16" tensionBeltNode="carton16Tension" />
+			<object node="carton17" tensionBeltNode="carton17Tension" />
+			<object node="carton18" tensionBeltNode="carton18Tension" />
+			<object node="carton19" tensionBeltNode="carton19Tension" />
+			<object node="carton20" tensionBeltNode="carton20Tension" />
+			<object node="carton21" tensionBeltNode="carton21Tension" />
+			<object node="carton22" tensionBeltNode="carton22Tension" />
+			<object node="carton23" tensionBeltNode="carton23Tension" />
+			<object node="carton24" tensionBeltNode="carton24Tension" />
+			<object node="carton25" tensionBeltNode="carton25Tension" />
+			<object node="carton26" tensionBeltNode="carton26Tension" />
+			<object node="carton27" tensionBeltNode="carton27Tension" />
+			<object node="carton28" tensionBeltNode="carton28Tension" />
+			<object node="carton29" tensionBeltNode="carton29Tension" />
+			<object node="carton30" tensionBeltNode="carton30Tension" />
+			<object node="carton31" tensionBeltNode="carton31Tension" />
+			<object node="carton32" tensionBeltNode="carton32Tension" />
+			<object node="carton33" tensionBeltNode="carton33Tension" />
+			<object node="carton34" tensionBeltNode="carton34Tension" />
+			<object node="carton35" tensionBeltNode="carton35Tension" />
+			<object node="carton36" tensionBeltNode="carton36Tension" />
+			<object node="carton37" tensionBeltNode="carton37Tension" />
+			<object node="carton38" tensionBeltNode="carton38Tension" />
+			<object node="carton39" tensionBeltNode="carton39Tension" />
+			<object node="carton40" tensionBeltNode="carton40Tension" />
+			<object node="carton41" tensionBeltNode="carton41Tension" />
+			<object node="carton42" tensionBeltNode="carton42Tension" />
+			<object node="carton43" tensionBeltNode="carton43Tension" />
+			<object node="carton44" tensionBeltNode="carton44Tension" />
+			<object node="carton45" tensionBeltNode="carton45Tension" />
+			<object node="carton46" tensionBeltNode="carton46Tension" />
+			<object node="carton47" tensionBeltNode="carton47Tension" />
+			<object node="carton48" tensionBeltNode="carton48Tension" />
+			<object node="carton49" tensionBeltNode="carton49Tension" />
+			<object node="carton50" tensionBeltNode="carton50Tension" />
+			<object node="carton51" tensionBeltNode="carton51Tension" />
+			<object node="carton52" tensionBeltNode="carton52Tension" />
+			<object node="carton53" tensionBeltNode="carton53Tension" />
+			<object node="carton54" tensionBeltNode="carton54Tension" />
+			<object node="carton55" tensionBeltNode="carton55Tension" />
+			<object node="carton56" tensionBeltNode="carton56Tension" />
+			<object node="carton57" tensionBeltNode="carton57Tension" />
+			<object node="carton58" tensionBeltNode="carton58Tension" />
+			<object node="carton59" tensionBeltNode="carton59Tension" />
+			<object node="carton60" tensionBeltNode="carton60Tension" />
+			<object node="carton61" tensionBeltNode="carton61Tension" />
+			<object node="carton62" tensionBeltNode="carton62Tension" />
+			<object node="carton63" tensionBeltNode="carton63Tension" />
+			<object node="carton64" tensionBeltNode="carton64Tension" />
+			<object node="carton65" tensionBeltNode="carton65Tension" />
+			<object node="carton66" tensionBeltNode="carton66Tension" />
+			<object node="carton67" tensionBeltNode="carton67Tension" />
+			<object node="carton68" tensionBeltNode="carton68Tension" />
+			<object node="carton69" tensionBeltNode="carton69Tension" />
+			<object node="carton70" tensionBeltNode="carton70Tension" />
+			<object node="carton71" tensionBeltNode="carton71Tension" />
+			<object node="carton72" tensionBeltNode="carton72Tension" />
+			<object node="carton73" tensionBeltNode="carton73Tension" />
+			<object node="carton74" tensionBeltNode="carton74Tension" />
+			<object node="carton75" tensionBeltNode="carton75Tension" />
+			<object node="carton76" tensionBeltNode="carton76Tension" />
+			<object node="carton77" tensionBeltNode="carton77Tension" />
+			<object node="carton78" tensionBeltNode="carton78Tension" />
+			<object node="carton79" tensionBeltNode="carton79Tension" />
+			<object node="carton80" tensionBeltNode="carton80Tension" />
+			<object node="carton81" tensionBeltNode="carton81Tension" />
+			<object node="carton82" tensionBeltNode="carton82Tension" />
+			<object node="carton83" tensionBeltNode="carton83Tension" />
+			<object node="carton84" tensionBeltNode="carton84Tension" />
+			<object node="carton85" tensionBeltNode="carton85Tension" />
+			<object node="carton86" tensionBeltNode="carton86Tension" />
+			<object node="carton87" tensionBeltNode="carton87Tension" />
+			<object node="carton88" tensionBeltNode="carton88Tension" />
+			<object node="carton89" tensionBeltNode="carton89Tension" />
+			<object node="carton90" tensionBeltNode="carton90Tension" />
+			<object node="carton91" tensionBeltNode="carton91Tension" />
+			<object node="carton92" tensionBeltNode="carton92Tension" />
+			<object node="carton93" tensionBeltNode="carton93Tension" />
+			<object node="carton94" tensionBeltNode="carton94Tension" />
+			<object node="carton95" tensionBeltNode="carton95Tension" />
+			<object node="carton96" tensionBeltNode="carton96Tension" />
+			<object node="carton97" tensionBeltNode="carton97Tension" />
+			<object node="carton98" tensionBeltNode="carton98Tension" />
+			<object node="carton99" tensionBeltNode="carton99Tension" />
+			<object node="carton100" tensionBeltNode="carton100Tension" />
+			<object node="carton101" tensionBeltNode="carton101Tension" />
+			<object node="carton102" tensionBeltNode="carton102Tension" />
+			<object node="carton103" tensionBeltNode="carton103Tension" />
+			<object node="carton104" tensionBeltNode="carton104Tension" />
+			<object node="carton105" tensionBeltNode="carton105Tension" />
+			<object node="carton106" tensionBeltNode="carton106Tension" />
+			<object node="carton107" tensionBeltNode="carton107Tension" />
+			<object node="carton108" tensionBeltNode="carton108Tension" />
+			<object node="carton109" tensionBeltNode="carton109Tension" />
+			<object node="carton110" tensionBeltNode="carton110Tension" />
+			<object node="carton111" tensionBeltNode="carton111Tension" />
+			<object node="carton112" tensionBeltNode="carton112Tension" />
+			<object node="carton113" tensionBeltNode="carton113Tension" />
+			<object node="carton114" tensionBeltNode="carton114Tension" />
+			<object node="carton115" tensionBeltNode="carton115Tension" />
+			<object node="carton116" tensionBeltNode="carton116Tension" />
+			<object node="carton117" tensionBeltNode="carton117Tension" />
+			<object node="carton118" tensionBeltNode="carton118Tension" />
+			<object node="carton119" tensionBeltNode="carton119Tension" />
+			<object node="carton120" tensionBeltNode="carton120Tension" />
+			<object node="carton121" tensionBeltNode="carton121Tension" />
+			<object node="carton122" tensionBeltNode="carton122Tension" />
+			<object node="carton123" tensionBeltNode="carton123Tension" />
+			<object node="carton124" tensionBeltNode="carton124Tension" />
+			<object node="carton125" tensionBeltNode="carton125Tension" />
+			<object node="carton126" tensionBeltNode="carton126Tension" />
+			<object node="carton127" tensionBeltNode="carton127Tension" />
+			<object node="carton128" tensionBeltNode="carton128Tension" />
+			<object node="carton129" tensionBeltNode="carton129Tension" />
+			<object node="carton130" tensionBeltNode="carton130Tension" />
+			<object node="carton131" tensionBeltNode="carton131Tension" />
+			<object node="carton132" tensionBeltNode="carton132Tension" />
+			<object node="carton133" tensionBeltNode="carton133Tension" />
+			<object node="carton134" tensionBeltNode="carton134Tension" />
+			<object node="carton135" tensionBeltNode="carton135Tension" />
+			<object node="carton136" tensionBeltNode="carton136Tension" />
+			<object node="carton137" tensionBeltNode="carton137Tension" />
+			<object node="carton138" tensionBeltNode="carton138Tension" />
+			<object node="carton139" tensionBeltNode="carton139Tension" />
+			<object node="carton140" tensionBeltNode="carton140Tension" />
+			<object node="carton141" tensionBeltNode="carton141Tension" />
+			<object node="carton142" tensionBeltNode="carton142Tension" />
+			<object node="carton143" tensionBeltNode="carton143Tension" />
+			<object node="carton144" tensionBeltNode="carton144Tension" />
+			<object node="carton145" tensionBeltNode="carton145Tension" />
+			<object node="carton146" tensionBeltNode="carton146Tension" />
+			<object node="carton147" tensionBeltNode="carton147Tension" />
+			<object node="carton148" tensionBeltNode="carton148Tension" />
+			<object node="carton149" tensionBeltNode="carton149Tension" />
+			<object node="carton150" tensionBeltNode="carton150Tension" />
+		</content>
+
+		<sounds>
+			<unload template="palletsFillFabric" pitchScale="0.8" />
+		</sounds>
+	</pallet>
+
+
+	<i3dMappings>
+		<i3dMapping id="nailsBoxPallet_component1" node="0>" />
+		<i3dMapping id="dynamicMountTrigger" node="0>0" />
+		<i3dMapping id="carton01" node="0>1|0" />
+		<i3dMapping id="carton01Tension" node="0>1|0|0" />
+		<i3dMapping id="carton02" node="0>1|1" />
+		<i3dMapping id="carton02Tension" node="0>1|1|0" />
+		<i3dMapping id="carton03" node="0>1|2" />
+		<i3dMapping id="carton03Tension" node="0>1|2|0" />
+		<i3dMapping id="carton04" node="0>1|3" />
+		<i3dMapping id="carton04Tension" node="0>1|3|0" />
+		<i3dMapping id="carton05" node="0>1|4" />
+		<i3dMapping id="carton05Tension" node="0>1|4|0" />
+		<i3dMapping id="carton06" node="0>1|5" />
+		<i3dMapping id="carton06Tension" node="0>1|5|0" />
+		<i3dMapping id="carton07" node="0>1|6" />
+		<i3dMapping id="carton07Tension" node="0>1|6|0" />
+		<i3dMapping id="carton08" node="0>1|7" />
+		<i3dMapping id="carton08Tension" node="0>1|7|0" />
+		<i3dMapping id="carton09" node="0>1|8" />
+		<i3dMapping id="carton09Tension" node="0>1|8|0" />
+		<i3dMapping id="carton10" node="0>1|9" />
+		<i3dMapping id="carton10Tension" node="0>1|9|0" />
+		<i3dMapping id="carton11" node="0>1|10" />
+		<i3dMapping id="carton11Tension" node="0>1|10|0" />
+		<i3dMapping id="carton12" node="0>1|11" />
+		<i3dMapping id="carton12Tension" node="0>1|11|0" />
+		<i3dMapping id="carton13" node="0>1|12" />
+		<i3dMapping id="carton13Tension" node="0>1|12|0" />
+		<i3dMapping id="carton14" node="0>1|13" />
+		<i3dMapping id="carton14Tension" node="0>1|13|0" />
+		<i3dMapping id="carton15" node="0>1|14" />
+		<i3dMapping id="carton15Tension" node="0>1|14|0" />
+		<i3dMapping id="carton16" node="0>1|15" />
+		<i3dMapping id="carton16Tension" node="0>1|15|0" />
+		<i3dMapping id="carton17" node="0>1|16" />
+		<i3dMapping id="carton17Tension" node="0>1|16|0" />
+		<i3dMapping id="carton18" node="0>1|17" />
+		<i3dMapping id="carton18Tension" node="0>1|17|0" />
+		<i3dMapping id="carton19" node="0>1|18" />
+		<i3dMapping id="carton19Tension" node="0>1|18|0" />
+		<i3dMapping id="carton20" node="0>1|19" />
+		<i3dMapping id="carton20Tension" node="0>1|19|0" />
+		<i3dMapping id="carton21" node="0>1|20" />
+		<i3dMapping id="carton21Tension" node="0>1|20|0" />
+		<i3dMapping id="carton22" node="0>1|21" />
+		<i3dMapping id="carton22Tension" node="0>1|21|0" />
+		<i3dMapping id="carton23" node="0>1|22" />
+		<i3dMapping id="carton23Tension" node="0>1|22|0" />
+		<i3dMapping id="carton24" node="0>1|23" />
+		<i3dMapping id="carton24Tension" node="0>1|23|0" />
+		<i3dMapping id="carton25" node="0>1|24" />
+		<i3dMapping id="carton25Tension" node="0>1|24|0" />
+		<i3dMapping id="carton26" node="0>1|25" />
+		<i3dMapping id="carton26Tension" node="0>1|25|0" />
+		<i3dMapping id="carton27" node="0>1|26" />
+		<i3dMapping id="carton27Tension" node="0>1|26|0" />
+		<i3dMapping id="carton28" node="0>1|27" />
+		<i3dMapping id="carton28Tension" node="0>1|27|0" />
+		<i3dMapping id="carton29" node="0>1|28" />
+		<i3dMapping id="carton29Tension" node="0>1|28|0" />
+		<i3dMapping id="carton30" node="0>1|29" />
+		<i3dMapping id="carton30Tension" node="0>1|29|0" />
+		<i3dMapping id="carton31" node="0>1|30" />
+		<i3dMapping id="carton31Tension" node="0>1|30|0" />
+		<i3dMapping id="carton32" node="0>1|31" />
+		<i3dMapping id="carton32Tension" node="0>1|31|0" />
+		<i3dMapping id="carton33" node="0>1|32" />
+		<i3dMapping id="carton33Tension" node="0>1|32|0" />
+		<i3dMapping id="carton34" node="0>1|33" />
+		<i3dMapping id="carton34Tension" node="0>1|33|0" />
+		<i3dMapping id="carton35" node="0>1|34" />
+		<i3dMapping id="carton35Tension" node="0>1|34|0" />
+		<i3dMapping id="carton36" node="0>1|35" />
+		<i3dMapping id="carton36Tension" node="0>1|35|0" />
+		<i3dMapping id="carton37" node="0>1|36" />
+		<i3dMapping id="carton37Tension" node="0>1|36|0" />
+		<i3dMapping id="carton38" node="0>1|37" />
+		<i3dMapping id="carton38Tension" node="0>1|37|0" />
+		<i3dMapping id="carton39" node="0>1|38" />
+		<i3dMapping id="carton39Tension" node="0>1|38|0" />
+		<i3dMapping id="carton40" node="0>1|39" />
+		<i3dMapping id="carton40Tension" node="0>1|39|0" />
+		<i3dMapping id="carton41" node="0>1|40" />
+		<i3dMapping id="carton41Tension" node="0>1|40|0" />
+		<i3dMapping id="carton42" node="0>1|41" />
+		<i3dMapping id="carton42Tension" node="0>1|41|0" />
+		<i3dMapping id="carton43" node="0>1|42" />
+		<i3dMapping id="carton43Tension" node="0>1|42|0" />
+		<i3dMapping id="carton44" node="0>1|43" />
+		<i3dMapping id="carton44Tension" node="0>1|43|0" />
+		<i3dMapping id="carton45" node="0>1|44" />
+		<i3dMapping id="carton45Tension" node="0>1|44|0" />
+		<i3dMapping id="carton46" node="0>1|45" />
+		<i3dMapping id="carton46Tension" node="0>1|45|0" />
+		<i3dMapping id="carton47" node="0>1|46" />
+		<i3dMapping id="carton47Tension" node="0>1|46|0" />
+		<i3dMapping id="carton48" node="0>1|47" />
+		<i3dMapping id="carton48Tension" node="0>1|47|0" />
+		<i3dMapping id="carton49" node="0>1|48" />
+		<i3dMapping id="carton49Tension" node="0>1|48|0" />
+		<i3dMapping id="carton50" node="0>1|49" />
+		<i3dMapping id="carton50Tension" node="0>1|49|0" />
+		<i3dMapping id="carton51" node="0>1|50" />
+		<i3dMapping id="carton51Tension" node="0>1|50|0" />
+		<i3dMapping id="carton52" node="0>1|51" />
+		<i3dMapping id="carton52Tension" node="0>1|51|0" />
+		<i3dMapping id="carton53" node="0>1|52" />
+		<i3dMapping id="carton53Tension" node="0>1|52|0" />
+		<i3dMapping id="carton54" node="0>1|53" />
+		<i3dMapping id="carton54Tension" node="0>1|53|0" />
+		<i3dMapping id="carton55" node="0>1|54" />
+		<i3dMapping id="carton55Tension" node="0>1|54|0" />
+		<i3dMapping id="carton56" node="0>1|55" />
+		<i3dMapping id="carton56Tension" node="0>1|55|0" />
+		<i3dMapping id="carton57" node="0>1|56" />
+		<i3dMapping id="carton57Tension" node="0>1|56|0" />
+		<i3dMapping id="carton58" node="0>1|57" />
+		<i3dMapping id="carton58Tension" node="0>1|57|0" />
+		<i3dMapping id="carton59" node="0>1|58" />
+		<i3dMapping id="carton59Tension" node="0>1|58|0" />
+		<i3dMapping id="carton60" node="0>1|59" />
+		<i3dMapping id="carton60Tension" node="0>1|59|0" />
+		<i3dMapping id="carton61" node="0>1|60" />
+		<i3dMapping id="carton61Tension" node="0>1|60|0" />
+		<i3dMapping id="carton62" node="0>1|61" />
+		<i3dMapping id="carton62Tension" node="0>1|61|0" />
+		<i3dMapping id="carton63" node="0>1|62" />
+		<i3dMapping id="carton63Tension" node="0>1|62|0" />
+		<i3dMapping id="carton64" node="0>1|63" />
+		<i3dMapping id="carton64Tension" node="0>1|63|0" />
+		<i3dMapping id="carton65" node="0>1|64" />
+		<i3dMapping id="carton65Tension" node="0>1|64|0" />
+		<i3dMapping id="carton66" node="0>1|65" />
+		<i3dMapping id="carton66Tension" node="0>1|65|0" />
+		<i3dMapping id="carton67" node="0>1|66" />
+		<i3dMapping id="carton67Tension" node="0>1|66|0" />
+		<i3dMapping id="carton68" node="0>1|67" />
+		<i3dMapping id="carton68Tension" node="0>1|67|0" />
+		<i3dMapping id="carton69" node="0>1|68" />
+		<i3dMapping id="carton69Tension" node="0>1|68|0" />
+		<i3dMapping id="carton70" node="0>1|69" />
+		<i3dMapping id="carton70Tension" node="0>1|69|0" />
+		<i3dMapping id="carton71" node="0>1|70" />
+		<i3dMapping id="carton71Tension" node="0>1|70|0" />
+		<i3dMapping id="carton72" node="0>1|71" />
+		<i3dMapping id="carton72Tension" node="0>1|71|0" />
+		<i3dMapping id="carton73" node="0>1|72" />
+		<i3dMapping id="carton73Tension" node="0>1|72|0" />
+		<i3dMapping id="carton74" node="0>1|73" />
+		<i3dMapping id="carton74Tension" node="0>1|73|0" />
+		<i3dMapping id="carton75" node="0>1|74" />
+		<i3dMapping id="carton75Tension" node="0>1|74|0" />
+		<i3dMapping id="carton76" node="0>1|75" />
+		<i3dMapping id="carton76Tension" node="0>1|75|0" />
+		<i3dMapping id="carton77" node="0>1|76" />
+		<i3dMapping id="carton77Tension" node="0>1|76|0" />
+		<i3dMapping id="carton78" node="0>1|77" />
+		<i3dMapping id="carton78Tension" node="0>1|77|0" />
+		<i3dMapping id="carton79" node="0>1|78" />
+		<i3dMapping id="carton79Tension" node="0>1|78|0" />
+		<i3dMapping id="carton80" node="0>1|79" />
+		<i3dMapping id="carton80Tension" node="0>1|79|0" />
+		<i3dMapping id="carton81" node="0>1|80" />
+		<i3dMapping id="carton81Tension" node="0>1|80|0" />
+		<i3dMapping id="carton82" node="0>1|81" />
+		<i3dMapping id="carton82Tension" node="0>1|81|0" />
+		<i3dMapping id="carton83" node="0>1|82" />
+		<i3dMapping id="carton83Tension" node="0>1|82|0" />
+		<i3dMapping id="carton84" node="0>1|83" />
+		<i3dMapping id="carton84Tension" node="0>1|83|0" />
+		<i3dMapping id="carton85" node="0>1|84" />
+		<i3dMapping id="carton85Tension" node="0>1|84|0" />
+		<i3dMapping id="carton86" node="0>1|85" />
+		<i3dMapping id="carton86Tension" node="0>1|85|0" />
+		<i3dMapping id="carton87" node="0>1|86" />
+		<i3dMapping id="carton87Tension" node="0>1|86|0" />
+		<i3dMapping id="carton88" node="0>1|87" />
+		<i3dMapping id="carton88Tension" node="0>1|87|0" />
+		<i3dMapping id="carton89" node="0>1|88" />
+		<i3dMapping id="carton89Tension" node="0>1|88|0" />
+		<i3dMapping id="carton90" node="0>1|89" />
+		<i3dMapping id="carton90Tension" node="0>1|89|0" />
+		<i3dMapping id="carton91" node="0>1|90" />
+		<i3dMapping id="carton91Tension" node="0>1|90|0" />
+		<i3dMapping id="carton92" node="0>1|91" />
+		<i3dMapping id="carton92Tension" node="0>1|91|0" />
+		<i3dMapping id="carton93" node="0>1|92" />
+		<i3dMapping id="carton93Tension" node="0>1|92|0" />
+		<i3dMapping id="carton94" node="0>1|93" />
+		<i3dMapping id="carton94Tension" node="0>1|93|0" />
+		<i3dMapping id="carton95" node="0>1|94" />
+		<i3dMapping id="carton95Tension" node="0>1|94|0" />
+		<i3dMapping id="carton96" node="0>1|95" />
+		<i3dMapping id="carton96Tension" node="0>1|95|0" />
+		<i3dMapping id="carton97" node="0>1|96" />
+		<i3dMapping id="carton97Tension" node="0>1|96|0" />
+		<i3dMapping id="carton98" node="0>1|97" />
+		<i3dMapping id="carton98Tension" node="0>1|97|0" />
+		<i3dMapping id="carton99" node="0>1|98" />
+		<i3dMapping id="carton99Tension" node="0>1|98|0" />
+		<i3dMapping id="carton100" node="0>1|99" />
+		<i3dMapping id="carton100Tension" node="0>1|99|0" />
+		<i3dMapping id="carton101" node="0>1|100" />
+		<i3dMapping id="carton101Tension" node="0>1|100|0" />
+		<i3dMapping id="carton102" node="0>1|101" />
+		<i3dMapping id="carton102Tension" node="0>1|101|0" />
+		<i3dMapping id="carton103" node="0>1|102" />
+		<i3dMapping id="carton103Tension" node="0>1|102|0" />
+		<i3dMapping id="carton104" node="0>1|103" />
+		<i3dMapping id="carton104Tension" node="0>1|103|0" />
+		<i3dMapping id="carton105" node="0>1|104" />
+		<i3dMapping id="carton105Tension" node="0>1|104|0" />
+		<i3dMapping id="carton106" node="0>1|105" />
+		<i3dMapping id="carton106Tension" node="0>1|105|0" />
+		<i3dMapping id="carton107" node="0>1|106" />
+		<i3dMapping id="carton107Tension" node="0>1|106|0" />
+		<i3dMapping id="carton108" node="0>1|107" />
+		<i3dMapping id="carton108Tension" node="0>1|107|0" />
+		<i3dMapping id="carton109" node="0>1|108" />
+		<i3dMapping id="carton109Tension" node="0>1|108|0" />
+		<i3dMapping id="carton110" node="0>1|109" />
+		<i3dMapping id="carton110Tension" node="0>1|109|0" />
+		<i3dMapping id="carton111" node="0>1|110" />
+		<i3dMapping id="carton111Tension" node="0>1|110|0" />
+		<i3dMapping id="carton112" node="0>1|111" />
+		<i3dMapping id="carton112Tension" node="0>1|111|0" />
+		<i3dMapping id="carton113" node="0>1|112" />
+		<i3dMapping id="carton113Tension" node="0>1|112|0" />
+		<i3dMapping id="carton114" node="0>1|113" />
+		<i3dMapping id="carton114Tension" node="0>1|113|0" />
+		<i3dMapping id="carton115" node="0>1|114" />
+		<i3dMapping id="carton115Tension" node="0>1|114|0" />
+		<i3dMapping id="carton116" node="0>1|115" />
+		<i3dMapping id="carton116Tension" node="0>1|115|0" />
+		<i3dMapping id="carton117" node="0>1|116" />
+		<i3dMapping id="carton117Tension" node="0>1|116|0" />
+		<i3dMapping id="carton118" node="0>1|117" />
+		<i3dMapping id="carton118Tension" node="0>1|117|0" />
+		<i3dMapping id="carton119" node="0>1|118" />
+		<i3dMapping id="carton119Tension" node="0>1|118|0" />
+		<i3dMapping id="carton120" node="0>1|119" />
+		<i3dMapping id="carton120Tension" node="0>1|119|0" />
+		<i3dMapping id="carton121" node="0>1|120" />
+		<i3dMapping id="carton121Tension" node="0>1|120|0" />
+		<i3dMapping id="carton122" node="0>1|121" />
+		<i3dMapping id="carton122Tension" node="0>1|121|0" />
+		<i3dMapping id="carton123" node="0>1|122" />
+		<i3dMapping id="carton123Tension" node="0>1|122|0" />
+		<i3dMapping id="carton124" node="0>1|123" />
+		<i3dMapping id="carton124Tension" node="0>1|123|0" />
+		<i3dMapping id="carton125" node="0>1|124" />
+		<i3dMapping id="carton125Tension" node="0>1|124|0" />
+		<i3dMapping id="carton126" node="0>1|125" />
+		<i3dMapping id="carton126Tension" node="0>1|125|0" />
+		<i3dMapping id="carton127" node="0>1|126" />
+		<i3dMapping id="carton127Tension" node="0>1|126|0" />
+		<i3dMapping id="carton128" node="0>1|127" />
+		<i3dMapping id="carton128Tension" node="0>1|127|0" />
+		<i3dMapping id="carton129" node="0>1|128" />
+		<i3dMapping id="carton129Tension" node="0>1|128|0" />
+		<i3dMapping id="carton130" node="0>1|129" />
+		<i3dMapping id="carton130Tension" node="0>1|129|0" />
+		<i3dMapping id="carton131" node="0>1|130" />
+		<i3dMapping id="carton131Tension" node="0>1|130|0" />
+		<i3dMapping id="carton132" node="0>1|131" />
+		<i3dMapping id="carton132Tension" node="0>1|131|0" />
+		<i3dMapping id="carton133" node="0>1|132" />
+		<i3dMapping id="carton133Tension" node="0>1|132|0" />
+		<i3dMapping id="carton134" node="0>1|133" />
+		<i3dMapping id="carton134Tension" node="0>1|133|0" />
+		<i3dMapping id="carton135" node="0>1|134" />
+		<i3dMapping id="carton135Tension" node="0>1|134|0" />
+		<i3dMapping id="carton136" node="0>1|135" />
+		<i3dMapping id="carton136Tension" node="0>1|135|0" />
+		<i3dMapping id="carton137" node="0>1|136" />
+		<i3dMapping id="carton137Tension" node="0>1|136|0" />
+		<i3dMapping id="carton138" node="0>1|137" />
+		<i3dMapping id="carton138Tension" node="0>1|137|0" />
+		<i3dMapping id="carton139" node="0>1|138" />
+		<i3dMapping id="carton139Tension" node="0>1|138|0" />
+		<i3dMapping id="carton140" node="0>1|139" />
+		<i3dMapping id="carton140Tension" node="0>1|139|0" />
+		<i3dMapping id="carton141" node="0>1|140" />
+		<i3dMapping id="carton141Tension" node="0>1|140|0" />
+		<i3dMapping id="carton142" node="0>1|141" />
+		<i3dMapping id="carton142Tension" node="0>1|141|0" />
+		<i3dMapping id="carton143" node="0>1|142" />
+		<i3dMapping id="carton143Tension" node="0>1|142|0" />
+		<i3dMapping id="carton144" node="0>1|143" />
+		<i3dMapping id="carton144Tension" node="0>1|143|0" />
+		<i3dMapping id="carton145" node="0>1|144" />
+		<i3dMapping id="carton145Tension" node="0>1|144|0" />
+		<i3dMapping id="carton146" node="0>1|145" />
+		<i3dMapping id="carton146Tension" node="0>1|145|0" />
+		<i3dMapping id="carton147" node="0>1|146" />
+		<i3dMapping id="carton147Tension" node="0>1|146|0" />
+		<i3dMapping id="carton148" node="0>1|147" />
+		<i3dMapping id="carton148Tension" node="0>1|147|0" />
+		<i3dMapping id="carton149" node="0>1|148" />
+		<i3dMapping id="carton149Tension" node="0>1|148|0" />
+		<i3dMapping id="carton150" node="0>1|149" />
+		<i3dMapping id="carton150Tension" node="0>1|149|0" />
+	</i3dMappings>
+</vehicle>

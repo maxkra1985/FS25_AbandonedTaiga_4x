@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+    <annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+    <storeData>
+        <name>$l10n_pallet_cucumbersBoxPallet</name>
+        <image>$data/store/store_empty.png</image>
+        <category>pallets</category>
+        <brand>LIZARD</brand>
+        <showInStore>false</showInStore>
+        <canBeSold>false</canBeSold>
+        <financeCategory>OTHER</financeCategory>
+    </storeData>
+
+    <base>
+        <typeDesc>$l10n_typeDesc_pallet</typeDesc>
+        <filename>map/placeables/GardenBeds/pallets/cucumbersBoxPallet/cucumbersBoxPallet.i3d</filename>
+        <size width="1.4" length="1" height="0.8"/>
+        <canBeReset>false</canBeReset>
+        <components maxMass="400">
+            <component centerOfMass="0 0.1 0" solverIterationCount="10" mass="60"/>
+        </components>
+        <showInVehicleMenu>false</showInVehicleMenu>
+        <mapHotspot available="false"/>
+        <input allowed="false"/>
+    </base>
+
+    <fillUnit>
+        <fillUnitConfigurations>
+            <fillUnitConfiguration>
+                <fillUnits removeVehicleIfEmpty="true">
+                    <fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="CUCUMBER" capacity="500" ignoreFillLimit="true"/>
+                </fillUnits>
+            </fillUnitConfiguration>
+        </fillUnitConfigurations>
+    </fillUnit>
+
+    <dischargeable requiresTipOcclusionArea="false">
+        <dischargeNode node="dischargeNode" emptySpeed="30" fillUnitIndex="1" maxDistance="4" canStartDischargeAutomatically="true" playSound="false"/>
+    </dischargeable>
+
+    <pallet fillUnitIndex="1" node="pallet_vis">
+        <content>
+            <object node="cucumbersBox1" tensionBeltNode="cucumbersBox1Tension"/>
+            <object node="cucumbersBox2" tensionBeltNode="cucumbersBox2Tension"/>
+            <object node="cucumbersBox3" tensionBeltNode="cucumbersBox3Tension"/>
+            <object node="cucumbersBox4" tensionBeltNode="cucumbersBox4Tension"/>
+            <object node="cucumbersBox5" tensionBeltNode="cucumbersBox5Tension"/>
+            <object node="cucumbersBox6" tensionBeltNode="cucumbersBox6Tension"/>
+            <object node="cucumbersBox7" tensionBeltNode="cucumbersBox7Tension"/>
+            <object node="cucumbersBox8" tensionBeltNode="cucumbersBox8Tension"/>
+            <object node="cucumbersBox9" tensionBeltNode="cucumbersBox9Tension"/>
+            <object node="cucumbersBox10" tensionBeltNode="cucumbersBox10Tension"/>
+            <object node="cucumbersBox11" tensionBeltNode="cucumbersBox11Tension"/>
+            <object node="cucumbersBox12" tensionBeltNode="cucumbersBox12Tension"/>
+            <object node="cucumbersBox13" tensionBeltNode="cucumbersBox13Tension"/>
+            <object node="cucumbersBox14" tensionBeltNode="cucumbersBox14Tension"/>
+            <object node="cucumbersBox15" tensionBeltNode="cucumbersBox15Tension"/>
+            <object node="cucumbersBox16" tensionBeltNode="cucumbersBox16Tension"/>
+        </content>
+
+        <sounds>
+            <unload template="palletsFillWood" pitchScale="0.9"/>
+        </sounds>
+    </pallet>
+
+    <dynamicMount triggerNode="dynamicMountTrigger" triggerForceAcceleration="4" additionalMountDistance="0.771" jointTransY="0.106" jointLimitToRotY="true"/>
+
+    <i3dMappings>
+        <i3dMapping id="cucumbersBoxPallet_main_component1" node="0>"/>
+        <i3dMapping id="pallet_vis" node="0>0"/>
+        <i3dMapping id="dynamicMountTrigger" node="0>0|0"/>
+        <i3dMapping id="dischargeNode" node="0>0|1"/>
+        <i3dMapping id="cucumbersBox1" node="0>0|2|0"/>
+        <i3dMapping id="cucumbersBox1Tension" node="0>0|2|0|0"/>
+        <i3dMapping id="cucumbersBox2" node="0>0|2|1"/>
+        <i3dMapping id="cucumbersBox2Tension" node="0>0|2|1|0"/>
+        <i3dMapping id="cucumbersBox3" node="0>0|2|2"/>
+        <i3dMapping id="cucumbersBox3Tension" node="0>0|2|2|0"/>
+        <i3dMapping id="cucumbersBox4" node="0>0|2|3"/>
+        <i3dMapping id="cucumbersBox4Tension" node="0>0|2|3|0"/>
+        <i3dMapping id="cucumbersBox5" node="0>0|2|4"/>
+        <i3dMapping id="cucumbersBox5Tension" node="0>0|2|4|0"/>
+        <i3dMapping id="cucumbersBox6" node="0>0|2|5"/>
+        <i3dMapping id="cucumbersBox6Tension" node="0>0|2|5|0"/>
+        <i3dMapping id="cucumbersBox7" node="0>0|2|6"/>
+        <i3dMapping id="cucumbersBox7Tension" node="0>0|2|6|0"/>
+        <i3dMapping id="cucumbersBox8" node="0>0|2|7"/>
+        <i3dMapping id="cucumbersBox8Tension" node="0>0|2|7|0"/>
+        <i3dMapping id="cucumbersBox9" node="0>0|2|8"/>
+        <i3dMapping id="cucumbersBox9Tension" node="0>0|2|8|0"/>
+        <i3dMapping id="cucumbersBox10" node="0>0|2|9"/>
+        <i3dMapping id="cucumbersBox10Tension" node="0>0|2|9|0"/>
+        <i3dMapping id="cucumbersBox11" node="0>0|2|10"/>
+        <i3dMapping id="cucumbersBox11Tension" node="0>0|2|10|0"/>
+        <i3dMapping id="cucumbersBox12" node="0>0|2|11"/>
+        <i3dMapping id="cucumbersBox12Tension" node="0>0|2|11|0"/>
+        <i3dMapping id="cucumbersBox13" node="0>0|2|12"/>
+        <i3dMapping id="cucumbersBox13Tension" node="0>0|2|12|0"/>
+        <i3dMapping id="cucumbersBox14" node="0>0|2|13"/>
+        <i3dMapping id="cucumbersBox14Tension" node="0>0|2|13|0"/>
+        <i3dMapping id="cucumbersBox15" node="0>0|2|14"/>
+        <i3dMapping id="cucumbersBox15Tension" node="0>0|2|14|0"/>
+        <i3dMapping id="cucumbersBox16" node="0>0|2|15"/>
+        <i3dMapping id="cucumbersBox16Tension" node="0>0|2|15|0"/>
+    </i3dMappings>
+</vehicle>

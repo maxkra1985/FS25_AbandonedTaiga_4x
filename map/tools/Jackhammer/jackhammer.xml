@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="squigglzeJackhammer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+	<annotation>Copyright (C) Squigglze, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_storeItem_jackhammer</name>
+		<functions>
+			<function>$l10n_function_hydraulicHammer</function>
+		</functions>
+		<image>map/tools/Jackhammer/store_jackhammer.png</image>
+		<price>3500</price>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<category>handtoolsMisc</category>
+		<shopTranslationOffset>0 0.01 0</shopTranslationOffset>
+		<shopRotationOffset>0 0 0</shopRotationOffset>
+		<showInStore>true</showInStore>
+		<vertexBufferMemoryUsage>48128</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>10496</indexBufferMemoryUsage>
+		<textureMemoryUsage>720896</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_hydraulicHammer</typeDesc>
+		<filename>map/tools/Jackhammer/jackhammer.i3d</filename>
+		<size width="1.5" length=".25" height="1.5"/>
+		<supportsPickup>true</supportsPickup>
+		<components>
+			<component centerOfMass="0 0 0" solverIterationCount="10" mass="35" />
+		</components>
+		<mapHotspot type="TOOL"/>
+	</base>
+
+	<animations>
+		<animation name="hammerAnim">
+			<part node="0>1" startTime="0.0"  endTime="0.05" startTrans="0 0 0"    endTrans="0 0.25 0"/>
+			<part node="0>1" startTime="0.05" endTime="0.1"  startTrans="0 0.25 0" endTrans="0 0 0"/>
+		</animation>
+	</animations>
+	
+	<hydraulicHammer>
+		<workNode node="0>1|2|0" raycastDistance=".2" hitAlignedNode="0>1|2|1" hitIntervalMin="0.15" hitIntervalMax="0.22" destructionAmountPerHit="10" supportedTypes="ROCK ROOT">
+			<effects>
+				<effectNode effectClass="ParticleEffect" effectNode="0>1|2|1|0"  particleType="HYDRAULIC_HAMMER"        emitCountScale="50"/>
+				<effectNode effectClass="ParticleEffect" effectNode="0>1|2|1|1"  particleType="HYDRAULIC_HAMMER_DEBRIS" emitCountScale="50"/>
+			</effects>
+		</workNode>
+		<hitAnimation name="hammerAnim" />
+		<sounds>
+			<work file="map/tools/Jackhammer/sounds/hydraulicHammer01.wav" linkNode="0>" loops="1" outerRadius="40" supportsReverb="false">
+				<volume indoor="2" outdoor="4"/>
+				<lowPassGain indoor="0.4" outdoor="1"/>
+				<progressPitch factor="0.1" />
+			</work>
+		</sounds>
+	</hydraulicHammer>
+	<turnOnVehicle isAlwaysTurnedOn="true"/>
+	<ai supportsAIJobs="false"/>
+
+	<washable dirtDuration="25" washDuration="1" workMultiplier="4" fieldMultiplier="4"/>
+	<wearable wearDuration="60" workMultiplier="5" fieldMultiplier="2"/>
+
+	<tensionBeltObject>
+		<meshNodes>
+			<meshNode node="0>0|0"/>
+			<meshNode node="0>1|0"/>
+		</meshNodes>
+	</tensionBeltObject>
+
+	<foliageBending>
+		<bendingNode minX="-0.75" maxX="0.75" minZ="-0.125" maxZ="0.125" yOffset="0" node="0>" />
+	</foliageBending>
+</vehicle>

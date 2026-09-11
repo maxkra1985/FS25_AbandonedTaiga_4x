@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<handTool type="chainsaw" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/handtool.xsd">
+	<storeData>
+		<name>$l10n_tool_axe</name>
+		<functions>
+			<function>Топор позволяет рубить деревья, как и бензопила, но он менее эффективен.</function>
+		</functions>
+		<image>map/tools/axe/store_siekiera.png</image>
+		<price>50</price>
+		<lifetime>600</lifetime>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<category>chainsaws</category>
+		<species>HANDTOOL</species>
+		<!--showInStore>false</showInStore-->
+		<storeIconRendering>
+			<settings cameraXRot="-20" cameraYRot="40"/>
+		</storeIconRendering>
+	</storeData>
+
+	<base mass="2.0" canCrouch="true" runMultiplier="0">
+		<typeDesc>$l10n_typeDesc_axe</typeDesc>
+		<filename>map/tools/axe/siekiera.i3d</filename>
+		<graphics node="0>0" lockFirstPerson="true"/>
+		<handNode node="0>5" useLeftHand="true" />
+		<firstPersonNode node="0>1"/>
+	</base>
+
+	<storable>
+		<holderType type="CHAINSAW" node="0>2"/>
+	</storable>
+
+	<motorized>
+		<motor startTime="400" minRPM="1000" maxRPM="4000"/>
+		<vibrations amount="0 0 0" node="0>0"/>
+	</motorized>
+
+	<chainsaw maximumCutDiameter="1.1" maximumDelimbDiameter="1" cutTimePerSquareMeter="2">
+		<playerWorkStylePreset>chainsawSetStihl</playerWorkStylePreset>
+		<effects>
+			<effectNode effectClass="ParticleEffect" effectNode="0>0|0|0" particleType="CHAINSAW_WOOD" emitCountScale="0.7"/>
+			<effectNode effectClass="ParticleEffect" effectNode="0>0|0|1" particleType="CHAINSAW_DUST" emitCountScale="0.8"/>
+		</effects>
+		<ringSelector filename="$data/handTools/shared/treeCutters/chainsawRingSelector.i3d"/>
+		<cutNode node="0>0|2"/>
+
+		<sounds>
+			<cut file="map/tools/axe/siekiera.wav" innerRadius="80" linkNode="0>0|0|1" loops="100" loopSynthesisRPMRatio="1" lowpassGainScale="1" outerRadius="3" pitchScale="1" supportsReverb="true" volumeScale="1">
+				<lowpassGain indoor="0.8" outdoor="1"/>
+				<lowpassResonance indoor="2" outdoor="2"/>
+				<pitch indoor="1" outdoor="1"/>
+				<randomization isInside="false" isOutside="false"/>
+				<sourceRandomization />
+				<volume indoor="1.5" outdoor="1"/>
+			</cut>
+		</sounds> 
+	</chainsaw>
+</handTool>

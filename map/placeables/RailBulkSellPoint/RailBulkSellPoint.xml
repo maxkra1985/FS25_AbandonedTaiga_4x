@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<placeable type="sellingStation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="$data/../shared/xml/schema/placeable.xsd">
+	<storeData>
+		<name>Элеватор Степаныча</name>
+		<functions>
+			<function>Место продажи сыпучих грузов для транспортировки по железной дороге</function>
+		</functions>
+		<image>map/placeables/RailBulkSellPoint/RailBulkSellPoint.dds</image>
+		<price>0</price>
+		<dailyUpkeep>0</dailyUpkeep>
+		<lifetime>100000</lifetime>
+		<rotation>0</rotation>
+		<brand>NONE</brand>
+		<species>placeable</species>
+		<category>sellingPoints</category>
+		<brush>
+			<type>placeable</type>
+			<category>production</category>
+			<tab>sellingPoints</tab>
+		</brush>
+		<canBeSold>false</canBeSold>
+		<showInStore>true</showInStore>
+		<vertexBufferMemoryUsage>1039616</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>239104</indexBufferMemoryUsage>
+		<textureMemoryUsage>14745600</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<filename>map/placeables/RailBulkSellPoint/RailBulkSellPoint.i3d</filename>
+		<canBeRenamed>false</canBeRenamed>
+		<canBeDeleted>false</canBeDeleted>
+		<boughtWithFarmland>false</boughtWithFarmland>
+	</base>
+
+	<placement useRandomYRotation="false" useManualYRotation="true">
+		<testAreas>
+			<testArea startNode="testArea1Start" endNode="testArea1End" />
+		</testAreas>
+		<sounds>
+			<place template="smallImp" />
+		</sounds>
+	</placement>
+
+	<clearAreas>
+		<clearArea startNode="levelArea1Start" widthNode="levelArea1Width" heightNode="levelArea1Height"/>
+	</clearAreas>
+
+	<leveling requireLeveling="true" maxSmoothDistance="10" maxSlope="75" maxEdgeAngle="30" >
+		<levelAreas>
+			<levelArea startNode="levelArea1Start" widthNode="levelArea1Width" heightNode="levelArea1Height" groundType="asphalt"/>
+		</levelAreas>
+	</leveling>
+
+	<indoorAreas>
+		<indoorArea startNode="indoorArea1Start" widthNode="indoorArea1Width" heightNode="indoorArea1Height"/>
+		<indoorArea startNode="indoorArea2Start" widthNode="indoorArea2Width" heightNode="indoorArea2Height"/>
+	</indoorAreas>
+
+	<tipOcclusionUpdateAreas>
+		<tipOcclusionUpdateArea startNode="tipOcclusionUpdateArea1Start" endNode="tipOcclusionUpdateArea1End" />
+	</tipOcclusionUpdateAreas>
+
+	<ai>
+		<updateAreas>
+			<updateArea startNode="tipOcclusionUpdateArea1Start" endNode="tipOcclusionUpdateArea1End" />
+		</updateAreas>
+	</ai>
+
+	<!--infoTrigger triggerNode="infoTrigger"/-->
+
+	<hotspots>
+		<hotspot type="UNLOADING" linkNode="mapPosition" teleportNode="teleportNode"/>
+	</hotspots>
+
+	<sellingStation appearsOnStats="true" litersForFullPriceDrop="200000" fullPriceRecoverHours="48" supportsExtension="false" suppressWarnings="true">
+		<unloadTrigger exactFillRootNode="unloadTrigger" aiNode="unloadTriggerAINode" fillTypes="WHEAT BARLEY OAT CANOLA SORGHUM SUNFLOWER SOYBEAN MAIZE WHEAT_CLEAN BARLEY_CLEAN OAT_CLEAN SORGHUM_CLEAN GRAINWASTE POTATO SUGARBEET BEETROOT CARROT PARSNIP RICELONGGRAIN RICE GREENBEAN PEA SPINACH SUGARCANE WOODCHIPS SUGARBEET_CUT SILAGE GRASS GRASS_WINDROW DRYGRASS DRYGRASS_WINDROW STRAW GRAPE OLIVE SEEDS STONE MANURE FORAGE FORAGE_MIXING CHAFF FERTILIZER PIGFOOD LIME"/>
+		<baleTrigger triggerNode="baleTrigger" fillTypes="WOODCHIPS SUGARBEET_CUT SILAGE GRASS GRASS_WINDROW DRYGRASS DRYGRASS_WINDROW STRAW CHAFF FORAGE"/>
+		<sounds>
+			<idle template="farmersMarket"/>
+		</sounds>
+	</sellingStation>
+
+	<i3dMappings>
+		<i3dMapping id="RailBulkSellPoint"				node="0>" />
+		<i3dMapping id="warningStries"					node="0>0|1" />
+		<i3dMapping id="warningStripesCorner1"			node="0>0|1|0" />
+		<i3dMapping id="warningStripesCorner2"			node="0>0|1|0|0" />
+		<i3dMapping id="warningStripesCorner3"			node="0>0|1|0|0|0" />
+		<i3dMapping id="warningStripesCorner4"			node="0>0|1|0|0|0|0" />
+		<i3dMapping id="Areas"							node="0>1" />
+		<i3dMapping id="testAreas"						node="0>1|0" />
+		<i3dMapping id="testArea1Start"					node="0>1|0|0" />
+		<i3dMapping id="testArea1End"					node="0>1|0|0|0" />
+		<i3dMapping id="clearAreas"						node="0>1|1" />
+		<i3dMapping id="clearArea1Start"				node="0>1|1|0" />
+		<i3dMapping id="clearArea1Width"				node="0>1|1|0|0" />
+		<i3dMapping id="clearArea1Height"				node="0>1|1|0|1" />
+		<i3dMapping id="leveling"						node="0>1|2" />
+		<i3dMapping id="levelArea1Start"				node="0>1|2|0" />
+		<i3dMapping id="levelArea1Width"				node="0>1|2|0|0" />
+		<i3dMapping id="levelArea1Height"				node="0>1|2|0|1" />
+		<i3dMapping id="tipOcclusionUpdateAreas"		node="0>1|3" />
+		<i3dMapping id="tipOcclusionUpdateArea1Start"	node="0>1|3|0" />
+		<i3dMapping id="tipOcclusionUpdateArea1End"		node="0>1|3|0|0" />
+		<i3dMapping id="indoorAreas"					node="0>1|4" />
+		<i3dMapping id="indoorArea1Start"				node="0>1|4|0" />
+		<i3dMapping id="indoorArea1Width"				node="0>1|4|0|0" />
+		<i3dMapping id="indoorArea1Height"				node="0>1|4|0|1" />
+		<i3dMapping id="indoorArea2Start"				node="0>1|4|1" />
+		<i3dMapping id="indoorArea2Width"				node="0>1|4|1|0" />
+		<i3dMapping id="indoorArea2Height"				node="0>1|4|1|1" />
+		<i3dMapping id="sellingStation"					node="0>2" />
+		<i3dMapping id="infoTrigger"					node="0>2|0" />
+		<i3dMapping id="playerTrigger"					node="0>2|1" />
+		<i3dMapping id="playerTriggerMarker"			node="0>2|1|0" />
+		<i3dMapping id="unloadTrigger"					node="0>2|2" />
+		<i3dMapping id="unloadTriggerMarker"			node="0>2|2|0" />
+		<i3dMapping id="unloadTriggerAINode"			node="0>2|3" />
+		<i3dMapping id="mapPosition"					node="0>2|4" />
+		<i3dMapping id="teleportNode"					node="0>2|5" />
+		<i3dMapping id="baleTrigger"					node="0>2|6" />
+	</i3dMappings>
+</placeable>
+

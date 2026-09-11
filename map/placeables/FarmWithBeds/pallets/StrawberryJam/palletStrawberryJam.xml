@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../shared/xml/schema/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>Клубничное варенье</name>
+		<image>map/placeables/FarmWithBeds/pallets/StrawberryJam/hudStrawberryJam.dds" </image>
+		<price>500</price>
+		<showInStore>false</showInStore>
+		<allowLeasing>false</allowLeasing>
+		<category>pallets</category>
+		<financeCategory>PURCHASE_PALLETS</financeCategory>
+		<brand>LIZARD</brand>
+		<shopHeight>2</shopHeight>
+		<storeIconRendering>
+			<settings cameraXRot="-15" cameraYRot="25"/>
+		</storeIconRendering>
+		<vertexBufferMemoryUsage>50688</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>6912</indexBufferMemoryUsage>
+		<textureMemoryUsage>1048576</textureMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>map/placeables/FarmWithBeds/pallets/StrawberryJam/palletStrawberryJam.i3d</filename>
+		<size width="1.4" length="1" height="1.2" />
+		<canBeReset>false</canBeReset>
+		<components>
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="60"/>
+		</components>
+		<showInVehicleMenu>false</showInVehicleMenu>
+		<mapHotspot available="false" />
+		<input allowed="false"/>
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="strawberryJam" capacity="1000" startFillType="strawberryJam" startFillLevel="1000" ignoreFillLimit="true"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<dischargeable requiresTipOcclusionArea="false">
+		<dischargeNode node="dischargeNode" emptySpeed="1000" fillUnitIndex="1" maxDistance="6" canStartDischargeAutomatically="true" playSound="false"/>
+	</dischargeable>
+
+	<pallet fillUnitIndex="1" node="pallet_vis">
+		<content>
+			<object node="Cardboard01" tensionBeltNode="StrawberryJam_Tension01"/>
+			<object node="Cardboard02" tensionBeltNode="StrawberryJam_Tension02"/>
+			<object node="Cardboard03" tensionBeltNode="StrawberryJam_Tension03"/>
+			<object node="Cardboard04" tensionBeltNode="StrawberryJam_Tension04"/>
+			<object node="Cardboard05" tensionBeltNode="StrawberryJam_Tension05"/>
+			<object node="Cardboard06" tensionBeltNode="StrawberryJam_Tension06"/>
+			<object node="Cardboard07" tensionBeltNode="StrawberryJam_Tension07"/>
+			<object node="Cardboard08" tensionBeltNode="StrawberryJam_Tension08"/>
+			<object node="Cardboard11" tensionBeltNode="StrawberryJam_Tension11"/>
+			<object node="Cardboard12" tensionBeltNode="StrawberryJam_Tension12"/>
+			<object node="Cardboard13" tensionBeltNode="StrawberryJam_Tension13"/>
+			<object node="Cardboard14" tensionBeltNode="StrawberryJam_Tension14"/>
+			<object node="Cardboard15" tensionBeltNode="StrawberryJam_Tension15"/>
+			<object node="Cardboard16" tensionBeltNode="StrawberryJam_Tension16"/>
+			<object node="Cardboard17" tensionBeltNode="StrawberryJam_Tension17"/>
+			<object node="Cardboard18" tensionBeltNode="StrawberryJam_Tension18"/>
+			<object node="Cardboard21" tensionBeltNode="StrawberryJam_Tension21"/>
+			<object node="Cardboard22" tensionBeltNode="StrawberryJam_Tension22"/>
+			<object node="Cardboard23" tensionBeltNode="StrawberryJam_Tension23"/>
+			<object node="Cardboard24" tensionBeltNode="StrawberryJam_Tension24"/>
+			<object node="Cardboard25" tensionBeltNode="StrawberryJam_Tension25"/>
+			<object node="Cardboard26" tensionBeltNode="StrawberryJam_Tension26"/>
+			<object node="Cardboard27" tensionBeltNode="StrawberryJam_Tension27"/>
+			<object node="Cardboard28" tensionBeltNode="StrawberryJam_Tension28"/>
+			<object node="Cardboard31" tensionBeltNode="StrawberryJam_Tension31"/>
+			<object node="Cardboard32" tensionBeltNode="StrawberryJam_Tension32"/>
+			<object node="Cardboard33" tensionBeltNode="StrawberryJam_Tension33"/>
+			<object node="Cardboard34" tensionBeltNode="StrawberryJam_Tension34"/>
+			<object node="Cardboard35" tensionBeltNode="StrawberryJam_Tension35"/>
+			<object node="Cardboard36" tensionBeltNode="StrawberryJam_Tension36"/>
+			<object node="Cardboard37" tensionBeltNode="StrawberryJam_Tension37"/>
+			<object node="Cardboard38" tensionBeltNode="StrawberryJam_Tension38"/>
+			<object node="Cardboard41" tensionBeltNode="StrawberryJam_Tension41"/>
+			<object node="Cardboard42" tensionBeltNode="StrawberryJam_Tension42"/>
+			<object node="Cardboard43" tensionBeltNode="StrawberryJam_Tension43"/>
+			<object node="Cardboard44" tensionBeltNode="StrawberryJam_Tension44"/>
+			<object node="Cardboard45" tensionBeltNode="StrawberryJam_Tension45"/>
+			<object node="Cardboard46" tensionBeltNode="StrawberryJam_Tension46"/>
+			<object node="Cardboard47" tensionBeltNode="StrawberryJam_Tension47"/>
+			<object node="Cardboard48" tensionBeltNode="StrawberryJam_Tension48"/>
+		</content>
+
+		<sounds>
+			<unload template="palletsFillPaper" pitchScale="0.8" />
+		</sounds>
+	</pallet>
+
+	<dynamicMount triggerNode="dynamicMountTrigger" triggerForceAcceleration="4" additionalMountDistance="0.95" jointTransY="0.11" jointLimitToRotY="true"/>
+
+	<i3dMappings>
+		<i3dMapping id="pallet_vis" node="0>0" />
+		<i3dMapping id="dynamicMountTrigger" node="0>0|0" />
+		<i3dMapping id="dischargeNode" node="0>0|1" />
+		<i3dMapping id="Cardboard01" node="0>0|2|0" />
+		<i3dMapping id="Cardboard02" node="0>0|2|1" />
+		<i3dMapping id="Cardboard03" node="0>0|2|2" />
+		<i3dMapping id="Cardboard04" node="0>0|2|3" />
+		<i3dMapping id="Cardboard05" node="0>0|2|4" />
+		<i3dMapping id="Cardboard06" node="0>0|2|5" />
+		<i3dMapping id="Cardboard07" node="0>0|2|6" />
+		<i3dMapping id="Cardboard08" node="0>0|2|7" />
+		<i3dMapping id="Cardboard11" node="0>0|2|8" />
+		<i3dMapping id="Cardboard12" node="0>0|2|9" />
+		<i3dMapping id="Cardboard13" node="0>0|2|10" />
+		<i3dMapping id="Cardboard14" node="0>0|2|11" />
+		<i3dMapping id="Cardboard15" node="0>0|2|12" />
+		<i3dMapping id="Cardboard16" node="0>0|2|13" />
+		<i3dMapping id="Cardboard17" node="0>0|2|14" />
+		<i3dMapping id="Cardboard18" node="0>0|2|15" />
+		<i3dMapping id="Cardboard21" node="0>0|2|16" />
+		<i3dMapping id="Cardboard22" node="0>0|2|17" />
+		<i3dMapping id="Cardboard23" node="0>0|2|18" />
+		<i3dMapping id="Cardboard24" node="0>0|2|19" />
+		<i3dMapping id="Cardboard25" node="0>0|2|20" />
+		<i3dMapping id="Cardboard26" node="0>0|2|21" />
+		<i3dMapping id="Cardboard27" node="0>0|2|22" />
+		<i3dMapping id="Cardboard28" node="0>0|2|23" />
+		<i3dMapping id="Cardboard31" node="0>0|2|24" />
+		<i3dMapping id="Cardboard32" node="0>0|2|25" />
+		<i3dMapping id="Cardboard33" node="0>0|2|26" />
+		<i3dMapping id="Cardboard34" node="0>0|2|27" />
+		<i3dMapping id="Cardboard35" node="0>0|2|28" />
+		<i3dMapping id="Cardboard36" node="0>0|2|29" />
+		<i3dMapping id="Cardboard37" node="0>0|2|30" />
+		<i3dMapping id="Cardboard38" node="0>0|2|31" />
+		<i3dMapping id="Cardboard41" node="0>0|2|32" />
+		<i3dMapping id="Cardboard42" node="0>0|2|33" />
+		<i3dMapping id="Cardboard43" node="0>0|2|34" />
+		<i3dMapping id="Cardboard44" node="0>0|2|35" />
+		<i3dMapping id="Cardboard45" node="0>0|2|36" />
+		<i3dMapping id="Cardboard46" node="0>0|2|37" />
+		<i3dMapping id="Cardboard47" node="0>0|2|38" />
+		<i3dMapping id="Cardboard48" node="0>0|2|39" />
+		<i3dMapping id="StrawberryJam_Tension01" node="0>0|2|0|1" />
+		<i3dMapping id="StrawberryJam_Tension02" node="0>0|2|1|1" />
+		<i3dMapping id="StrawberryJam_Tension03" node="0>0|2|2|1" />
+		<i3dMapping id="StrawberryJam_Tension04" node="0>0|2|3|1" />
+		<i3dMapping id="StrawberryJam_Tension05" node="0>0|2|4|1" />
+		<i3dMapping id="StrawberryJam_Tension06" node="0>0|2|5|1" />
+		<i3dMapping id="StrawberryJam_Tension07" node="0>0|2|6|1" />
+		<i3dMapping id="StrawberryJam_Tension08" node="0>0|2|7|1" />
+		<i3dMapping id="StrawberryJam_Tension11" node="0>0|2|8|1" />
+		<i3dMapping id="StrawberryJam_Tension12" node="0>0|2|9|1" />
+		<i3dMapping id="StrawberryJam_Tension13" node="0>0|2|10|1" />
+		<i3dMapping id="StrawberryJam_Tension14" node="0>0|2|11|1" />
+		<i3dMapping id="StrawberryJam_Tension15" node="0>0|2|12|1" />
+		<i3dMapping id="StrawberryJam_Tension16" node="0>0|2|13|1" />
+		<i3dMapping id="StrawberryJam_Tension17" node="0>0|2|14|1" />
+		<i3dMapping id="StrawberryJam_Tension18" node="0>0|2|15|1" />
+		<i3dMapping id="StrawberryJam_Tension21" node="0>0|2|16|1" />
+		<i3dMapping id="StrawberryJam_Tension22" node="0>0|2|17|1" />
+		<i3dMapping id="StrawberryJam_Tension23" node="0>0|2|18|1" />
+		<i3dMapping id="StrawberryJam_Tension24" node="0>0|2|19|1" />
+		<i3dMapping id="StrawberryJam_Tension25" node="0>0|2|20|1" />
+		<i3dMapping id="StrawberryJam_Tension26" node="0>0|2|21|1" />
+		<i3dMapping id="StrawberryJam_Tension27" node="0>0|2|22|1" />
+		<i3dMapping id="StrawberryJam_Tension28" node="0>0|2|23|1" />
+		<i3dMapping id="StrawberryJam_Tension31" node="0>0|2|24|1" />
+		<i3dMapping id="StrawberryJam_Tension32" node="0>0|2|25|1" />
+		<i3dMapping id="StrawberryJam_Tension33" node="0>0|2|26|1" />
+		<i3dMapping id="StrawberryJam_Tension34" node="0>0|2|27|1" />
+		<i3dMapping id="StrawberryJam_Tension35" node="0>0|2|28|1" />
+		<i3dMapping id="StrawberryJam_Tension36" node="0>0|2|29|1" />
+		<i3dMapping id="StrawberryJam_Tension37" node="0>0|2|30|1" />
+		<i3dMapping id="StrawberryJam_Tension38" node="0>0|2|31|1" />
+		<i3dMapping id="StrawberryJam_Tension41" node="0>0|2|32|1" />
+		<i3dMapping id="StrawberryJam_Tension42" node="0>0|2|33|1" />
+		<i3dMapping id="StrawberryJam_Tension43" node="0>0|2|34|1" />
+		<i3dMapping id="StrawberryJam_Tension44" node="0>0|2|35|1" />
+		<i3dMapping id="StrawberryJam_Tension45" node="0>0|2|36|1" />
+		<i3dMapping id="StrawberryJam_Tension46" node="0>0|2|37|1" />
+		<i3dMapping id="StrawberryJam_Tension47" node="0>0|2|38|1" />
+		<i3dMapping id="StrawberryJam_Tension48" node="0>0|2|39|1" />
+	</i3dMappings>
+</vehicle>

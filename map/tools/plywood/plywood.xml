@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="pallet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved.</annotation>
+
+	<storeData>
+		<name>$l10n_storeItem_plywood</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>map/tools/plywood/store_plywood.dds</image>
+		<price>445</price>
+		<showInStore>true</showInStore>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>true</canBeSold>
+		<category>pallets</category>
+		<financeCategory>PURCHASE_PALLETS OTHER</financeCategory>
+		<brand>LIZARD</brand>
+		<rotation>0</rotation>
+		<vertexBufferMemoryUsage>37120</vertexBufferMemoryUsage>
+		<indexBufferMemoryUsage>5120</indexBufferMemoryUsage>
+		<textureMemoryUsage>1835008</textureMemoryUsage>
+		<audioMemoryUsage>0</audioMemoryUsage>
+		<instanceVertexBufferMemoryUsage>0</instanceVertexBufferMemoryUsage>
+		<instanceIndexBufferMemoryUsage>0</instanceIndexBufferMemoryUsage>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>map/tools/plywood/plywood.i3d</filename>
+		<size width="1.4" length="1" height="1.1"/>
+		<input allowed="false"/>
+		<canBeReset>false</canBeReset>
+		<supportsPickUp>true</supportsPickUp>
+		<components maxMass="630">
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="607"/>
+		</components>
+		<showInVehicleMenu>true</showInVehicleMenu>
+		<mapHotspot available="false"/>
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration name="$l10n_configuration_valueDefault">
+				<fillUnits removeVehicleIfEmpty="true">
+					<fillUnit unitTextOverride="$l10n_unit_literShort" fillTypes="PLYWOOD" capacity="1000" startFillType="PLYWOOD" startFillLevel="1000" ignoreFillLimit="true"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<pallet fillUnitIndex="1" linkNode="plywoodBoxPallet_component1">
+		<content>
+			<object node="plywoodBox0" tensionBeltNode="plywoodBox0Tension"/>
+			<object node="plywoodBox1" tensionBeltNode="plywoodBox1Tension"/>
+			<object node="plywoodBox2" tensionBeltNode="plywoodBox2Tension"/>
+			<object node="plywoodBox3" tensionBeltNode="plywoodBox3Tension"/>
+			<object node="plywoodBox4" tensionBeltNode="plywoodBox4Tension"/>
+			<object node="plywoodBox5" tensionBeltNode="plywoodBox5Tension"/>
+			<object node="plywoodBox6" tensionBeltNode="plywoodBox6Tension"/>
+			<object node="plywoodBox7" tensionBeltNode="plywoodBox7Tension"/>
+		</content>
+
+		<sounds>
+			<unload template="palletsFillPaper" pitchScale="0.8"/>
+		</sounds>
+	</pallet>
+
+
+	<i3dMappings>
+		<i3dMapping id="plywoodBoxPallet_component1" node="0>"/>
+		<i3dMapping id="dynamicMountTrigger" node="0>0"/>
+		<i3dMapping id="plywoodBox0" node="0>1|0"/>
+		<i3dMapping id="plywoodBox0Tension" node="0>1|0|0"/>
+		<i3dMapping id="plywoodBox1" node="0>1|1"/>
+		<i3dMapping id="plywoodBox1Tension" node="0>1|1|0"/>
+		<i3dMapping id="plywoodBox2" node="0>1|2"/>
+		<i3dMapping id="plywoodBox2Tension" node="0>1|2|0"/>
+		<i3dMapping id="plywoodBox3" node="0>1|3"/>
+		<i3dMapping id="plywoodBox3Tension" node="0>1|3|0"/>
+		<i3dMapping id="plywoodBox4" node="0>1|4"/>
+		<i3dMapping id="plywoodBox4Tension" node="0>1|4|0"/>
+		<i3dMapping id="plywoodBox5" node="0>1|5"/>
+		<i3dMapping id="plywoodBox5Tension" node="0>1|5|0"/>
+		<i3dMapping id="plywoodBox6" node="0>1|6"/>
+		<i3dMapping id="plywoodBox6Tension" node="0>1|6|0"/>
+		<i3dMapping id="plywoodBox7" node="0>1|7"/>
+		<i3dMapping id="plywoodBox7Tension" node="0>1|7|0"/>
+	</i3dMappings>
+</vehicle>

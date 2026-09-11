@@ -1,0 +1,1249 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="constructibleFences.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="57" filename="$data/maps/mapEU/textures/props/handSawAlpha_diffuse.png"/>
+    <File fileId="58" filename="$data/maps/mapEU/textures/props/handSawAlpha_normal.png"/>
+    <File fileId="59" filename="$data/maps/mapEU/textures/props/handSawAlpha_specular.png"/>
+    <File fileId="54" filename="$data/maps/mapEU/textures/props/handSaw_diffuse.png"/>
+    <File fileId="55" filename="$data/maps/mapEU/textures/props/handSaw_normal.png"/>
+    <File fileId="56" filename="$data/maps/mapEU/textures/props/handSaw_specular.png"/>
+    <File fileId="60" filename="$data/maps/mapEU/textures/props/sawHorse_diffuse.png"/>
+    <File fileId="61" filename="$data/maps/mapEU/textures/props/sawHorse_normal.png"/>
+    <File fileId="62" filename="$data/maps/mapEU/textures/props/sawHorse_specular.png"/>
+    <File fileId="47" filename="$data/maps/mapUS/textures/props/connectedPylons_diffuse.png"/>
+    <File fileId="48" filename="$data/maps/mapUS/textures/props/connectedPylons_normal.png"/>
+    <File fileId="49" filename="$data/maps/mapUS/textures/props/connectedPylons_specular.png"/>
+    <File fileId="26" filename="$data/maps/textures/shared/props/boardStack02_diffuse.png"/>
+    <File fileId="27" filename="$data/maps/textures/shared/props/boardStack02_normal.png"/>
+    <File fileId="28" filename="$data/maps/textures/shared/props/boardStack02_specular.png"/>
+    <File fileId="29" filename="$data/maps/textures/shared/props/boardStackSet_diffuse.png"/>
+    <File fileId="30" filename="$data/maps/textures/shared/props/boardStackSet_normal.png"/>
+    <File fileId="31" filename="$data/maps/textures/shared/props/boardStackSet_specular.png"/>
+    <File fileId="51" filename="$data/placeables/brandless/productionPointsGeneric/shared/logYardStacks_diffuse.png"/>
+    <File fileId="52" filename="$data/placeables/brandless/productionPointsGeneric/shared/logYardStacks_normal.png"/>
+    <File fileId="53" filename="$data/placeables/brandless/productionPointsGeneric/shared/logYardStacks_specular.png"/>
+    <File fileId="42" filename="$data/placeables/brandless/streetLamps/streetLamp02/streetLamp02.i3d"/>
+    <File fileId="37" filename="$data/shaders/buildingShader.xml"/>
+    <File fileId="3" filename="$data/shaders/placeableShader.xml"/>
+    <File fileId="46" filename="$data/shared/assets/marker/markerIconPallet.i3d"/>
+    <File fileId="23" filename="$data/shared/default_normal.png"/>
+    <File fileId="24" filename="$data/shared/default_specular.png"/>
+    <File fileId="43" filename="$data/shared/warningStripes_diffuse.dds"/>
+    <File fileId="44" filename="$data/shared/warningStripes_normal.dds"/>
+    <File fileId="45" filename="$data/shared/warningStripes_specular.dds"/>
+    <File fileId="11" filename="textures/betonsciana_hight.dds"/>
+    <File fileId="13" filename="textures/angarMast_diffuse.dds"/>
+    <File fileId="14" filename="textures/angarMast_normal.dds"/>
+    <File fileId="12" filename="textures/doska.dds"/>
+    <File fileId="8" filename="textures/metaltextures01.dds"/>
+    <File fileId="18" filename="textures/mtl_stena_ch_04.dds"/>
+    <File fileId="16" filename="textures/skladSoloma.dds"/>
+    <File fileId="1" filename="textures/zabor8.jpg"/>
+    <File fileId="6" filename="textures/zabor8_hight.dds"/>
+    <File fileId="2" filename="textures/zabor8_normal.dds"/>
+    <File fileId="17" filename="textures/models01/sibir_saray08.jpg"/>
+    <File fileId="21" filename="textures/mtl_barrel_big_rust.dds"/>
+    <File fileId="22" filename="textures/mtl_bochka_02.dds"/>
+    <File fileId="20" filename="textures/mtl_stena_ch_04.dds"/>
+    <File fileId="10" filename="textures/paintedmetal_normal.dds"/>
+    <File fileId="7" filename="textures/sibir_zabor_derevo2_diffuse.dds"/>
+    <File fileId="25" filename="textures/svor.dds"/>
+    <File fileId="9" filename="textures/wallBetS_diffuse.dds"/>
+    <File fileId="32" filename="passport_fence.dds"/>
+    <File fileId="33" filename="textures/fonce_diffise.dds"/>
+    <File fileId="34" filename="textures/fonce_normal.dds"/>
+    <File fileId="35" filename="textures/fonce_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="Angar_FS_Pr_45556" materialId="5" customShaderId="3">
+      <Texture fileId="8"/>
+    </Material>
+    <Material name="angarMast" materialId="6" customShaderId="3" customShaderVariation="customParallax">
+      <Texture fileId="13"/>
+      <Normalmap fileId="14" bumpDepth="4"/>
+    </Material>
+    <Material name="ASC045FBXASC032Default" materialId="7" customShaderId="3" customShaderVariation="customParallax">
+      <Texture fileId="16"/>
+    </Material>
+    <Material name="boardStack02_mat" materialId="801">
+      <Texture fileId="26"/>
+      <Normalmap fileId="27"/>
+      <Glossmap fileId="28"/>
+    </Material>
+    <Material name="boardStackSet_mat" materialId="802" customShaderId="3">
+      <Texture fileId="29"/>
+      <Normalmap fileId="30"/>
+      <Glossmap fileId="31"/>
+      <CustomParameter name="snowScale" value="0"/>
+    </Material>
+    <Material name="connectedPylons_mat" materialId="8" customShaderId="3">
+      <Texture fileId="47"/>
+      <Normalmap fileId="48"/>
+      <Glossmap fileId="49"/>
+    </Material>
+    <Material name="default" materialId="9" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="diffuse34" materialId="10">
+      <Texture fileId="25"/>
+    </Material>
+    <Material name="doska01" materialId="11" customShaderId="3">
+      <Texture fileId="12"/>
+    </Material>
+    <Material name="handSaw_mat" materialId="855" customShaderId="3">
+      <Texture fileId="54"/>
+      <Normalmap fileId="55"/>
+      <Glossmap fileId="56"/>
+    </Material>
+    <Material name="handSawAlpha_mat" materialId="856" customShaderId="3">
+      <Texture fileId="57"/>
+      <Normalmap fileId="58"/>
+      <Glossmap fileId="59"/>
+    </Material>
+    <Material name="lambert1" materialId="12" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+    <Material name="logYardStacks_mat" materialId="857" customShaderId="3">
+      <Texture fileId="51"/>
+      <Normalmap fileId="52"/>
+      <Glossmap fileId="53"/>
+    </Material>
+    <Material name="Material" materialId="13" customShaderId="37">
+      <Texture fileId="33"/>
+      <Normalmap fileId="34"/>
+      <Glossmap fileId="35"/>
+    </Material>
+    <Material name="Material" materialId="14" customShaderId="3" customShaderVariation="vertexOffset">
+      <Texture fileId="33"/>
+      <Normalmap fileId="34"/>
+      <Glossmap fileId="35"/>
+    </Material>
+    <Material name="Material #26StenaK" materialId="15" customShaderId="3" customShaderVariation="customParallax">
+      <Texture fileId="9"/>
+      <Normalmap fileId="10" bumpDepth="1.35"/>
+      <Custommap name="mParallaxMap" fileId="11"/>
+    </Material>
+    <Material name="Material 34#25" materialId="16" customShaderId="3">
+      <Texture fileId="22"/>
+      <Normalmap fileId="23"/>
+      <Glossmap fileId="24"/>
+    </Material>
+    <Material name="Material 34#3" materialId="17" customShaderId="3">
+      <Texture fileId="20"/>
+    </Material>
+    <Material name="Material 44#36" materialId="18">
+      <Texture fileId="21"/>
+    </Material>
+    <Material name="Material 56#29" materialId="19" specularColor="0.0941177 1 0" customShaderId="3">
+      <Texture fileId="18"/>
+    </Material>
+    <Material name="sawHorse_mat" materialId="858" customShaderId="3">
+      <Texture fileId="60"/>
+      <Normalmap fileId="61"/>
+      <Glossmap fileId="62"/>
+    </Material>
+    <Material name="sibir_zabor_derevo2_d" materialId="20" customShaderId="3">
+      <Texture fileId="7"/>
+    </Material>
+    <Material name="sibsaray" materialId="21" customShaderId="3">
+      <Texture fileId="17"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="854">
+      <Texture fileId="32"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="22" diffuseColor="1 1 1 1">
+    </Material>
+    <Material name="warningStripes_mat" materialId="23">
+      <Texture fileId="43"/>
+      <Normalmap fileId="44"/>
+      <Glossmap fileId="45"/>
+    </Material>
+    <Material name="zed1" materialId="24" customShaderId="3" customShaderVariation="customParallax">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2" bumpDepth="1.12"/>
+      <Custommap name="mParallaxMap" fileId="6"/>
+    </Material>
+  </Materials>
+
+
+  <PerInstanceMaterialParameters>
+  </PerInstanceMaterialParameters>
+
+
+  <Shapes externalShapesFile="constructibleFences.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="Fences" nodeId="58">
+      <TransformGroup name="areas" nodeId="59">
+        <TransformGroup name="clearAreas" nodeId="60">
+          <TransformGroup name="clearAreaStart01" nodeId="61">
+            <TransformGroup name="clearAreaWidth01" nodeId="62"/>
+            <TransformGroup name="clearAreaHeight01" nodeId="63"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="levelAreas" nodeId="64">
+          <TransformGroup name="levelAreaStart01" nodeId="65">
+            <TransformGroup name="levelAreaWidth01" nodeId="66"/>
+            <TransformGroup name="levelAreaHeight01" nodeId="67"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="indoorAreas" nodeId="68">
+          <TransformGroup name="indoorAreaStart01" nodeId="69">
+            <TransformGroup name="indoorAreaWidth01" nodeId="70"/>
+            <TransformGroup name="indoorAreaHeight01" nodeId="71"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="testAreas" nodeId="72">
+          <TransformGroup name="testAreaStart01" nodeId="73">
+            <TransformGroup name="testAreaEnd01" translation="2.5 3.5 2.5" nodeId="74"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="tipOcclusionUpdateAreas" nodeId="75">
+          <TransformGroup name="tipOcclusionUpdateAreaStart01" nodeId="76">
+            <TransformGroup name="tipOcclusionUpdateAreaEnd01" nodeId="77"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="OldFences" nodeId="122">
+        <TransformGroup name="destroy_01" translation="61.7103 0 26.2708" nodeId="123">
+          <Shape name="zabor8" lockedgroup="true" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="124" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="125" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="126" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="127" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="0 0 -27.9809" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="128" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="129" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="130" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="131" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="-0.0780147 -0.0376869 3.40256" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="132" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="-0.106218 0.019367 6.79821" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="133" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="0 0 13.4443" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="134" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="135" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="136" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="137" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="destroy_02" translation="1057.8 -50 985.124" nodeId="138">
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -931.941" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="139" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="140" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137422 -0.151062 -6.70159" rotation="-43.8809 21.4814 -178.783" shapeId="1" static="true" clipDistance="400" nodeId="141" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="142" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -918.518" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="143" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="144" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="145" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-10.956 26.089 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="146" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -905.055" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="147" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="148" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="149" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="150" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="-0.0780147 -0.0376869 3.40256" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="151" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="-0.106218 0.019367 6.79821" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="152" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabirSibir2" translation="-1000.2 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="153" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <TransformGroup name="sarayZabroshka" lockedgroup="true" translation="-1012.87 46.9901 -918.929" rotation="-180 89.7626 180" nodeId="154">
+            <Shape name="Konstrukzii" rotation="-4.07111e-13 90 0" shapeId="3" clipDistance="200" nodeId="155" castsShadows="true" receiveShadows="true" materialIds="5">
+              <Shape name="Box001" translation="5.9558 3.07939 -12.7374" scale="0.148 0.15 0.15" shapeId="4" static="true" clipDistance="200" nodeId="156" castsShadows="true" receiveShadows="true" materialIds="15"/>
+            </Shape>
+            <TransformGroup name="transform" nodeId="157">
+              <Shape name="doska" translation="-14.9502 11.1689 5.18502" rotation="109.927 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="158" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-14.9512 11.7199 3.51498" rotation="109.927 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="159" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.0082 10.47 7.23507" rotation="109.927 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="160" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-9.46122 10.4689 7.23507" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="161" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.60524 10.47 7.23507" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="162" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.60524 9.62395 9.66512" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="163" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.67223 11.62 3.76498" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="164" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="6.15076 11.633 3.77499" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="165" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.7688 11.6219 3.76498" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="166" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.7688 9.66997 9.60519" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="167" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="6.18177 9.64196 9.59518" rotation="109.927 0.232178 0.0841715" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="168" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="0.870768 10.6839 6.57504" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="169" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="0.870768 9.23095 10.8352" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="170" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-9.49723 9.28197 10.8552" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="171" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.0572 11.6949 2.17503" rotation="70.5251 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="172" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-14.8892 10.3519 -1.66488" rotation="70.5251 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="173" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-14.8892 9.24798 -4.89497" rotation="70.5251 -0 0" scale="2.95 2 5" shapeId="5" clipDistance="120" nodeId="174" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-4.02825 9.26897 -4.90498" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="175" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="6.00776 9.25799 -4.89497" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="176" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.5178 9.25695 -4.89497" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="177" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.5178 10.5929 -1.02474" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="178" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.5178 11.636 1.98509" rotation="70.5251 0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="179" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="5.92277 11.612 1.98509" rotation="70.5251 0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="180" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="5.92277 10.2679 -1.93489" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="181" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="0.782757 9.86199 -3.11495" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="182" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="0.782757 11.2139 0.785013" rotation="70.5251 -0 0" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="183" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="19.2708 9.99895 -2.0649" rotation="53.3061 -51.211 31.8587" scale="3.5 2 5" shapeId="5" clipDistance="120" nodeId="184" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="11.9448 10.691 6.57504" rotation="109.927 -0 0" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="185" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="9.76177 11.9319 3.23508" rotation="116.235 -39.5547 -17.4235" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="186" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-2.88924 10.769 6.665" rotation="116.235 -39.5547 -17.4235" scale="3.2 2 5" shapeId="5" clipDistance="120" nodeId="187" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.74724 5.64098 11.965" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="188" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.74724 7.002 11.995" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="189" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-3.74724 8.61492 11.9049" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="190" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.0222 8.61492 11.995" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="191" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.0222 5.95598 11.995" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="192" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-9.65823 8.02294 11.7949" rotation="0 -0 -72.7731" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="193" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="6.16877 8.52795 11.9149" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="194" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="12.0628 8.52795 11.945" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="195" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="12.0628 7.6469 11.945" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="196" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="11.9218 5.885 11.945" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="197" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.7698 5.83599 11.965" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="198" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="17.7698 7.023 11.965" scale="3.18 2 5" shapeId="5" clipDistance="120" nodeId="199" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.6558 7.023 11.7949" rotation="0 90 0" scale="3.3 2 5" shapeId="5" clipDistance="120" nodeId="200" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.5098 3.29795 5.69503" rotation="90 0 90" scale="3.15 2 5" shapeId="5" clipDistance="120" nodeId="201" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.6558 8.68197 11.7949" rotation="0 90 0" scale="3.3 2 5" shapeId="5" clipDistance="120" nodeId="202" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.6558 5.76299 11.7949" rotation="0 90 0" scale="3.3 2 5" shapeId="5" clipDistance="120" nodeId="203" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.6558 7.023 -0.0247435" rotation="0 90 0" scale="3.3 2 5" shapeId="5" clipDistance="120" nodeId="204" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.6558 8.68197 0.115275" rotation="0 90 0" scale="3.3 2 5" shapeId="5" clipDistance="120" nodeId="205" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="23.5098 3.29795 -0.254723" rotation="90 0 90" scale="3.15 2 5" shapeId="5" clipDistance="120" nodeId="206" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.1212 3.29795 -0.254723" rotation="90 0 90" scale="3.15 2 5" shapeId="5" clipDistance="120" nodeId="207" castsShadows="true" receiveShadows="true" materialIds="11"/>
+              <Shape name="doska" translation="-15.2672 3.29795 5.87509" rotation="90 0 90" scale="3.15 2 5" shapeId="5" clipDistance="120" nodeId="208" castsShadows="true" receiveShadows="true" materialIds="11"/>
+            </TransformGroup>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="destroy_03" translation="1057.8 -50 985.124" nodeId="209">
+          <Shape name="zabirSibir2" translation="-1008.21 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="210" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1016.22 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="211" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1024.23 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="212" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1032.22 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="213" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1040.23 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="214" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1048.24 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="215" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1056.25 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="216" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1064.26 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="217" castsShadows="true" receiveShadows="true" materialIds="20"/>
+        </TransformGroup>
+        <TransformGroup name="destroy_04" translation="1057.8 -50 985.124" nodeId="218">
+          <Shape name="zabirSibir2" translation="-1072.27 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="219" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1080.27 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="220" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1088.28 50 -898.249" rotation="-0 90 0" shapeId="2" static="true" clipDistance="500" nodeId="221" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1100.54 50 -900.619" rotation="-46.9522 -0 -74.1736" shapeId="2" static="true" clipDistance="500" nodeId="222" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -908.004" rotation="0 -0 -74.1736" shapeId="2" static="true" clipDistance="500" nodeId="223" castsShadows="true" receiveShadows="true" materialIds="20"/>
+        </TransformGroup>
+        <TransformGroup name="destroy_05" translation="1057.8 -50 985.124" nodeId="224">
+          <Shape name="zabirSibir2" translation="-1112.32 50 -963.876" shapeId="2" static="true" clipDistance="500" nodeId="225" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -979.882" shapeId="2" static="true" clipDistance="500" nodeId="226" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -971.88" shapeId="2" static="true" clipDistance="500" nodeId="227" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -947.883" shapeId="2" static="true" clipDistance="500" nodeId="228" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -939.88" shapeId="2" static="true" clipDistance="500" nodeId="229" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -955.886" shapeId="2" static="true" clipDistance="500" nodeId="230" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -931.867" shapeId="2" static="true" clipDistance="500" nodeId="231" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -923.947" rotation="0 -0 -11.5148" shapeId="2" static="true" clipDistance="500" nodeId="232" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -916.014" rotation="0 -0 -36.6603" shapeId="2" static="true" clipDistance="500" nodeId="233" castsShadows="true" receiveShadows="true" materialIds="20"/>
+        </TransformGroup>
+        <TransformGroup name="destroy_06" translation="1057.8 -50 985.124" nodeId="234">
+          <Shape name="zabirSibir2" translation="-1112.32 50 -987.885" shapeId="2" static="true" clipDistance="500" nodeId="235" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1042.2" shapeId="2" static="true" clipDistance="500" nodeId="236" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1034.2" shapeId="2" static="true" clipDistance="500" nodeId="237" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1026.2" shapeId="2" static="true" clipDistance="500" nodeId="238" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1018.2" shapeId="2" static="true" clipDistance="500" nodeId="239" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1069.06" shapeId="2" static="true" clipDistance="500" nodeId="240" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="angarMast" translation="-1107.1 53.5339 -1055.67" scale="1.11122 1.22764 1.39618" shapeId="6" static="true" clipDistance="400" nodeId="241" castsShadows="true" receiveShadows="true" materialIds="6,6"/>
+          <Shape name="skladSoloma" translation="-1101.61 50 -1004.31" rotation="7.78459e-06 -0 -5.64148e-05" scale="1.1 1.1 1.1" shapeId="7" static="true" clipDistance="350" nodeId="242" castsShadows="true" receiveShadows="true" materialIds="7"/>
+        </TransformGroup>
+        <TransformGroup name="destroy_07" translation="1057.8 -50 985.124" nodeId="243">
+          <Shape name="zabirSibir2" translation="-1108.28 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="244" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1112.32 50 -1077.08" shapeId="2" static="true" clipDistance="500" nodeId="245" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1048.58 50 -1081.06" rotation="90.0001 -82.61 -90.0001" shapeId="2" static="true" clipDistance="500" nodeId="246" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1056.6 50 -1081.06" rotation="-90.0001 -81.8709 90.0001" shapeId="2" static="true" clipDistance="500" nodeId="247" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1064.67 50 -1081.06" rotation="-90.0001 -75.3273 90.0001" shapeId="2" static="true" clipDistance="500" nodeId="248" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1072.8 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="249" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1080.81 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="250" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1088.84 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="251" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="Saray08" translation="-1098.54 50 -1077.68" rotation="-0 90 0" scale="2.138 1.6765 2.18833" shapeId="8" static="true" clipDistance="1500" nodeId="252" castsShadows="true" receiveShadows="true" materialIds="21"/>
+        </TransformGroup>
+        <TransformGroup name="destroy_08" translation="1057.8 -50 985.124" nodeId="253">
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1067.62" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="254" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="255" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="256" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="257" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabirSibir2" translation="-1000.51 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="258" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1008.54 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="259" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1032.52 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="260" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1024.56 50 -1081.06" rotation="-90.0001 -70.9186 90.0001" shapeId="2" static="true" clipDistance="500" nodeId="261" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabirSibir2" translation="-1040.54 50 -1081.06" rotation="0 -90 0" shapeId="2" static="true" clipDistance="500" nodeId="262" castsShadows="true" receiveShadows="true" materialIds="20"/>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1054.15" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="263" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="264" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137422 -0.151062 -6.70159" rotation="-43.8809 21.4814 -178.783" shapeId="1" static="true" clipDistance="400" nodeId="265" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="266" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="vodonaporka" translation="-1010.07 50 -1069.08" rotation="-0 90 0" shapeId="9" clipDistance="600" nodeId="267" castsShadows="true" receiveShadows="true" materialIds="19">
+            <Shape name="bak" shapeId="10" clipDistance="1500" nodeId="268" castsShadows="true" receiveShadows="true" materialIds="17"/>
+            <Shape name="trap" shapeId="11" clipDistance="100" nodeId="269" castsShadows="true" receiveShadows="true" materialIds="18"/>
+            <Shape name="krysha" shapeId="12" clipDistance="500" nodeId="270" castsShadows="true" receiveShadows="true" materialIds="16"/>
+            <Shape name="trap" rotation="0 -83.9903 0" shapeId="13" clipDistance="100" nodeId="271" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="destroy_09" translation="1057.8 -50 985.124" nodeId="272">
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1000.33" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="273" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="274" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="275" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-10.956 26.089 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="276" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1013.75" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="277" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="278" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137422 -0.151062 -6.70159" rotation="-43.8809 21.4814 -178.783" shapeId="1" static="true" clipDistance="400" nodeId="279" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="280" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1027.22" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="281" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="282" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="283" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-0.956308 6.08863 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="284" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+          <Shape name="zabor8" lockedgroup="true" translation="-996.09 50 -1040.73" scale="1 0.8 1" shapeId="1" static="true" clipDistance="250" nodeId="285" castsShadows="true" receiveShadows="true" materialIds="24">
+            <Shape name="polySurface1" translation="-0.022 -0.151 -3.34144" rotation="-1.20054 -0.482404 -0.311" shapeId="1" static="true" clipDistance="400" nodeId="286" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0137151 -0.151 -6.69782" rotation="-1.19991 -0.33308 3.80498" shapeId="1" static="true" clipDistance="400" nodeId="287" castsShadows="true" receiveShadows="true" materialIds="24"/>
+            <Shape name="polySurface1" translation="0.0320738 -0.151 -10.0555" rotation="-10.956 26.089 -5.377" shapeId="1" static="true" clipDistance="400" nodeId="288" castsShadows="true" receiveShadows="true" materialIds="24"/>
+          </Shape>
+        </TransformGroup>
+        <Shape name="passport" translation="62.9733 2.1 13.0937" rotation="90 -60.4603 -2.61654e-05" scale="0.5 1 5" shapeId="14" clipDistance="120" nodeId="808" castsShadows="true" receiveShadows="true" materialIds="801">
+          <Shape name="barBeamShort" lockedgroup="true" translation="2 0.035 0.15" scale="0.25 0.8 3.5" shapeId="15" clipDistance="30" nodeId="809" castsShadows="true" receiveShadows="true" materialIds="802"/>
+          <Shape name="plane" translation="2.2 -0.05 0.000372499" rotation="-3.88788e-06 -3.16008e-06 180" scale="4 1 0.2" shapeId="16" nodeId="810" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="854"/>
+        </Shape>
+      </TransformGroup>
+      <TransformGroup name="NewFences" translation="61.8558 0 9.18091" nodeId="289">
+        <TransformGroup name="build_01" translation="995.944 -50 975.943" nodeId="290">
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -971.293" scale="1 1 1.015" nodeId="291">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="292" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="293" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -967.233" scale="1 1 1.015" nodeId="294">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="295" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="296" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -963.173" scale="1 1 1.015" nodeId="297">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="298" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="299" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -959.113" scale="1 1 1.015" nodeId="300">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="301" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="302" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -955.053" scale="1 1 1.015" nodeId="303">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="304" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="305" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -950.993" scale="1 1 1.015" nodeId="306">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="307" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="308" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_02" translation="995.944 -50 975.943" nodeId="309">
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -946.933" scale="1 1 1.015" nodeId="310">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="311" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="312" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -942.873" scale="1 1 1.015" nodeId="313">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="314" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="315" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -938.813" scale="1 1 1.015" nodeId="316">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="317" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="318" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -934.753" scale="1 1 1.015" nodeId="319">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="320" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="321" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -930.693" scale="1 1 1.015" nodeId="322">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="323" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="324" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -926.633" scale="1 1 1.015" nodeId="325">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="326" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="327" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -922.573" scale="1 1 1.015" nodeId="328">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="329" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="330" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -918.513" scale="1 1 1.015" nodeId="331">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="332" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="333" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -914.453" scale="1 1 1.015" nodeId="334">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="335" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="336" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -910.393" scale="1 1 1.015" nodeId="337">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="338" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="339" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -906.333" scale="1 1 1.015" nodeId="340">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="341" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="342" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -902.273" scale="1 1 1.015" nodeId="343">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="344" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="345" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="346">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="347" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="348" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_03" translation="995.944 -50 975.943" nodeId="349">
+          <TransformGroup name="BrazilianFencesl03" translation="-999.956 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="350">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="351" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="352" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1003.97 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="353">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="354" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="355" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1007.98 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="356">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="357" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="358" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1011.99 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="359">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="360" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="361" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1016 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="362">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="363" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="364" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1020.02 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="365">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="366" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="367" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1024.03 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="368">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="369" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="370" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1028.04 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="371">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="372" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="373" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1032.05 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="374">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="375" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="376" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1036.06 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="377">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="378" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="379" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1040.08 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="380">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="381" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="382" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1044.09 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="383">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="384" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="385" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1048.1 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="386">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="387" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="388" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1052.11 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="389">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="390" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="391" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1056.12 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="392">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="393" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="394" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1060.14 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="395">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="396" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="397" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_04" translation="995.944 -50 975.943" nodeId="398">
+          <TransformGroup name="BrazilianFencesl03" translation="-1064.15 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="399">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="400" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="401" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1068.16 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="402">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="403" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="404" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1072.17 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="405">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="406" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="407" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1076.18 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="408">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="409" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="410" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1080.2 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="411">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="412" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="413" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1084.21 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="414">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="415" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="416" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1088.22 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="417">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="418" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="419" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1092.23 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="420">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="421" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="422" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1096.24 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="423">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="424" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="425" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1100.26 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="426">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="427" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="428" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1104.27 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="429">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="430" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="431" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1108.28 50 -898.213" rotation="-0 -90 0" scale="1 1 1.003" nodeId="432">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="433" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="434" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -898.213" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="435">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="436" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="437" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -902.193" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="438">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="439" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="440" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -906.173" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="441">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="442" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="443" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_05" translation="995.944 -50 975.943" nodeId="444">
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -910.153" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="445">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="446" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="447" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -914.133" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="448">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="449" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="450" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -918.113" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="451">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="452" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="453" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -922.093" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="454">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="455" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="456" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -926.073" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="457">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="458" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="459" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -930.053" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="460">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="461" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="462" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -934.033" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="463">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="464" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="465" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -938.013" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="466">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="467" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="468" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -941.993" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="469">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="470" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="471" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -945.973" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="472">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="473" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="474" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -949.953" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="475">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="476" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="477" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -953.933" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="478">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="479" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="480" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -957.913" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="481">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="482" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="483" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -961.893" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="484">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="485" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="486" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -965.873" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="487">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="488" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="489" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -969.853" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="490">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="491" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="492" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -973.833" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="493">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="494" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="495" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -977.813" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="496">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="497" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="498" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_06" translation="995.944 -50 975.943" nodeId="499">
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -981.793" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="500">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="501" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="502" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -985.773" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="503">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="504" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="505" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -989.753" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="506">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="507" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="508" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -993.733" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="509">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="510" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="511" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -997.713" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="512">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="513" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="514" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1001.69" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="515">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="516" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="517" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1005.67" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="518">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="519" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="520" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1009.65" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="521">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="522" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="523" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1013.63" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="524">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="525" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="526" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1017.61" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="527">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="528" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="529" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1021.59" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="530">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="531" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="532" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1025.57" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="533">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="534" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="535" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1029.55" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="536">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="537" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="538" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1033.53" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="539">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="540" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="541" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1037.51" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="542">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="543" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="544" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1041.49" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="545">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="546" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="547" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1045.47" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="548">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="549" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="550" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1049.45" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="551">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="552" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="553" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1053.43" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="554">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="555" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="556" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1057.41" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="557">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="558" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="559" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1061.39" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="560">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="561" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="562" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1065.37" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="563">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="564" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="565" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_07" translation="995.944 -50 975.943" nodeId="566">
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1069.35" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="567">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="568" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="569" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1073.33" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="570">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="571" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="572" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1077.31" rotation="-180 2.36225e-05 -180" scale="1 1 0.995" nodeId="573">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="574" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="575" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1112.29 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="576">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="577" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="578" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1108.29 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="579">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="580" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="581" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1104.28 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="582">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="583" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="584" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1100.28 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="585">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="586" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="587" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1096.28 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="588">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="589" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="590" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1092.27 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="591">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="592" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="593" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1088.27 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="594">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="595" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="596" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1084.26 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="597">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="598" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="599" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1080.26 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="600">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="601" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="602" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1076.26 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="603">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="604" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="605" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1072.25 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="606">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="607" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="608" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1068.25 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="609">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="610" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="611" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1064.24 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="612">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="613" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="614" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1060.24 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="615">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="616" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="617" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1056.24 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="618">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="619" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="620" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1052.23 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="621">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="622" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="623" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_08" translation="995.944 -50 975.943" nodeId="624">
+          <TransformGroup name="BrazilianFencesl03" translation="-1048.23 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="625">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="626" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="627" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1044.22 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="628">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="629" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="630" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1040.22 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="631">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="632" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="633" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1036.22 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="634">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="635" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="636" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1032.21 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="637">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="638" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="639" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1028.21 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="640">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="641" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="642" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1024.2 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="643">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="644" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="645" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1020.2 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="646">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="647" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="648" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1016.2 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="649">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="650" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="651" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1012.19 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="652">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="653" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="654" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1008.19 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="655">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="656" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="657" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1004.18 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="658">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="659" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="660" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-1000.18 50 -1081.29" rotation="-5.00896e-06 90 0" scale="1 1 1.001" nodeId="661">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="662" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="663" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1057.36" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="664">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="665" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="666" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1061.34" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="667">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="668" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="669" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1065.33" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="670">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="671" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="672" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1069.32" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="673">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="674" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="675" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1073.31" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="676">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="677" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="678" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1077.3" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="679">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="680" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="681" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="build_09" translation="995.944 -50 975.943" nodeId="682">
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -981.583" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="683">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="684" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="685" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -985.571" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="686">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="687" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="688" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -989.559" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="689">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="690" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="691" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -993.547" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="692">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="693" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="694" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -997.535" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="695">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="696" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="697" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1001.52" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="698">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="699" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="700" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1005.51" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="701">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="702" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="703" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1009.5" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="704">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="705" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="706" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1013.49" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="707">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="708" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="709" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1017.48" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="710">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="711" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="712" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1021.46" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="713">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="714" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="715" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1025.45" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="716">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="717" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="718" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1029.44" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="719">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="720" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="721" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1033.43" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="722">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="723" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="724" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1037.42" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="725">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="726" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="727" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1041.4" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="728">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="729" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="730" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1045.39" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="731">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="732" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="733" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1049.38" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="734">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="735" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="736" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+          <TransformGroup name="BrazilianFencesl03" translation="-995.944 50 -1053.37" rotation="180 -1.86693e-05 180" scale="1 1 0.997" nodeId="737">
+            <Shape name="cerca de madeira" shapeId="17" clipDistance="500" nodeId="738" castsShadows="true" receiveShadows="true" materialIds="14"/>
+            <Shape name="col" shapeId="18" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="739" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="gate10m" translation="4.88762e-06 0 -5.7" rotation="0 -90 0" nodeId="740">
+          <Shape name="gate10mOpenA" translation="0.156934 1.35074 0.0574684" rotation="0 4.07111e-13 0" shapeId="19" clipDistance="500" nodeId="749" castsShadows="true" receiveShadows="true" materialIds="13">
+            <Shape name="col" translation="2.49167 -0.445764 -0.0514752" shapeId="20" kinematic="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" clipDistance="100" nodeId="750" castsShadows="false" receiveShadows="false" nonRenderable="true" distanceBlending="false" materialIds="22"/>
+          </Shape>
+          <Shape name="gate10mOpenB" translation="10.2506 1.35074 0.0583572" shapeId="21" clipDistance="500" nodeId="743" castsShadows="true" receiveShadows="true" materialIds="13">
+            <TransformGroup name="1" translation="-4.839 0.232194 -0.0245737" nodeId="744">
+              <TransformGroup name="2" translation="-0.011 -0.0137873 -0.0275285" rotation="7.73511e-12 -2.76835e-11 -33.5274" nodeId="745">
+                <TransformGroup name="3" translation="0 0 7.1941e-10" rotation="-6.79875e-11 -6.75804e-11 95.6846" nodeId="746">
+                  <Shape name="portera" translation="-0.067 -0.0536417 -3.49547e-16" shapeId="22" clipDistance="200" nodeId="747" castsShadows="true" receiveShadows="true" materialIds="13"/>
+                </TransformGroup>
+              </TransformGroup>
+            </TransformGroup>
+            <Shape name="col" translation="-2.53924 -0.445764 -0.0514752" shapeId="20" kinematic="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" clipDistance="100" nodeId="748" castsShadows="false" receiveShadows="false" nonRenderable="true" distanceBlending="false" materialIds="22"/>
+          </Shape>
+          <Shape name="poste" translation="0.0374761 0 -0.0472145" shapeId="23" clipDistance="500" nodeId="751" castsShadows="true" receiveShadows="true" materialIds="13">
+            <Shape name="dobradisa esquerda" translation="0.0304778 0.898507 0.114834" shapeId="24" clipDistance="300" nodeId="742" castsShadows="true" receiveShadows="true" materialIds="13"/>
+          </Shape>
+          <Shape name="poste" translation="10.3481 0 -0.0472145" shapeId="23" clipDistance="500" nodeId="752" castsShadows="true" receiveShadows="true" materialIds="13">
+            <Shape name="dobradisa direita" translation="-0.00859896 0.898507 0.114834" shapeId="25" clipDistance="500" nodeId="741" castsShadows="true" receiveShadows="true" materialIds="13"/>
+          </Shape>
+          <Shape name="gate10mTrigger" translation="7.60206e-08 0 0" shapeId="26" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="753" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+          <TransformGroup name="gate10mSound" translation="5.48521 0 -0.16574" nodeId="754"/>
+          <ReferenceNode name="streetLamp02" translation="0 1.36809e-06 -0.5" rotation="2.39125e-06 90 -5.44733e-06" referenceId="42" nodeId="763"/>
+          <ReferenceNode name="streetLamp02" translation="10.4 0 -0.5" rotation="0 -90 0" referenceId="42" nodeId="780"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="ConstructibleSellingStation" translation="58 -1.02853e-05 12" rotation="1.7784e-05 90 0" nodeId="78">
+        <Shape name="infoTrigger" translation="3 3.55044e-07 5" rotation="3.96589e-07 0 7.36951e-06" shapeId="27" static="true" trigger="true" collisionFilterGroup="0x100000" collisionFilterMask="0x100000" nodeId="79" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="22"/>
+        <Shape name="warningStripes01" translation="2.99958 0 7" rotation="0 -0 -4.07111e-13" shapeId="28" clipDistance="100" nodeId="80" castsShadows="false" receiveShadows="true" nonRenderable="true" terrainDecal="true" materialIds="23"/>
+        <Shape name="palletTrigger" translation="3 0 7" shapeId="29" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x10000" nodeId="81" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9">
+          <ReferenceNode name="markerIconPallet" translation="0 3.8147e-06 0" rotation="6.43643e-13 -7.09788e-28 6.31839e-14" referenceId="46" nodeId="85"/>
+        </Shape>
+        <TransformGroup name="unloadTriggerMarker" translation="3 0 7" nodeId="88"/>
+        <TransformGroup name="unloadTriggerAINode" translation="3 0 7" rotation="0 -90 0" nodeId="89"/>
+        <Shape name="woodTrigger" translation="3 2 7" rotation="-2.07694e-12 0 0" shapeId="30" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x40000800" nodeId="90" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+        <Shape name="woodSellActivationTrigger" translation="8 1 6" rotation="-2.07694e-12 -90 0" shapeId="31" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="91" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="9"/>
+        <TransformGroup name="woodSellActivationTriggerMarker" translation="8 0 6" rotation="-2.07694e-12 -90 0" nodeId="92"/>
+        <TransformGroup name="connectedPylonsBlockade_PREFAB" lockedgroup="true" translation="-1.64436 -0.093822 4.76906" rotation="-1.22133e-12 180 8.14222e-13" scale="1 1 1.05" nodeId="93">
+          <TransformGroup name="connectedPylons" lockedgroup="true" translation="1 0.000396729 0" lodDistance="0 8" lodBlending="false" clipDistance="40" nodeId="94">
+            <Shape name="LOD0" shapeId="32" nodeId="95" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="LOD1" shapeId="33" nodeId="96" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="col" shapeId="34" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="97" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="12"/>
+            <TransformGroup name="connectedPylonsBlockade" lockedgroup="true" translation="0.00548935 0.000244141 0.0030512" rotation="-4.07111e-13 -0 4.07111e-13" clipDistance="40" nodeId="98">
+              <Shape name="LOD0" shapeId="35" nodeId="99" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            </TransformGroup>
+          </TransformGroup>
+          <TransformGroup name="connectedPylons" lockedgroup="true" translation="-2 0.000396729 3.93738e-22" lodDistance="0 8" lodBlending="false" clipDistance="40" nodeId="100">
+            <Shape name="LOD0" shapeId="32" nodeId="101" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="LOD1" shapeId="33" nodeId="102" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="col" shapeId="34" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="103" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="12"/>
+            <TransformGroup name="connectedPylonsBlockade" lockedgroup="true" translation="0.00548935 0.000244141 0.0030512" rotation="-4.07111e-13 -0 4.07111e-13" clipDistance="40" nodeId="104">
+              <Shape name="LOD0" shapeId="35" nodeId="105" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            </TransformGroup>
+          </TransformGroup>
+          <TransformGroup name="connectedPylons" lockedgroup="true" translation="-5 0.000396729 6.65053e-22" lodDistance="0 8" lodBlending="false" clipDistance="40" nodeId="106">
+            <Shape name="LOD0" shapeId="32" nodeId="107" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="LOD1" shapeId="33" nodeId="108" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="col" shapeId="34" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="109" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="12"/>
+            <TransformGroup name="connectedPylonsBlockade" lockedgroup="true" translation="0.00548935 0.000244141 0.0030512" rotation="-4.07111e-13 -0 4.07111e-13" clipDistance="40" nodeId="110">
+              <Shape name="LOD0" shapeId="35" nodeId="111" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            </TransformGroup>
+          </TransformGroup>
+          <TransformGroup name="connectedPylons" lockedgroup="true" translation="-8 0.000396729 3.93738e-22" lodDistance="0 8" lodBlending="false" clipDistance="40" nodeId="112">
+            <Shape name="LOD0" shapeId="32" nodeId="113" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="LOD1" shapeId="33" nodeId="114" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="col" shapeId="34" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="115" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="12"/>
+            <TransformGroup name="connectedPylonsBlockade" lockedgroup="true" translation="0.00548935 0.000244141 0.0030512" rotation="-4.07111e-13 -0 4.07111e-13" clipDistance="40" nodeId="116">
+              <Shape name="LOD0" shapeId="35" nodeId="117" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            </TransformGroup>
+          </TransformGroup>
+          <TransformGroup name="connectedPylons" lockedgroup="true" translation="-11 0.000396729 3.93738e-22" lodDistance="0 8" lodBlending="false" clipDistance="40" nodeId="118">
+            <Shape name="LOD0" shapeId="32" nodeId="119" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="LOD1" shapeId="33" nodeId="120" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="col" shapeId="34" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="121" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="12"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="instruments" nodeId="881">
+        <TransformGroup name="instrument_01" translation="58.4086 9.53674e-07 12.6206" nodeId="880">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="869">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="870" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="871" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="872" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="873" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="874" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="865">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="866" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="867" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="868" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_02" translation="59.8658 0 40.0625" nodeId="882">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="883">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="884" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="885" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="886" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="887" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="888" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="889">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="890" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="891" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="892" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_03" translation="55.1929 3.8147e-06 84.3078" rotation="0 -87.0003 0" nodeId="893">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="894">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="895" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="896" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="897" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="898" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="899" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="900">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="901" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="902" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="903" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_04" translation="-5.90565 1.90735e-06 84.6002" rotation="0 -87.0003 0" nodeId="904">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="905">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="906" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="907" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="908" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="909" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="910" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="911">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="912" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="913" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="914" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_05" translation="-51.985 4.07763e-07 74.3674" rotation="-180 -13.0001 -180" nodeId="915">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="916">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="917" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="918" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="919" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="920" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="921" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="922">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="923" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="924" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="925" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_06" translation="-53.2724 0 3.49593" rotation="-180 12.9999 -180" nodeId="926">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="927">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="928" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="929" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="930" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="931" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="932" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="933">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="934" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="935" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="936" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_07" translation="-55.1512 -1.81514e-06 -89.9971" rotation="-180 43.9999 -180" nodeId="937">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="938">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="939" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="940" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="941" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="942" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="943" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="944">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="945" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="946" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="947" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_08" translation="27.9467 8.30824e-10 -95.6352" rotation="1.80706e-15 55.0001 1.18561e-08" nodeId="948">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="949">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="950" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="951" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="952" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="953" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="954" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="955">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="956" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="957" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="958" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_09" translation="60.2079 -9.52652e-07 -70.2728" rotation="1.0494e-15 9.00012 1.18561e-08" nodeId="959">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="960">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="961" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="962" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="963" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="964" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="965" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="966">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="967" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="968" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="969" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="instrument_10" translation="60.7108 9.53881e-07 4.98239" rotation="1.03648e-15 0.000127319 1.18561e-08" nodeId="970">
+          <TransformGroup name="sawhorseLogSaw" lockedgroup="true" translation="1.30337e-06 3.10649e-13 4" rotation="1.20556e-12 90 1.36561e-05" nodeId="971">
+            <Shape name="log01" translation="-2.08012 0.925158 -0.000654995" rotation="2.07241e-05 -90 0" scale="0.5 0.5 0.5" shapeId="36" clipDistance="100" nodeId="972" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="handSaw02" translation="-2.07938 1.09279 0.0298567" rotation="-180 -1.53679e-05 -146.801" scale="1.5 1.5 1.5" shapeId="37" nodeId="973" castsShadows="true" receiveShadows="true" materialIds="855">
+              <Shape name="alpha" translation="-0.689119 -0.106442 -0.001079" shapeId="38" nodeId="974" castsShadows="true" receiveShadows="true" materialIds="856"/>
+            </Shape>
+            <Shape name="sawhorse" translation="-1.19374 3.81283e-06 5.96046e-08" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="975" castsShadows="true" receiveShadows="true" materialIds="858"/>
+            <Shape name="sawhorse" translation="1.10674 3.8147e-06 -1.78814e-07" rotation="-8.84543e-13 -0 1.69244e-13" scale="0.75 0.75 0.75" shapeId="39" nodeId="976" castsShadows="true" receiveShadows="true" materialIds="858"/>
+          </TransformGroup>
+          <TransformGroup name="logPiles" lockedgroup="true" translation="-2.8598 0.73 2.19581" rotation="7.41689e-06 -18.7922 -2.39253e-06" scale="1 1 0.5" nodeId="977">
+            <Shape name="logPile02" translation="0.30952 -0.71208 -0.0217295" rotation="180 -8.41767e-06 -180" shapeId="40" clipDistance="250" nodeId="978" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="0.858673 0.726073 7.61128" rotation="0.0140279 0.194196 179.322" shapeId="40" clipDistance="250" nodeId="979" castsShadows="true" receiveShadows="true" materialIds="857"/>
+            <Shape name="logPile02" translation="1.60403 -0.748531 7.59583" rotation="2.81226e-06 1.18725 7.94729e-08" shapeId="40" clipDistance="250" nodeId="980" castsShadows="true" receiveShadows="true" materialIds="857"/>
+          </TransformGroup>
+        </TransformGroup>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

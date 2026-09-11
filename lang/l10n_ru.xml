@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+	<texts>
+		<text name="fillType_instrument"	text="Набор инструментов"/>
+		<text name="typeDesc_instrument"	text="Набор инструментов для выполнения строительных и ремонтных работ"/>
+
+		<text name="NAILS"					text="Гвозди строительные"/>
+		<text name="storeItem_nails"		text="Гвозди строительные"/>
+		<text name="fillType_nails"			text="Гвозди строительные"/>
+
+		<text name="PLYWOOD"				text="OSB плиты"/>
+		<text name="storeItem_plywood"		text="OSB плиты"/>
+		<text name="fillType_plywood"		text="OSB плиты"/>
+
+		<text name="tool_axe"				text="Топор"/>
+		<text name="typeDesc_axe"			text="Ручной инструмент для рубки малых и средних деревиев, диаметр ствола которых не превышает 80 см."/>
+
+		<text name="fillType_building_metal"			text="Железо"/>
+		<text name="typeDesc_building_metal"			text="Железо для строительных нужд (арматура, балки, трубы)"/>
+		<text name="fillType_metal"			text="Металл"/>
+		<text name="typeDesc_metal"			text="Металл листовой в рулоне"/>
+
+		<text name="storeItem_jackhammer"	text="Отбойный молоток"/>
+
+		<text name="fillType_wheatClean"	text="Очищенная пшеница"/>
+		<text name="fillType_barleyClean"	text="Очищенный ячмень"/>
+		<text name="fillType_oatClean"		text="Очищенный овёс"/>
+		<text name="fillType_sorghumClean"	text="Очищенное сорго"/>
+		<text name="fillType_grainWaste"	text="Зерновые отходы"/>
+		<text name="woodElevator_storageUsage"	text="Заполнено"/>
+
+		<text name="fillType_sand"	text="ПЕСОК"/>
+
+		<!-- бренд и категории -->
+		<text name="ConstructibleBuildings"			text="Построим своими руками"/>
+		<text name="constructiblesProductionPoint"	text="Строимые производства"/>
+		<text name="constructiblesHusbandry"		text="Строимые загоны"/>
+		<text name="constructiblesStorage"			text="Склады, хранилища"/>
+		<text name="constructiblesTools"			text="Инструменты"/>
+
+		<text name="fillType_firewood"	text="Дрова"/>
+
+		<!-- HandPlantSaplings - ручная посадка саженцев -->
+		<text name="input_HPS_ACTION_SECONDRY" text="Удалить саженцы"/>
+		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Переключение ручной посадки"/>
+		<text name="ui_hps_loadError" text="Мод %{modName}s от %{author}s не может быть загружен или не поддерживается!
+Во избежание ошибок этот мод следует удалить!
+
+Посетите сайт Giants modHub, чтобы получить последнюю официальную версию."/>
+		<text name="hps_warningStorageCapacityReached" text="На складе больше нет места!"/>
+		<text name="hps_warningStorageEmpty" text="Склад пуст!"/>
+		<text name="hps_warningBackpackCapacityReached" text="В рюкзаке больше нет места!"/>
+		<text name="hps_warningBackpackEmpty" text="Рюкзак пуст!"/>
+		<text name="hps_warningPalletCapacityReached" text="На поддоне больше нет места!"/>
+		<text name="hps_warningPalletEmpty" text="Поддон пуст!"/>
+		<text name="hps_warningFailed" text="Ошибка, причина неизвестна!"/>
+		<text name="hps_warningTreeTypeOrVariation" text="Тип или разновидность дерева не соответствует перевозимым предметам."/> <!-- Online Translated (New: FS25) -->
+		<text name="hps_removeFromStorageDialog" text="Выберите тип саженца для удаления."/> <!-- Online Translated (New: FS25) -->
+		<text name="hps_resetcounter" text="Сбросить счетчик"/> <!-- Online Translated (New: FS25) -->
+		<text name="hps_freeModeOn" text="Свободный режим включен"/> <!-- Online Translated (New: FS25) -->
+		<text name="hps_addToStorage" text="Добавить на склад"/>
+		<text name="hps_removeFromStorage" text="Удалить со склада"/>
+		<text name="hps_addToPallet" text="Добавить на поддон"/>
+		<text name="hps_removeFromPallet" text="Удалить с поддона"/>
+		<text name="hps_messageDuplicateEquipment" text="Вы уже носите этот тип принадлежностей."/>
+		<text name="shopItem_handPlantSaplings01" text="Ящик для саженцев ручных растений"/> <!-- Online Translated (New: FS25) -->
+		<text name="shopItem_handPlantSaplings02" text="Сарай для саженцев ручных растений"/> <!-- Online Translated (New: FS25) -->
+		<text name="shopItem_handPlantSaplingsShovel" text="Лопата и Рюкзак"/> <!-- Shovel & Backpack -->
+		<text name="function_handPlantSaplings01" text="Складское помещение с 1 лопатой и местом для хранения дополнительных саженцев деревьев."/> <!-- Online Translated (New: FS25) -->
+		<text name="function_handPlantSaplings02" text="Складское помещение с 2 лопатами и местом для хранения дополнительных саженцев деревьев."/> <!-- Online Translated (New: FS25) -->
+		<text name="function_handPlantSaplingsShovel" text="Лопата и рюкзак, которые вы носите с собой, входят в комплект принадлежностей для размещаемого склада “Саженцев для ручной посадки”."/>
+		<text name="hps_messageSellNotEmpty" text="Склад не пуст.
+Также будет продано следующее количество саженцев:"/>
+		<text name="hps_messageFlightState" text="Режим полёта активирован"/>
+
+		<!-- HandLiftableConsumables - ёмкости с топливом -->
+		<text name="function_canisterDiesel"			text="Дизельное топливо для заправки ваших автомобилей"/>
+		<text name="shopItem_barrelIronDiesel"			text="Бочка с дизельным топливом"/>
+		<text name="shopItem_canisterFuelDiesel"		text="Канистра с дизельным топливом"/>
+
+		<!-- Ёлки -->
+		<text name="treeType_spruce1n" text="Ель" />
+		<text name="treeType_spruce2n" text="Ёлка" />
+	</texts>
+	<!-- ===================================================================================== -->
+	<elements>
+		<!-- Коллекция малины -->
+		<e k="collectibleRaspberryIntro" v="В лесах тайги был найден редкий сорт малины, поленика. Помогите местным биологам найти кусты этого сорта! За это вы получите от биологов небольшую денежную премию.
+		--------------------------------------------"/>
+		<e k="collectibleRaspberryAll" v="Поздравляем! Вы нашли все 20 мест зарослей поленики!"/>
+		<e k="collectibleRaspberry" v="Найдено скопление поленики! Осталось ещё %d." tag="format"/>
+		<!-- Коллекция музея -->
+		<e k="collectibleMuseumIntro" v="Ранее в этом районе были жилые деревни. Однако сейчас территории заброшены. Сейчас в здешних местах можно найти только старые вещи, некоторые из которых представляют музейную ценность. Соберите их, и тогда их можно будет выставить в музее, когда он отреставрируется.
+		--------------------------------------------"/>
+		<e k="collectibleMuseumAll" v="Поздравляем! Вы нашли все 25 музейных экспонатов!"/>
+		<e k="collectibleMuseum" v="Найден предмет, которым заинтересуется музей! Осталось ещё %d." tag="format"/>
+	</elements>
+</l10n>

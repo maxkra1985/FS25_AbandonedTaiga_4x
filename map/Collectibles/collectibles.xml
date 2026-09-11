@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<collectibles hotspotThreshold="35">
+	<group name="Raspberry" dialogText="$l10n_collectibleRaspberryAll" dialogIntroText="$l10n_collectibleRaspberryIntro" moneyReward="10000" />
+	<collectible name="Raspberry_01" group="Raspberry" target="Raspberry_01" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_02" group="Raspberry" target="Raspberry_02" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_03" group="Raspberry" target="Raspberry_03" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_04" group="Raspberry" target="Raspberry_04" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_05" group="Raspberry" target="Raspberry_05" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_06" group="Raspberry" target="Raspberry_06" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_07" group="Raspberry" target="Raspberry_07" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_08" group="Raspberry" target="Raspberry_08" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_09" group="Raspberry" target="Raspberry_09" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_10" group="Raspberry" target="Raspberry_10" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_11" group="Raspberry" target="Raspberry_11" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_12" group="Raspberry" target="Raspberry_12" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_13" group="Raspberry" target="Raspberry_13" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_14" group="Raspberry" target="Raspberry_14" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_15" group="Raspberry" target="Raspberry_15" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_16" group="Raspberry" target="Raspberry_16" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_17" group="Raspberry" target="Raspberry_17" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_18" group="Raspberry" target="Raspberry_18" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_19" group="Raspberry" target="Raspberry_19" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+	<collectible name="Raspberry_20" group="Raspberry" target="Raspberry_20" dialogText="$l10n_collectibleRaspberry" moneyReward="10" />
+
+	<group name="Museum" dialogText="$l10n_collectibleMuseumAll" dialogIntroText="$l10n_collectibleMuseumIntro" moneyReward="10000" />
+	<collectible name="theLeg"					group="Museum" target="theLeg"					dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="elevatorBuckets"			group="Museum" target="elevatorBuckets"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="binSelectorWheel"		group="Museum" target="binSelectorWheel"		dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="chalkBoard"				group="Museum" target="chalkBoard"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="deskBell"				group="Museum" target="deskBell"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainCleaner"			group="Museum" target="grainCleaner"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainElevatorDiagram"	group="Museum" target="grainElevatorDiagram"	dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainKicker"				group="Museum" target="grainKicker"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainScale"				group="Museum" target="grainScale"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainSorter"				group="Museum" target="grainSorter"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="manLift"					group="Museum" target="manLift"					dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="movingGrainGame"			group="Museum" target="movingGrainGame"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="officeDesk"				group="Museum" target="officeDesk"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="steamEngine"				group="Museum" target="steamEngine"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="stove"					group="Museum" target="stove"					dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="telephone"				group="Museum" target="telephone"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="threshingMachine"		group="Museum" target="threshingMachine"		dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="wheelBarrowContainer"	group="Museum" target="wheelBarrowContainer"	dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="typewriter"				group="Museum" target="typewriter"				dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="oilLamp"					group="Museum" target="oilLamp"					dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="grainMeasureBucket"		group="Museum" target="grainMeasureBucket"		dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="metalGrainScoop"			group="Museum" target="metalGrainScoop"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="flourSifterGrid"			group="Museum" target="flourSifterGrid"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="woodenGrainShovel"		group="Museum" target="woodenGrainShovel"		dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+	<collectible name="woodenHayFork"			group="Museum" target="woodenHayFork"			dialogText="$l10n_collectibleMuseum" moneyReward="1000" />
+</collectibles>

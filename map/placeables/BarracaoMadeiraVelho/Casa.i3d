@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Casa.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="5" filename="../../../maps/Objetos/CurralMinas/CurralMinas_normal_2.dds"/>
+    <File fileId="6" filename="../../../maps/Objetos/CurralMinas/CurralMinas_specular_3.dds"/>
+    <File fileId="1" filename="Textures/CurralMinas_diffuse.dds"/>
+    <File fileId="2" filename="Textures/CurralMinas_normal.dds"/>
+    <File fileId="3" filename="Textures/CurralMinas_specular.dds"/>
+    <File fileId="4" filename="Textures/bark_brown_02_diff_4k.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="madeira" materialId="36">
+      <Texture fileId="4"/>
+      <Normalmap fileId="5"/>
+      <Glossmap fileId="6"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="6">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Casa.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="BarracaoMadeiraVelho1" clipDistance="500" nodeId="9">
+      <TransformGroup name="clearAreas" nodeId="10">
+        <TransformGroup name="clearArea1Start" translation="-10 0 -5" nodeId="11">
+          <TransformGroup name="clearArea1Width" translation="12 1.42109e-16 0" nodeId="12"/>
+          <TransformGroup name="clearArea1Height" translation="0 -7.10543e-17 10" nodeId="13"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="levelAreas" nodeId="14">
+        <TransformGroup name="levelArea1Start" translation="-10 0 -5" nodeId="15">
+          <TransformGroup name="levelArea1Width" translation="12 0 0" nodeId="16"/>
+          <TransformGroup name="levelArea1Height" translation="0 0 10" nodeId="17"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="indoorAreas" nodeId="18">
+        <TransformGroup name="indoorArea1Start" translation="-10 0 -5" nodeId="19">
+          <TransformGroup name="indoorArea1Width" translation="12 0 0" nodeId="20"/>
+          <TransformGroup name="indoorArea1Height" translation="0 0 10" nodeId="21"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="testAreas" nodeId="22">
+        <TransformGroup name="testArea1Start" translation="-10 0 -5" nodeId="23">
+          <TransformGroup name="testArea1End" translation="12 10.695 10" nodeId="24"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="tipOcclusionUpdateAreas" nodeId="25">
+        <TransformGroup name="tipOcclusionUpdateArea1Start" translation="-10 0 -5" nodeId="26">
+          <TransformGroup name="tipOcclusionUpdateArea1End" translation="12 3.88578e-16 10" nodeId="27"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="visuals" nodeId="28">
+        <Shape name="casa:CurralMinas" translation="-9.87906 -2.98344e-06 -0.0802855" rotation="-180 -90 -180" shapeId="1" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" nodeId="29" castsShadows="true" receiveShadows="true" materialIds="6,36"/>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

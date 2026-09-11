@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CustomShader version="5">
+	<Groups>
+		<Group name="visibilityCut" define="VISIBILITY_CUT"/>
+		<Group name="mergeChildren" define="MERGE_CHILDREN_HIDE_BY_INDEX"/>
+		<Group name="customSnowMask" define="CUSTOM_SNOWMASK"/>
+		<Group name="customParallax" define="CUSTOM_PARALLAX"/>
+		<Group name="heightBlend" define="HEIGHT_BLEND"/>
+		<Group name="colorScale" define="COLOR_SCALE"/>
+		<Group name="heightMask" define="TERRAIN_VT"/>
+	</Groups>
+	<Parameters>
+		<Parameter name="dirtMossSmoothness" target="dirtMossSmoothness" type="float2" group="base" defaultValue="0.12 0.12" minValue="0.0 0.0" maxValue="1.0 1.0" description="X - Dirt Smoothness\nY - Moss Smoothness"/>
+		<Parameter name="dirtMossMix" target="dirtMossMix" type="float2" group="base" defaultValue="1.0 1.0" minValue="0.0 0.0" maxValue="1.0 1.0" description="X * mMaskMap.Red - intensity of the moss\nY * mMaskMap.Blue - intensity of the dirt"/>
+		<Parameter name="dirtMossTint" target="dirtMossTint" type="float3" group="base" defaultValue="0.0 0.0 0.8" minValue="-1.0 -1.0 -1.0" maxValue="1.0 1.0 1.0" description="saturate(X + dirtDiffuse) - dirt extra color tint\nsaturate(Y + mossDiffuse) - moss extra color tint\ndiffuseColor *=1 - Z*heightLerp - darkening of the diffuseColor based on mParallaxMap, used in combination with sharpness_gradientPosition_heightIntensity in heightBlend variation"/>
+		<Parameter name="placeableColorScale" target="placeableColorScale" type="float4" group="base" defaultValue="0.0 1.0 0.0 0.0" minValue="0.0 0.0 0.0 0.0" maxValue="1.0 1.0 1.0 1.0" description="W>0 - blend XYZ to diffuseColor, usually used for in-game placement color"/>
+		<Parameter name="snowScale" target="snowScale" type="float" group="base" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X - snow scale amount"/>
+		<Parameter name="wetnessScale" target="wetnessScale" type="float" group="base" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X - wetness scale amount"/>
+		<Parameter name="porosityBySmoothness" target="porosityBySmoothness" type="float2" group="base" defaultValue="0.0 1.0" minValue="0.0 0.0" maxValue="2.0 2.0" description="X - porosityAtZeroRoughness\nY - porosityRoughnessSlope (set it to 0.0 if you don&apos;t want darkening)\nporosity = X + roughness * Y;"/>
+		<Parameter name="checkUV1WetnessSnow" target="checkUV1WetnessSnow" type="float" group="base" defaultValue="1.0" minValue="0.0" maxValue="1.0" description="X > 0 - check uv&apos;s for wetness and snow (uv1.x > 0 - wet, snow)"/>
+		<Parameter name="visibilityCutThreshold" target="visibilityCutThreshold" type="float" group="visibilityCut" defaultValue="0.0" minValue="0.0" maxValue="1.0" description="alpha *= uv2.y > X, (uv2 - third UVSet) - cut alpha-test visibility"/>
+		<Parameter name="heightMask" target="heightMask" type="float" group="terrainSampleVT" defaultValue="0.0" minValue="-1.0" maxValue="1.0" description="X - [-1.0 ... 1.0] to control the height of the getHeightAboveTerrain getWorldPosition(In) height."/>
+		<Parameter name="hideByIndex" target="hideByIndex" type="float2" group="mergeChildren" defaultValue="-1 -1" minValue="-1 -1" maxValue="32767 32767" description="hide sub-mesh with index > X\nY - amount of indexes"/>
+		<Parameter name="sharpness_gradientPosition_heightIntensity" target="sharpness_gradientPosition_heightIntensity" type="float3" group="heightBlend" defaultValue="0.25 0.5 0.5" minValue="0.0 0.0 0.0" maxValue="1.0 1.0 2.0" description="darkening of the diffuseColor based on mParallaxMap, used in combination with dirtMossTint.Z and vertexColor.R\nX - sharpness\nY - gradientPosition\nZ - heightIntensity"/>
+		<Parameter name="colorScale" target="colorScale" type="float4" group="colorScale" arraySize="8" defaultValue="0.5 0.5 0.5 1.0" minValue="0.0 0.0 0.0 0.0" maxValue="1.0 1.0 1.0 255.0" description="colorScale[index].rgb - diffuse color information\ncolorScale[index].a - not used">
+			<Default index="0">0.80 0.55 0.05 1.0</Default>
+			<Default index="1">1.00 0.10 0.10 1.0</Default>
+			<Default index="2">0.10 1.00 0.10 1.0</Default>
+			<Default index="3">0.10 0.10 1.00 1.0</Default>
+			<Default index="4">1.00 1.00 0.10 1.0</Default>
+			<Default index="5">0.05 0.05 0.05 1.0</Default>
+			<Default index="6">1.00 0.10 1.00 1.0</Default>
+			<Default index="7">0.10 1.00 1.00 1.0</Default>
+		</Parameter>
+	</Parameters>
+	<UvUsages>
+		<UvUsage textureName="baseMap" uvType="uv0" uvScale="1.0"/>
+		<UvUsage textureName="normalMap" uvType="uv0" uvScale="1.0"/>
+		<UvUsage textureName="glossMap" uvType="uv0" uvScale="1.0"/>
+		<UvUsage textureName="mMaskMap" uvType="uv1" uvScale="1.0"/>
+		<UvUsage textureName="mCustomSnowMask" uvType="uv1" uvScale="1.0"/>
+		<UvUsage textureName="mDirtDiffuse" uvType="worldspace"/>
+		<UvUsage textureName="mMossDiffuse" uvType="worldspace"/>
+		<UvUsage textureName="mSnowSpecular" uvType="worldspace"/>
+		<UvUsage textureName="waterDroplets" uvType="worldspace"/>
+		<UvUsage textureName="mParallaxMap" uvType="uv0" uvScale="1.0"/>
+	</UvUsages>
+	<Textures>
+		<Texture name="mMaskMap" group="base" defaultColorProfile="linearRGB" defaultFilename="default_specular.png"/>
+		<Texture name="mDirtDiffuse" group="base" defaultColorProfile="sRGB" defaultFilename="mapDirt_diffuse.png"/>
+		<Texture name="mMossDiffuse" group="base" defaultColorProfile="sRGB" defaultFilename="mapMoss_diffuse.png"/>
+		<Texture name="mSnowSpecular" group="base" defaultColorProfile="linearRGB" defaultFilename="snow_specular.png"/>
+		<Texture name="waterDroplets" group="base" defaultColorProfile="linearRGB" defaultFilename="waterDroplets_normal.png"/>
+		<Texture name="mCustomSnowMask" group="customSnowMask" defaultColorProfile="linearRGB" defaultFilename="snowDefaultMask_diffuse.png"/>
+		<Texture name="mParallaxMap" group="customParallax" defaultColorProfile="linearRGB" defaultFilename="default_height.png"/>
+	</Textures>
+	<VertexAttributes>
+		<VertexAttribute name="color" group="vtxColorAttr"/>
+		<VertexAttribute name="uv1" group="base"/>
+		<VertexAttribute name="uv2" group="uv2Attr"/>
+	</VertexAttributes>
+	<Variations>
+		<Variation name="terrainSampleVT" groups="base terrainSampleVT"><![CDATA[
+	// variation that will be used where terarin sampling will be used.
+	#define TERRAIN_VT
+]]></Variation>
+		<Variation name="colorScale" groups="base colorScale"><![CDATA[
+	// if uv.x>0 use baseMap
+	// if uv.x<0 colorScale<index> is loaded with index=int(uv.y)
+	// vertical uv position defines different color values (array style)
+	// works only uv.y > 0
+	#define COLOR_SCALE
+]]></Variation>
+		<Variation name="colorScale_customParallax" groups="base colorScale customParallax"><![CDATA[
+	#define COLOR_SCALE
+	#define CUSTOM_PARALLAX
+]]></Variation>
+		<Variation name="visibilityCut" groups="base visibilityCut uv2Attr"><![CDATA[
+	// enables alpha_test
+	// cut visibility of the mesh based on uv2.y and visibility parameter
+	#define VISIBILITY_CUT
+	#define ALPHA_TESTED
+]]></Variation>
+		<Variation name="customSnowMask" groups="base customSnowMask"><![CDATA[
+	// enable the use of a custom bc4 texture for cutting out areas where snow shouldn't be
+	#define CUSTOM_SNOWMASK
+]]></Variation>
+		<Variation name="customSnowMask_customParallax" groups="base customParallax customSnowMask"><![CDATA[
+	// enable the use of a custom bc4 texture for cutting out areas where snow shouldn't be
+	#define CUSTOM_SNOWMASK
+	#define CUSTOM_PARALLAX
+]]></Variation>
+		<Variation name="customParallax" groups="base customParallax"><![CDATA[
+	#define CUSTOM_PARALLAX
+]]></Variation>
+		<Variation name="customParallax_terrainSampleVT" groups="base customParallax terrainSampleVT"><![CDATA[
+	#define CUSTOM_PARALLAX
+	#define TERRAIN_VT
+]]></Variation>
+		<Variation name="mergeChildren_hideByIndex_customParallax" groups="base mergeChildren customParallax"><![CDATA[
+	// intended to be used with FREEZED mergeChildren
+	// visibility of the elements controlled via shader parameter hideByIndex
+	// if hideByIndex == -1 - all objects visible
+	#define MERGE_CHILDREN_HIDE_BY_INDEX
+	#define CUSTOM_PARALLAX
+]]></Variation>
+		<Variation name="heightBlend" groups="base heightBlend customParallax vtxColorAttr"><![CDATA[
+	//enable the use of vertex paint for height blending.
+	#define HEIGHT_BLEND
+	#define CUSTOM_PARALLAX
+]]></Variation>
+		<Variation name="heightBlend_colorScale" groups="base heightBlend customParallax vtxColorAttr colorScale"><![CDATA[
+	//enable the use of vertex paint for height blending.
+	#define HEIGHT_BLEND
+	#define CUSTOM_PARALLAX
+	#define COLOR_SCALE
+]]></Variation>
+	</Variations>
+	<LodLevel startDistance="0">
+		<CodeInjections>
+			<CodeInjection position="SHARED_START"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+	#define PARALLAX_MAP
+	#define HEIGHT_MAP_TEXTURE      mParallaxMap
+	#define HEIGHT_MAP_CHANNEL      r
+#endif
+]]></CodeInjection>
+			<CodeInjection position="CONFIG_DEFINES"><![CDATA[
+#if defined(PARALLAX_MAP)
+	#if GPU_PROFILE >= GPU_PROFILE_HIGH
+		#define PARALLAX_OCCLUSION_MAPPING
+	#endif
+	#define PARALLAX_MAPPING_NON_SQUARE_TEXTURE
+#endif
+#define PARALLAX_MAPPING_REFERENCE_PLANE 0.5
+]]></CodeInjection>
+			<CodeInjection position="OBJECT_PARAMETERS"><![CDATA[
+	float2 dirtMossSmoothness;
+	float2 dirtMossMix;
+	float3 dirtMossTint;
+	float4 placeableColorScale;
+	float  snowScale;
+	float  wetnessScale;
+/*
+	porosityBySmoothness.x - porosityAtZeroRoughness
+	porosityBySmoothness.y - porosityRoughnessSlope (set it to 0.0 if you don't want darkening)
+	porosity = porosityAtZeroRoughness + roughness * porosityRoughnessSlope;
+*/
+	float2 porosityBySmoothness;
+/*
+	if checkUV1WetnessSnow.x > 0 - check uv's for wetness and snow (uv1.x > 0)
+*/
+	float checkUV1WetnessSnow;
+#if defined( HEIGHT_BLEND )
+	float3 sharpness_gradientPosition_heightIntensity;
+#endif
+#if defined( COLOR_SCALE )
+/*
+	colorScale<index>.rgb - diffuse color information
+	colorScale<index>.a   - not used
+*/
+	float4 colorScale[8];
+#endif
+#if defined( VISIBILITY_CUT )
+	float visibilityCutThreshold;
+#endif
+#if defined(MERGE_CHILDREN_HIDE_BY_INDEX)
+/*
+	hide mesh with index > hideByIndex.x
+	hideByIndex.y - amount of indexes
+*/
+	float2 hideByIndex;
+#endif
+#if defined(TERRAIN_VT)
+	// heightMask -  -1.0 ... 1.0 to control the height of the getHeightAboveTerrain getWorldPosition(In) height.
+	float heightMask;
+#endif
+]]></CodeInjection>
+			<CodeInjection position="LIB_FUNCTION"><![CDATA[
+// Custom pixel/vertex functions
+#include "$data/shaders/sharedFunctions.gsl"
+// Extra functions related to the buildingShader only
+]]></CodeInjection>
+			<CodeInjection position="LIB_FUNCTION_VS"><![CDATA[
+// Custom vertex functions
+#include "$data/shaders/sharedFunctions_vs.gsl"
+// Extra functions related to the buildingShader only
+]]></CodeInjection>
+			<CodeInjection position="LIB_FUNCTION_FS"><![CDATA[
+// Custom pixel functions
+#include "$data/shaders/sharedFunctions_fs.gsl"
+// Extra functions related to the buildingShader only
+]]></CodeInjection>
+			<CodeInjection position="FS_GLOBALS"><![CDATA[
+	float  gSnowMask;
+	bool   gIsSnowing;
+	float3 gSnowDiffuse;
+	float3 gSnowSpecular;
+	float  gSnowMaskGradient;
+	bool   gIsWetActivated;
+	float  gWetnessMask;
+	float2 gWaterDroplets;
+	float  gAO;
+	float  gMossMask;
+	float  gDirtMask;
+	float3 gDirtDiffuse;
+	float3 gDirtSpecular;
+	float3 gMossDiffuse;
+	float3 gMossSpecular;
+	#if defined(HEIGHT_BLEND)
+		// globals.gVertexColor.r - opacity  for height blend [ 0 - not visible, 1 - fully blended ]
+		float4 gVertexColor;
+	#endif
+	#if defined(TERRAIN_VT)
+		float3 gTerrainNormal;
+		float3 gTerrainDiffuse;
+		float  gTerrainRoughness;
+		float  gTerrainHeightMask;
+	#endif
+]]></CodeInjection>
+			<CodeInjection position="VS_OUTPUT"><![CDATA[
+	float2 maskMapTexCoords : TEXCOORDn;
+	float3 localPosition : TEXCOORDn;
+	float3 localNormal   : TEXCOORDn;
+#if defined( VISIBILITY_CUT )
+	float2 visibilityTexCoords : TEXCOORDn;
+#endif
+]]></CodeInjection>
+			<CodeInjection position="POST_SET_TEXCOORDS_VS"><![CDATA[
+	Out.maskMapTexCoords = convertDefaultTexCoords(In, object, In.texCoords1.xy); // Pass second UVSet to the Pixel Shader
+	Out.localPosition = In.position.xyz;
+	Out.localNormal = normalize(In.normal.xyz);
+#if defined( VISIBILITY_CUT )
+	Out.visibilityTexCoords = convertDefaultTexCoords(In, object, In.texCoords2.xy); // Pass third UVSet to the Pixel Shader
+#endif
+]]></CodeInjection>
+			<CodeInjection position="VS_END"><![CDATA[
+#if defined(MERGE_CHILDREN_HIDE_BY_INDEX)
+	if (object.hideByIndex.x > getMergeChildrenObjectDataIndexAsFloat(In)){
+		//Out.position = float4(0,0,0,-1); // remove from pixel shader
+		Out.position = float4(-1000000.0f, -1000000.0f, -1000000.0f, 1.0f);
+	}
+#endif
+]]></CodeInjection>
+			<CodeInjection position="START_FS"><![CDATA[
+	#if defined(HEIGHT_BLEND)
+		globals.gVertexColor = In.vs.vertexColor.rgba;
+	#endif
+	{
+		float3 mAbsNormal   = abs(In.vs.localNormal);
+		mAbsNormal /= (mAbsNormal.x + mAbsNormal.y + mAbsNormal.z);
+		float2 texCoordsX = In.vs.localPosition.zy;
+		float2 texCoordsY = In.vs.localPosition.zx;
+		float2 texCoordsZ = In.vs.localPosition.xy;
+		float2 uvs = mAbsNormal.x > mAbsNormal.y ? (mAbsNormal.x > mAbsNormal.z ? texCoordsX : texCoordsZ) : (mAbsNormal.y > mAbsNormal.z ? texCoordsY : texCoordsZ);
+		globals.gDirtDiffuse  = tex2DSample( mDirtDiffuse,  standardMaterialSampler, uvs ).xyz;
+		globals.gDirtDiffuse  = saturate(globals.gDirtDiffuse.rgb + float3(object.dirtMossTint.x));
+		globals.gMossDiffuse  = tex2DSample( mMossDiffuse,  standardMaterialSampler, uvs ).xyz;
+		globals.gMossDiffuse  = saturate(globals.gMossDiffuse.rgb + float3(object.dirtMossTint.y));
+		globals.gSnowDiffuse  = float3(0.7300,0.7668,0.8356);
+		// snow texture is 1024x1024 so we need to scale uv's
+		globals.gSnowSpecular = tex2DSample( mSnowSpecular, standardMaterialSampler, 0.5*uvs ).xyz;
+		// the same scale like in vehicleShader
+		globals.gWaterDroplets.xy = tex2DSample( waterDroplets, standardMaterialSampler, 1.5*uvs ).xy;
+	}
+	#if defined(TERRAIN_VT)
+		float3 worldPos = getWorldPosition(In);
+		worldPos.y = worldPos.y + object.heightMask;
+		globals.gTerrainNormal  = getTerrainWorldspaceNormal(In, worldPos);
+		globals.gTerrainDiffuse = getTerrainDiffuse(In, worldPos);
+		globals.gTerrainRoughness = getTerrainRoughness(In, worldPos);
+		globals.gTerrainHeightMask = getHeightAboveTerrain(worldPos, 0);
+	#endif
+	{
+		float3 mMask  = tex2DSample( mMaskMap, standardMaterialSampler, In.vs.maskMapTexCoords ).xyz;
+		globals.gMossMask = mMask.r * object.dirtMossMix.x;
+		globals.gAO       = mMask.g;
+		globals.gDirtMask = mMask.b * object.dirtMossMix.y;
+	}
+	globals.gMossSpecular = float3(object.dirtMossSmoothness.y,1.0,0.0);
+	globals.gDirtSpecular = float3(object.dirtMossSmoothness.x,1.0,0.0);
+	globals.gSnowMask = 0.0;
+	globals.gSnowMaskGradient  = 1.0;
+	{
+		//bool snowWetnessUV = In.vs.maskMapTexCoords.x > 0.0; // apply snow/wetness only if uv1.x > 0
+		bool snowWetnessUV = object.checkUV1WetnessSnow.x > 0.0 ? (In.vs.maskMapTexCoords.x > 0.0) : true; // check (uv1.x > 0) only if checkUV1WetnessSnow.x > 0
+		globals.gIsSnowing = cShared4 > 0.001 && object.snowScale > 0.0 && snowWetnessUV;
+		globals.gIsWetActivated = cWetness > 0.001 && object.wetnessScale > 0.0 && snowWetnessUV;
+	}
+	//getRainOcclusionFactor(getWorldPosition(In)) // max height (default behavior)
+	//getRainOcclusionFactorMinHeight(getWorldPosition(In)) // min height
+	globals.gWetnessMask = cWetness * object.wetnessScale * getRainOcclusionFactor(getWorldPosition(In));
+	#if defined(CUSTOM_SNOWMASK)
+		globals.gSnowMaskGradient = tex2DSample( mCustomSnowMask, standardMaterialSampler, In.vs.maskMapTexCoords).r;
+	#endif
+]]></CodeInjection>
+			<CodeInjection position="GET_UNNORMALIZED_TANGENT_SPACE_NORMAL_FS"><![CDATA[
+#if defined( NORMAL_MAP )
+	float3 mNormal = tex2DSample(normalMap,standardMaterialSampler,NORMAL_MAP_TEXCOORDS).xyz - 0.5;
+	if (globals.gIsWetActivated) {
+		mNormal = makeWetNormal(mNormal,globals.gWaterDroplets.xy,globals.gWetnessMask);
+	}
+	return mNormal;
+#endif
+]]></CodeInjection>
+			<CodeInjection position="GET_BUMP_HEIGHT_AT_WITH_GRAD_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+	return fixDDSCompressionHeightMap(tex2DSampleGrad(mParallaxMap, standardMaterialSampler, uv, layer, gradX, gradY).x);
+#endif
+]]></CodeInjection>
+			<CodeInjection position="GET_BUMP_HEIGHT_AT_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+	return fixDDSCompressionHeightMap(tex2DSample(mParallaxMap, standardMaterialSampler, uv, layer).x);
+#endif
+]]></CodeInjection>
+			<CodeInjection position="GET_BUMP_HEIGHT_TEXTURE_SIZE_FS"><![CDATA[
+#if defined(CUSTOM_PARALLAX)
+	return tex2DSize(mParallaxMap, 0);
+#endif
+]]></CodeInjection>
+			<CodeInjection position="POST_DIFFUSE_COLOR_FS"><![CDATA[
+#if defined(ALBEDO_MAP)
+	#if defined( COLOR_SCALE )
+		float4 mColorScale;
+		if (ALBEDO_MAP_TEXCOORDS.x < 0.0){
+			int colorScaleIndex = (int(ALBEDO_MAP_TEXCOORDS.y + 8.0f)) % 8; //for negative numbers, remaps them [-7.99,7.0] -> [0.01, 1.0], [6.99, 6.0] -> [1.01, 2.0], and so on. keeps positive 0-8 the same. 
+			colorScaleIndex = clamp(colorScaleIndex, 0, 7); //make sure its within the 8 sized colorScale array
+			
+			mColorScale = object.colorScale[colorScaleIndex];
+			diffuseColor = saturate(lerp(diffuseColor, mColorScale.rgb * diffuseColor, mColorScale.a));
+		}
+	#endif
+	#if defined(HEIGHT_BLEND)
+		float height = tex2DSample(mParallaxMap, standardMaterialSampler, In.vs.defaultTexCoords).x;
+		float gradient = saturate((1.0-object.sharpness_gradientPosition_heightIntensity.z)*globals.gVertexColor.r + object.sharpness_gradientPosition_heightIntensity.z*(1.0 - height));
+		float mHeightLerp = gradientAnimate01(gradient,object.sharpness_gradientPosition_heightIntensity.x,object.sharpness_gradientPosition_heightIntensity.y);
+		diffuseColor.rgb *= 1.0 - object.dirtMossTint.z * mHeightLerp;
+	#endif
+	// main diffuse mixinig
+	diffuseColor.rgb = lerp( diffuseColor.rgb, globals.gMossDiffuse.rgb, globals.gMossMask);
+	diffuseColor.rgb = lerp( diffuseColor.rgb, globals.gDirtDiffuse.rgb, globals.gDirtMask);
+	#if defined(TERRAIN_VT)
+		// using a liniar interp function to mix original diffuse color using the function getHeightAboveTerrain as mask
+		diffuseColor = lerp(diffuseColor, globals.gTerrainDiffuse, 1 - saturate(globals.gTerrainHeightMask));
+		// mixing worldSpace normal
+		normal = lerp( normal, globals.gTerrainNormal, 1 - saturate(globals.gTerrainHeightMask));
+	#endif
+#endif
+	//float3 terrainDiffuse = getTerrainDiffuse(getWorldPosition(In).xz , In.vs.screenPosW);
+	//diffuseColor.rgb = terrainDiffuse;
+	{ // Snow mixing code
+		if (globals.gIsSnowing){
+			// pixelShader normal computed before this point, right after PARALLAX_MAPPING_FS
+			// globals.gSnowSpecular.g - ambient occlusion used as alpha (should be less than 1.0)
+			globals.gSnowMask = getSnowMaskFromWorldNormalNoiseMask(object.snowScale,normal,0.25,globals.gSnowSpecular.g,globals.gSnowMaskGradient).y;
+			diffuseColor.rgb = lerp( diffuseColor.rgb, globals.gSnowDiffuse.rgb, globals.gSnowMask);
+		}
+	}
+	// placeable Color
+	if (object.placeableColorScale.w > 0){
+		diffuseColor = lerp(diffuseColor,object.placeableColorScale.rgb,saturate(0.1+getFresnel( facing, 0.15 , 4.0 ))*object.placeableColorScale.w);
+	}
+]]></CodeInjection>
+			<CodeInjection position="POST_GLOSS_COLOR_FS"><![CDATA[
+#if defined(GLOSS_MAP)
+	// main specular mixinig
+	pbrMapValues = lerp( pbrMapValues, globals.gMossSpecular, globals.gMossMask );
+	pbrMapValues = lerp( pbrMapValues, globals.gDirtSpecular, globals.gDirtMask );
+	// ---------------------
+#if defined(TERRAIN_VT)
+	//mixing roughness with terrain roughness
+	roughness = lerp(roughness, globals.gTerrainRoughness, 1 - saturate(globals.gTerrainHeightMask));
+#endif
+	roughness = 1-pbrMapValues.x;
+	bakedAO   = pbrMapValues.y;
+	metalness = pbrMapValues.z;
+	bakedAO  *= globals.gAO;
+#endif
+	{ // Snow mixing code
+		if (globals.gIsSnowing){
+			float3 mPbrMapValues = lerp( float3(1-roughness,bakedAO,metalness), globals.gSnowSpecular, globals.gSnowMask );
+			roughness = 1-mPbrMapValues.x;
+			bakedAO   = mPbrMapValues.y;
+			metalness = mPbrMapValues.z;
+		}
+	}
+]]></CodeInjection>
+			<CodeInjection position="POST_WETNESS_FS"><![CDATA[
+porosityAtZeroRoughness = object.porosityBySmoothness.x;
+porosityRoughnessSlope  = object.porosityBySmoothness.y;
+// porosity = porosityAtZeroRoughness + roughness * porosityRoughnessSlope;
+if(globals.gIsWetActivated) {
+	//porosity = 0.25;
+	wetness = globals.gWetnessMask;
+}
+]]></CodeInjection>
+			<CodeInjection position="ALPHA_FS"><![CDATA[
+	{ // Snow mixing code
+		#if defined(ALPHA_BLENDED)
+			if (globals.gIsSnowing){
+				alpha = lerp(alpha,1.0,globals.gSnowMask);
+			}
+		#endif
+	}
+#if defined( VISIBILITY_CUT )
+	alpha *= float(In.vs.visibilityTexCoords.y > object.visibilityCutThreshold);
+#endif
+]]></CodeInjection>
+			<CodeInjection position="FINAL_POS_FS"><![CDATA[
+#if defined(DEBUG_SHOW_CUSTOM1)
+	oColor.xyz *= 0.0001;
+	#if defined(HEIGHT_BLEND)
+		oColor.xyz += globals.gVertexColor.r;
+	#endif
+#endif
+#if defined(DEBUG_SHOW_CUSTOM2)
+	oColor.xyz *= 0.0001;
+	oColor.x = lerp(oColor.x, float(1.0), globals.gMossMask);
+	oColor.z = lerp(oColor.z, float(1.0), globals.gDirtMask);
+#endif
+]]></CodeInjection>
+		</CodeInjections>
+	</LodLevel>
+</CustomShader>

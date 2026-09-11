@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="cucumbersBoxPallet.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="5" filename="$data/objects/pallets/strawberriesBoxPallet/strawberriesBox_diffuse.png"/>
+    <File fileId="6" filename="$data/objects/pallets/strawberriesBoxPallet/strawberriesBox_normal.png"/>
+    <File fileId="7" filename="$data/objects/pallets/strawberriesBoxPallet/strawberriesBox_specular.png"/>
+    <File fileId="8" filename="cucumbers_diffuse.dds"/>
+    <File fileId="9" filename="cucumbers_normal.dds"/>
+    <File fileId="10" filename="cucumbers_specular.dds"/>
+    <File fileId="2" filename="euroPallet01_diffuse.png"/>
+    <File fileId="3" filename="euroPallet01_normal.png"/>
+    <File fileId="4" filename="euroPallet01_specular.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="cucumbers_mat" materialId="5">
+      <Texture fileId="8"/>
+      <Normalmap fileId="9" bumpDepth="1.7"/>
+      <Glossmap fileId="10"/>
+    </Material>
+    <Material name="cucumbersBox_mat" materialId="6">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Glossmap fileId="7"/>
+    </Material>
+    <Material name="euroPallet01_mat" materialId="7">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+      <Glossmap fileId="4"/>
+    </Material>
+    <Material name="lambert1" materialId="8" diffuseColor="0.494118 0.494118 0.494118 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="cucumbersBoxPallet.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="cucumbersBoxPallet_main_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" staticFriction="1" dynamicFriction="1" density="0.0001" clipDistance="150" nodeId="17" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8">
+      <Shape name="pallet_vis" shapeId="2" nodeId="18" castsShadows="true" receiveShadows="true" materialIds="7">
+        <Shape name="dynamicMountTrigger" translation="0 0.090475 0" shapeId="3" visibility="false" kinematic="true" trigger="true" collisionFilterGroup="0x0" collisionFilterMask="0x0" nodeId="19" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <TransformGroup name="dischargeNode" translation="0 0.5 0" nodeId="20"/>
+        <TransformGroup name="content" nodeId="21">
+          <Shape name="cucumbersBox1" translation="0.450225 0.147528 0.203753" shapeId="4" clipDistance="150" nodeId="22" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox1Tension" translation="0.000223 0.000223 0.003117" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="23" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="24" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox2" translation="0.450225 0.147528 -0.195344" shapeId="4" clipDistance="150" nodeId="25" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox2Tension" translation="-0.000223 0.000223 0.003214" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="26" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="27" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox3" translation="0.148598 0.147528 0.203753" shapeId="4" clipDistance="150" nodeId="28" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox3Tension" translation="-0.001199 0.000223 -0.003117" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="29" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="30" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox4" translation="0.148598 0.147528 -0.195344" shapeId="4" clipDistance="150" nodeId="31" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox4Tension" translation="0.001199 0.000223 -0.003214" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="32" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="33" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox5" translation="-0.150719 0.147528 0.203753" shapeId="4" clipDistance="150" nodeId="34" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox5Tension" translation="0.00048 0.000223 -0.003117" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="35" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="36" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox6" translation="-0.150719 0.147528 -0.195344" shapeId="4" clipDistance="150" nodeId="37" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox6Tension" translation="-0.00048 0.000223 -0.003214" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="38" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="39" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox7" translation="-0.451164 0.147528 0.203753" shapeId="4" clipDistance="150" nodeId="40" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox7Tension" translation="-0.001393 0.000223 0.003117" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="41" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="42" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox8" translation="-0.451164 0.147528 -0.195344" shapeId="4" clipDistance="150" nodeId="43" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox8Tension" translation="0.001393 0.000223 0.003214" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="44" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="45" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox9" translation="-0.451164 0.459476 -0.195344" shapeId="4" clipDistance="150" nodeId="46" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox9Tension" translation="0.001393 0 0.003214" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="47" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="48" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox10" translation="-0.150719 0.459476 -0.195344" shapeId="4" clipDistance="150" nodeId="49" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox10Tension" translation="-0.00048 0 -0.003214" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="50" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="51" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox11" translation="0.148598 0.459476 -0.195344" shapeId="4" clipDistance="150" nodeId="52" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox11Tension" translation="0.001199 -0 -0.003214" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="53" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="54" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox12" translation="0.450225 0.459476 -0.195344" shapeId="4" clipDistance="150" nodeId="55" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox12Tension" translation="-0.000223 -0 0.003214" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="56" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="57" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox13" translation="0.450225 0.459476 0.203753" shapeId="4" clipDistance="150" nodeId="58" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox13Tension" translation="0.000223 0 0.003117" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="59" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="60" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox14" translation="0.148598 0.459476 0.203753" shapeId="4" clipDistance="150" nodeId="61" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox14Tension" translation="-0.001199 0 -0.003117" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="62" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="63" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox15" translation="-0.150719 0.459476 0.203753" shapeId="4" clipDistance="150" nodeId="64" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox15Tension" translation="0.00048 0 -0.003117" rotation="0 180 0" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="65" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="66" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+          <Shape name="cucumbersBox16" translation="-0.451164 0.459476 0.203753" shapeId="4" clipDistance="150" nodeId="67" castsShadows="true" receiveShadows="true" materialIds="6">
+            <Shape name="cucumbersBox16Tension" translation="-0.001393 0 0.003117" shapeId="5" compoundChild="true" collisionFilterGroup="0x40000" collisionFilterMask="0xfe3ffb83" density="0.001" nodeId="68" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+            <Shape name="cucumbers" translation="0 -0.000829 0" shapeId="6" clipDistance="50" nodeId="69" castsShadows="true" receiveShadows="true" materialIds="5"/>
+          </Shape>
+        </TransformGroup>
+        <TransformGroup name="collisions" clipDistance="10" nodeId="70">
+          <Shape name="floorCollision01" translation="0.3 0 0" shapeId="7" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="71" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+          <Shape name="floorCollision02" translation="-0.3 0 0" shapeId="7" compoundChild="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" staticFriction="1" dynamicFriction="1" density="0.0001" nodeId="72" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        </TransformGroup>
+      </Shape>
+    </Shape>
+  </Scene>
+
+</i3D>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="handPlantSaplingsShovel" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+
+  <Files>
+    <File fileId="4" filename="$data/shaders/placeableShader.xml"/>
+    <File fileId="1" filename="../placeables/handPlantSaplings_diffuse.dds"/>
+    <File fileId="2" filename="../placeables/handPlantSaplings_normal.dds"/>
+    <File fileId="3" filename="../placeables/handPlantSaplings_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="handPlantSaplingsShovel_mat" materialId="19" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="handPlantSaplingsShovel.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="root" nodeId="8">
+      <TransformGroup name="graphics" nodeId="9">
+        <TransformGroup name="shovel" nodeId="10">
+          <Shape name="shovel_vis" shapeId="1" clipDistance="300" nodeId="11" castsShadows="true" receiveShadows="true" materialIds="19"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="handNode" translation="-0.087 -0.016 -0.613" rotation="194 41 163" nodeId="12"/>
+      <TransformGroup name="firstPersonNode" translation="0.48 -0.45 -0.92" rotation="260 0 20" nodeId="13"/>
+      <TransformGroup name="holderNode" nodeId="14"/>
+    </TransformGroup>
+  </Scene>
+
+</i3D>

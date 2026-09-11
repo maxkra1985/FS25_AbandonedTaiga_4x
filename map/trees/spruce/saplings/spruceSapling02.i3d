@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="spruceSapling02.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.3"/>
+  </Asset>
+
+  <Files>
+    <File fileId="3" filename="$data/maps/trees/beech/saplings/beechSapling_fmask.png"/>
+    <File fileId="2" filename="$data/maps/trees/beech/saplings/beechSapling_normal.png"/>
+    <File fileId="4" filename="$data/shaders/placeableShader.xml"/>
+    <File fileId="7" filename="spruceSapling_alpha.png"/>
+    <File fileId="1" filename="spruceSapling_diffuse.png"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="spruceSapling_mat" materialId="5" customShaderId="4" customShaderVariation="alphaMap">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2"/>
+      <Glossmap fileId="3"/>
+      <Custommap name="alphaMap" fileId="7"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="spruceSapling02.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="spruceSapling02" shapeId="1" clipDistance="50" nodeId="9" castsShadows="true" receiveShadows="true" materialIds="5">
+      <Shape name="branches" shapeId="2" clipDistance="50" nodeId="10" castsShadows="true" receiveShadows="true" doubleSided="true" materialIds="5"/>
+      <Shape name="branches" shapeId="3" clipDistance="50" nodeId="11" castsShadows="true" receiveShadows="true" doubleSided="true" materialIds="5">
+        <Shape name="branches" shapeId="4" clipDistance="50" nodeId="12" castsShadows="true" receiveShadows="true" doubleSided="true" materialIds="5"/>
+      </Shape>
+      <Shape name="branches" shapeId="5" clipDistance="50" nodeId="13" castsShadows="true" receiveShadows="true" doubleSided="true" materialIds="5">
+        <Shape name="branches" shapeId="6" clipDistance="50" nodeId="14" castsShadows="true" receiveShadows="true" doubleSided="true" materialIds="5"/>
+      </Shape>
+    </Shape>
+  </Scene>
+
+</i3D>

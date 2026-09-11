@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Woodenfountain.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="25" filename="$data/maps/mapEU/textures/props/industrialLight04.i3d"/>
+    <File fileId="27" filename="$data/maps/textures/shared/water_normal.png"/>
+    <File fileId="4" filename="$data/shaders/buildingShader.xml"/>
+    <File fileId="29" filename="$data/shaders/oceanShader.xml"/>
+    <File fileId="16" filename="textures/Eimer_Diffuse.dds"/>
+    <File fileId="17" filename="textures/Eimer_normal.dds"/>
+    <File fileId="20" filename="textures/Seil_diffuse.dds"/>
+    <File fileId="21" filename="textures/Seil_normal.dds"/>
+    <File fileId="18" filename="textures/W_Eimer_Diffuse.dds"/>
+    <File fileId="19" filename="textures/W_Eimer_normal.dds"/>
+    <File fileId="10" filename="textures/Wood_Dach_diffuse.dds"/>
+    <File fileId="11" filename="textures/Wood_Dach_normal.dds"/>
+    <File fileId="12" filename="textures/Wood_Dach_specular.dds"/>
+    <File fileId="1" filename="textures/Wood_diffuse.dds"/>
+    <File fileId="2" filename="textures/Wood_normal.dds"/>
+    <File fileId="3" filename="textures/Wood_specular.dds"/>
+    <File fileId="13" filename="textures/Woodgestell_diffuse.dds"/>
+    <File fileId="14" filename="textures/Woodgestell_normal.dds"/>
+    <File fileId="15" filename="textures/Woodgestell_specular.dds"/>
+    <File fileId="22" filename="textures/ground_diffuse.dds"/>
+    <File fileId="23" filename="textures/ground_normal.dds"/>
+    <File fileId="24" filename="textures/ground_specular.dds"/>
+    <File fileId="34" filename="textures/snow_diffuse.dds"/>
+    <File fileId="26" filename="textures/snow_normal.dds"/>
+    <File fileId="35" filename="textures/snow_specular.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="Eimer" materialId="5" customShaderId="4">
+      <Texture fileId="16"/>
+      <Normalmap fileId="17" bumpDepth="0"/>
+    </Material>
+    <Material name="ground" materialId="6" customShaderId="4">
+      <Texture fileId="22"/>
+      <Normalmap fileId="23"/>
+      <Glossmap fileId="24"/>
+    </Material>
+    <Material name="Holzgestell" materialId="7" customShaderId="4">
+      <Texture fileId="13"/>
+      <Normalmap fileId="14" bumpDepth="0"/>
+      <Glossmap fileId="15"/>
+    </Material>
+    <Material name="lambert1" materialId="8" diffuseColor="0.501961 0.501961 0.501961 1">
+    </Material>
+    <Material name="Seil" materialId="9" customShaderId="4">
+      <Texture fileId="20"/>
+      <Normalmap fileId="21" bumpDepth="0"/>
+    </Material>
+    <Material name="Snowmask" materialId="10">
+      <Texture fileId="34"/>
+      <Normalmap fileId="26" bumpDepth="0"/>
+      <Glossmap fileId="35"/>
+    </Material>
+    <Material name="sople" materialId="11">
+      <Texture fileId="34"/>
+      <Normalmap fileId="26"/>
+      <Glossmap fileId="35"/>
+    </Material>
+    <Material name="W_Eimer" materialId="12" customShaderId="4">
+      <Texture fileId="18"/>
+      <Normalmap fileId="19" bumpDepth="0"/>
+    </Material>
+    <Material name="waterSimple_mat" materialId="13" specularColor="1 1 1" customShaderId="29" customShaderVariation="simple">
+      <Texture fileId="26"/>
+      <Normalmap fileId="27"/>
+      <CustomParameter name="underwaterFogColor" value="0.12 0.14 0.11 1"/>
+    </Material>
+    <Material name="waterSimPonds_mat" materialId="14" specularColor="1 1 1" customShaderId="29">
+      <Texture fileId="26"/>
+      <Normalmap fileId="27"/>
+      <Refractionmap coeff="1" bumpScale="0.01" withSSRData="true"/>
+      <CustomParameter name="bumpSpeedScale" value="14 22.25 26.02"/>
+      <CustomParameter name="underwaterFogColor" value="0.71 0.213 0.45 1"/>
+      <CustomParameter name="underwaterFogDepth" value="1.4 1.2 1 1"/>
+      <CustomParameter name="windScale" value="0.345"/>
+      <CustomParameter name="waterSimBlendThreshold" value="1.22"/>
+    </Material>
+    <Material name="Wooddach" materialId="15" customShaderId="4">
+      <Texture fileId="10"/>
+      <Normalmap fileId="11" bumpDepth="0"/>
+      <Glossmap fileId="12"/>
+    </Material>
+    <Material name="Woodwand" materialId="16" customShaderId="4">
+      <Texture fileId="1"/>
+      <Normalmap fileId="2" bumpDepth="0"/>
+      <Glossmap fileId="3"/>
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Woodenfountain.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <TransformGroup name="waterpump" nodeId="26">
+      <TransformGroup name="clearAreas" nodeId="27">
+        <TransformGroup name="clearAreaStart01" translation="-1.5 0 -1.5" nodeId="28">
+          <TransformGroup name="clearAreaWidth01" translation="0 0 3" nodeId="29"/>
+          <TransformGroup name="clearAreaHeight01" translation="3 0 0" nodeId="30"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="levelAreas" nodeId="31">
+        <TransformGroup name="levelAreaStart01" translation="-3.11698 0 -1.5" nodeId="32">
+          <TransformGroup name="levelAreaWidth01" translation="0 0 4.34818" nodeId="33"/>
+          <TransformGroup name="levelAreaHeight01" translation="3 0 0" nodeId="34"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="indoorAreas" nodeId="35">
+        <TransformGroup name="indoorAreaStart01" translation="-1.5 0 -1.5" nodeId="36">
+          <TransformGroup name="indoorAreaWidth01" translation="0 0 4.45069" nodeId="37"/>
+          <TransformGroup name="indoorAreaHeight01" translation="3 0 0" nodeId="38"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="testAreas" nodeId="39">
+        <TransformGroup name="testAreaStart01" translation="-3.24793 0 -1.3" nodeId="40">
+          <TransformGroup name="testAreaEnd01" translation="7.05717 5.09715 4.22531" nodeId="41"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="tipOcclusionUpdateAreas" nodeId="42">
+        <TransformGroup name="tipOcclusionUpdateAreaStart01" translation="-1.5 0 -1.5" nodeId="43">
+          <TransformGroup name="tipOcclusionUpdateAreaEnd01" translation="3 0 3" nodeId="44"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="loadingStation" nodeId="45">
+        <TransformGroup name="fillTrigger" translation="0 1 0" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x40000000" clipDistance="300" nodeId="46"/>
+        <TransformGroup name="aiNode" translation="0 0 3.72481" rotation="0 90 0" nodeId="47"/>
+        <TransformGroup name="loadingMarker" translation="0 0 3.3724" nodeId="48"/>
+        <TransformGroup name="teleportNode" translation="1.4527 0 1.73795" rotation="0 90.9202 0" nodeId="49"/>
+      </TransformGroup>
+      <TransformGroup name="visuals" nodeId="50">
+        <TransformGroup name="Brunnen" clipDistance="500" nodeId="51">
+          <Shape name="Holzbrunnen" shapeId="1" static="true" clipDistance="500" nodeId="52" castsShadows="true" receiveShadows="true" materialIds="16"/>
+          <Shape name="Holzgestell" shapeId="2" static="true" clipDistance="500" nodeId="53" castsShadows="true" receiveShadows="true" materialIds="15,7,5,12,9"/>
+          <Shape name="ground" translation="0 -0.0219979 0" shapeId="3" static="true" clipDistance="500" nodeId="54" castsShadows="true" receiveShadows="true" materialIds="6"/>
+          <ReferenceNode name="industrialLight04" translation="0.0151737 2.88598 -0.0441329" rotation="90 -0 0" referenceId="25" nodeId="64"/>
+          <TransformGroup name="waterPlanes" translation="0 0.512452 0" nodeId="76">
+            <Shape name="waterPlane08" translation="0 0.1 0" scale="0.02 1 0.02" shapeId="4" static="true" collisionFilterGroup="0x80000000" collisionFilterMask="0x1" clipDistance="1500" nodeId="77" castsShadows="false" receiveShadows="true" materialIds="14"/>
+            <Shape name="waterPlane08m" scale="0.02 1 0.02" shapeId="4" clipDistance="1500" objectMask="0x8000" nodeId="78" castsShadows="false" receiveShadows="true" materialIds="13"/>
+            <TransformGroup name="waterPlanes" translation="0 -0.2 0" nodeId="135">
+              <Shape name="waterPlane08" translation="0 0.1 0" scale="0.02 1 0.02" shapeId="4" static="true" collisionFilterGroup="0x80000000" collisionFilterMask="0x1" clipDistance="1500" nodeId="136" castsShadows="false" receiveShadows="true" materialIds="14"/>
+              <Shape name="waterPlane08m" scale="0.02 1 0.02" shapeId="4" clipDistance="1500" objectMask="0x8000" nodeId="137" castsShadows="false" receiveShadows="true" materialIds="13"/>
+            </TransformGroup>
+          </TransformGroup>
+        </TransformGroup>
+        <TransformGroup name="snowAdmier" visibility="false" clipDistance="500" nodeId="79">
+          <Shape name="Snowdach" shapeId="5" static="true" clipDistance="500" nodeId="80" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="Snowbrunnen" shapeId="6" static="true" clipDistance="500" nodeId="81" castsShadows="true" receiveShadows="true" materialIds="10"/>
+          <Shape name="sopel" translation="-0.326697 3.12973 -0.810162" rotation="0 85.959 -1.8932e-05" scale="0.902666 1 0.956207" shapeId="7" static="true" clipDistance="500" nodeId="82" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="0.320043 3.11788 0.78425" rotation="-129.065 -86.7272 128.325" scale="1 1 0.948" shapeId="7" static="true" clipDistance="500" nodeId="83" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="1.1806 1.91569 0.358941" rotation="-1.71933 -5.24635 1" scale="1 1 0.967" shapeId="7" static="true" clipDistance="500" nodeId="84" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="1.1736 1.91531 -0.781563" rotation="-2.03049 -4.22059 0.994485" scale="1 1 0.967" shapeId="7" static="true" clipDistance="500" nodeId="85" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="-1.40384 1.91 -0.45646" rotation="-2.11772 0.767713 1.03003" scale="1 1 0.967" shapeId="7" static="true" clipDistance="500" nodeId="86" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="-1.35594 1.83272 -1.03364" rotation="-3.20762 -0.20202 1.12715" scale="0.5 0.5 0.5" shapeId="7" static="true" clipDistance="500" nodeId="87" castsShadows="true" receiveShadows="true" materialIds="11"/>
+          <Shape name="sopel" translation="-1.35901 1.83812 0.571149" rotation="-1.45 1.10702 1.01319" scale="0.5 0.5 0.5" shapeId="7" static="true" clipDistance="500" nodeId="88" castsShadows="true" receiveShadows="true" materialIds="11"/>
+        </TransformGroup>
+      </TransformGroup>
+      <TransformGroup name="collisions" nodeId="89">
+        <TransformGroup name="collision" static="true" collisionFilterGroup="0x1034" collisionFilterMask="0xfffffbff" clipDistance="300" nodeId="90"/>
+        <TransformGroup name="tipCollision" static="true" collisionFilterGroup="0x8" collisionFilterMask="0x1" nodeId="91"/>
+        <Shape name="col" scale="0.6 1 1.7" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="92" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <Shape name="col" translation="-1.14523 0.053541 0.00626286" scale="0.16 0.3 0.5" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="93" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <Shape name="col" translation="-0.00291254 0.768229 -0.763705" scale="0.05 2 0.06" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="94" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+        <Shape name="col" translation="-0.00291254 0.768229 0.762245" scale="0.05 2 0.06" shapeId="8" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" density="0.0001" nodeId="95" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="8"/>
+      </TransformGroup>
+      <TransformGroup name="productionPoint" translation="3.21292 0 -0.897729" nodeId="96">
+        <TransformGroup name="playerTrigger" translation="-1 1 1" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" nodeId="97"/>
+        <TransformGroup name="playerTriggerMarker" translation="-1 0 1" nodeId="98"/>
+      </TransformGroup>
+      <TransformGroup name="sellingStation" translation="2.18332 0 2.99566" nodeId="99">
+        <TransformGroup name="exactFillNode" translation="-2.75 0.15 -2.75" kinematic="true" compound="true" collisionFilterGroup="0x40000000" collisionFilterMask="0x20000000" nodeId="100"/>
+        <TransformGroup name="unloadTriggerAINode" translation="-2.75 0 -2.75" nodeId="101"/>
+      </TransformGroup>
+    </TransformGroup>
+  </Scene>
+
+</i3D>
