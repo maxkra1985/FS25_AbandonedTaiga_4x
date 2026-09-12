@@ -11,7 +11,7 @@
 TaigaConstructionFacilityLifecycle = TaigaConstructionFacilityLifecycle or {}
 local FacilityLifecycle = TaigaConstructionFacilityLifecycle
 
-FacilityLifecycle.VERSION = "1.0.0"
+FacilityLifecycle.VERSION = "1.0.1"
 FacilityLifecycle.LOG_PREFIX = "[TaigaConstructionFacilityLifecycle]"
 
 FacilityLifecycle.runtimeByPlaceable = FacilityLifecycle.runtimeByPlaceable
@@ -189,8 +189,10 @@ local function isProductionPointRegistered(manager, productionPoint)
     return containsElement(manager.productionPoints, productionPoint)
 end
 
--- Запоминает исходные настройки production station перед первым принудительным отключением.
-local function captureProductionDefaults(runtime, productionPoint)
+-- Запоминает исходный allowMissions перед первым принудительным отключением.
+-- Для штатного isFinalized="false" берём сохранённое GIANTS значение, потому что
+-- текущая station к этому моменту уже скрыта и имеет allowMissions=false.
+local function captureProductionDefaults(runtime, spec, productionPoint)
     local productionRuntime = runtime.production
     if productionRuntime.defaultsCaptured then
         return
@@ -198,8 +200,15 @@ local function captureProductionDefaults(runtime, productionPoint)
 
     local station = productionPoint.unloadingStation
     productionRuntime.defaultsCaptured = true
-    productionRuntime.hideFromPricesMenu = station ~= nil and station.hideFromPricesMenu or nil
-    productionRuntime.allowMissions = station ~= nil and station.allowMissions or nil
+    productionRuntime.allowMissions = spec ~= nil
+        and spec.unloadingStationDefaultAllowMissions
+        or nil
+
+    -- Fallback для XML, где isFinalized="false" отсутствует и lifecycle сам
+    -- переводит уже готовую production station в строительное состояние.
+    if productionRuntime.allowMissions == nil and station ~= nil then
+        productionRuntime.allowMissions = station.allowMissions
+    end
 end
 
 -- Полностью исключает незавершённый ProductionPoint из production chain.
@@ -210,7 +219,7 @@ local function suspendProduction(placeable, runtime)
         return
     end
 
-    captureProductionDefaults(runtime, productionPoint)
+    captureProductionDefaults(runtime, spec, productionPoint)
     runtime.production.suspended = true
 
     -- Исправляет в том числе XML, где для constructible забыли isFinalized="false".
@@ -250,24 +259,18 @@ local function releaseProduction(placeable, runtime)
 
     local station = productionPoint.unloadingStation
     if station ~= nil then
-        if runtime.production.defaultsCaptured then
-            if runtime.production.hideFromPricesMenu ~= nil then
-                station.hideFromPricesMenu = runtime.production.hideFromPricesMenu
-            else
-                station.hideFromPricesMenu = false
-            end
+        -- Повторяем результат штатного PlaceableProductionPoint:finalizeConstruction():
+        -- после DONE production station всегда снова видима в меню цен.
+        station.hideFromPricesMenu = false
 
-            if runtime.production.allowMissions ~= nil then
-                station.allowMissions = runtime.production.allowMissions
-            elseif spec.unloadingStationDefaultAllowMissions ~= nil then
-                station.allowMissions = spec.unloadingStationDefaultAllowMissions
-            end
-        else
-            -- Штатный PlaceableProductionPoint:finalizeConstruction() делает station видимой.
-            station.hideFromPricesMenu = false
-            if spec.unloadingStationDefaultAllowMissions ~= nil then
-                station.allowMissions = spec.unloadingStationDefaultAllowMissions
-            end
+        -- Для штатного isFinalized="false" GIANTS заранее сохраняет исходный флаг
+        -- в spec.unloadingStationDefaultAllowMissions. Только если XML не использовал
+        -- этот режим, восстанавливаем значение, снятое нашим lifecycle до suspend.
+        if spec.unloadingStationDefaultAllowMissions ~= nil then
+            station.allowMissions = spec.unloadingStationDefaultAllowMissions
+        elseif runtime.production.defaultsCaptured
+            and runtime.production.allowMissions ~= nil then
+            station.allowMissions = runtime.production.allowMissions
         end
     end
 

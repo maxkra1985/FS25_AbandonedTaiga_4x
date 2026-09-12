@@ -18,7 +18,7 @@
 TaigaConstructionLifecycleFix = TaigaConstructionLifecycleFix or {}
 local Fix = TaigaConstructionLifecycleFix
 
-Fix.VERSION = "1.0.0"
+Fix.VERSION = "1.0.1"
 Fix.LOG_PREFIX = "[TaigaConstructionLifecycleFix]"
 
 Fix.SYNC_INTERVAL_MS = 1000
@@ -714,14 +714,19 @@ local function canShowNotification()
         and type(g_currentMission.addGameNotification) == "function"
 end
 
+-- Показывает строительное уведомление. Название объекта включается в текст,
+-- чтобы формулировка оставалась однозначной даже при нескольких стройках одновременно.
 local function showConstructionNotification(placeable, text)
     if not canShowNotification() then
         return
     end
 
+    local placeableName = getPlaceableName(placeable)
+    local notificationText = string.format("%s: %s", placeableName, text)
+
     g_currentMission:addGameNotification(
-        getPlaceableName(placeable),
-        text,
+        placeableName,
+        notificationText,
         "",
         nil,
         Fix.NOTIFICATION_DURATION_MS
@@ -740,13 +745,13 @@ local function showCompletedPhaseNotification(placeable, completedStateIndex, ph
     if phaseName ~= nil then
         local formatText = getText(
             "taiga_cl_phaseCompletedNamed",
-            "Phase \"%s\" completed"
+            "phase \"%s\" completed"
         )
         text = string.format(formatText, phaseName)
     else
         local formatText = getText(
             "taiga_cl_phaseCompletedNumbered",
-            "Phase %d completed"
+            "phase #%d completed"
         )
         text = string.format(formatText, phaseNumber or completedStateIndex or 0)
     end
@@ -757,7 +762,7 @@ end
 local function showConstructionCompletedNotification(placeable)
     showConstructionNotification(
         placeable,
-        getText("taiga_cl_constructionCompleted", "Construction completed")
+        getText("taiga_cl_constructionCompleted", "construction completed")
     )
 end
 
