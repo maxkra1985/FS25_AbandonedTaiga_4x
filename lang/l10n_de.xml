@@ -41,6 +41,15 @@
 
 		<text name="fillType_firewood"	text="Brennholz"/>
 
+		<!-- Construction lifecycle -->
+		<text name="taiga_cl_infoProduction" text="Produktion"/>
+		<text name="taiga_cl_infoProductionStorage" text="Produktionslager"/>
+		<text name="taiga_cl_infoWarehouseStorage" text="Lager"/>
+		<text name="taiga_cl_infoObject" text="Objekt"/>
+		<text name="taiga_cl_phaseCompletedNamed" text="%s abgeschlossen"/>
+		<text name="taiga_cl_phaseCompletedNumbered" text="Bauphase Nr. %d abgeschlossen"/>
+		<text name="taiga_cl_constructionCompleted" text="Bau abgeschlossen"/>
+
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<text name="input_HPS_ACTION_SECONDRY" text="Setzlinge entfernen"/>
 		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Freies Pflanzen umschalten"/>

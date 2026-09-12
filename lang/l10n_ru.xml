@@ -40,6 +40,15 @@
 
 		<text name="fillType_firewood"	text="Дрова"/>
 
+		<!-- Construction lifecycle -->
+		<text name="taiga_cl_infoProduction" text="Производство"/>
+		<text name="taiga_cl_infoProductionStorage" text="Производственное хранилище"/>
+		<text name="taiga_cl_infoWarehouseStorage" text="Складское хранилище"/>
+		<text name="taiga_cl_infoObject" text="Объект"/>
+		<text name="taiga_cl_phaseCompletedNamed" text="%s завершён"/>
+		<text name="taiga_cl_phaseCompletedNumbered" text="Этап №%d завершён"/>
+		<text name="taiga_cl_constructionCompleted" text="Строительство завершено"/>
+
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<text name="input_HPS_ACTION_SECONDRY" text="Удалить саженцы"/>
 		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Переключение ручной посадки"/>

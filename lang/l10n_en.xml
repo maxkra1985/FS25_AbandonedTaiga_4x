@@ -41,6 +41,15 @@
 
 		<text name="fillType_firewood"	text="Firewood"/>
 
+		<!-- Construction lifecycle -->
+		<text name="taiga_cl_infoProduction" text="Production"/>
+		<text name="taiga_cl_infoProductionStorage" text="Production storage"/>
+		<text name="taiga_cl_infoWarehouseStorage" text="Warehouse storage"/>
+		<text name="taiga_cl_infoObject" text="Object"/>
+		<text name="taiga_cl_phaseCompletedNamed" text="%s completed"/>
+		<text name="taiga_cl_phaseCompletedNumbered" text="Phase %d completed"/>
+		<text name="taiga_cl_constructionCompleted" text="Construction completed"/>
+
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<text name="input_HPS_ACTION_SECONDRY" text="Remove Saplings"/>
 		<text name="input_HPS_TOGGLE_FREE_PLANT" text="Toggle Free Plant"/>

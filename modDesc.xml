@@ -49,7 +49,11 @@
 		<sourceFile filename="scripts/IncreaseTreeLimit.lua"/>
 		<sourceFile filename="scripts/DinamycalPrice.lua"/>
 		<sourceFile filename="scripts/DynamicRoadMap.lua"/>
-		<sourceFile filename="scripts/ConstructionLifecycleFix.lua" />
+		<sourceFile filename="scripts/constructionLifecycle/ConstructionLifecycle.lua" />
+		<sourceFile filename="scripts/constructionLifecycle/ConstructionTriggerRegistry.lua" />
+		<sourceFile filename="scripts/constructionLifecycle/ConstructionFacilityLifecycle.lua" />
+		<sourceFile filename="scripts/constructionLifecycle/ConstructionInfoHUD.lua" />
+		<sourceFile filename="scripts/constructionLifecycle/ConstructionLifecycleFix.lua" />
 		<sourceFile filename="scripts/ProductionOptionalBoost.lua" />
 		<sourceFile filename="scripts/ProductionActiveVisuals.lua" />
 		<sourceFile filename="scripts/ObjectStorageAreaFillTypeFilter.lua" />
