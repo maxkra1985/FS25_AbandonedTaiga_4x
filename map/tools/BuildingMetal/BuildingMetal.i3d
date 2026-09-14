@@ -2,7 +2,7 @@
 
 <i3D name="BuildingMetal.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
   <Asset>
-    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+    <Export program="GIANTS Editor 64bit" version="10.0.13"/>
   </Asset>
 
   <Files>
@@ -37,7 +37,7 @@
   </Shapes>
 
   <Scene>
-    <Shape name="building_metal" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" clipDistance="300" nodeId="14" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7">
+    <Shape name="building_metal" rotation="0 90 0" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfe3ffb83" clipDistance="300" nodeId="14" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="7">
       <Shape name="pallet_vis" shapeId="2" nodeId="15" castsShadows="true" receiveShadows="true" materialIds="5">
         <TransformGroup name="dischargeNode" translation="0 0.757911 0" nodeId="16"/>
         <TransformGroup name="content" nodeId="17">
