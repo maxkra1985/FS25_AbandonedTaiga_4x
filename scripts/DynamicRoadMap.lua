@@ -1,7 +1,7 @@
 -- FS25_DynamicRoadMap
 -- Adds player-painted asphalt/gravel roads to the in-game overview/minimap.
 --
--- v. 1.0.0.0 architecture:
+-- v. 1.0.0.1 architecture:
 --   * The base map is left completely untouched.
 --   * Existing-road import is prepared automatically in the background after load.
 --   * Only terrain areas modified through Landscaping PAINT are recorded.
@@ -14,7 +14,7 @@ DynamicRoadMap = {}
 DynamicRoadMap.MOD_NAME = g_currentModName or "FS25_DynamicRoadMap"
 DynamicRoadMap.LOG_PREFIX = "[DynamicRoadMap]"
 DynamicRoadMap.DATA_VERSION = 7
-DynamicRoadMap.LEGACY_IMPORT_VERSION = 4
+DynamicRoadMap.LEGACY_IMPORT_VERSION = 5
 
 -- One mask pixel represents roughly one world metre on normal/4x maps.
 -- 2048 m -> 2048 px, 4096 m -> 4096 px. Larger maps are capped at 4096.
@@ -65,12 +65,176 @@ DynamicRoadMap.mapMenuHooksInstalled = false
 DynamicRoadMap.mapMenuConstantsShifted = false
 DynamicRoadMap.savegameHookInstalled = false
 
+-- -------------------------------------------------------------------------
+-- Сетевые события
+-- -------------------------------------------------------------------------
+
+-- Клиент использует это событие только как запрос актуального состояния.
+-- Сканирование и формирование дорожных масок всегда остаются на сервере.
+DynamicRoadMapSyncRequestEvent = {}
+local DynamicRoadMapSyncRequestEvent_mt = Class(DynamicRoadMapSyncRequestEvent, Event)
+InitEventClass(DynamicRoadMapSyncRequestEvent, "DynamicRoadMapSyncRequestEvent")
+
+function DynamicRoadMapSyncRequestEvent.emptyNew()
+	return Event.new(DynamicRoadMapSyncRequestEvent_mt)
+end
+
+function DynamicRoadMapSyncRequestEvent.new()
+	return DynamicRoadMapSyncRequestEvent.emptyNew()
+end
+
+function DynamicRoadMapSyncRequestEvent:writeStream(streamId, connection)
+end
+
+function DynamicRoadMapSyncRequestEvent:readStream(streamId, connection)
+	self:run(connection)
+end
+
+--- Обрабатывает запрос клиента на серверной стороне.
+function DynamicRoadMapSyncRequestEvent:run(connection)
+	if connection ~= nil and not connection:getIsServer() then
+		DynamicRoadMap:onNetworkSyncRequest(connection)
+	end
+end
+
+-- Полная синхронизация использует штатную сериализацию InfoLayer/BitVectorMap.
+-- Незавершённая legacy-маска не передаётся: клиент получает её только после
+-- окончания серверного сканирования.
+DynamicRoadMapFullSyncEvent = {}
+local DynamicRoadMapFullSyncEvent_mt = Class(DynamicRoadMapFullSyncEvent, Event)
+InitEventClass(DynamicRoadMapFullSyncEvent, "DynamicRoadMapFullSyncEvent")
+
+function DynamicRoadMapFullSyncEvent.emptyNew()
+	return Event.new(DynamicRoadMapFullSyncEvent_mt)
+end
+
+function DynamicRoadMapFullSyncEvent.new(roadInfoLayer, legacyInfoLayer, legacyReady, maskResolution, legacyImportVersion)
+	local self = DynamicRoadMapFullSyncEvent.emptyNew()
+	self.roadInfoLayer = roadInfoLayer
+	self.legacyInfoLayer = legacyInfoLayer
+	self.legacyReady = legacyReady == true
+	self.maskResolution = maskResolution
+	self.legacyImportVersion = legacyImportVersion or 0
+	return self
+end
+
+function DynamicRoadMapFullSyncEvent:writeStream(streamId, connection)
+	streamWriteUIntN(streamId, DynamicRoadMap.DATA_VERSION, 8)
+	streamWriteUIntN(streamId, self.maskResolution or 0, 13)
+	streamWriteBool(streamId, self.legacyReady)
+	streamWriteUIntN(streamId, self.legacyImportVersion or 0, 8)
+
+	self.roadInfoLayer:writeStream(streamId, connection)
+	if self.legacyReady and self.legacyInfoLayer ~= nil then
+		self.legacyInfoLayer:writeStream(streamId, connection)
+	end
+end
+
+function DynamicRoadMapFullSyncEvent:readStream(streamId, connection)
+	self.dataVersion = streamReadUIntN(streamId, 8)
+	self.maskResolution = streamReadUIntN(streamId, 13)
+	self.legacyReady = streamReadBool(streamId)
+	self.legacyImportVersion = streamReadUIntN(streamId, 8)
+
+	self.roadInfoLayer = InfoLayer.new("dynamicRoadMapNetworkRoad", "")
+	self.roadInfoLayer:create(
+		self.maskResolution,
+		self.maskResolution,
+		DynamicRoadMap.ROAD_NUM_CHANNELS,
+		false
+	)
+	self.roadInfoLayer:readStream(streamId, connection)
+
+	if self.legacyReady then
+		self.legacyInfoLayer = InfoLayer.new("dynamicRoadMapNetworkLegacy", "")
+		self.legacyInfoLayer:create(
+			self.maskResolution,
+			self.maskResolution,
+			DynamicRoadMap.LEGACY_NUM_CHANNELS,
+			false
+		)
+		self.legacyInfoLayer:readStream(streamId, connection)
+	end
+
+	self:run(connection)
+end
+
+--- Устанавливает на клиенте уже готовые серверные дорожные маски.
+function DynamicRoadMapFullSyncEvent:run(connection)
+	if connection ~= nil and connection:getIsServer() then
+		DynamicRoadMap:applyNetworkFullSync(self)
+	end
+end
+
+-- Инкрементальная синхронизация новых покрасок. Передаются именно
+-- modifiedAreas, которые серверный Landscaping уже подтвердил и применил.
+DynamicRoadMapPaintEvent = {}
+local DynamicRoadMapPaintEvent_mt = Class(DynamicRoadMapPaintEvent, Event)
+InitEventClass(DynamicRoadMapPaintEvent, "DynamicRoadMapPaintEvent")
+
+function DynamicRoadMapPaintEvent.emptyNew()
+	return Event.new(DynamicRoadMapPaintEvent_mt)
+end
+
+function DynamicRoadMapPaintEvent.new(areas, roadValue)
+	local self = DynamicRoadMapPaintEvent.emptyNew()
+	self.areas = areas or {}
+	self.roadValue = roadValue or DynamicRoadMap.ROAD_VALUE_NONE
+	return self
+end
+
+function DynamicRoadMapPaintEvent:writeStream(streamId, connection)
+	local count = math.min(#self.areas, 65535)
+	streamWriteUIntN(streamId, self.roadValue, DynamicRoadMap.ROAD_NUM_CHANNELS)
+	streamWriteUIntN(streamId, count, 16)
+
+	for i = 1, count do
+		local area = self.areas[i]
+		for j = 1, 6 do
+			streamWriteFloat32(streamId, area[j] or 0)
+		end
+	end
+end
+
+function DynamicRoadMapPaintEvent:readStream(streamId, connection)
+	self.roadValue = streamReadUIntN(streamId, DynamicRoadMap.ROAD_NUM_CHANNELS)
+	local count = streamReadUIntN(streamId, 16)
+	self.areas = {}
+
+	for i = 1, count do
+		self.areas[i] = {
+			streamReadFloat32(streamId),
+			streamReadFloat32(streamId),
+			streamReadFloat32(streamId),
+			streamReadFloat32(streamId),
+			streamReadFloat32(streamId),
+			streamReadFloat32(streamId)
+		}
+	end
+
+	self:run(connection)
+end
+
+--- Применяет подтверждённую сервером покраску только к клиентской маске.
+function DynamicRoadMapPaintEvent:run(connection)
+	if connection ~= nil and connection:getIsServer() then
+		DynamicRoadMap:applyNetworkPaintAreas(self.areas, self.roadValue)
+	end
+end
+
 function DynamicRoadMap:log(message, ...)
 	if select("#", ...) > 0 then
 		print(string.format("%s %s", self.LOG_PREFIX, string.format(message, ...)))
 	else
 		print(string.format("%s %s", self.LOG_PREFIX, tostring(message)))
 	end
+end
+
+--- Возвращает true только для сервера, listen-server или одиночной игры.
+function DynamicRoadMap:getIsServer()
+	return g_currentMission ~= nil
+		and g_currentMission.getIsServer ~= nil
+		and g_currentMission:getIsServer()
 end
 
 function DynamicRoadMap:getLocalizedText(id)
@@ -135,8 +299,15 @@ function DynamicRoadMap:loadSettings()
 			local asphalt = getXMLBool(xml, "dynamicRoadMap.settings#showAsphalt")
 			local gravel = getXMLBool(xml, "dynamicRoadMap.settings#showGravel")
 			local imported = getXMLBool(xml, "dynamicRoadMap.settings#showImported")
-			local legacyImportCompleted = getXMLBool(xml, "dynamicRoadMap.import#completed")
-			local legacyImportVersion = getXMLInt(xml, "dynamicRoadMap.import#version")
+			local legacyImportCompleted = nil
+			local legacyImportVersion = nil
+
+			-- Состояние импорта является серверным. Клиент может читать только
+			-- локальные настройки видимости, но не решать, нужен ли ему скан.
+			if self:getIsServer() then
+				legacyImportCompleted = getXMLBool(xml, "dynamicRoadMap.import#completed")
+				legacyImportVersion = getXMLInt(xml, "dynamicRoadMap.import#version")
+			end
 
 			if asphalt ~= nil then
 				self.showAsphalt = asphalt
@@ -158,7 +329,9 @@ function DynamicRoadMap:loadSettings()
 		end
 	end
 
-	if self.legacyImportCompleted and self.legacyImportVersion < self.LEGACY_IMPORT_VERSION then
+	if self:getIsServer()
+		and self.legacyImportCompleted
+		and self.legacyImportVersion < self.LEGACY_IMPORT_VERSION then
 		self:log(
 			"Legacy import algorithm changed (%d -> %d); imported layer will be rebuilt automatically after load",
 			self.legacyImportVersion,
@@ -302,12 +475,15 @@ function DynamicRoadMap:loadMap(mapName)
 	self.legacyImportCompleted = false
 	self.legacyImportRequested = false
 	self.legacyImportVersion = 0
+	self.networkSyncRequested = false
+	self.networkSyncReceived = false
+	self.networkLegacyReady = false
 
 	self:installMapMenuHooks()
 	self:installHooks()
 
 	self:log("============================================================")
-	self:log("Dynamic Road Map v0.13 loaded")
+	self:log("Dynamic Road Map v1.0.0.1 loaded")
 	self:log("Map: %s", tostring(mapName))
 	self:log("Mode: player Landscaping roads + background legacy terrain import")
 	self:log("============================================================")
@@ -338,6 +514,9 @@ function DynamicRoadMap:deleteMap()
 	self.roadTerrainLayers = {}
 	self.roadTerrainLayerValues = {}
 	self.roadTerrainLayerEntries = {}
+	self.networkSyncRequested = false
+	self.networkSyncReceived = false
+	self.networkLegacyReady = false
 end
 
 function DynamicRoadMap:installHooks()
@@ -361,7 +540,7 @@ function DynamicRoadMap:installHooks()
 			brushShape, operation, smoothingDistance, terrainPaintingLayer,
 			terrainFoliageLayer, terrainFoliageValue
 		)
-			if operation == Landscaping.OPERATION.PAINT then
+			if operation == Landscaping.OPERATION.PAINT and DynamicRoadMap:getIsServer() then
 				landscaping.dynamicRoadMapTerrainPaintingLayer = terrainPaintingLayer
 			end
 
@@ -701,7 +880,7 @@ function DynamicRoadMap:createOrLoadRoadInfoLayer()
 	local layer = InfoLayer.new("dynamicRoadMap", "")
 	local loaded = false
 
-	if filename ~= nil and fileExists(filename) then
+	if self:getIsServer() and filename ~= nil and fileExists(filename) then
 		loaded = layer:load(filename, self.ROAD_NUM_CHANNELS)
 		if loaded and (layer.width ~= self.maskResolution or layer.height ~= self.maskResolution) then
 			self:log(
@@ -733,7 +912,7 @@ function DynamicRoadMap:createOrLoadLegacyInfoLayer()
 	local layer = InfoLayer.new("dynamicRoadMapLegacy", "")
 	local loaded = false
 
-	if filename ~= nil and fileExists(filename) then
+	if self:getIsServer() and filename ~= nil and fileExists(filename) then
 		loaded = layer:load(filename, self.LEGACY_NUM_CHANNELS)
 		if loaded and (layer.width ~= self.maskResolution or layer.height ~= self.maskResolution) then
 			self:log(
@@ -762,27 +941,40 @@ function DynamicRoadMap:initialize()
 		return false
 	end
 
+	local isServer = self:getIsServer()
+
 	self.terrainSize = g_currentMission.terrainSize
 	self.terrainHalfSize = self.terrainSize * 0.5
 	self.maskResolution = self:calculateMaskResolution(self.terrainSize)
 	self.metresPerPixel = self.terrainSize / self.maskResolution
 
 	self:loadSettings()
-	self:discoverRoadTerrainLayers()
+
+	-- Определение дорожных terrain-слоёв нужно только стороне, которая
+	-- формирует маску. Клиент работает исключительно с готовым InfoLayer.
+	if isServer then
+		self:discoverRoadTerrainLayers()
+	end
+
 	self:createOrLoadRoadInfoLayer()
 	self:createOrLoadLegacyInfoLayer()
 
-	if not self.legacyMaskWasLoaded and self.legacyImportCompleted then
-		self:log("Typed legacy-road mask is missing/new; legacy import completion flag reset")
-		self.legacyImportCompleted = false
-	end
+	if isServer then
+		if not self.legacyMaskWasLoaded and self.legacyImportCompleted then
+			self:log("Typed legacy-road mask is missing/new; legacy import completion flag reset")
+			self.legacyImportCompleted = false
+		end
 
-	-- Build the legacy/imported-road layer in the background as soon as the
-	-- savegame is loaded. The map filter only controls visibility; enabling it
-	-- later must not start a potentially long full-terrain scan.
-	if not self.legacyImportCompleted then
-		self:requestLegacyImport()
-		self:log("Legacy-road background import scheduled at savegame load")
+		-- Полное сканирование старых дорог выполняется только сервером.
+		if not self.legacyImportCompleted then
+			self:requestLegacyImport()
+			self:log("Legacy-road background import scheduled at savegame load (server only)")
+		end
+	else
+		-- Клиент не доверяет локальным sidecar-файлам и не запускает импорт.
+		-- Готовое состояние придёт отдельным сетевым событием от сервера.
+		self.legacyImportCompleted = false
+		self.legacyImportVersion = 0
 	end
 
 	self.roadOverlay = createDensityMapVisualizationOverlay(
@@ -800,10 +992,180 @@ function DynamicRoadMap:initialize()
 		self.maskResolution,
 		self.metresPerPixel
 	)
+	self:log("Network role: %s", isServer and "SERVER" or "CLIENT")
+
+	if isServer then
+		self:requestOverlayRegeneration()
+	else
+		self:requestNetworkSync()
+	end
+
+	self:syncOpenMapFrame()
+	return true
+end
+
+--- Отправляет клиентский запрос на первичную синхронизацию дорожных масок.
+function DynamicRoadMap:requestNetworkSync()
+	if self:getIsServer() or self.networkSyncRequested or g_client == nil then
+		return false
+	end
+
+	local connection = g_client:getServerConnection()
+	if connection == nil then
+		return false
+	end
+
+	connection:sendEvent(DynamicRoadMapSyncRequestEvent.new())
+	self.networkSyncRequested = true
+	self:log("Requested road-map state from server")
+	return true
+end
+
+--- Формирует полное серверное состояние для одного клиента.
+function DynamicRoadMap:sendNetworkFullSync(connection)
+	if not self:getIsServer()
+		or connection == nil
+		or self.roadInfoLayer == nil then
+		return false
+	end
+
+	local legacyReady = self.legacyImportCompleted == true
+		and self.currentScan == nil
+		and self.legacyInfoLayer ~= nil
+
+	connection:sendEvent(DynamicRoadMapFullSyncEvent.new(
+		self.roadInfoLayer,
+		legacyReady and self.legacyInfoLayer or nil,
+		legacyReady,
+		self.maskResolution,
+		self.legacyImportVersion
+	))
+
+	self:log("Sent road-map state to client (legacyReady=%s)", tostring(legacyReady))
+	return true
+end
+
+--- Обрабатывает запрос первичной синхронизации от клиента.
+function DynamicRoadMap:onNetworkSyncRequest(connection)
+	if not self:getIsServer() then
+		return
+	end
+
+	if not self.initialized then
+		self:initialize()
+	end
+
+	self:sendNetworkFullSync(connection)
+end
+
+--- Рассылает всем клиентам полное состояние после завершения legacy-скана.
+function DynamicRoadMap:broadcastNetworkFullSync()
+	if not self:getIsServer()
+		or g_server == nil
+		or self.roadInfoLayer == nil
+		or self.legacyInfoLayer == nil
+		or not self.legacyImportCompleted then
+		return
+	end
+
+	g_server:broadcastEvent(DynamicRoadMapFullSyncEvent.new(
+		self.roadInfoLayer,
+		self.legacyInfoLayer,
+		true,
+		self.maskResolution,
+		self.legacyImportVersion
+	), false)
+
+	self:log("Broadcast completed road-map state to clients")
+end
+
+--- Принимает полную серверную маску и заменяет клиентские локальные данные.
+function DynamicRoadMap:applyNetworkFullSync(event)
+	if self:getIsServer() or event == nil or event.roadInfoLayer == nil then
+		return
+	end
+
+	if event.dataVersion ~= self.DATA_VERSION then
+		self:log(
+			"Network data version differs: server=%s client=%s",
+			tostring(event.dataVersion),
+			tostring(self.DATA_VERSION)
+		)
+	end
+
+	-- На одинаковой карте разрешение совпадает. Если нет, пересоздаём overlay
+	-- по серверному размеру, чтобы данные InfoLayer отображались корректно.
+	if event.maskResolution ~= nil
+		and event.maskResolution > 0
+		and event.maskResolution ~= self.maskResolution then
+		self.maskResolution = event.maskResolution
+		self.metresPerPixel = self.terrainSize / self.maskResolution
+
+		if self.roadOverlay ~= nil then
+			delete(self.roadOverlay)
+		end
+		self.roadOverlay = createDensityMapVisualizationOverlay(
+			"dynamicRoadMap",
+			self.maskResolution,
+			self.maskResolution
+		)
+		self.roadOverlayReady = false
+		self.roadOverlayGenerating = false
+	end
+
+	if self.roadInfoLayer ~= nil then
+		self.roadInfoLayer:delete()
+	end
+	self.roadInfoLayer = event.roadInfoLayer
+	event.roadInfoLayer = nil
+
+	if self.legacyInfoLayer ~= nil then
+		self.legacyInfoLayer:delete()
+	end
+
+	if event.legacyReady and event.legacyInfoLayer ~= nil then
+		self.legacyInfoLayer = event.legacyInfoLayer
+		event.legacyInfoLayer = nil
+	else
+		self.legacyInfoLayer = InfoLayer.new("dynamicRoadMapLegacy", "")
+		self.legacyInfoLayer:create(
+			self.maskResolution,
+			self.maskResolution,
+			self.LEGACY_NUM_CHANNELS,
+			false
+		)
+	end
+
+	self.roadMaskWasLoaded = true
+	self.legacyMaskWasLoaded = event.legacyReady == true
+	self.legacyImportCompleted = event.legacyReady == true
+	self.legacyImportVersion = event.legacyImportVersion or 0
+	self.networkSyncReceived = true
+	self.networkLegacyReady = event.legacyReady == true
 
 	self:requestOverlayRegeneration()
 	self:syncOpenMapFrame()
-	return true
+	self:log("Received road-map state from server (legacyReady=%s)", tostring(event.legacyReady))
+end
+
+--- Рассылает клиентам только подтверждённые изменения player-road маски.
+function DynamicRoadMap:broadcastPaintAreas(areas, roadValue)
+	if not self:getIsServer() or g_server == nil or areas == nil or #areas == 0 then
+		return
+	end
+
+	g_server:broadcastEvent(DynamicRoadMapPaintEvent.new(areas, roadValue), false)
+end
+
+--- Применяет на клиенте изменение, уже рассчитанное и подтверждённое сервером.
+function DynamicRoadMap:applyNetworkPaintAreas(areas, roadValue)
+	if self:getIsServer() or not self.initialized then
+		return
+	end
+
+	if self:applyPaintAreasToPlayerMask(areas, roadValue, false) then
+		self:log("Applied server road-paint update (%d areas, value=%d)", #areas, roadValue)
+	end
 end
 
 function DynamicRoadMap:classifyRoadText(text)
@@ -1093,6 +1455,10 @@ function DynamicRoadMap:setLegacyMaskBlock(cellX, cellY, step, roadValue)
 end
 
 function DynamicRoadMap:requestLegacyImport()
+	if not self:getIsServer() then
+		return
+	end
+
 	if self.legacyImportCompleted or self.legacyImportRequested then
 		return
 	end
@@ -1102,6 +1468,10 @@ function DynamicRoadMap:requestLegacyImport()
 end
 
 function DynamicRoadMap:startLegacyImport()
+	if not self:getIsServer() then
+		return
+	end
+
 	if self.legacyImportCompleted or self.currentScan ~= nil then
 		return
 	end
@@ -1119,6 +1489,10 @@ function DynamicRoadMap:advanceScanCell(scan)
 end
 
 function DynamicRoadMap:processCurrentScan()
+	if not self:getIsServer() then
+		return
+	end
+
 	local scan = self.currentScan
 	if scan == nil then
 		return
@@ -1171,6 +1545,10 @@ function DynamicRoadMap:processCurrentScan()
 
 		self:requestOverlayRegeneration()
 		self:saveRoadMask()
+
+		if reason == "legacyImport" then
+			self:broadcastNetworkFullSync()
+		end
 	end
 end
 
@@ -1312,7 +1690,7 @@ function DynamicRoadMap:queueDirtyAreas(areas)
 	end
 end
 
-function DynamicRoadMap:applyPaintAreasToPlayerMask(areas, roadValue)
+function DynamicRoadMap:applyPaintAreasToPlayerMask(areas, roadValue, markForCommit)
 	if self.roadInfoLayer == nil or areas == nil then
 		return false
 	end
@@ -1333,8 +1711,14 @@ function DynamicRoadMap:applyPaintAreasToPlayerMask(areas, roadValue)
 	end
 
 	if changed then
-		self.playerMaskChanged = true
-		self.playerMaskCommitTimer = self.DIRTY_RESCAN_DELAY_MS
+		if markForCommit == false then
+			-- Клиент только обновляет визуальный слой; сохранение и формирование
+			-- данных остаются обязанностью сервера.
+			self:requestOverlayRegeneration()
+		else
+			self.playerMaskChanged = true
+			self.playerMaskCommitTimer = self.DIRTY_RESCAN_DELAY_MS
+		end
 	end
 
 	return changed
@@ -1342,6 +1726,7 @@ end
 
 function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 	if not self.initialized
+		or not self:getIsServer()
 		or landscaping == nil
 		or Landscaping == nil
 		or TerrainDeformation == nil then
@@ -1359,7 +1744,10 @@ function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 
 	-- ROAD_VALUE_NONE deliberately clears player-road pixels when grass/dirt/
 	-- another non-road paint is applied over a previously recorded road.
-	self:applyPaintAreasToPlayerMask(landscaping.modifiedAreas, roadValue)
+	local changed = self:applyPaintAreasToPlayerMask(landscaping.modifiedAreas, roadValue, true)
+	if changed then
+		self:broadcastPaintAreas(landscaping.modifiedAreas, roadValue)
+	end
 
 	self.loggedPaintLayers = self.loggedPaintLayers or {}
 	local logKey = tostring(layerIndex) .. ":" .. tostring(roadValue)
@@ -1376,6 +1764,10 @@ function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 end
 
 function DynamicRoadMap:startPendingDirtyScan()
+	if not self:getIsServer() then
+		return
+	end
+
 	local bounds = self.pendingDirtyBounds
 	if bounds == nil or self.currentScan ~= nil then
 		return
@@ -1416,6 +1808,19 @@ function DynamicRoadMap:update(dt)
 	end
 
 	self:updateOverlayState()
+
+	-- Клиент не сканирует terrain, не формирует маски и не сохраняет их.
+	-- Он только запрашивает/принимает серверное состояние и строит свой overlay.
+	if not self:getIsServer() then
+		if not self.networkSyncRequested then
+			self:requestNetworkSync()
+		end
+
+		if self.roadOverlayDirty and not self.roadOverlayGenerating then
+			self:regenerateOverlay()
+		end
+		return
+	end
 
 	if self.currentScan ~= nil then
 		self:processCurrentScan()
@@ -1466,7 +1871,7 @@ function DynamicRoadMap:getLegacyScanProgress()
 end
 
 function DynamicRoadMap:draw()
-	if not self.initialized then
+	if not self.initialized or not self:getIsServer() then
 		return
 	end
 
