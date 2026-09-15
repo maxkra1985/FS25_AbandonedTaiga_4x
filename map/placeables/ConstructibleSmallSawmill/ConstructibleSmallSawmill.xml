@@ -79,6 +79,7 @@
 		<triggerMarker node="ConstructibleWoodSellActivationTrigger"	adjustToGround="true"	filename="$data/shared/assets/marker/markerIconExclamationMark.i3d" />
 		<triggerMarker node="playerTriggerMarker"						adjustToGround="true"	filename="$data/shared/assets/marker/markerIconWrench.i3d" />
 		<triggerMarker node="woodTrigger"								adjustToGround="true"	filename="$data/shared/assets/marker/markerIconUnload.i3d" />
+		<triggerMarker node="ConstructibleUnloadTriggerMarker"			adjustToGround="true"	filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 
 	<hotspots>
@@ -86,7 +87,7 @@
 		<hotspot type="PRODUCTION_POINT"	linkNode="iconNode"							teleportNode="teleportNode" />
 	</hotspots>
 
-	<productionPoint>
+	<productionPoint isFinalized="false">
 		<productions sharedThroughputCapacity="false">
 			<production id="boards" name="%s (%s)" params="$l10n_fillType_wood|$l10n_fillType_boards" cyclesPerHour="1" costsPerActiveHour="1">
 				<inputs>
@@ -148,21 +149,21 @@
 		<stateMachine>
 			<states>
 				<state name="SETUP" StateName="Подготовка стройматериалов" class="ConstructibleStateBuilding" >
-					<toggleMesh node="productionPoint"			active="false"	updatePhysics="false" />
-					<toggleMesh node="sellingStation"			active="false"	updatePhysics="false" />
-					<toggleMesh node="walls"					active="false"	updatePhysics="false" />
-					<toggleMesh node="balki"					active="false"	updatePhysics="false" />
-					<toggleMesh node="dach"						active="false"	updatePhysics="false"/>
-					<toggleMesh node="dachRoof"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="door_1"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="door_2"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="tools"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="boardStacksTiny"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="boardStackSmall"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="trunkStackMedium"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="barBeamShort"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="barBeamLong"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="board02"					active="false"	updatePhysics="false"/>
+					<toggleMesh node="productionPoint"			active="false"	updatePhysics="true" />
+					<toggleMesh node="sellingStation"			active="false"	updatePhysics="true" />
+					<toggleMesh node="walls"					active="false"	updatePhysics="true" />
+					<toggleMesh node="balki"					active="false"	updatePhysics="true" />
+					<toggleMesh node="dach"						active="false"	updatePhysics="true"/>
+					<toggleMesh node="dachRoof"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="door_1"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="door_2"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="tools"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="boardStacksTiny"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="boardStackSmall"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="trunkStackMedium"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="barBeamShort"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="barBeamLong"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="board02"					active="false"	updatePhysics="true"/>
 					<toggleMesh node="sawhorseLogSaw"			active="true"	updatePhysics="true"/>
 					<toggleHotspot index="1" isVisible="true" />
 					<toggleHotspot index="2" isVisible="false" />
@@ -172,7 +173,7 @@
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
-				<state name="BUILDING_1" StateName="Подготовка стройматериалов" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_1" StateName="Распил брёвен" class="ConstructibleStateBuilding" >
 					<toggleMesh node="boardStacksTiny"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="45"/>
 					<input fillType="WOOD"				amount="900"	usagePerHour="1000"/>
@@ -181,7 +182,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_2" StateName="Подготовка стройматериалов" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_2" StateName="Подготовка досок" class="ConstructibleStateBuilding" >
 					<toggleMesh node="boardStackSmall"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="50"/>
 					<input fillType="WOOD"				amount="1000"	usagePerHour="1000"/>
@@ -229,7 +230,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_7" StateName="Установка двери" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_7" StateName="Установка первых дверей" class="ConstructibleStateBuilding" >
 					<toggleMesh node="dachRoof"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"				amount="1000"	usagePerHour="1000"/>
@@ -238,7 +239,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_8" StateName="Установка двери" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_8" StateName="Установка вторых дверей" class="ConstructibleStateBuilding" >
 					<toggleMesh node="door_1"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"				amount="1000"	usagePerHour="1000"/>
@@ -316,7 +317,7 @@
 		<i3dMapping id="woodActivationTrigger" node="0>4|1" />
 		<i3dMapping id="woodActivationTriggerMarker" node="0>4|1|0" />
 
-		<i3dMapping id="infoTrigger" node="0>5|0" />
+		<i3dMapping id="infoTrigger" node="0>7" />
 		<i3dMapping id="playerTrigger" node="0>5|1" />
 		<i3dMapping id="iconNode" node="0>5|3" />
 		<i3dMapping id="teleportNode" node="0>5|4" />

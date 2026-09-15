@@ -76,9 +76,10 @@
 	<infoTrigger triggerNode="infoTrigger" />
 
 	<triggerMarkers>
-		<triggerMarker node="woodTrigger"								adjustToGround="true"	filename="$data/shared/assets/marker/markerIconUnload.i3d" />
-		<triggerMarker node="woodActivationTriggerMarker"				adjustToGround="true"	filename="$data/shared/assets/marker/markerIconExclamationMark.i3d" />
+		<triggerMarker node="woodTrigger"								adjustToGround="true"	filename="markerIcons/woodUnloadZone.i3d" />
+		<triggerMarker node="woodActivationTriggerMarker"				adjustToGround="true"	filename="markerIcons/woodUnloadTrigger.i3d" />
 		<triggerMarker node="playerTriggerMarker"						adjustToGround="true"	filename="$data/shared/assets/marker/markerIconWrench.i3d" />
+		<triggerMarker node="unloadTriggerMarker"						adjustToGround="true"	filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 
 	<hotspots>
@@ -86,7 +87,7 @@
 		<hotspot type="PRODUCTION_POINT"	linkNode="iconNode"							teleportNode="teleportNode" />
 	</hotspots>
 
-	<productionPoint>
+	<productionPoint isFinalized="false">
 		<productions sharedThroughputCapacity="false">
 			<production id="boards" name="%s (%s)" params="$l10n_fillType_wood|$l10n_fillType_boards" cyclesPerHour="5" costsPerActiveHour="4">
 				<inputs>
@@ -200,58 +201,58 @@
 	<constructible>
 		<stateMachine>
 			<states>
-				<state name="DESTRUCTION_01" class="ConstructibleStateBuilding" >
-					<toggleMesh node="productionPoint"			active="false"	updatePhysics="false" />
-					<toggleMesh node="sellingStation"			active="false"	updatePhysics="false" />
-					<toggleMesh node="destroy_trash_01"			active="false"	updatePhysics="false" />
-					<toggleMesh node="destroy_trash_02"			active="false"	updatePhysics="false" />
-					<toggleMesh node="destroy_trash_03"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="floodLightTrailers"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="racks_01"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="racks_02"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="racks_03"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="transverseBracings_01"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="lathing_01"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="lathing_02"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="racks_04"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="racks_05"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="lathing_03"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="roof_1_01"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="roof_1_02"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="roof_2_01"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="truck_crane"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="crane"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="truck_wood_support"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="wood_supports"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="truck_semitrailer_saws"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="saws_lt15"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="woodchipper"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="Blaszak"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="finalDecoration"			active="false"	updatePhysics="false"/>
+				<state name="DESTRUCTION_01" StateName="Начало разбора старых построек" class="ConstructibleStateBuilding" >
+					<toggleMesh node="productionPoint"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="sellingStation"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_trash_01"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_trash_02"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_trash_03"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="floodLightTrailers"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="racks_01"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="racks_02"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="racks_03"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="transverseBracings_01"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="lathing_01"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="lathing_02"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="racks_04"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="racks_05"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="lathing_03"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="roof_1_01"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="roof_1_02"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="roof_2_01"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="truck_crane"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="crane"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="truck_wood_support"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="wood_supports"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="truck_semitrailer_saws"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="saws_lt15"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="woodchipper"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="Blaszak"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="finalDecoration"			active="false"	updatePhysics="true"/>
 
-					<toggleHotspot index="1" isVisible="true" />
-					<toggleHotspot index="2" isVisible="false" />
+					<toggleHotspot index="1" isVisible="true"/>
+					<toggleHotspot index="2" isVisible="false"/>
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<sounds>
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
-				<state name="DESTRUCTION_02" class="ConstructibleStateBuilding" >
+				<state name="DESTRUCTION_02" StateName="Деконструкция съёмных элементов" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_trash_01"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="25"/>
 					<sounds>
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
-				<state name="DESTRUCTION_03" class="ConstructibleStateBuilding" >
+				<state name="DESTRUCTION_03" StateName="Разбор старых построек" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_01"		active="false"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="25"/>
 					<sounds>
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
-				<state name="DESTRUCTION_04" class="ConstructibleStateBuilding" >
+				<state name="DESTRUCTION_04" StateName="Деконструкция старых механизмов" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_02"		active="false"	updatePhysics="true" />
 					<toggleMesh node="destroy_trash_02"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
@@ -259,7 +260,7 @@
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
-				<state name="DESTRUCTION_05" class="ConstructibleStateBuilding" >
+				<state name="DESTRUCTION_05" StateName="Раасчистка и подготовка стройплощадки" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_03"		active="false"	updatePhysics="true" />
 					<toggleMesh node="destroy_trash_03"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
@@ -268,7 +269,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_1" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_1" StateName="Установка основных опорных стоек, секция №1" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_trash_01"	active="false"	updatePhysics="true" />
 					<toggleMesh node="destroy_trash_02"	active="false"	updatePhysics="true" />
 					<toggleMesh node="destroy_trash_03"	active="false"	updatePhysics="true" />
@@ -282,7 +283,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_2" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_2" StateName="Установка основных опорных стоек, секция №2" class="ConstructibleStateBuilding" >
 					<toggleMesh node="racks_01"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="25"/>
 					<input fillType="WOODBEAM"			amount="2000"	usagePerHour="1000"/>
@@ -293,7 +294,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_3" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_3" StateName="Установка основных опорных стоек, секция №3" class="ConstructibleStateBuilding" >
 					<toggleMesh node="racks_02"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="50"		usagePerHour="25"/>
 					<input fillType="WOODBEAM"			amount="2000"	usagePerHour="1000"/>
@@ -304,7 +305,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_4" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_4" StateName="Укрепление опорных стоек" class="ConstructibleStateBuilding" >
 					<toggleMesh node="racks_03"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="PLANKS"			amount="500"	usagePerHour="500"/>
@@ -314,7 +315,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_5" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_5" StateName="Монтаж обрешётки, часть 1" class="ConstructibleStateBuilding" >
 					<toggleMesh node="transverseBracings_01"	active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="PLANKS"			amount="500"	usagePerHour="500"/>
@@ -324,7 +325,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_6" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_6" StateName="Монтаж обрешётки, часть 2" class="ConstructibleStateBuilding" >
 					<toggleMesh node="lathing_01"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="PLANKS"			amount="100"	usagePerHour="100"/>
@@ -334,7 +335,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_7" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_7" StateName="Установка опорных стоек навеса, секция №1" class="ConstructibleStateBuilding" >
 					<toggleMesh node="lathing_02"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="WOODBEAM"			amount="1000"	usagePerHour="1000"/>
@@ -345,7 +346,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_8" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_8" StateName="Установка опорных стоек навеса, секция №2" class="ConstructibleStateBuilding" >
 					<toggleMesh node="racks_04"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="WOODBEAM"			amount="1000"	usagePerHour="1000"/>
@@ -356,7 +357,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_9" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_9" StateName="Монтаж обрешётки навеса" class="ConstructibleStateBuilding" >
 					<toggleMesh node="racks_05"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="25"		usagePerHour="25"/>
 					<input fillType="PLANKS"			amount="500"	usagePerHour="500"/>
@@ -366,7 +367,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_10" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_10" StateName="Монтаж кровли, часть 1" class="ConstructibleStateBuilding" >
 					<toggleMesh node="lathing_03"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="1000"	usagePerHour="334"/>
@@ -376,7 +377,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_11" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_11" StateName="Монтаж кровли, часть 2" class="ConstructibleStateBuilding" >
 					<toggleMesh node="roof_1_01"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="1000"	usagePerHour="334"/>
@@ -386,7 +387,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_12" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_12" StateName="Монтаж кровли, часть 3" class="ConstructibleStateBuilding" >
 					<toggleMesh node="roof_1_02"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="1000"	usagePerHour="334"/>
@@ -396,7 +397,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_13" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_13" StateName="Монтаж крана для разгрузки брёвен" class="ConstructibleStateBuilding" >
 					<toggleMesh node="roof_2_01"		active="true"	updatePhysics="true" />
 					<toggleMesh node="truck_crane"		active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
@@ -408,8 +409,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_14" class="ConstructibleStateBuilding" >
-					<toggleMesh node="truck_crane"		active="false"	updatePhysics="false"/>
+				<state name="BUILDING_14" StateName="Монтаж стоек для хранения древесины" class="ConstructibleStateBuilding" >
+					<toggleMesh node="truck_crane"		active="false"	updatePhysics="true"/>
 					<toggleMesh node="crane"			active="true"	updatePhysics="true" />
 					<toggleMesh node="truck_wood_support"	active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
@@ -420,9 +421,19 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_15" class="ConstructibleStateBuilding" >
-					<toggleMesh node="truck_wood_support"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="wood_supports"	active="true"	updatePhysics="true" />
+				<state name="BUILDING_15" StateName="Монтаж стоек для хранения древесины" class="ConstructibleStateBuilding" >
+					<toggleMesh node="wood_support_01"	active="true"	updatePhysics="true" />
+					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
+					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
+					<input fillType="CEMENT"			amount="1000"	usagePerHour="334"/>
+					<sounds>
+						<active template="carpenterSmallWork"/>
+					</sounds>
+				</state>
+
+				<state name="BUILDING_16" StateName="Монтаж оборудования для распиловки" class="ConstructibleStateBuilding" >
+					<toggleMesh node="truck_wood_support"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="wood_support_02"	active="true"	updatePhysics="true" />
 					<toggleMesh node="truck_semitrailer_saws"	active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
@@ -431,10 +442,9 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_16" class="ConstructibleStateBuilding" >
-					<toggleMesh node="truck_semitrailer_saws"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_17" StateName="Монтаж щеподробильного оборудования" class="ConstructibleStateBuilding" >
+					<toggleMesh node="truck_semitrailer_saws"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="saws_lt15"		active="true"	updatePhysics="true" />
-					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
 					<sounds>
@@ -442,19 +452,9 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_17" class="ConstructibleStateBuilding" >
-					<toggleMesh node="truck_wood_support"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="wood_supports"		active="true"	updatePhysics="true" />
-					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="true"	updatePhysics="true"/>
-					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
-					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
-					<sounds>
-						<active template="carpenterSmallWork"/>
-					</sounds>
-				</state>
-
-				<state name="BUILDING_18" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_18" StateName="Монтаж сушильной камеры" class="ConstructibleStateBuilding" >
 					<toggleMesh node="woodchipper"		active="true"	updatePhysics="true" />
+					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
 					<sounds>
@@ -462,8 +462,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_19" class="ConstructibleStateBuilding" >
-					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_19" StateName="Монтаж освещения, обустройство производства" class="ConstructibleStateBuilding" >
+					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="Blaszak"			active="true"	updatePhysics="true" />
 					<input fillType="INSTRUMENT"		amount="100"	usagePerHour="34"/>
 					<input fillType="BUILDING_METAL"	amount="2000"	usagePerHour="667"/>
@@ -473,8 +473,8 @@
 				</state>
 
 				<state name="FINALIZE" class="ConstructibleStateFinalize" >
-					<toggleMesh node="ConstructibleSellingStation"	active="false"	updatePhysics="false" />
-					<toggleMesh node="Constructible"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="ConstructibleSellingStation"	active="false"	updatePhysics="true" />
+					<toggleMesh node="Constructible"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="finalDecoration"				active="true"	updatePhysics="true"/>
 					<toggleMesh node="productionPoint"				active="true"	updatePhysics="true" />
 					<toggleMesh node="sellingStation"				active="true"	updatePhysics="true" />
@@ -627,7 +627,8 @@
 		<i3dMapping id="truck_crane" node="0>4|0" />
 		<i3dMapping id="crane" node="0>2|10" />
 		<i3dMapping id="truck_wood_support" node="0>4|1" />
-		<i3dMapping id="wood_supports" node="0>2|11" />
+		<i3dMapping id="wood_support_01" node="0>2|11|0" />
+		<i3dMapping id="wood_support_02" node="0>2|11|1" />
 		<i3dMapping id="truck_semitrailer_saws" node="0>4|2" />
 		<i3dMapping id="saws_lt15" node="0>2|12" />
 		<i3dMapping id="truck_semitrailer_wood_dryer_chipper" node="0>4|3" />

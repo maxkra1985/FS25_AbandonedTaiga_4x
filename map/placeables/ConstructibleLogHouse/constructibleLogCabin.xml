@@ -7,9 +7,9 @@
 		</functions>
 		<image>map/placeables/ConstructibleLogHouse/store_LogCabin.dds</image>
 		<price>2000</price>
-		<showInStore>true</showInStore>
+		<showInStore>false</showInStore>
 		<lifetime>1000</lifetime>
-		<dailyUpkeep>1</dailyUpkeep>
+		<dailyUpkeep>0</dailyUpkeep>
 		<rotation>0</rotation>
 		<brand>NONE</brand>
 		<species>PLACEABLE</species>
@@ -85,14 +85,14 @@
 	</hotspots>
 
 	<triggerMarkers>
-		<triggerMarker node="unloadTriggerMarker"   filename="$data/shared/assets/marker/markerIconPallet.i3d" adjustToGround="true" />
+		<triggerMarker node="unloadTriggerMarker"   filename="markerIcons/markerIconStroyka.i3d" adjustToGround="true" />
 		<triggerMarker node="sleepTriggerMarker"    filename="$data/shared/assets/marker/markerIconSleep.i3d"/>
 		<triggerMarker node="wardrobeTriggerMarker" filename="$data/shared/assets/marker/markerIconWardrobe.i3d"/>
 		<triggerMarker node="warningStripes01" adjustToGround="true" />
 		<triggerMarker node="woodSellActivationTriggerMarker" adjustToGround="true" filename="$data/shared/assets/marker/markerIconExclamationMark.i3d"/>
 	</triggerMarkers>
 
-	<farmhouse spawnNode="spawnPoint">
+	<farmhouse spawnNode="spawnPoint" isFinalized="false">
 		<sleeping triggerNode="sleepingTrigger" cameraNode="sleepCamera"/>
 	</farmhouse>
 
@@ -101,34 +101,34 @@
 	<constructible>
 		<stateMachine>
 			<states>
-				<state name="SETUP" class="ConstructibleStateBuilding" >
+				<state name="SETUP" StateName="Разбор старой постройки" class="ConstructibleStateBuilding" >
 					<toggleMesh node="oldDom"				active="true"	updatePhysics="true"/>
-					<toggleMesh node="sawhorseLogSaw"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="transportBarrow"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="boardAndBeams"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="logPiles"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="1_foundationPosts"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="2_foundationFrame"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="3_floor"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_01"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_02"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_03"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_04"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_05"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_06"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_07"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_08"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_09"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_10"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_11"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_log_12"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="4_walls"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="5_trusses"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="5_roofBase"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="6_roofPlanks"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="7_stairs"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="7_furniture"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="7_door"				active="false"	updatePhysics="false"/>
+					<toggleMesh node="sawhorseLogSaw"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="transportBarrow"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="boardAndBeams"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="logPiles"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="1_foundationPosts"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="2_foundationFrame"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="3_floor"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_01"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_02"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_03"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_04"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_05"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_06"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_07"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_08"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_09"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_10"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_11"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_log_12"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="4_walls"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="5_trusses"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="5_roofBase"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="6_roofPlanks"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="7_stairs"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="7_furniture"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="7_door"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="farmhouseFeatures"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="wardrobe"				active="false"	updatePhysics="true"/>
 					<toggleHotspot index="1" isVisible="true" />
@@ -139,8 +139,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_1" class="ConstructibleStateBuilding" >
-					<toggleMesh node="oldDom"				active="false"	updatePhysics="false"/>
+				<state name="BUILDING_1" StateName="Установка опор основания" class="ConstructibleStateBuilding" >
+					<toggleMesh node="oldDom"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="logPiles"				active="true"	updatePhysics="true"/>
 					<toggleMesh node="sawhorseLogSaw"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
@@ -150,8 +150,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_2" class="ConstructibleStateBuilding" >
-					<toggleMesh node="oldDom"				active="false"	updatePhysics="false"/>
+				<state name="BUILDING_2" StateName="Монтаж основания" class="ConstructibleStateBuilding" >
 					<toggleMesh node="logPiles"				active="true"	updatePhysics="true"/>
 					<toggleMesh node="sawhorseLogSaw"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="1_foundationPosts"	active="true"	updatePhysics="true"/>
@@ -162,7 +161,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_3" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_3" StateName="Набивка пола" class="ConstructibleStateBuilding" >
 					<toggleMesh node="transportBarrow"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="boardAndBeams"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="2_foundationFrame"	active="true"	updatePhysics="true"/>
@@ -174,7 +173,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_4" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_4" StateName="Укладка 1 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="3_floor"				active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -184,7 +183,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_5" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_5" StateName="Укладка 2 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_01"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -193,7 +192,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_6" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_6" StateName="Укладка 3 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_02"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -202,7 +201,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_7" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_7" StateName="Укладка 4 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_03"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="50"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -211,7 +210,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_8" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_8" StateName="Укладка 5 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_04"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -220,7 +219,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_9" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_9" StateName="Укладка 6 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_05"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -229,7 +228,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_10" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_10" StateName="Укладка 7 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_06"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -238,7 +237,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_11" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_11" StateName="Укладка 8 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_07"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -247,7 +246,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_12" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_12" StateName="Укладка 9 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_08"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -256,7 +255,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_13" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_13" StateName="Укладка 10 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_09"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -265,7 +264,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_14" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_14" StateName="Укладка 11 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_10"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -274,7 +273,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_15" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_15" StateName="Укладка 12 венца сруба" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_11"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -283,7 +282,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_16" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_16" StateName="Прорезание окон и дверей" class="ConstructibleStateBuilding" >
 					<toggleMesh  node="4_log_12"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
 					<input fillType="WOOD"					amount="1000"	usagePerHour="1000"/>
@@ -292,19 +291,19 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_17" class="ConstructibleStateBuilding" >
-					<toggleMesh  node="4_log_01"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_02"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_03"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_04"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_05"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_06"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_07"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_08"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_09"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_10"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_11"			active="false"	updatePhysics="false" isVisible="false"/>
-					<toggleMesh  node="4_log_12"			active="false"	updatePhysics="false" isVisible="false"/>
+				<state name="BUILDING_17" StateName="Установка фронтонов и крыши" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="4_log_01"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_02"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_03"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_04"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_05"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_06"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_07"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_08"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_09"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_10"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_11"			active="false"	updatePhysics="true"/>
+					<toggleMesh  node="4_log_12"			active="false"	updatePhysics="true"/>
 					<toggleMesh  node="4_walls"				active="true"	updatePhysics="true"/>
 					<input fillType="PLANKS"				amount="995"	usagePerHour="500"/>
 					<input fillType="BOARDS"				amount="995"	usagePerHour="500"/>
@@ -315,8 +314,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_18" class="ConstructibleStateBuilding" >
-					<toggleMesh  node="logPiles"			active="false"	updatePhysics="false"/>
+				<state name="BUILDING_18" StateName="Монтаж кровли" class="ConstructibleStateBuilding" >
+					<toggleMesh  node="logPiles"			active="false"	updatePhysics="true"/>
 					<toggleMesh  node="5_trusses"			active="true"	updatePhysics="true"/>
 					<toggleMesh  node="5_roofBase"			active="true"	updatePhysics="true"/>
 					<input fillType="ROOFPLATES"			amount="995"	usagePerHour="1000"/>
@@ -327,7 +326,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_19" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_19" StateName="Расстановка мебели" class="ConstructibleStateBuilding" >
 					<toggleMesh node="6_roofPlanks"			active="true"	updatePhysics="true"/>
 					<input fillType="FURNITURE"				amount="499"	usagePerHour="500"/>
 					<input fillType="NAILS"					amount="87"		usagePerHour="90"/>
@@ -337,10 +336,9 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_20" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_20" StateName="Установка дверей и наведение порядка" class="ConstructibleStateBuilding" >
 					<toggleMesh node="7_stairs"				active="true"	updatePhysics="true"/>
 					<toggleMesh node="7_furniture"			active="true"	updatePhysics="true"/>
-					<toggleMesh node="7_door"				active="true"	updatePhysics="true"/>
 					<input fillType="FURNITURE"				amount="499"	usagePerHour="500"/>
 					<input fillType="NAILS"					amount="28"		usagePerHour="30"/>
 					<input fillType="INSTRUMENT"			amount="49"		usagePerHour="50"/>
@@ -350,8 +348,6 @@
 				</state>
 
 				<state name="FINALIZE" class="ConstructibleStateFinalize" >
-					<toggleMesh node="7_stairs"				active="true"	updatePhysics="true"/>
-					<toggleMesh node="7_furniture"			active="true"	updatePhysics="true"/>
 					<toggleMesh node="7_door"				active="true"	updatePhysics="true"/>
 					<toggleMesh node="sellingStation"		active="false"	updatePhysics="true"/> <!-- disable unload trigger -->
 					<toggleMesh node="props"				active="false" updatePhysics="true"/> <!-- disable construction fence -->

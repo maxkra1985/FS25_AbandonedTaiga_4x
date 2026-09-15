@@ -83,7 +83,7 @@
 	</hotspots>
 
 	<triggerMarkers>
-		<triggerMarker node="unloadTriggerMarker" filename="$data/shared/assets/marker/markerIconPallet.i3d" adjustToGround="true" />
+		<triggerMarker node="unloadTriggerMarker" filename="markerIcons/markerIconStroyka.i3d" adjustToGround="true" />
 		<triggerMarker node="warningStripes01"/>
 	</triggerMarkers>
 
@@ -111,25 +111,25 @@
 	<constructible>
 		<stateMachine>
 			<states>
-				<state name="SETUP" class="ConstructibleStateBuilding" >
-					<toggleMesh node="build_01"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_02"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_03"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_04"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_05"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_06"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_07"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_08"		active="false" updatePhysics="false"/>
-					<toggleMesh node="build_09"		active="false" updatePhysics="false"/>
-					<toggleMesh node="gate6m"		active="false" updatePhysics="false"/>
+				<state name="SETUP" StateName="Разбор въезда" class="ConstructibleStateBuilding" >
+					<toggleMesh node="build_01"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_02"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_03"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_04"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_05"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_06"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_07"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_08"		active="false" updatePhysics="true"/>
+					<toggleMesh node="build_09"		active="false" updatePhysics="true"/>
+					<toggleMesh node="gate6m"		active="false" updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40" usagePerHour="80"/>
 					<sounds>
 						<active template="carpenterSmallWork"/>
 					</sounds>
 				</state>
 
-				<state name="BUILDING_1" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_01"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_1" StateName="Реконструкция левой стороны" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_01"	active="false"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
 					<sounds>
@@ -137,8 +137,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_2" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_02"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_2" StateName="Реконструкция левого угла" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_02"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_01"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -147,8 +147,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_3" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_03"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_3" StateName="Реконструкция дальней стороны" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_03"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_02"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -157,8 +157,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_4" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_04"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_4" StateName="Реконструкция дальнего угла" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_04"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_03"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -167,8 +167,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_5" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_05"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_5" StateName="Реконструкция правой стороны" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_05"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_04"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -177,8 +177,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_6" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_06"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_6" StateName="Реконструкция правого угла" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_06"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_05"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -187,8 +187,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_7" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_07"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_7" StateName="Реконструкция прямого участка" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_07"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_06"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -198,7 +198,7 @@
 				</state>
 
 				<state name="BUILDING_8" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_08"	active="false"	updatePhysics="false"/>
+					<toggleMesh node="destroy_08"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_07"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -207,8 +207,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_9" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_09"	active="false"	updatePhysics="false"/>
+				<state name="BUILDING_9" StateName="Завершение реконструкции забора" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_09"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_08"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -217,8 +217,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_10" class="ConstructibleStateBuilding" >
-					<toggleMesh node="oldFence"		active="false"	updatePhysics="false"/>
+				<state name="BUILDING_10" StateName="Установка въездных ворот" class="ConstructibleStateBuilding" >
+					<toggleMesh node="oldFence"		active="false"	updatePhysics="true"/>
 					<toggleMesh node="build_09"		active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"	amount="40"		usagePerHour="20"/>
 					<input fillType="BOARDS"		amount="999"	usagePerHour="500"/>
@@ -229,8 +229,7 @@
 
 				<state name="FINALIZE" class="ConstructibleStateFinalize" >
 					<toggleMesh node="gate6m"		active="true"	updatePhysics="true"/>
-					<!--toggleMesh node="passport"		active="false"	updatePhysics="false"/-->
-					<toggleMesh node="ConstructibleSellingStation"	active="false" updatePhysics="false"/>
+					<toggleMesh node="ConstructibleSellingStation"	active="false" updatePhysics="true"/>
 				</state>
 
 				<state name="DONE" class="ConstructibleState" isPreviewState="true"/>
