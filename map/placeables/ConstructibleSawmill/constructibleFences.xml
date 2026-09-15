@@ -308,7 +308,6 @@
 		<i3dMapping id="destroy_07" node="0>1|6" />
 		<i3dMapping id="destroy_08" node="0>1|7" />
 		<i3dMapping id="destroy_09" node="0>1|8" />
-		<i3dMapping id="passport" node="0>1|9" />
 
 	</i3dMappings>
 </placeable>
