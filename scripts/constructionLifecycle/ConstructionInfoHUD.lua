@@ -11,13 +11,18 @@
 TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
 local HUD = TaigaConstructionInfoHUD
 
-HUD.VERSION = "1.0.2"
+HUD.VERSION = "1.0.3"
 HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
 
 HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
 HUD.L10N_PRODUCTION_STORAGE = "taiga_cl_infoProductionStorage"
 HUD.L10N_WAREHOUSE_STORAGE = "taiga_cl_infoWarehouseStorage"
 HUD.L10N_OBJECT = "taiga_cl_infoObject"
+
+-- Геометрия строки штатного InfoDisplayKeyValueBox:
+-- 340 px ширина блока - 30 px левый отступ - 14 px правый отступ.
+HUD.CONSTRUCTION_STATE_TEXT_SIZE_PX = 14
+HUD.CONSTRUCTION_STATE_MAX_WIDTH_PX = 296
 
 local function getLifecycle()
     return TaigaConstructionLifecycle
@@ -45,6 +50,93 @@ local function addSection(infoTable, title)
         title = title,
         accentuate = true
     })
+end
+
+-- Разбивает текст по словам с учётом фактической ширины шрифта GIANTS.
+-- Если отдельное слово само шире доступной строки, оно делится по UTF-8 символам.
+function HUD.wrapTextToWidth(text, textSize, maxWidth)
+    local value = tostring(text or "")
+    if value == ""
+        or type(textSize) ~= "number"
+        or type(maxWidth) ~= "number"
+        or maxWidth <= 0 then
+        return {value}
+    end
+
+    local lines = {}
+    local currentLine = ""
+
+    local function flushCurrentLine()
+        if currentLine ~= "" then
+            table.insert(lines, currentLine)
+            currentLine = ""
+        end
+    end
+
+    -- Помещает слишком длинное одиночное слово в несколько строк без потери текста.
+    local function appendLongWord(word)
+        local remaining = word
+
+        while remaining ~= "" and getTextWidth(textSize, remaining) > maxWidth do
+            local fitLength = getTextLineLength(textSize, remaining, maxWidth)
+            if fitLength == nil or fitLength <= 0 then
+                fitLength = 1
+            end
+
+            table.insert(lines, utf8Substr(remaining, 0, fitLength))
+            remaining = utf8Substr(remaining, fitLength) or ""
+        end
+
+        currentLine = remaining
+    end
+
+    for word in string.gmatch(value, "%S+") do
+        if currentLine == "" then
+            if getTextWidth(textSize, word) <= maxWidth then
+                currentLine = word
+            else
+                appendLongWord(word)
+            end
+        else
+            local candidate = currentLine .. " " .. word
+            if getTextWidth(textSize, candidate) <= maxWidth then
+                currentLine = candidate
+            else
+                flushCurrentLine()
+
+                if getTextWidth(textSize, word) <= maxWidth then
+                    currentLine = word
+                else
+                    appendLongWord(word)
+                end
+            end
+        end
+    end
+
+    flushCurrentLine()
+
+    if #lines == 0 then
+        table.insert(lines, value)
+    end
+
+    return lines
+end
+
+-- Возвращает реальные экранные размеры строки InfoDisplay для текущего UI scale.
+local function getConstructionStateTextMetrics()
+    local infoDisplay = g_currentMission ~= nil
+        and g_currentMission.hud ~= nil
+        and g_currentMission.hud.infoDisplay
+        or nil
+
+    if infoDisplay == nil
+        or type(infoDisplay.scalePixelToScreenHeight) ~= "function"
+        or type(infoDisplay.scalePixelToScreenWidth) ~= "function" then
+        return nil, nil
+    end
+
+    return infoDisplay:scalePixelToScreenHeight(HUD.CONSTRUCTION_STATE_TEXT_SIZE_PX),
+        infoDisplay:scalePixelToScreenWidth(HUD.CONSTRUCTION_STATE_MAX_WIDTH_PX)
 end
 
 local function normalizeFillTypeIndex(value)
@@ -506,6 +598,72 @@ function HUD.installProductionPointInfoHook()
     return true
 end
 
+-- Перехватывает только уведомления, сформированные ConstructionLifecycleFix.
+-- Убирает повтор названия объекта и использует обе штатные строки TopNotification.
+function HUD.gameNotificationLayout(mission, superFunc, title, text, info, iconFilename, duration)
+    local fix = TaigaConstructionLifecycleFix
+    local titleText = title ~= nil and tostring(title) or nil
+    local prefix = titleText ~= nil and titleText ~= "" and titleText .. ": " or nil
+
+    local isConstructionNotification = fix ~= nil
+        and duration == fix.NOTIFICATION_DURATION_MS
+        and info == ""
+        and iconFilename == nil
+        and type(text) == "string"
+        and prefix ~= nil
+        and string.sub(text, 1, #prefix) == prefix
+
+    if not isConstructionNotification then
+        return superFunc(mission, title, text, info, iconFilename, duration)
+    end
+
+    local notificationText = string.sub(text, #prefix + 1)
+    local upperText = utf8ToUpper(notificationText)
+    local topNotification = mission ~= nil
+        and mission.hud ~= nil
+        and mission.hud.topNotification
+        or nil
+
+    if topNotification == nil
+        or topNotification.bgScale == nil
+        or type(topNotification.textSize) ~= "number"
+        or type(topNotification.infoTextSize) ~= "number"
+        or type(topNotification.bgScale.width) ~= "number" then
+        return superFunc(mission, title, notificationText, "", iconFilename, duration)
+    end
+
+    -- text и info в штатном TopNotification имеют одинаковую доступную ширину.
+    -- Берём больший размер шрифта, чтобы обе получившиеся строки гарантированно помещались.
+    local wrapTextSize = math.max(topNotification.textSize, topNotification.infoTextSize)
+    local lines = HUD.wrapTextToWidth(upperText, wrapTextSize, topNotification.bgScale.width)
+    local firstLine = lines[1] or upperText
+    local secondLine = ""
+
+    if #lines > 1 then
+        secondLine = table.concat(lines, " ", 2)
+    end
+
+    return superFunc(mission, title, firstLine, secondLine, iconFilename, duration)
+end
+
+-- Устанавливает layout-hook до загрузки координатора. Сам фильтр проверяется
+-- в момент показа уведомления, когда ConstructionLifecycleFix уже существует.
+function HUD.installConstructionNotificationLayoutHook()
+    if BaseMission == nil
+        or BaseMission.addGameNotification == nil
+        or BaseMission.taigaConstructionNotificationLayoutInstalled then
+        return false
+    end
+
+    BaseMission.addGameNotification = Utils.overwrittenFunction(
+        BaseMission.addGameNotification,
+        HUD.gameNotificationLayout
+    )
+
+    BaseMission.taigaConstructionNotificationLayoutInstalled = true
+    return true
+end
+
 -- Добавляет только сведения строительной части объекта. Никакая production/husbandry/
 -- silo/objectStorage специализация здесь намеренно не вызывается.
 function HUD.addConstructionInfo(placeable, infoTable)
@@ -531,12 +689,20 @@ function HUD.addConstructionInfo(placeable, infoTable)
             text = progressText
         })
 
-        -- Название этапа, если оно задано через #StateName, выводим отдельной
-        -- строкой без правой колонки. Так InfoDisplay использует почти всю ширину HUD.
+        -- Название этапа, если оно задано через #StateName, переносится по фактической
+        -- ширине штатного InfoDisplay. Каждая часть становится отдельной строкой,
+        -- поэтому высота блока автоматически увеличивается штатным кодом GIANTS.
         if stateName ~= nil then
-            table.insert(infoTable, {
-                title = stateName
-            })
+            local textSize, maxWidth = getConstructionStateTextMetrics()
+            local lines = textSize ~= nil and maxWidth ~= nil
+                and HUD.wrapTextToWidth(stateName, textSize, maxWidth)
+                or {stateName}
+
+            for _, line in ipairs(lines) do
+                table.insert(infoTable, {
+                    title = line
+                })
+            end
         end
     end
 
@@ -586,5 +752,6 @@ function HUD.addConstructionInfo(placeable, infoTable)
 end
 
 HUD.installProductionPointInfoHook()
+HUD.installConstructionNotificationLayoutHook()
 
 Logging.info("%s loaded, version %s", HUD.LOG_PREFIX, HUD.VERSION)
