@@ -1,7 +1,7 @@
 -- FS25_DynamicRoadMap
 -- Adds player-painted asphalt/gravel roads to the in-game overview/minimap.
 --
--- v. 1.0.0.1 architecture:
+-- v. 1.0.0.2 architecture:
 --   * The base map is left completely untouched.
 --   * Existing-road import is prepared automatically in the background after load.
 --   * Only terrain areas modified through Landscaping PAINT are recorded.
@@ -13,8 +13,8 @@ DynamicRoadMap = {}
 
 DynamicRoadMap.MOD_NAME = g_currentModName or "FS25_DynamicRoadMap"
 DynamicRoadMap.LOG_PREFIX = "[DynamicRoadMap]"
-DynamicRoadMap.DATA_VERSION = 7
-DynamicRoadMap.LEGACY_IMPORT_VERSION = 5
+DynamicRoadMap.DATA_VERSION = 8
+DynamicRoadMap.LEGACY_IMPORT_VERSION = 4
 
 -- One mask pixel represents roughly one world metre on normal/4x maps.
 -- 2048 m -> 2048 px, 4096 m -> 4096 px. Larger maps are capped at 4096.
@@ -108,13 +108,14 @@ function DynamicRoadMapFullSyncEvent.emptyNew()
 	return Event.new(DynamicRoadMapFullSyncEvent_mt)
 end
 
-function DynamicRoadMapFullSyncEvent.new(roadInfoLayer, legacyInfoLayer, legacyReady, maskResolution, legacyImportVersion)
+function DynamicRoadMapFullSyncEvent.new(roadInfoLayer, legacyInfoLayer, legacyReady, maskResolution, legacyImportVersion, revision)
 	local self = DynamicRoadMapFullSyncEvent.emptyNew()
 	self.roadInfoLayer = roadInfoLayer
 	self.legacyInfoLayer = legacyInfoLayer
 	self.legacyReady = legacyReady == true
 	self.maskResolution = maskResolution
 	self.legacyImportVersion = legacyImportVersion or 0
+	self.revision = revision or 0
 	return self
 end
 
@@ -123,6 +124,7 @@ function DynamicRoadMapFullSyncEvent:writeStream(streamId, connection)
 	streamWriteUIntN(streamId, self.maskResolution or 0, 13)
 	streamWriteBool(streamId, self.legacyReady)
 	streamWriteUIntN(streamId, self.legacyImportVersion or 0, 8)
+	streamWriteUIntN(streamId, self.revision or 0, 24)
 
 	self.roadInfoLayer:writeStream(streamId, connection)
 	if self.legacyReady and self.legacyInfoLayer ~= nil then
@@ -135,6 +137,7 @@ function DynamicRoadMapFullSyncEvent:readStream(streamId, connection)
 	self.maskResolution = streamReadUIntN(streamId, 13)
 	self.legacyReady = streamReadBool(streamId)
 	self.legacyImportVersion = streamReadUIntN(streamId, 8)
+	self.revision = streamReadUIntN(streamId, 24)
 
 	self.roadInfoLayer = InfoLayer.new("dynamicRoadMapNetworkRoad", "")
 	self.roadInfoLayer:create(
@@ -176,16 +179,20 @@ function DynamicRoadMapPaintEvent.emptyNew()
 	return Event.new(DynamicRoadMapPaintEvent_mt)
 end
 
-function DynamicRoadMapPaintEvent.new(areas, roadValue)
+function DynamicRoadMapPaintEvent.new(areas, roadValue, revision, clearLegacy)
 	local self = DynamicRoadMapPaintEvent.emptyNew()
 	self.areas = areas or {}
 	self.roadValue = roadValue or DynamicRoadMap.ROAD_VALUE_NONE
+	self.revision = revision or 0
+	self.clearLegacy = clearLegacy == true
 	return self
 end
 
 function DynamicRoadMapPaintEvent:writeStream(streamId, connection)
 	local count = math.min(#self.areas, 65535)
 	streamWriteUIntN(streamId, self.roadValue, DynamicRoadMap.ROAD_NUM_CHANNELS)
+	streamWriteUIntN(streamId, self.revision or 0, 24)
+	streamWriteBool(streamId, self.clearLegacy == true)
 	streamWriteUIntN(streamId, count, 16)
 
 	for i = 1, count do
@@ -198,6 +205,8 @@ end
 
 function DynamicRoadMapPaintEvent:readStream(streamId, connection)
 	self.roadValue = streamReadUIntN(streamId, DynamicRoadMap.ROAD_NUM_CHANNELS)
+	self.revision = streamReadUIntN(streamId, 24)
+	self.clearLegacy = streamReadBool(streamId)
 	local count = streamReadUIntN(streamId, 16)
 	self.areas = {}
 
@@ -218,7 +227,7 @@ end
 --- Применяет подтверждённую сервером покраску только к клиентской маске.
 function DynamicRoadMapPaintEvent:run(connection)
 	if connection ~= nil and connection:getIsServer() then
-		DynamicRoadMap:applyNetworkPaintAreas(self.areas, self.roadValue)
+		DynamicRoadMap:applyNetworkPaintAreas(self.areas, self.roadValue, self.revision, self.clearLegacy)
 	end
 end
 
@@ -478,12 +487,14 @@ function DynamicRoadMap:loadMap(mapName)
 	self.networkSyncRequested = false
 	self.networkSyncReceived = false
 	self.networkLegacyReady = false
+	self.networkRevision = 0
+	self.pendingNetworkPaintEvents = {}
 
 	self:installMapMenuHooks()
 	self:installHooks()
 
 	self:log("============================================================")
-	self:log("Dynamic Road Map v1.0.0.1 loaded")
+	self:log("Dynamic Road Map v1.0.0.2 loaded")
 	self:log("Map: %s", tostring(mapName))
 	self:log("Mode: player Landscaping roads + background legacy terrain import")
 	self:log("============================================================")
@@ -517,6 +528,8 @@ function DynamicRoadMap:deleteMap()
 	self.networkSyncRequested = false
 	self.networkSyncReceived = false
 	self.networkLegacyReady = false
+	self.networkRevision = 0
+	self.pendingNetworkPaintEvents = {}
 end
 
 function DynamicRoadMap:installHooks()
@@ -530,9 +543,26 @@ function DynamicRoadMap:installHooks()
 		self:log("Installed IngameMap overlay hook")
 	end
 
-	-- Keep the exact terrainPaintingLayer chosen by the Landscaping brush.
-	-- onSculptingApplied() does not expose this argument, so capture it at
-	-- sculpt() entry and use it after the terrain change succeeds.
+	-- Захватываем реальный terrain layer в той же функции GIANTS, которая
+	-- настраивает PAINT и формирует modifiedAreas. Это работает одинаково
+	-- для действий хоста и для LandscapingSculptEvent, пришедшего от клиента.
+	if not self.landscapingAssignPaintHookInstalled
+		and Landscaping ~= nil
+		and Landscaping.assignPaintingParameters ~= nil then
+		local oldAssignPaintingParameters = Landscaping.assignPaintingParameters
+		Landscaping.assignPaintingParameters = function(landscaping, deform, x, z, radius, brushShape, layerIndex)
+			if DynamicRoadMap:getIsServer() then
+				landscaping.dynamicRoadMapTerrainPaintingLayer = layerIndex
+			end
+
+			return oldAssignPaintingParameters(landscaping, deform, x, z, radius, brushShape, layerIndex)
+		end
+		self.landscapingAssignPaintHookInstalled = true
+		self:log("Installed Landscaping paint-parameter capture hook")
+	end
+
+	-- Резервный захват слоя на входе sculpt(). Основным источником является
+	-- assignPaintingParameters(), но этот хук оставляем для совместимости.
 	if not self.landscapingSculptHookInstalled and Landscaping ~= nil and Landscaping.sculpt ~= nil then
 		local oldSculpt = Landscaping.sculpt
 		Landscaping.sculpt = function(
@@ -1005,8 +1035,8 @@ function DynamicRoadMap:initialize()
 end
 
 --- Отправляет клиентский запрос на первичную синхронизацию дорожных масок.
-function DynamicRoadMap:requestNetworkSync()
-	if self:getIsServer() or self.networkSyncRequested or g_client == nil then
+function DynamicRoadMap:requestNetworkSync(force)
+	if self:getIsServer() or (self.networkSyncRequested and force ~= true) or g_client == nil then
 		return false
 	end
 
@@ -1038,10 +1068,15 @@ function DynamicRoadMap:sendNetworkFullSync(connection)
 		legacyReady and self.legacyInfoLayer or nil,
 		legacyReady,
 		self.maskResolution,
-		self.legacyImportVersion
+		self.legacyImportVersion,
+		self.networkRevision or 0
 	))
 
-	self:log("Sent road-map state to client (legacyReady=%s)", tostring(legacyReady))
+	self:log(
+		"Sent road-map state to client (legacyReady=%s revision=%d)",
+		tostring(legacyReady),
+		self.networkRevision or 0
+	)
 	return true
 end
 
@@ -1073,7 +1108,8 @@ function DynamicRoadMap:broadcastNetworkFullSync()
 		self.legacyInfoLayer,
 		true,
 		self.maskResolution,
-		self.legacyImportVersion
+		self.legacyImportVersion,
+		self.networkRevision or 0
 	), false)
 
 	self:log("Broadcast completed road-map state to clients")
@@ -1142,29 +1178,122 @@ function DynamicRoadMap:applyNetworkFullSync(event)
 	self.legacyImportVersion = event.legacyImportVersion or 0
 	self.networkSyncReceived = true
 	self.networkLegacyReady = event.legacyReady == true
+	self.networkRevision = event.revision or 0
+	self.networkSyncRequested = false
+
+	-- Если изменение пришло во время передачи большой полной маски, применяем
+	-- его после full-sync. Ревизия не позволяет старому full-sync затереть
+	-- более новую покраску.
+	local pending = self.pendingNetworkPaintEvents or {}
+	self.pendingNetworkPaintEvents = {}
+	table.sort(pending, function(a, b)
+		return (a.revision or 0) < (b.revision or 0)
+	end)
+	for _, pendingEvent in ipairs(pending) do
+		if (pendingEvent.revision or 0) > self.networkRevision then
+			self:applyNetworkPaintAreas(
+				pendingEvent.areas,
+				pendingEvent.roadValue,
+				pendingEvent.revision,
+				pendingEvent.clearLegacy
+			)
+		end
+	end
 
 	self:requestOverlayRegeneration()
 	self:syncOpenMapFrame()
-	self:log("Received road-map state from server (legacyReady=%s)", tostring(event.legacyReady))
+	self:log(
+		"Received road-map state from server (legacyReady=%s revision=%d)",
+		tostring(event.legacyReady),
+		self.networkRevision
+	)
 end
 
---- Рассылает клиентам только подтверждённые изменения player-road маски.
-function DynamicRoadMap:broadcastPaintAreas(areas, roadValue)
+--- Рассылает клиентам только подтверждённые сервером изменения масок.
+function DynamicRoadMap:broadcastPaintAreas(areas, roadValue, clearLegacy)
 	if not self:getIsServer() or g_server == nil or areas == nil or #areas == 0 then
 		return
 	end
 
-	g_server:broadcastEvent(DynamicRoadMapPaintEvent.new(areas, roadValue), false)
+	self.networkRevision = (self.networkRevision or 0) + 1
+	g_server:broadcastEvent(
+		DynamicRoadMapPaintEvent.new(areas, roadValue, self.networkRevision, clearLegacy),
+		false
+	)
+	self:log(
+		"Broadcast road-paint update (revision=%d areas=%d value=%d clearLegacy=%s)",
+		self.networkRevision,
+		#areas,
+		roadValue,
+		tostring(clearLegacy == true)
+	)
 end
 
 --- Применяет на клиенте изменение, уже рассчитанное и подтверждённое сервером.
-function DynamicRoadMap:applyNetworkPaintAreas(areas, roadValue)
-	if self:getIsServer() or not self.initialized then
+function DynamicRoadMap:applyNetworkPaintAreas(areas, roadValue, revision, clearLegacy)
+	if self:getIsServer() or not self.initialized or areas == nil then
 		return
 	end
 
-	if self:applyPaintAreasToPlayerMask(areas, roadValue, false) then
-		self:log("Applied server road-paint update (%d areas, value=%d)", #areas, roadValue)
+	revision = revision or 0
+
+	-- Пока полная маска ещё не получена, не пишем изменение во временную
+	-- пустую маску: сохраняем delta и применим её поверх server full-sync.
+	if not self.networkSyncReceived then
+		table.insert(self.pendingNetworkPaintEvents, {
+			areas = areas,
+			roadValue = roadValue,
+			revision = revision,
+			clearLegacy = clearLegacy == true
+		})
+		self:log("Queued road-paint update until full sync (revision=%d)", revision)
+		return
+	end
+
+	if revision > 0 and revision <= (self.networkRevision or 0) then
+		return
+	end
+
+	-- На надёжном ordered-канале разрыва быть не должно. Если он всё же
+	-- обнаружен, просим полную маску вместо самостоятельного сканирования.
+	if revision > 0
+		and self.networkRevision ~= nil
+		and revision > self.networkRevision + 1 then
+		self:log(
+			"Road-map revision gap detected (%d -> %d); requesting full server sync",
+			self.networkRevision,
+			revision
+		)
+		self.networkSyncReceived = false
+		self.networkSyncRequested = false
+		table.insert(self.pendingNetworkPaintEvents, {
+			areas = areas,
+			roadValue = roadValue,
+			revision = revision,
+			clearLegacy = clearLegacy == true
+		})
+		self:requestNetworkSync(true)
+		return
+	end
+
+	local changed = self:applyPaintAreasToPlayerMask(areas, roadValue, false)
+	if clearLegacy then
+		changed = self:applyPaintAreasToLegacyMask(areas, self.LEGACY_VALUE_NONE, false) or changed
+	end
+
+	if revision > 0 then
+		self.networkRevision = revision
+	end
+
+	if changed then
+		self:requestOverlayRegeneration()
+		self:log(
+			"Applied server road-paint update (revision=%d areas=%d value=%d clearLegacy=%s)",
+			revision,
+			#areas,
+			roadValue,
+			tostring(clearLegacy == true)
+		)
 	end
 end
 
@@ -1724,6 +1853,34 @@ function DynamicRoadMap:applyPaintAreasToPlayerMask(areas, roadValue, markForCom
 	return changed
 end
 
+--- Применяет world-space modifiedAreas к отдельной маске импортированных дорог.
+-- Сейчас используется для удаления старой импортированной дороги, когда игрок
+-- перекрашивает этот участок в траву/грунт/другой не-дорожный материал.
+function DynamicRoadMap:applyPaintAreasToLegacyMask(areas, legacyValue, markForCommit)
+	if self.legacyInfoLayer == nil or areas == nil then
+		return false
+	end
+
+	local changed = false
+	for _, area in pairs(areas) do
+		local x0, z0, x1, z1, x2, z2 = unpack(area)
+		if x0 ~= nil then
+			self.legacyInfoLayer:setValueAtWorldParallelogram(
+				x0, z0, x1, z1, x2, z2,
+				0, self.LEGACY_NUM_CHANNELS, legacyValue, nil
+			)
+			changed = true
+		end
+	end
+
+	if changed and markForCommit ~= false then
+		self.playerMaskChanged = true
+		self.playerMaskCommitTimer = self.DIRTY_RESCAN_DELAY_MS
+	end
+
+	return changed
+end
+
 function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 	if not self.initialized
 		or not self:getIsServer()
@@ -1740,13 +1897,28 @@ function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 	end
 
 	local layerIndex = landscaping.dynamicRoadMapTerrainPaintingLayer
+	if layerIndex == nil then
+		-- Не угадываем тип дороги: повторно строим таблицу terrain layers и
+		-- оставляем NON_ROAD, если GIANTS не передал layerIndex.
+		self:discoverRoadTerrainLayers()
+		self:log("Warning: server paint completed without captured terrainPaintingLayer")
+	end
 	local roadValue = self:getRoadValueForTerrainPaintingLayer(layerIndex)
 
-	-- ROAD_VALUE_NONE deliberately clears player-road pixels when grass/dirt/
-	-- another non-road paint is applied over a previously recorded road.
+	-- Любая ручная PAINT-операция заменяет исходное состояние terrain. Поэтому
+	-- в изменённой области legacy-слой всегда очищается: новая дорога остаётся
+	-- в player-mask, а трава/грунт дают ROAD_VALUE_NONE. Так старый импорт не
+	-- может перекрыть свежую покраску другим типом дороги.
+	local clearLegacy = true
 	local changed = self:applyPaintAreasToPlayerMask(landscaping.modifiedAreas, roadValue, true)
+	changed = self:applyPaintAreasToLegacyMask(
+		landscaping.modifiedAreas,
+		self.LEGACY_VALUE_NONE,
+		true
+	) or changed
+
 	if changed then
-		self:broadcastPaintAreas(landscaping.modifiedAreas, roadValue)
+		self:broadcastPaintAreas(landscaping.modifiedAreas, roadValue, clearLegacy)
 	end
 
 	self.loggedPaintLayers = self.loggedPaintLayers or {}
