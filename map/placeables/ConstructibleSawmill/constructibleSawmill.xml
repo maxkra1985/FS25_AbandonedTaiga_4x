@@ -222,7 +222,8 @@
 					<toggleMesh node="truck_crane"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="crane"					active="false"	updatePhysics="true"/>
 					<toggleMesh node="truck_wood_support"		active="false"	updatePhysics="true"/>
-					<toggleMesh node="wood_supports"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="wood_support_01"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="wood_support_02"			active="false"	updatePhysics="true"/>
 					<toggleMesh node="truck_semitrailer_saws"	active="false"	updatePhysics="true"/>
 					<toggleMesh node="saws_lt15"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="truck_semitrailer_wood_dryer_chipper"	active="false"	updatePhysics="true"/>

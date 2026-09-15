@@ -84,11 +84,12 @@
 	</indoorAreas>
 
 	<triggerMarkers>
-		<triggerMarker node="markerMilk"			filename="$data/shared/assets/marker/markerIconMilk.i3d" />
-		<triggerMarker node="markerFood"			filename="$data/shared/assets/marker/markerIconFood.i3d" />
-		<triggerMarker node="markerAnimals"			filename="map/placeables/CowBarnConstructibles/marker/markerIconCow.i3d" />
-		<triggerMarker node="markerLiquidManure"	filename="$data/shared/assets/marker/markerIconSlurry.i3d" />
-		<triggerMarker node="ConstructibleUnloadTriggerMarker"	filename="$data/shared/assets/marker/markerIconPallet.i3d" />
+		<triggerMarker node="markerMilk"			adjustToGround="true" filename="$data/shared/assets/marker/markerIconMilk.i3d" />
+		<triggerMarker node="markerFood"			adjustToGround="true" filename="$data/shared/assets/marker/markerIconFood.i3d" />
+		<triggerMarker node="markerStraw"			adjustToGround="true" filename="markerIcons/markerIconStrawUnload.i3d" />
+		<triggerMarker node="markerAnimals"			adjustToGround="true" filename="markerIcons/markerIconCow.i3d" />
+		<triggerMarker node="markerLiquidManure"	adjustToGround="true" filename="$data/shared/assets/marker/markerIconSlurry.i3d" />
+		<triggerMarker node="ConstructibleUnloadTriggerMarker"	adjustToGround="true" filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 
 	<tipOcclusionUpdateAreas>
@@ -295,67 +296,67 @@
 	<constructible>
 		<stateMachine>
 			<states>
-				<state name="DESTROY_01" class="ConstructibleStateBuilding" >
-					<toggleMesh node="Cattleshed"				active="false"	updatePhysics="false" />
-					<toggleMesh node="phase01_1"				active="false"	updatePhysics="false" />
-					<toggleMesh node="phase01_2"				active="false"	updatePhysics="false" />
-					<toggleMesh node="phase01_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase02_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase02_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase03_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase03_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase03_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_4"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_5"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_6"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase04_7"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_4"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_5"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase05_6"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase06_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase06_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase06_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase06_4"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase07_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase07_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase07_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase08_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase08_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase08_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase09_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase09_2"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase09_3"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="phase10_1"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="glasses"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="lights"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="SingleGatePostTowards1"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="SingleGatePostAway1"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="SingleGatePostTowards2"	active="false"	updatePhysics="false"/>
-					<toggleMesh node="SingleGatePostAway2"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="SingleGatePostAway3"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="concretMixer_01"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="concretMixer_02"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="concretMixer_03"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="metal_01"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="metal_02"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="metal_03"					active="false"	updatePhysics="false"/>
-					<toggleMesh node="cementBricks"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="cementBags"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="boardsStacks"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_01_trash_01"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_01_trash_02"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_01_truck"			active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_trash_01"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_trash_02"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_trash_03"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_trash_04"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_truck"			active="false"	updatePhysics="false"/>
+				<state name="DESTROY_01" StateName="Начало разбора старых построек" class="ConstructibleStateBuilding" >
+					<toggleMesh node="Cattleshed"				active="false"	updatePhysics="true" />
+					<toggleMesh node="phase01_1"				active="false"	updatePhysics="true" />
+					<toggleMesh node="phase01_2"				active="false"	updatePhysics="true" />
+					<toggleMesh node="phase01_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase02_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase02_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase03_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase03_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase03_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_4"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_5"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_6"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase04_7"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_4"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_5"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase05_6"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase06_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase06_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase06_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase06_4"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase07_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase07_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase07_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase08_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase08_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase08_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase09_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase09_2"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase09_3"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="phase10_1"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="glasses"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="lights"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="SingleGatePostTowards1"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="SingleGatePostAway1"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="SingleGatePostTowards2"	active="false"	updatePhysics="true"/>
+					<toggleMesh node="SingleGatePostAway2"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="SingleGatePostAway3"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="concretMixer_01"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="concretMixer_02"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="concretMixer_03"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="metal_01"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="metal_02"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="metal_03"					active="false"	updatePhysics="true"/>
+					<toggleMesh node="cementBricks"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="cementBags"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="boardsStacks"				active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_01_trash_01"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_01_trash_02"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_01_truck"			active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_02_trash_01"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_02_trash_02"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_02_trash_03"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_02_trash_04"		active="false"	updatePhysics="true"/>
+					<toggleMesh node="destroy_02_truck"			active="false"	updatePhysics="true"/>
 					<toggleHotspot index="1" isVisible="true" />
 					<toggleHotspot index="2" isVisible="false" />
 					<input fillType="INSTRUMENT"				amount="50"	usagePerHour="125"/>
@@ -363,7 +364,7 @@
 						<active template="constructibleActive"/>
 					</sounds>
 				</state>
-				<state name="DESTROY_02" class="ConstructibleStateBuilding" >
+				<state name="DESTROY_02" StateName="Разбор старого навеса" class="ConstructibleStateBuilding" >
 					<toggleMesh node="destroy_01_trash_01"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="destroy_01_trash_02"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="destroy_02_trash_01"		active="true"	updatePhysics="true"/>
@@ -372,8 +373,8 @@
 						<active template="constructibleActive"/>
 					</sounds>
 				</state>
-				<state name="DESTROY_03" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_01"				active="false"	updatePhysics="false"/>
+				<state name="DESTROY_03" StateName="Разбор старого здания коровника" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_01"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="destroy_02_trash_02"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="destroy_02_trash_03"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="destroy_01_truck"			active="true"	updatePhysics="true"/>
@@ -382,8 +383,8 @@
 						<active template="constructibleActive"/>
 					</sounds>
 				</state>
-				<state name="DESTROY_04" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_02"				active="false"	updatePhysics="false"/>
+				<state name="DESTROY_04" StateName="Вывоз мусора, очистка стройплощадки" class="ConstructibleStateBuilding" >
+					<toggleMesh node="destroy_02"				active="false"	updatePhysics="true"/>
 					<toggleMesh node="destroy_02_trash_04"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="destroy_02_truck"			active="true"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"				amount="200"	usagePerHour="125"/>
@@ -391,18 +392,15 @@
 						<active template="constructibleActive"/>
 					</sounds>
 				</state>
-				<state name="DESTROY_05" class="ConstructibleStateBuilding" >
-					<toggleMesh node="destroy_02"				active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_trash_04"		active="false"	updatePhysics="false"/>
-					<toggleMesh node="destroy_02_truck"			active="false"	updatePhysics="false"/>
+				<state name="DESTROY_05" StateName="Подготовка материалов, разметка стройплощадки" class="ConstructibleStateBuilding" >
+					<toggleMesh node="Destroyable"				active="false"	updatePhysics="true"/>
 					<input fillType="INSTRUMENT"				amount = "50"	usagePerHour="125"/>
 					<input fillType="BUILDING_METAL"		 				amount = "50"	usagePerHour="125"/>
 					<sounds>
 						<active template="constructibleActive"/>
 					</sounds>
 				</state>
-				<state name="SETUP" class="ConstructibleStateBuilding" >
-					<toggleMesh node="Destroyable"				active="false"	updatePhysics="false"/>
+				<state name="SETUP" StateName="Возведение каркаса здания" class="ConstructibleStateBuilding" >
 					<toggleMesh node="concretMixer_01"			active="true"	updatePhysics="true"/>
 					<toggleMesh node="concretMixer_02"			active="true"	updatePhysics="true"/>
 					<toggleMesh node="concretMixer_03"			active="true"	updatePhysics="true"/>
@@ -419,7 +417,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_1" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_1" StateName="Бетонирование ограждений и оснований кормушек, бетонирование основания пристройки" class="ConstructibleStateBuilding" >
 					<toggleMesh node="boardsStacks"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase01_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase01_2"	active="true"	updatePhysics="true" />
@@ -432,7 +430,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_2" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_2" StateName="Возведение каркаса второй пристройки" class="ConstructibleStateBuilding" >
 					<toggleMesh node="cementBags"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase02_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase02_2"	active="true"	updatePhysics="true" />
@@ -444,7 +442,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_3" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_3" StateName="Возведение каркаса первой пристройки, установка стойл в коровнике" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase03_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase03_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase03_3"	active="true"	updatePhysics="true" />
@@ -456,7 +454,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_4" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_4" StateName="Возведение стен пристроек" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase04_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase04_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase04_3"	active="true"	updatePhysics="true" />
@@ -473,7 +471,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_5" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_5" StateName="Возведение фронтонов пристроек" class="ConstructibleStateBuilding" >
 					<toggleMesh node="cementBricks"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase05_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase05_2"	active="true"	updatePhysics="true" />
@@ -491,7 +489,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_6" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_6" StateName="Обшивка стен коровника и первой пристройки" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase06_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase06_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase06_3"	active="true"	updatePhysics="true" />
@@ -506,7 +504,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_7" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_7" StateName="Возведение стен пристроек" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase07_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase07_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase07_3"	active="true"	updatePhysics="true" />
@@ -520,7 +518,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_8" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_8" StateName="Монтаж кровли, часть первая" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase08_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase08_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase08_3"	active="true"	updatePhysics="true" />
@@ -534,7 +532,7 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_9" class="ConstructibleStateBuilding" >
+				<state name="BUILDING_9" StateName="Монтаж кровли второй пристройки и ёмкостей для хранения молока" class="ConstructibleStateBuilding" >
 					<toggleMesh node="phase09_1"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase09_2"	active="true"	updatePhysics="true" />
 					<toggleMesh node="phase09_3"	active="true"	updatePhysics="true" />
@@ -548,8 +546,8 @@
 					</sounds>
 				</state>
 
-				<state name="BUILDING_10" class="ConstructibleStateBuilding" >
-					<toggleMesh  node="phase10_1" active="true"/>
+				<state name="BUILDING_10" StateName="Монтаж электрики, остекленения крыши, ворот коровника" class="ConstructibleStateBuilding" >
+					<toggleMesh node="phase10_1" active="true"/>
 					<input fillType="INSTRUMENT"	amount = "50"	usagePerHour="50"/>
 					<sounds>
 						<active template="constructibleActive"/>
@@ -642,7 +640,8 @@
 		<i3dMapping id="markerAnimals" node="0>0|8|1" />
 		<i3dMapping id="markerLiquidManure" node="0>0|8|2" />
 		<i3dMapping id="markerFood" node="0>0|8|3" />
-		<i3dMapping id="infoTrigger" node="0>0|9" />
+		<i3dMapping id="markerStraw" node="0>0|8|4" />
+		<i3dMapping id="infoTrigger" node="0>10" />
 		<i3dMapping id="loadingTrigger" node="0>0|10" />
 		<i3dMapping id="clearArea1Start" node="0>0|11|0" />
 		<i3dMapping id="clearArea1Width" node="0>0|11|0|0" />
