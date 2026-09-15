@@ -230,6 +230,7 @@
 				<state name="FINALIZE" class="ConstructibleStateFinalize" >
 					<toggleMesh node="gate6m"		active="true"	updatePhysics="true"/>
 					<toggleMesh node="ConstructibleSellingStation"	active="false" updatePhysics="true"/>
+					<toggleHotspot index="1" isVisible="false"/>
 				</state>
 
 				<state name="DONE" class="ConstructibleState" isPreviewState="true"/>
