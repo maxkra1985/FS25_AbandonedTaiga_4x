@@ -2,15 +2,16 @@
     Abandoned Taiga - Construction Info HUD
     FS25
 
-    Формирует контекстное информационное меню constructible-placeable.
-    Модуль не устанавливает hooks: координатор решает, когда подавлять штатные
-    updateInfo специализаций и когда вызывать строительный/составной HUD.
+    Формирует контекстное информационное меню производственных и constructible-placeable.
+    Основной specialization-hook устанавливает координатор, а этот модуль дополнительно
+    подменяет штатный ProductionPoint:updateInfo(), чтобы единый секционный HUD работал
+    для всех производств, в том числе без ObjectStorage.
 ]]
 
 TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
 local HUD = TaigaConstructionInfoHUD
 
-HUD.VERSION = "1.0.1"
+HUD.VERSION = "1.0.2"
 HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
 
 HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
@@ -232,21 +233,26 @@ local function getObjectStorageGroupKey(abstractObject, fillTypeIndex)
     return "title:" .. getAbstractObjectDialogTitle(abstractObject)
 end
 
--- Проверяет составной объект ProductionPoint + ObjectStorage без привязки к XML filename/type.
-function HUD.isProductionObjectStorageComposite(placeable)
+-- Проверяет наличие штатного ProductionPoint у placeable.
+function HUD.isProductionPlaceable(placeable)
     if placeable == nil then
         return false
     end
 
     local productionSpec = placeable.spec_productionPoint
-    return productionSpec ~= nil
-        and productionSpec.productionPoint ~= nil
+    return productionSpec ~= nil and productionSpec.productionPoint ~= nil
+end
+
+-- Проверяет составной объект ProductionPoint + ObjectStorage без привязки к XML filename/type.
+function HUD.isProductionObjectStorageComposite(placeable)
+    return HUD.isProductionPlaceable(placeable)
         and placeable.spec_objectStorage ~= nil
 end
 
--- Составной HUD используется для обычного готового объекта сразу, а для constructible — только DONE.
-function HUD.useFinishedCompositeInfo(placeable)
-    if not HUD.isProductionObjectStorageComposite(placeable) then
+-- Единый производственный HUD используется для любого обычного ProductionPoint сразу,
+-- а для constructible-производства — только после полного завершения строительства.
+function HUD.useFinishedProductionInfo(placeable)
+    if not HUD.isProductionPlaceable(placeable) then
         return false
     end
 
@@ -256,6 +262,12 @@ function HUD.useFinishedCompositeInfo(placeable)
 
     local lifecycle = getLifecycle()
     return lifecycle ~= nil and lifecycle.isFinished(placeable)
+end
+
+-- Составной HUD отличается от обычного производства только дополнительным ObjectStorage.
+function HUD.useFinishedCompositeInfo(placeable)
+    return HUD.useFinishedProductionInfo(placeable)
+        and HUD.isProductionObjectStorageComposite(placeable)
 end
 
 -- Во время строительства любая будущая специализация должна пропустить собственные строки HUD.
@@ -439,10 +451,10 @@ local function addObjectStorageInfo(placeable, infoTable)
     end
 end
 
--- Добавляет эталонный HUD готового ProductionPoint + ObjectStorage:
--- владелец -> производство -> производственное хранилище -> склад объектов.
-function HUD.addFinishedCompositeInfo(placeable, infoTable)
-    if type(infoTable) ~= "table" or not HUD.useFinishedCompositeInfo(placeable) then
+-- Добавляет единый HUD готового ProductionPoint:
+-- владелец -> производство -> производственное хранилище.
+function HUD.addFinishedProductionInfo(placeable, infoTable)
+    if type(infoTable) ~= "table" or not HUD.useFinishedProductionInfo(placeable) then
         return false
     end
 
@@ -450,8 +462,47 @@ function HUD.addFinishedCompositeInfo(placeable, infoTable)
     addOwnerInfo(productionPoint, infoTable)
     addProductionInfo(productionPoint, infoTable)
     addProductionStorageInfo(productionPoint, infoTable)
+
+    return true
+end
+
+-- Добавляет HUD готового ProductionPoint + ObjectStorage. Производственная часть
+-- полностью совпадает с обычным производством, склад объектов идёт отдельным разделом ниже.
+function HUD.addFinishedCompositeInfo(placeable, infoTable)
+    if type(infoTable) ~= "table" or not HUD.useFinishedCompositeInfo(placeable) then
+        return false
+    end
+
+    HUD.addFinishedProductionInfo(placeable, infoTable)
     addObjectStorageInfo(placeable, infoTable)
 
+    return true
+end
+
+-- Подменяет штатный ProductionPoint:updateInfo() для производств без ObjectStorage.
+-- Составные ProductionPoint + ObjectStorage по-прежнему собираются координатором
+-- одним блоком, поэтому здесь они намеренно пропускаются во избежание дублирования.
+function HUD.installProductionPointInfoHook()
+    if ProductionPoint == nil
+        or ProductionPoint.updateInfo == nil
+        or ProductionPoint.taigaConstructionInfoHUDInstalled then
+        return false
+    end
+
+    local originalUpdateInfo = ProductionPoint.updateInfo
+    ProductionPoint.updateInfo = function(productionPoint, infoTable)
+        local placeable = productionPoint ~= nil and productionPoint.owningPlaceable or nil
+
+        if HUD.useFinishedProductionInfo(placeable)
+            and not HUD.isProductionObjectStorageComposite(placeable) then
+            HUD.addFinishedProductionInfo(placeable, infoTable)
+            return
+        end
+
+        return originalUpdateInfo(productionPoint, infoTable)
+    end
+
+    ProductionPoint.taigaConstructionInfoHUDInstalled = true
     return true
 end
 
@@ -533,5 +584,7 @@ function HUD.addConstructionInfo(placeable, infoTable)
 
     return true
 end
+
+HUD.installProductionPointInfoHook()
 
 Logging.info("%s loaded, version %s", HUD.LOG_PREFIX, HUD.VERSION)
