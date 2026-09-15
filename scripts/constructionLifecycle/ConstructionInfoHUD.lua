@@ -10,7 +10,7 @@
 TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
 local HUD = TaigaConstructionInfoHUD
 
-HUD.VERSION = "1.0.0"
+HUD.VERSION = "1.0.1"
 HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
 
 HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
@@ -473,14 +473,20 @@ function HUD.addConstructionInfo(placeable, infoTable)
         local progressText = string.format("(%d / %d)", finishedStates, totalStates)
         local stateName = lifecycle.getConfiguredStateDisplayName(placeable, spec.stateIndex)
 
-        if stateName ~= nil then
-            progressText = string.format("%s %s", stateName, progressText)
-        end
-
+        -- Прогресс оставляем в штатной строке, чтобы короткое числовое значение
+        -- не пересекалось с длинным пользовательским названием строительного этапа.
         table.insert(infoTable, {
             title = g_i18n:getText("ui_construction_state"),
             text = progressText
         })
+
+        -- Название этапа, если оно задано через #StateName, выводим отдельной
+        -- строкой без правой колонки. Так InfoDisplay использует почти всю ширину HUD.
+        if stateName ~= nil then
+            table.insert(infoTable, {
+                title = stateName
+            })
+        end
     end
 
     -- Показываем только отдельное хранилище строительных материалов.
