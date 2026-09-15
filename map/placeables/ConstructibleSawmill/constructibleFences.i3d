@@ -407,7 +407,7 @@
       <TransformGroup name="newFence" translation="7.81726 0.13459 -2.81763" nodeId="229">
         <TransformGroup name="build_01" translation="-18.1266 -0.246784 9.60022" rotation="180 -41.9593 -180" scale="1 1 0.85" nodeId="230">
           <TransformGroup name="pole" lockedgroup="true" rotation="0 -0 -3.39259e-13" scale="1.2 1.2 1.2" nodeId="231">
-            <Shape name="FenceTypeCPole_col" translation="-0.202 0 0.00278288" rotation="-0 -90 0" shapeId="10" visibility="false" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" clipDistance="80" nodeId="232" castsShadows="true" receiveShadows="true" materialIds="8"/>
+            <Shape name="FenceTypeCPole_col" translation="-0.202 0 0.00278288" rotation="-0 -90 0" shapeId="10" nonRenderable="true" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" clipDistance="80" nodeId="232" castsShadows="true" receiveShadows="true" materialIds="8"/>
             <Shape name="FenceTypeCPole" translation="-0.202 0 0.00278288" rotation="-0 -90 0" shapeId="10" clipDistance="80" nodeId="233" castsShadows="true" receiveShadows="true" materialIds="11"/>
             <TransformGroup name="panel" lockedgroup="true" translation="6.8896e-07 4.16334e-16 2.27948" rotation="0 180 0" scale="1 1 1.2" nodeId="234">
               <Shape name="FenceTypeC2M_col" translation="-2.10113e-08 5.06333e-09 0.240341" rotation="2.73181e-05 -90 0" shapeId="11" visibility="false" static="true" collisionFilterGroup="0x3e" collisionFilterMask="0xfffffbff" clipDistance="80" nodeId="235" castsShadows="true" receiveShadows="true" materialIds="8"/>
