@@ -3,7 +3,7 @@ CustomMapHotspots = {}
 CustomMapHotspots.customIcons = {}
 
 -- Размер иконки строительной площадки относительно штатного PlaceableHotspot.
--- Штатный размер составляет около 50x50 px, поэтому 1.5 даёт примерно 75x75 px.
+-- Значение 1.0 сохраняет стандартный размер около 50x50 px.
 CustomMapHotspots.CONSTRUCTION_SITE_SCALE = 1.0
 
 
@@ -55,6 +55,32 @@ local function registerConstructionSiteHotspot()
 end
 
 
+-- Регистрирует отдельный тип hotspot для деревоперерабатывающих производств.
+-- Тип остаётся в штатной категории производств, но получает собственную
+-- древесно-коричневую цветовую гамму и пиктограмму дерева с брёвнами.
+local function registerProductionWoodHotspot()
+	local typeId = getNextHotspotTypeId()
+
+	PlaceableHotspot.TYPE.PRODUCTION_WOOD = typeId
+	PlaceableHotspot.CATEGORY_MAPPING[typeId] = MapHotspot.CATEGORY_PRODUCTION
+
+	-- Штатный production slice используется как безопасный резервный вариант
+	-- до момента подмены большой иконки нашей текстурой.
+	PlaceableHotspot.SLICE[typeId] = PlaceableHotspot.SLICE[PlaceableHotspot.TYPE.PRODUCTION_POINT]
+
+	-- Цвет применяется и к большой пользовательской иконке, и к маленькому
+	-- hotspot на minimap. Значения подобраны в тёплой древесной гамме.
+	PlaceableHotspot.COLOR[typeId] = {
+		0.45,
+		0.20,
+		0.055,
+		1
+	}
+
+	CustomMapHotspots.customIcons[typeId] = g_currentModDirectory .. "markerIcons/productionWood.dds"
+end
+
+
 -- Подменяет большую иконку карты только для зарегистрированных
 -- пользовательских типов hotspot.
 -- Штатная логика PlaceableHotspot вызывается первой и остаётся неизменной.
@@ -87,9 +113,8 @@ function CustomMapHotspots.setPlaceableType(
 		self.icon = nil
 	end
 
-	-- Большая иконка строительной площадки создаётся крупнее штатной.
-	-- Размер применяется только к self.icon; iconSmall для minimap
-	-- остаётся штатного размера.
+	-- Большая пользовательская иконка получает собственную текстуру.
+	-- iconSmall для minimap остаётся штатным и использует только цвет типа.
 	self.icon = Overlay.new(
 		filename,
 		0,
@@ -103,7 +128,7 @@ function CustomMapHotspots.setPlaceableType(
 		self.icon:setScale(self.scale, self.scale)
 
 		-- getDimension() у PlaceableHotspot ориентируется на lastRenderedIcon.
-		-- Назначаем новую иконку сразу, чтобы карта учитывала её увеличенный
+		-- Назначаем новую иконку сразу, чтобы карта учитывала её фактический
 		-- размер при первичном позиционировании.
 		self.lastRenderedIcon = self.icon
 	end
@@ -111,6 +136,7 @@ end
 
 
 registerConstructionSiteHotspot()
+registerProductionWoodHotspot()
 
 -- Расширяем штатный setPlaceableType, не заменяя его логику целиком.
 PlaceableHotspot.setPlaceableType = Utils.overwrittenFunction(PlaceableHotspot.setPlaceableType, CustomMapHotspots.setPlaceableType)
