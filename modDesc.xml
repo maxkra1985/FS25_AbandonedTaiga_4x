@@ -36,7 +36,6 @@
 		<sourceFile filename="scripts/CustomMapHotspots.lua"/>
 		<sourceFile filename="map/placeables/HandPlantSaplings/scripts/main.lua"/>
 		<sourceFile filename="scripts/addTreeTypes.lua"/>
-		<sourceFile filename="scripts/licensePlatesStandalone.lua"/>
 		<sourceFile filename="scripts/addStoreCategory.lua"/>
 		<sourceFile filename="scripts/DinamycalPrice.lua"/>
 		<sourceFile filename="scripts/DynamicRoadMap.lua"/>
