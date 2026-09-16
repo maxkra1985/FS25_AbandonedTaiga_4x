@@ -84,7 +84,7 @@
 
 	<hotspots>
 		<hotspot type="CONSTRUCTION_SITE"	linkNode="ConstructibleUnloadTriggerMarker"	teleportNode="ConstructibleUnloadTriggerMarker" />
-		<hotspot type="PRODUCTION_POINT"	linkNode="iconNode"							teleportNode="teleportNode" />
+		<hotspot type="PRODUCTION_WOOD"		linkNode="iconNode"							teleportNode="teleportNode" />
 	</hotspots>
 
 	<productionPoint isFinalized="false">
