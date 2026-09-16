@@ -38,7 +38,6 @@
 		<sourceFile filename="scripts/addTreeTypes.lua"/>
 		<sourceFile filename="scripts/licensePlatesStandalone.lua"/>
 		<sourceFile filename="scripts/addStoreCategory.lua"/>
-		<sourceFile filename="scripts/IncreaseTreeLimit.lua"/>
 		<sourceFile filename="scripts/DinamycalPrice.lua"/>
 		<sourceFile filename="scripts/DynamicRoadMap.lua"/>
 		<sourceFile filename="scripts/constructionLifecycle/ConstructionLifecycle.lua" />
