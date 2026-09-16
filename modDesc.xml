@@ -15,7 +15,7 @@
 	<iconFilename>icon.png</iconFilename>
 	<multiplayer supported="true"/>
 	<maps>
-		<map id="SampleModMap" className="Mission00" filename="$dataS/scripts/mission00.lua" configFilename="map/map.xml" defaultVehiclesXMLFilename="config/vehicles.xml" defaultHandToolsXMLFilename="config/handTools.xml" defaultPlaceablesXMLFilename="config/placeables.xml" defaultItemsXMLFilename="config/items.xml">
+		<map id="SampleModMap" className="MissionTayga" filename="scripts/MissionTayga.lua" configFilename="map/map.xml" defaultVehiclesXMLFilename="config/vehicles.xml" defaultHandToolsXMLFilename="config/handTools.xml" defaultPlaceablesXMLFilename="config/placeables.xml" defaultItemsXMLFilename="config/items.xml">
 			<title>
 				<ru>Заброшенная тайга</ru>
 				<en>Abandoned taiga</en>
@@ -257,7 +257,6 @@
 			<binding device="GAMEPAD_DEFAULT" input="BUTTON_5 BUTTON_18"/>
 		</actionBinding>
 	</inputBinding>
-
 	<constructionCategories>
 		<constructionType iconFilename="map/placeables/ConstructibleBuildings.dds"	name="ConstructibleBuildings"			title="$l10n_ConstructibleBuildings" />
 		<constructionCategory type="ConstructibleBuildings"							name="constructiblesProductionPoint"	title="$l10n_constructiblesProductionPoint"/>
