@@ -80,7 +80,7 @@
 	<infoTrigger triggerNode="infoTrigger"/>
 
 	<hotspots>
-		<hotspot type="UNLOADING_PALLET"	linkNode="unloadTriggerMarker"	teleportNode="unloadTriggerMarker" />
+		<hotspot type="CONSTRUCTION_SITE"	linkNode="unloadTriggerMarker"	teleportNode="unloadTriggerMarker" />
 		<hotspot type="FARM"				linkNode="0>"					teleportNode="spawnPoint" />
 	</hotspots>
 

@@ -85,10 +85,10 @@
 
 	<triggerMarkers>
 		<triggerMarker node="markerMilk"			adjustToGround="true" filename="$data/shared/assets/marker/markerIconMilk.i3d" />
-		<triggerMarker node="markerFood"			adjustToGround="true" filename="$data/shared/assets/marker/markerIconFood.i3d" />
+		<triggerMarker node="markerFood"			adjustToGround="true" filename="markerIcons/markerIconFood.i3d" />
 		<triggerMarker node="markerStraw"			adjustToGround="true" filename="markerIcons/markerIconStrawUnload.i3d" />
-		<triggerMarker node="markerAnimals"			adjustToGround="true" filename="markerIcons/markerIconCow.i3d" />
-		<triggerMarker node="markerLiquidManure"	adjustToGround="true" filename="$data/shared/assets/marker/markerIconSlurry.i3d" />
+		<triggerMarker node="markerAnimals"			adjustToGround="true" filename="markerIcons/markerIconCowTrade.i3d" />
+		<triggerMarker node="markerLiquidManure"	adjustToGround="true" filename="markerIcons/markerIconLiquidManure.i3d" />
 		<triggerMarker node="ConstructibleUnloadTriggerMarker"	adjustToGround="true" filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 

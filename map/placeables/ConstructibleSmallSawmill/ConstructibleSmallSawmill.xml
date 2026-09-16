@@ -83,7 +83,7 @@
 	</triggerMarkers>
 
 	<hotspots>
-		<hotspot type="UNLOADING_PALLET"	linkNode="ConstructibleUnloadTriggerMarker"	teleportNode="ConstructibleUnloadTriggerMarker" />
+		<hotspot type="CONSTRUCTION_SITE"	linkNode="ConstructibleUnloadTriggerMarker"	teleportNode="ConstructibleUnloadTriggerMarker" />
 		<hotspot type="PRODUCTION_POINT"	linkNode="iconNode"							teleportNode="teleportNode" />
 	</hotspots>
 

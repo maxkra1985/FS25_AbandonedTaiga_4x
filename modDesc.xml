@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="90">
 	<author>MaxKra1985</author>
-	<version>1.2.0.1</version>
+	<version>1.2.0.2</version>
 	<title>
 		<ru>Заброшенная тайга</ru>
 		<en>Abandoned taiga</en>
@@ -32,16 +32,8 @@
 
 	<l10n filenamePrefix="lang/l10n"/>
 
-	<loadAfter>
-		<className>Mission</className>
-		<className>SalePoint</className>
-		<className>Warehouse</className>
-		<className>Dealer</className>
-		<className>VehicleDealer</className>
-		<className>RentalSystem</className>
-	</loadAfter>
-
 	<extraSourceFiles>
+		<sourceFile filename="scripts/CustomMapHotspots.lua"/>
 		<sourceFile filename="map/placeables/HandPlantSaplings/scripts/main.lua"/>
 		<sourceFile filename="scripts/addTreeTypes.lua"/>
 		<sourceFile filename="scripts/licensePlatesStandalone.lua"/>
