@@ -10,39 +10,20 @@ local MissionTayga_mt = Class(MissionTayga, Mission00)
 
 MissionTayga.MAX_NUM_TREES = 130000
 MissionTayga.LICENSE_PLATE_FONTS_XML = "map/russianLicensePlates/fonts.xml"
-MissionTayga.LICENSE_PLATE_FONT_NAME = "LICENSE_PLATE_RUS"
-
-
--- Проверяет, относится ли текущий LicensePlateManager к этой карте.
--- Hooks остаются установленными до завершения игры, поэтому проверка не даёт
--- настройкам Тайги повлиять на другую карту, загруженную в той же сессии.
-function MissionTayga.isCurrentLicensePlateContext()
-    return g_licensePlateManager ~= nil
-        and MissionTayga.baseDirectory ~= nil
-        and g_licensePlateManager.baseDirectory == MissionTayga.baseDirectory
-        and g_licensePlateManager.fontName == MissionTayga.LICENSE_PLATE_FONT_NAME
-end
 
 
 -- Загружает материалы русского шрифта перед штатной загрузкой конфигурации
 -- номерных знаков. Сам licensePlates.xml полностью обрабатывает код GIANTS.
 function MissionTayga.licensePlateManagerLoadMapData(manager, superFunc, xmlFile, missionInfo, baseDirectory)
-    if baseDirectory == MissionTayga.baseDirectory then
-        local fontsFilename = Utils.getFilename(MissionTayga.LICENSE_PLATE_FONTS_XML, baseDirectory)
-        g_materialManager:loadFontMaterialsXML(fontsFilename, nil, baseDirectory)
-    end
+    local fontsFilename = Utils.getFilename(MissionTayga.LICENSE_PLATE_FONTS_XML, baseDirectory)
+    g_materialManager:loadFontMaterialsXML(fontsFilename, nil, baseDirectory)
 
     return superFunc(manager, xmlFile, missionInfo, baseDirectory)
 end
 
 
--- Формирует подписи вариантов российских номерных знаков.
--- Для остальных карт используется штатная реализация LicensePlateDialog.
+-- Формирует собственные подписи вариантов российских номерных знаков.
 function MissionTayga.licensePlateDialogUpdateVariations(dialog, superFunc)
-    if not MissionTayga.isCurrentLicensePlateContext() then
-        return superFunc(dialog)
-    end
-
     local texts = {}
 
     for i = 1, #dialog.licensePlate.variations do
@@ -72,7 +53,7 @@ function MissionTayga.getLicensePlatePlacementArea(vehicle, licensePlate)
 end
 
 
--- Применяет тайговые размеры номерного знака к уже созданному штатным
+-- Применяет размеры номерного знака карты к уже созданному штатным
 -- LicensePlates:onLoad объекту. Загрузка XML, objectChanges, savegame и сеть
 -- при этом остаются полностью на стороне стандартного кода игры.
 function MissionTayga.applyLicensePlatePlacement(vehicle, licensePlate)
@@ -116,10 +97,6 @@ end
 function MissionTayga.licensePlatesOnLoad(vehicle, superFunc, savegame)
     superFunc(vehicle, savegame)
 
-    if not MissionTayga.isCurrentLicensePlateContext() then
-        return
-    end
-
     local spec = vehicle.spec_licensePlates
     if spec == nil or spec.licensePlates == nil then
         return
@@ -131,9 +108,9 @@ function MissionTayga.licensePlatesOnLoad(vehicle, superFunc, savegame)
 end
 
 
--- Устанавливает глобальные hooks номерных знаков один раз за игровую сессию.
--- Флаги хранятся на штатных классах, поэтому повторная загрузка карты не
--- оборачивает одни и те же функции повторно.
+-- Устанавливает hooks номерных знаков при создании MissionTayga.
+-- Флаги нужны только как защита от повторного оборачивания функций,
+-- если установка hooks будет вызвана более одного раза.
 function MissionTayga.installLicensePlateHooks()
     if LicensePlateManager ~= nil and not LicensePlateManager.taigaMissionLoadMapDataHookInstalled then
         LicensePlateManager.loadMapData = Utils.overwrittenFunction(
@@ -163,9 +140,9 @@ function MissionTayga.installLicensePlateHooks()
 end
 
 
--- Создаёт экземпляр миссии карты, сохраняя полный штатный lifecycle Mission00.
+-- Создаёт экземпляр миссии карты, устанавливает необходимые hooks и сохраняет
+-- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
-    MissionTayga.baseDirectory = baseDirectory
     MissionTayga.installLicensePlateHooks()
 
     return MissionTayga:superClass().new(baseDirectory, customMt or MissionTayga_mt)
