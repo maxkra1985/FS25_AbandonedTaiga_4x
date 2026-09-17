@@ -316,6 +316,34 @@ function LoggingContractor:getFarmForConnection(connection)
 end
 
 
+-- Возвращает true, если на сервере выполняется хотя бы один договор.
+-- На клиенте проверяются синхронизированные договоры его фермы.
+function LoggingContractor:hasAnyActiveJob()
+    local jobs = self.mission:getIsServer() and self.activeJobs or self.clientJobs
+
+    for _, job in pairs(jobs) do
+        if job.isActive then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+-- Проверяет рабочее время лесозаготовителей: с 08:00 включительно
+-- до 21:00 исключительно. Ночью договор остаётся активным, но таймер
+-- выполнения не продвигается.
+function LoggingContractor:getIsWorkingTime()
+    if self.mission.environment == nil then
+        return false
+    end
+
+    local hour = self.mission.environment.dayTime / (60 * 60 * 1000)
+    return hour >= 8 and hour < 21
+end
+
+
 -- Проверяет, не выполняется ли уже договор этой фермы на том же участке.
 -- Это не ограничивает ферму одним договором, но исключает двойную оплату и
 -- одновременную обработку одного набора деревьев.
