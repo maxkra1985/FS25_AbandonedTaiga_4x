@@ -5,14 +5,19 @@
 
     Модуль загружается после LoggingContractorExecution и уточняет операции,
     которые непосредственно работают со split-shape:
+    - предварительно очищает стоящее дерево от attachments до первого среза;
     - удаляет пень после первого среза;
-    - снимает ветви тем же способом и с той же ориентацией области, что GIANTS;
+    - повторно очищает каждый полученный сортимент;
     - после распила задаёт каждому готовому бревну небольшой угловой импульс,
       чтобы динамические части не оставались в идеально вертикальном равновесии.
 ]]
 
 LoggingContractor.FALL_ANGULAR_SPEED = 0.8
 LoggingContractor.STUMP_DIRTY_RADIUS = 10
+LoggingContractor.DELIMB_SWEEP_STEP = 0.6
+LoggingContractor.DELIMB_SWEEP_LENGTH = 0.7
+LoggingContractor.DELIMB_CROSS_SIZE = 4
+LoggingContractor.DELIMB_FIND_CROSS_SIZE = 1.25
 
 
 -- Помечает область вокруг удалённого пня изменённой для collision map и AI.
@@ -71,14 +76,135 @@ function LoggingContractor:contractorSplitShapeCallback(shape, isBelow, isAbove,
 end
 
 
--- Удаляет ветви и листву/хвою вдоль ствола. Положение области и её продольный
--- размер повторяют вызов removeSplitShapeAttachments из TreePlantManager.
-function LoggingContractor:delimbContractorTrunk(shape, baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength)
+-- Возвращает количество attachments у split-shape. Значение используется только
+-- для выбора дополнительного штатного прохода chainsaw-delimb и диагностики.
+function LoggingContractor:getContractorAttachmentCount(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return 0
+    end
+
+    local _, _, _, _, numAttachments = getSplitShapeStats(shape)
+    return numAttachments or 0
+end
+
+
+-- Удаляет attachments с конкретного split-shape серией коротких проходов вдоль
+-- оси ствола. Такой проход повторяет работу delimbNode харвестера: вместо одной
+-- большой области по всему дереву используется последовательность зон обработки.
+function LoggingContractor:sweepContractorAttachments(shape, baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength)
     if shape == nil or shape == 0 or not entityExists(shape) or trunkLength <= 0 then
         return
     end
 
-    removeSplitShapeAttachments(
+    local distance = 0
+    while distance <= trunkLength + LoggingContractor.MIN_LOG_REMAINDER do
+        local x = baseX + dirX * distance
+        local y = baseY + dirY * distance
+        local z = baseZ + dirZ * distance
+
+        removeSplitShapeAttachments(
+            shape,
+            x,
+            y,
+            z,
+            dirX,
+            dirY,
+            dirZ,
+            upX,
+            upY,
+            upZ,
+            LoggingContractor.DELIMB_SWEEP_LENGTH,
+            LoggingContractor.DELIMB_CROSS_SIZE,
+            LoggingContractor.DELIMB_CROSS_SIZE
+        )
+
+        distance = distance + LoggingContractor.DELIMB_SWEEP_STEP
+    end
+end
+
+
+-- Выполняет дополнительный chainsaw-проход по attachments, которые не снялись
+-- адресным removeSplitShapeAttachments. Область намеренно уже, чтобы не задеть
+-- соседние деревья; вызывается только если у целевого shape attachments остались.
+function LoggingContractor:findAndSweepContractorAttachments(baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength)
+    local distance = 0
+    while distance <= trunkLength + LoggingContractor.MIN_LOG_REMAINDER do
+        local x = baseX + dirX * distance
+        local y = baseY + dirY * distance
+        local z = baseZ + dirZ * distance
+
+        findAndRemoveSplitShapeAttachments(
+            x,
+            y,
+            z,
+            dirX,
+            dirY,
+            dirZ,
+            upX,
+            upY,
+            upZ,
+            LoggingContractor.DELIMB_SWEEP_LENGTH,
+            LoggingContractor.DELIMB_FIND_CROSS_SIZE,
+            LoggingContractor.DELIMB_FIND_CROSS_SIZE
+        )
+
+        distance = distance + LoggingContractor.DELIMB_SWEEP_STEP
+    end
+end
+
+
+-- Предварительно опиливает attachments на ещё стоящем дереве. Это особенно
+-- важно для развилочных и кривых деревьев: боковые сучья удаляются до того,
+-- как основной ствол начнёт делиться на сортименты.
+function LoggingContractor:preDelimbContractTree(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return
+    end
+
+    local treeX, treeY, treeZ = getWorldTranslation(shape)
+    local localX, localY, localZ = worldToLocal(
+        shape,
+        treeX,
+        treeY + LoggingContractor.STUMP_HEIGHT,
+        treeZ
+    )
+    local baseX, baseY, baseZ = localToWorld(shape, localX, localY, localZ)
+
+    local dirX, dirY, dirZ = localDirectionToWorld(shape, 0, 1, 0)
+    local upX, upY, upZ = localDirectionToWorld(shape, 0, 0, 1)
+    dirX, dirY, dirZ = MathUtil.vector3Normalize(dirX, dirY, dirZ)
+    upX, upY, upZ = MathUtil.vector3Normalize(upX, upY, upZ)
+
+    local lengthBelow, lengthAbove = getSplitShapePlaneExtents(
+        shape,
+        baseX,
+        baseY,
+        baseZ,
+        dirX,
+        dirY,
+        dirZ
+    )
+    if lengthBelow == nil or lengthAbove == nil then
+        return
+    end
+
+    local trunkLength
+    if lengthBelow > lengthAbove then
+        dirX = -dirX
+        dirY = -dirY
+        dirZ = -dirZ
+        trunkLength = lengthBelow
+    else
+        trunkLength = lengthAbove
+    end
+
+    if trunkLength <= LoggingContractor.MIN_LOG_REMAINDER then
+        return
+    end
+
+    local attachmentsBefore = self:getContractorAttachmentCount(shape)
+
+    self:sweepContractorAttachments(
         shape,
         baseX,
         baseY,
@@ -89,9 +215,89 @@ function LoggingContractor:delimbContractorTrunk(shape, baseX, baseY, baseZ, dir
         upX,
         upY,
         upZ,
-        trunkLength,
-        LoggingContractor.SPLIT_PLANE_SIZE,
-        LoggingContractor.SPLIT_PLANE_SIZE
+        trunkLength
+    )
+
+    local attachmentsAfter = self:getContractorAttachmentCount(shape)
+    if attachmentsAfter > 0 then
+        self:findAndSweepContractorAttachments(
+            baseX,
+            baseY,
+            baseZ,
+            dirX,
+            dirY,
+            dirZ,
+            upX,
+            upY,
+            upZ,
+            trunkLength
+        )
+        attachmentsAfter = self:getContractorAttachmentCount(shape)
+    end
+
+    if attachmentsBefore > 0 then
+        Logging.info(
+            "[LoggingContractor] Pre-delimb shape %d: attachments %d -> %d",
+            shape,
+            attachmentsBefore,
+            attachmentsAfter
+        )
+    end
+end
+
+
+-- Оборачивает штатную для нашего подрядчика обработку дерева предварительным
+-- опиливанием attachments. Основной срез, удаление пня и распил выполняет
+-- LoggingContractorExecution без изменения логики прогресса договора.
+function LoggingContractor:processContractTreeWithPreDelimb(superFunc, job, shape)
+    if self:isStandingContractTarget(shape, job.farmlandId) then
+        self:preDelimbContractTree(shape)
+    end
+
+    return superFunc(self, job, shape)
+end
+
+
+-- Удаляет ветви и листву/хвою вдоль уже отделённого ствола. Помимо общего
+-- прохода выполняется серия коротких проходов, как при движении ствола через
+-- delimbNode харвестера.
+function LoggingContractor:delimbContractorTrunk(shape, baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength)
+    if shape == nil or shape == 0 or not entityExists(shape) or trunkLength <= 0 then
+        return
+    end
+
+    local midX = baseX + dirX * trunkLength * 0.5
+    local midY = baseY + dirY * trunkLength * 0.5
+    local midZ = baseZ + dirZ * trunkLength * 0.5
+
+    removeSplitShapeAttachments(
+        shape,
+        midX,
+        midY,
+        midZ,
+        dirX,
+        dirY,
+        dirZ,
+        upX,
+        upY,
+        upZ,
+        trunkLength * 0.7 + 0.1,
+        LoggingContractor.DELIMB_CROSS_SIZE,
+        LoggingContractor.DELIMB_CROSS_SIZE
+    )
+
+    self:sweepContractorAttachments(
+        shape,
+        baseX,
+        baseY,
+        baseZ,
+        dirX,
+        dirY,
+        dirZ,
+        upX,
+        upY,
+        upZ,
+        trunkLength
     )
 end
 
@@ -216,3 +422,9 @@ function LoggingContractor:cutContractorTrunk(shape, baseX, baseY, baseZ, dirX, 
 
     return true
 end
+
+
+LoggingContractor.processContractTree = Utils.overwrittenFunction(
+    LoggingContractor.processContractTree,
+    LoggingContractor.processContractTreeWithPreDelimb
+)
