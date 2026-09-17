@@ -24,10 +24,12 @@ function MissionTayga.loadLoggingContractorModules(baseDirectory)
 
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorJob.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/events/LoggingContractorResultEvent.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/events/LoggingContractorProgressEvent.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/events/LoggingContractorStartEvent.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorDialog.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTrigger.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractor.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractorExecution.lua", baseDirectory))
 
     LoggingContractorDialog.setBaseDirectory(baseDirectory)
     MissionTayga.loggingContractorModulesLoaded = true
@@ -186,6 +188,26 @@ function MissionTayga:onStartMission()
 
     self.loggingContractor = LoggingContractor.new(self)
     self.loggingContractor:initialize()
+end
+
+
+-- Передаёт серверный update в систему подрядчиков после штатного update миссии.
+function MissionTayga:update(dt)
+    MissionTayga:superClass().update(self, dt)
+
+    if self.loggingContractor ~= nil then
+        self.loggingContractor:update(dt)
+    end
+end
+
+
+-- Рисует штатный HUD, затем поверх него компактный прогресс активных договоров.
+function MissionTayga:draw()
+    MissionTayga:superClass().draw(self)
+
+    if self.loggingContractor ~= nil then
+        self.loggingContractor:draw()
+    end
 end
 
 
