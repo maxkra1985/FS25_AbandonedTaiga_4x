@@ -9,7 +9,8 @@
     - ручная настройка количества техники;
     - выбор длины брёвен 3 / 6 / 9 / 12 м;
     - отображение фактического времени с точностью до 0.1 часа;
-    - расчёт почасовой стоимости по оплачиваемым часам, округлённым вверх.
+    - расчёт почасовой стоимости по оплачиваемым часам, округлённым вверх;
+    - подготовка проверенного draft договора по кнопке заключения.
 ]]
 
 LoggingContractorDialog = {}
@@ -29,6 +30,8 @@ function LoggingContractorDialog.new(target, customMt)
     self.farmlands = {}
     self.currentFarmland = nil
     self.currentScan = nil
+    self.currentEstimate = nil
+    self.currentContractDraft = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
@@ -79,12 +82,28 @@ function LoggingContractorDialog.getScanErrorText(errorCode)
 end
 
 
+-- Возвращает сообщение для ошибки подготовки draft договора.
+function LoggingContractorDialog.getContractDraftErrorText(errorCode)
+    if errorCode == "noTrees" then
+        return "На выбранном участке больше нет стоящих деревьев."
+    elseif errorCode == "invalidEquipment" then
+        return "Выбрано недопустимое количество техники."
+    elseif errorCode == "invalidLogLength" then
+        return "Выбрана недопустимая длина брёвен."
+    end
+
+    return LoggingContractorDialog.getScanErrorText(errorCode)
+end
+
+
 -- Заполняет селекторы окна и подготавливает первый принадлежащий ферме участок.
 function LoggingContractorDialog:setData(contractor, farmlands)
     self.contractor = contractor
     self.farmlands = farmlands or {}
     self.currentFarmland = nil
     self.currentScan = nil
+    self.currentEstimate = nil
+    self.currentContractDraft = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
 
@@ -178,11 +197,13 @@ function LoggingContractorDialog:selectFarmland(index)
     end
 
     self.currentFarmland = farmland
+    self.currentContractDraft = nil
 
     local farmId = self.contractor.mission:getFarmId()
     local scan, errorCode = self.contractor:scanFarmlandTrees(farmland.id, farmId)
     if scan == nil then
         self.currentScan = nil
+        self.currentEstimate = nil
         self.treeCountText:setText(LoggingContractorDialog.getScanErrorText(errorCode))
         self.speciesText:setText("")
         self.equipmentHintText:setText("Расчётное количество техники: 0")
@@ -199,16 +220,37 @@ function LoggingContractorDialog:selectFarmland(index)
 end
 
 
+-- Обновляет доступность кнопки заключения договора.
+function LoggingContractorDialog:updateStartContractButton()
+    if self.startContractButton == nil then
+        return
+    end
+
+    local canStart = self.contractor ~= nil
+        and self.currentFarmland ~= nil
+        and self.currentScan ~= nil
+        and self.currentScan.totalCount > 0
+        and self.currentEquipmentCount > 0
+        and self.currentEstimate ~= nil
+
+    self.startContractButton:setDisabled(not canStart)
+end
+
+
 -- Пересчитывает время и детализированную стоимость для выбранного количества
 -- техники. Время показывается с точностью до 0.1 часа, а почасовые статьи
 -- используют billableHours, уже округлённые вверх в расчёте подрядчика.
 function LoggingContractorDialog:updateEstimate()
+    self.currentContractDraft = nil
+
     if self.currentScan == nil or self.currentScan.totalCount <= 0 or self.currentEquipmentCount <= 0 then
+        self.currentEstimate = nil
         self.estimateTimeText:setText("Расчётное время: 0,0 ч")
         self.rentCostText:setText("Аренда техники: 0")
         self.equipmentWorkCostText:setText("Работа техники: 0")
         self.workerCostText:setText("Рабочие: 0")
         self.totalCostText:setText("Итого: 0")
+        self:updateStartContractButton()
         return
     end
 
@@ -216,6 +258,7 @@ function LoggingContractorDialog:updateEstimate()
         self.currentScan.totalCount,
         self.currentEquipmentCount
     )
+    self.currentEstimate = estimate
 
     local workHoursText = string.format("%.1f", estimate.workHours):gsub("%.", ",")
     self.estimateTimeText:setText(string.format("Расчётное время: %s ч", workHoursText))
@@ -231,6 +274,82 @@ function LoggingContractorDialog:updateEstimate()
         estimate.workerCost
     ))
     self.totalCostText:setText(string.format("Итого: %d", estimate.totalCost))
+    self:updateStartContractButton()
+end
+
+
+-- Повторно проверяет выбранный участок непосредственно перед заключением
+-- договора и формирует неизменяемый набор параметров для будущего StartEvent.
+function LoggingContractorDialog:createContractDraft()
+    if self.contractor == nil or self.currentFarmland == nil then
+        return nil, "farmlandNotFound"
+    end
+
+    local farmId = self.contractor.mission:getFarmId()
+    local scan, errorCode = self.contractor:scanFarmlandTrees(self.currentFarmland.id, farmId)
+    if scan == nil then
+        return nil, errorCode
+    end
+
+    if scan.totalCount <= 0 then
+        self.currentScan = scan
+        self:updateStatisticsText(scan)
+        self.equipmentHintText:setText("Расчётное количество техники: 0")
+        self:setEquipmentOptions(0, 0)
+        return nil, "noTrees"
+    end
+
+    local equipmentCount = math.floor(self.currentEquipmentCount or 0)
+    if equipmentCount <= 0 then
+        return nil, "invalidEquipment"
+    end
+
+    equipmentCount = math.min(equipmentCount, scan.totalCount)
+
+    local logLengthIsValid = false
+    for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
+        if length == self.currentLogLength then
+            logLengthIsValid = true
+            break
+        end
+    end
+    if not logLengthIsValid then
+        return nil, "invalidLogLength"
+    end
+
+    self.currentScan = scan
+    self:updateStatisticsText(scan)
+
+    local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
+    self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
+
+    if self.maxEquipmentCount ~= scan.totalCount or self.currentEquipmentCount ~= equipmentCount then
+        self:setEquipmentOptions(scan.totalCount, equipmentCount)
+    else
+        self:updateEstimate()
+    end
+
+    local estimate = self.currentEstimate
+    if estimate == nil then
+        return nil, "invalidEquipment"
+    end
+
+    local draft = {
+        farmId = farmId,
+        farmlandId = self.currentFarmland.id,
+        plannedTrees = scan.totalCount,
+        equipmentCount = self.currentEquipmentCount,
+        logLength = self.currentLogLength,
+        workHours = estimate.workHours,
+        billableHours = estimate.billableHours,
+        rentCost = estimate.rentCost,
+        equipmentWorkCost = estimate.equipmentWorkCost,
+        workerCost = estimate.workerCost,
+        totalCost = estimate.totalCost
+    }
+
+    self.currentContractDraft = draft
+    return draft
 end
 
 
@@ -257,7 +376,58 @@ function LoggingContractorDialog:onClickLogLength(state)
     local length = LoggingContractorDialog.LOG_LENGTHS[state]
     if length ~= nil then
         self.currentLogLength = length
+        self.currentContractDraft = nil
     end
+end
+
+
+-- Подготавливает параметры будущего договора по кнопке заключения.
+-- На этом этапе деньги не списываются и LoggingContractorJob ещё не запускается:
+-- следующий серверный этап получит этот набор параметров через StartEvent.
+function LoggingContractorDialog:onClickStartContract()
+    local draft, errorCode = self:createContractDraft()
+    if draft == nil then
+        InfoDialog.show(
+            LoggingContractorDialog.getContractDraftErrorText(errorCode),
+            nil,
+            nil,
+            DialogElement.TYPE_INFO
+        )
+        return
+    end
+
+    Logging.info(
+        "[LoggingContractor] Contract draft: farm=%d farmland=%d trees=%d equipment=%d logLength=%d cost=%d",
+        draft.farmId,
+        draft.farmlandId,
+        draft.plannedTrees,
+        draft.equipmentCount,
+        draft.logLength,
+        draft.totalCost
+    )
+
+    local workHoursText = string.format("%.1f", draft.workHours):gsub("%.", ",")
+    InfoDialog.show(
+        string.format(
+            "Параметры договора подготовлены для серверного запуска.\n\n"
+                .. "Участок: %d\n"
+                .. "Запланировано деревьев: %d\n"
+                .. "Техника: %d\n"
+                .. "Длина брёвен: %d м\n"
+                .. "Расчётное время: %s ч\n"
+                .. "Стоимость: %d\n\n"
+                .. "На этом этапе средства не списываются.",
+            draft.farmlandId,
+            draft.plannedTrees,
+            draft.equipmentCount,
+            draft.logLength,
+            workHoursText,
+            draft.totalCost
+        ),
+        nil,
+        nil,
+        DialogElement.TYPE_INFO
+    )
 end
 
 
@@ -286,6 +456,8 @@ function LoggingContractorDialog:onClose()
     self.farmlands = {}
     self.currentFarmland = nil
     self.currentScan = nil
+    self.currentEstimate = nil
+    self.currentContractDraft = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]

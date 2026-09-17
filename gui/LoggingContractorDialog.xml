@@ -42,16 +42,21 @@
 
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
             <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack"/>
+            <Bitmap profile="fs25_dialogButtonBoxSeparator"/>
+            <Button profile="buttonActivate"
+                    id="startContractButton"
+                    text="ЗАКЛЮЧИТЬ ДОГОВОР ПОДРЯДА"
+                    onClick="onClickStartContract"/>
         </BoxLayout>
     </GuiElement>
 
     <GUIProfiles>
         <Profile name="loggingContractorDialogBg" extends="fs25_dialogBg">
-            <size value="780px 900px"/>
+            <size value="780px 950px"/>
         </Profile>
 
         <Profile name="loggingContractorContent" extends="baseReference" with="anchorTopCenter">
-            <size value="720px 830px"/>
+            <size value="720px 880px"/>
             <position value="0px -15px"/>
         </Profile>
 
