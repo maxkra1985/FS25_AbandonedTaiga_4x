@@ -10,7 +10,7 @@
 
         <GuiElement profile="loggingContractorContent">
             <Text profile="loggingContractorTitle" text="ПОДРЯДЧИКИ НА ЛЕСОПОВАЛ"/>
-            <Text profile="loggingContractorDescription" text="Выберите участок и настройте количество техники."/>
+            <Text profile="loggingContractorDescription" text="Выберите участок и настройте параметры подрядчика."/>
 
             <MultiTextOption profile="loggingContractorFarmlandOption"
                              id="farmlandOption"
@@ -19,23 +19,21 @@
 
             <Text profile="loggingContractorStatistics" id="statisticsText"/>
 
-            <Text profile="loggingContractorEquipmentLabel" text="Количество техники"/>
-            <GuiElement profile="loggingContractorEquipmentSelector">
-                <Button profile="loggingContractorEquipmentButtonLeft"
-                        id="equipmentMinusButton"
-                        text="−"
-                        onClick="onClickEquipmentMinus"/>
-                <Text profile="loggingContractorEquipmentValue"
-                      id="equipmentValueText"
-                      text="0"/>
-                <Button profile="loggingContractorEquipmentButtonRight"
-                        id="equipmentPlusButton"
-                        text="+"
-                        onClick="onClickEquipmentPlus"/>
-            </GuiElement>
-
+            <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -390px"/>
+            <MultiTextOption profile="loggingContractorSettingOption"
+                             id="equipmentOption"
+                             position="0px -420px"
+                             onClick="onClickEquipment"/>
             <Text profile="loggingContractorEquipmentHint" id="equipmentHintText"/>
-            <Text profile="loggingContractorEstimate" id="estimateText"/>
+
+            <Text profile="loggingContractorSettingLabel" text="Длина брёвен" position="0px -500px"/>
+            <MultiTextOption profile="loggingContractorSettingOption"
+                             id="logLengthOption"
+                             position="0px -530px"
+                             onClick="onClickLogLength"/>
+
+            <Text profile="loggingContractorEstimate" id="estimateTimeText" position="0px -590px"/>
+            <Text profile="loggingContractorEstimate" id="estimateCostText" position="0px -625px"/>
         </GuiElement>
 
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
@@ -65,58 +63,42 @@
         </Profile>
 
         <Profile name="loggingContractorFarmlandOption" extends="fs25_multiTextOption" with="anchorTopCenter">
-            <size value="520px 48px"/>
+            <size value="570px 48px"/>
             <position value="0px -105px"/>
         </Profile>
 
         <Profile name="loggingContractorStatistics" extends="fs25_dialogText" with="anchorTopCenter">
-            <size value="650px 270px"/>
-            <position value="0px -170px"/>
+            <size value="570px 220px"/>
+            <position value="0px -165px"/>
             <textSize value="20px"/>
-            <textAlignment value="center"/>
+            <textAlignment value="left"/>
             <textVerticalAlignment value="top"/>
             <textMaxNumLines value="12"/>
         </Profile>
 
-        <Profile name="loggingContractorEquipmentLabel" extends="fs25_textDefault" with="anchorTopCenter">
-            <size value="650px 30px"/>
-            <position value="0px -445px"/>
+        <Profile name="loggingContractorSettingLabel" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="570px 28px"/>
             <textSize value="20px"/>
-            <textAlignment value="center"/>
-        </Profile>
-
-        <Profile name="loggingContractorEquipmentSelector" extends="baseReference" with="anchorTopCenter">
-            <size value="360px 48px"/>
-            <position value="0px -480px"/>
-        </Profile>
-
-        <Profile name="loggingContractorEquipmentButtonLeft" extends="buttonActivate" with="anchorMiddleLeft">
-            <size value="72px 44px"/>
-        </Profile>
-
-        <Profile name="loggingContractorEquipmentButtonRight" extends="buttonActivate" with="anchorMiddleRight">
-            <size value="72px 44px"/>
-        </Profile>
-
-        <Profile name="loggingContractorEquipmentValue" extends="fs25_textDefault" with="anchorMiddleCenter">
-            <size value="180px 44px"/>
-            <textSize value="24px"/>
-            <textAlignment value="center"/>
+            <textAlignment value="left"/>
             <textVerticalAlignment value="middle"/>
         </Profile>
 
-        <Profile name="loggingContractorEquipmentHint" extends="fs25_dialogText" with="anchorTopCenter">
-            <size value="650px 28px"/>
-            <position value="0px -535px"/>
-            <textSize value="17px"/>
+        <Profile name="loggingContractorSettingOption" extends="fs25_multiTextOption" with="anchorTopCenter">
+            <size value="570px 48px"/>
         </Profile>
 
-        <Profile name="loggingContractorEstimate" extends="fs25_dialogText" with="anchorTopCenter">
-            <size value="650px 62px"/>
-            <position value="0px -570px"/>
+        <Profile name="loggingContractorEquipmentHint" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="570px 24px"/>
+            <position value="0px -472px"/>
+            <textSize value="17px"/>
+            <textAlignment value="center"/>
+        </Profile>
+
+        <Profile name="loggingContractorEstimate" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="570px 30px"/>
             <textSize value="22px"/>
-            <textVerticalAlignment value="top"/>
-            <textMaxNumLines value="2"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
         </Profile>
     </GUIProfiles>
 </GUI>
