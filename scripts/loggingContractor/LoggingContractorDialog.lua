@@ -7,6 +7,7 @@
     - выбор принадлежащего текущей ферме участка;
     - немедленный подсчёт стоящих деревьев выбранного участка по породам;
     - ручная настройка количества техники;
+    - выбор длины брёвен 3 / 6 / 9 / 12 м;
     - немедленный пересчёт времени и стоимости без открытия второго окна.
 ]]
 
@@ -17,6 +18,7 @@ LoggingContractorDialog.GUI_NAME = "LoggingContractorDialog"
 LoggingContractorDialog.GUI_XML = "gui/LoggingContractorDialog.xml"
 LoggingContractorDialog.INSTANCE = nil
 LoggingContractorDialog.baseDirectory = nil
+LoggingContractorDialog.LOG_LENGTHS = {3, 6, 9, 12}
 
 
 -- Создаёт контроллер единого окна подрядчика.
@@ -28,6 +30,7 @@ function LoggingContractorDialog.new(target, customMt)
     self.currentScan = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
+    self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
 
     return self
 end
@@ -75,7 +78,7 @@ function LoggingContractorDialog.getScanErrorText(errorCode)
 end
 
 
--- Заполняет селектор участками текущей фермы и подготавливает первый участок.
+-- Заполняет селекторы окна и подготавливает первый принадлежащий ферме участок.
 function LoggingContractorDialog:setData(contractor, farmlands)
     self.contractor = contractor
     self.farmlands = farmlands or {}
@@ -84,13 +87,21 @@ function LoggingContractorDialog:setData(contractor, farmlands)
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
 
+    local logLengthTexts = {}
+    for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
+        table.insert(logLengthTexts, string.format("%d м", length))
+    end
+    self.logLengthOption:setTexts(logLengthTexts)
+    self.logLengthOption:setState(1)
+    self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
+
     if #self.farmlands == 0 then
         self.farmlandOption:setTexts({"Нет принадлежащих участков"})
         self.farmlandOption:setState(1)
         self.farmlandOption:setDisabled(true)
         self.statisticsText:setText("У текущей фермы нет принадлежащих ей участков.")
         self.equipmentHintText:setText("Расчётное количество техники: 0")
-        self:setEquipmentCount(0)
+        self:setEquipmentOptions(0, 0)
         return
     end
 
@@ -124,6 +135,38 @@ function LoggingContractorDialog:updateStatisticsText(scan)
 end
 
 
+-- Заполняет MultiTextOption доступными количествами техники и выбирает
+-- указанное значение. При отсутствии деревьев селектор блокируется на нуле.
+function LoggingContractorDialog:setEquipmentOptions(maxEquipmentCount, selectedEquipmentCount)
+    self.maxEquipmentCount = math.max(math.floor(maxEquipmentCount or 0), 0)
+
+    if self.maxEquipmentCount <= 0 then
+        self.currentEquipmentCount = 0
+        self.equipmentOption:setTexts({"0"})
+        self.equipmentOption:setState(1)
+        self.equipmentOption:setDisabled(true)
+        self:updateEstimate()
+        return
+    end
+
+    local texts = {}
+    for equipmentCount = 1, self.maxEquipmentCount do
+        table.insert(texts, tostring(equipmentCount))
+    end
+
+    self.currentEquipmentCount = math.clamp(
+        math.floor(selectedEquipmentCount or 1),
+        1,
+        self.maxEquipmentCount
+    )
+
+    self.equipmentOption:setDisabled(false)
+    self.equipmentOption:setTexts(texts)
+    self.equipmentOption:setState(self.currentEquipmentCount)
+    self:updateEstimate()
+end
+
+
 -- Выбирает участок, выполняет его сканирование и задаёт начальное количество
 -- техники по правилу ceil(treeCount / 100).
 function LoggingContractorDialog:selectFarmland(index)
@@ -138,58 +181,26 @@ function LoggingContractorDialog:selectFarmland(index)
     local scan, errorCode = self.contractor:scanFarmlandTrees(farmland.id, farmId)
     if scan == nil then
         self.currentScan = nil
-        self.maxEquipmentCount = 0
         self.statisticsText:setText(LoggingContractorDialog.getScanErrorText(errorCode))
         self.equipmentHintText:setText("Расчётное количество техники: 0")
-        self:setEquipmentCount(0)
+        self:setEquipmentOptions(0, 0)
         return
     end
 
     self.currentScan = scan
-    self.maxEquipmentCount = scan.totalCount
     self:updateStatisticsText(scan)
 
     local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
     self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
-    self:setEquipmentCount(recommendedCount)
-end
-
-
--- Устанавливает выбранное количество техники и сразу обновляет расчёт.
--- Верхняя граница равна числу деревьев: техника сверх числа текущих целей
--- не может обработать дополнительные деревья за один рабочий такт.
-function LoggingContractorDialog:setEquipmentCount(equipmentCount)
-    if self.currentScan == nil or self.currentScan.totalCount <= 0 then
-        self.currentEquipmentCount = 0
-    else
-        self.currentEquipmentCount = math.clamp(
-            math.floor(equipmentCount),
-            1,
-            math.max(self.maxEquipmentCount, 1)
-        )
-    end
-
-    self.equipmentValueText:setText(tostring(self.currentEquipmentCount))
-    self:updateEquipmentButtons()
-    self:updateEstimate()
-end
-
-
--- Обновляет доступность кнопок уменьшения и увеличения количества техники.
-function LoggingContractorDialog:updateEquipmentButtons()
-    local hasTrees = self.currentScan ~= nil and self.currentScan.totalCount > 0
-
-    self.equipmentMinusButton:setDisabled(not hasTrees or self.currentEquipmentCount <= 1)
-    self.equipmentPlusButton:setDisabled(
-        not hasTrees or self.currentEquipmentCount >= self.maxEquipmentCount
-    )
+    self:setEquipmentOptions(scan.totalCount, recommendedCount)
 end
 
 
 -- Пересчитывает время и стоимость для выбранного пользователем количества техники.
 function LoggingContractorDialog:updateEstimate()
-    if self.currentScan == nil or self.currentScan.totalCount <= 0 then
-        self.estimateText:setText("Расчётное время: 0 ч\nСтоимость подрядчика: 0")
+    if self.currentScan == nil or self.currentScan.totalCount <= 0 or self.currentEquipmentCount <= 0 then
+        self.estimateTimeText:setText("Расчётное время: 0 ч")
+        self.estimateCostText:setText("Стоимость подрядчика: 0")
         return
     end
 
@@ -198,11 +209,8 @@ function LoggingContractorDialog:updateEstimate()
         self.currentEquipmentCount
     )
 
-    self.estimateText:setText(string.format(
-        "Расчётное время: %d ч\nСтоимость подрядчика: %d",
-        estimate.workHours,
-        estimate.totalCost
-    ))
+    self.estimateTimeText:setText(string.format("Расчётное время: %d ч", estimate.workHours))
+    self.estimateCostText:setText(string.format("Стоимость подрядчика: %d", estimate.totalCost))
 end
 
 
@@ -212,18 +220,23 @@ function LoggingContractorDialog:onClickFarmland(state)
 end
 
 
--- Уменьшает количество техники на одну единицу и пересчитывает договор.
-function LoggingContractorDialog:onClickEquipmentMinus()
-    if self.currentEquipmentCount > 1 then
-        self:setEquipmentCount(self.currentEquipmentCount - 1)
+-- Обрабатывает выбор количества техники и сразу обновляет расчёт договора.
+function LoggingContractorDialog:onClickEquipment(state)
+    if self.currentScan == nil or self.currentScan.totalCount <= 0 then
+        return
     end
+
+    self.currentEquipmentCount = math.clamp(state, 1, self.maxEquipmentCount)
+    self:updateEstimate()
 end
 
 
--- Увеличивает количество техники на одну единицу и пересчитывает договор.
-function LoggingContractorDialog:onClickEquipmentPlus()
-    if self.currentScan ~= nil and self.currentEquipmentCount < self.maxEquipmentCount then
-        self:setEquipmentCount(self.currentEquipmentCount + 1)
+-- Сохраняет выбранную длину брёвен для будущего договора.
+-- На текущем этапе длина распила не изменяет расчёт времени и стоимости.
+function LoggingContractorDialog:onClickLogLength(state)
+    local length = LoggingContractorDialog.LOG_LENGTHS[state]
+    if length ~= nil then
+        self.currentLogLength = length
     end
 end
 
@@ -255,6 +268,7 @@ function LoggingContractorDialog:onClose()
     self.currentScan = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
+    self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
 
     LoggingContractorDialog:superClass().onClose(self)
 end
