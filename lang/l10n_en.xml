@@ -41,6 +41,12 @@
 
 		<text name="fillType_firewood"	text="Firewood"/>
 
+		<!-- License plates -->
+		<text name="ui_licensePlateType1" text="License plate (variation 1)" />
+		<text name="ui_licensePlateType2" text="License plate (variation 2)" />
+		<text name="ui_licensePlateType3" text="License plate (variation 3)" />
+		<text name="ui_licensePlateType4" text="License plate (variation 4)" />
+
 		<!-- Construction lifecycle -->
 		<text name="taiga_cl_infoProduction" text="Production"/>
 		<text name="taiga_cl_infoProductionStorage" text="Production storage"/>

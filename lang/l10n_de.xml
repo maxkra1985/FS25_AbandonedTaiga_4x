@@ -10,7 +10,7 @@
 
 		<text name="PLYWOOD"				text="OSB-Platten"/>
 		<text name="storeItem_plywood"		text="OSB-Platten"/>
-		<text name="fillType_plywood"		text="OSB-Platten"/>
+		<text name="fillType_plywood"			text="OSB-Platten"/>
 
 		<text name="tool_axe"				text="Axt"/>
 		<text name="typeDesc_axe"			text="Handwerkzeug zum Fällen kleiner und mittelgroßer Bäume mit einem Stammdurchmesser von bis zu 80 cm."/>
@@ -40,6 +40,12 @@
 		<text name="fillType_sand"	text="SAND"/>
 
 		<text name="fillType_firewood"	text="Brennholz"/>
+
+		<!-- Kennzeichen -->
+		<text name="ui_licensePlateType1" text="Kennzeichen (Variante 1)" />
+		<text name="ui_licensePlateType2" text="Kennzeichen (Variante 2)" />
+		<text name="ui_licensePlateType3" text="Kennzeichen (Variante 3)" />
+		<text name="ui_licensePlateType4" text="Kennzeichen (Variante 4)" />
 
 		<!-- Construction lifecycle -->
 		<text name="taiga_cl_infoProduction" text="Produktion"/>

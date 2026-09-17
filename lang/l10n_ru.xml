@@ -40,6 +40,12 @@
 
 		<text name="fillType_firewood"	text="Дрова"/>
 
+		<!-- Номерные знаки -->
+		<text name="ui_licensePlateType1" text="Номер (вариация 1)" />
+		<text name="ui_licensePlateType2" text="Номер (вариация 2)" />
+		<text name="ui_licensePlateType3" text="Номер (вариация 3)" />
+		<text name="ui_licensePlateType4" text="Номер (вариация 4)" />
+
 		<!-- Construction lifecycle -->
 		<text name="taiga_cl_infoProduction" text="Производство"/>
 		<text name="taiga_cl_infoProductionStorage" text="Производственное хранилище"/>
