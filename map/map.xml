@@ -45,7 +45,7 @@
             <marker filename="$data/shared/assets/marker/rockMissionFlag.i3d"/>
         </destructibleRockMission>
     </missions>
-    <treeTypes maxNumTrees="120000"/>
+    <treeTypes filename="map/trees/maps_treeTypes.xml" maxNumTrees="130000"/>
     <bales filename="$data/maps/maps_bales.xml"/>
     <motionPathEffects filename="$data/effects/motionPathEffects.xml"/>
     <fillTypes filename="config/maps_fillTypes.xml"/>
