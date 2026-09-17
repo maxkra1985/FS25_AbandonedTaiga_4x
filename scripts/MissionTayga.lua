@@ -30,6 +30,7 @@ function MissionTayga.loadLoggingContractorModules(baseDirectory)
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTrigger.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractor.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorExecution.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTreePhysics.lua", baseDirectory))
 
     LoggingContractorDialog.setBaseDirectory(baseDirectory)
     MissionTayga.loggingContractorModulesLoaded = true
