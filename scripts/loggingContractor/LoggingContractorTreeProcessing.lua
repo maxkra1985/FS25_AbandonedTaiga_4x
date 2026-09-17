@@ -216,9 +216,8 @@ function LoggingContractor:sampleContractorProcessingSection(
 end
 
 
--- Возвращает все стороны текущего сечения, которые соответствуют критериям
--- крупной ветви. В отличие от основной реализации функция не выбирает только
--- один вариант: это позволяет после неудачного реза проверить остальные стороны
+-- Возвращает все стороны текущего сечения, соответствующие критериям крупной
+-- ветви. Список нужен, чтобы после неудачного реза проверить остальные стороны
 -- в той же самой точке.
 function LoggingContractor:getContractorProcessingBranchCandidates(sample, baseline, nextSample, blockedDirections)
     local baselineDiameter = math.max(baseline.widthUp, baseline.widthSide)
@@ -922,15 +921,11 @@ function LoggingContractor:pruneContractorBranches(
     local fullCircleAttachments = splitTypeName == "SPRUCE"
 
     Logging.info(
-        "[LoggingContractor][ProcessingStart] shape=%d splitType=%s splitTypeName=%s length=%.2f step=%.2f branchFlagWindow=%.2f branchPlane=%.2fx%.2f branchAngles=0/-30/+30 attachmentAlgorithm=removeSplitShapeAttachments orientation=radialIn rotationStep=30 detachedStep=0.05",
+        "[LoggingContractor][TreeProcessingStart] shape=%d type=%s length=%.2f fullCircleAttachments=%s",
         currentShape,
-        tostring(splitTypeIndex),
         tostring(splitTypeName),
         currentLength,
-        step,
-        LoggingContractor.PROCESSING_BRANCH_SCAN_LENGTH,
-        LoggingContractor.PROCESSING_BRANCH_CUT_LENGTH,
-        LoggingContractor.PROCESSING_BRANCH_CUT_WIDTH
+        tostring(fullCircleAttachments)
     )
 
     while currentShape ~= nil
@@ -1142,9 +1137,12 @@ function LoggingContractor:pruneContractorBranches(
         end
 
         attachmentSteps = attachmentSteps + 1
-        local attachmentAngle = (
-            (attachmentSteps - 1) * LoggingContractor.PROCESSING_ATTACHMENT_ROTATION_STEP
-        ) % 360
+        local attachmentAngle = 0
+        if not fullCircleAttachments then
+            attachmentAngle = (
+                (attachmentSteps - 1) * LoggingContractor.PROCESSING_ATTACHMENT_ROTATION_STEP
+            ) % 360
+        end
         local removed = self:removeContractorProcessingAttachmentsAtStep(
             currentShape,
             sample,
@@ -1171,7 +1169,7 @@ function LoggingContractor:pruneContractorBranches(
 
     local _, _, _, _, attachmentsRemaining = self:getContractorSplitShapeStats(currentShape)
     Logging.info(
-        "[LoggingContractor][ProcessingDone] shape=%s cuts=%d length=%.2f branchFoundInFirst5m=%s attachmentSteps=%d hitSteps=%d removed=%d remainingAttachments=%d",
+        "[LoggingContractor][TreeProcessingDone] shape=%s cuts=%d length=%.2f branchFoundInFirst5m=%s attachmentSteps=%d hitSteps=%d removed=%d remainingAttachments=%d",
         tostring(currentShape),
         cutCount,
         currentLength,
