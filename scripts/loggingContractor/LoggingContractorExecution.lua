@@ -21,6 +21,9 @@ LoggingContractor.SPLIT_PLANE_SIZE = 4
 LoggingContractor.STUMP_HEIGHT = 0.5
 LoggingContractor.MIN_LOG_REMAINDER = 0.001
 LoggingContractor.TREE_DIRTY_RADIUS = 10
+LoggingContractor.START_EDGE_BAND = 20
+LoggingContractor.START_ACCESS_RADIUS = 12
+LoggingContractor.START_DENSITY_TOLERANCE = 2
 
 
 -- Возвращает имя split type дерева через штатный SplitShapeManager.
@@ -168,6 +171,209 @@ function LoggingContractor:collectContractTargets(farmlandId)
 end
 
 
+-- Проверяет наличие штатной маркировки TreeMarkerSystem на standing shape.
+function LoggingContractor:isContractTargetMarked(node)
+    local markerSystem = self.mission.treeMarkerSystem
+    return markerSystem ~= nil
+        and markerSystem.treeMarkers ~= nil
+        and markerSystem.treeMarkers[node] ~= nil
+end
+
+
+-- Возвращает расстояние от точки до ближайшего дорожного spline AI.
+-- AISystem:getRoadSplines() является штатным источником дорожной сети карты.
+function LoggingContractor:getContractorRoadDistance(x, y, z)
+    local aiSystem = self.mission.aiSystem
+    if aiSystem == nil then
+        return math.huge
+    end
+
+    local roadSplines = aiSystem:getRoadSplines()
+    local bestDistanceSq = math.huge
+
+    for spline in pairs(roadSplines) do
+        if I3DUtil.getIsSpline(spline) then
+            local length = getSplineLength(spline)
+            if length ~= nil and length > 0 then
+                local sx, sy, sz = getClosestSplinePosition(
+                    spline,
+                    x,
+                    y,
+                    z,
+                    0.1 / length
+                )
+                local distanceSq = MathUtil.vector3LengthSq(
+                    x - sx,
+                    y - sy,
+                    z - sz
+                )
+                bestDistanceSq = math.min(bestDistanceSq, distanceSq)
+            end
+        end
+    end
+
+    return bestDistanceSq < math.huge and math.sqrt(bestDistanceSq) or math.huge
+end
+
+
+-- Считает соседние деревья в радиусе от кандидата. Низкая плотность означает,
+-- что к краю участка проще получить свободный доступ без прохода через лес.
+function LoggingContractor:getContractorLocalTreeDensity(node, targets, radius)
+    if node == nil or node == 0 or not entityExists(node) then
+        return math.huge
+    end
+
+    local x, _, z = getWorldTranslation(node)
+    local radiusSq = radius * radius
+    local count = 0
+
+    for _, otherNode in ipairs(targets) do
+        if otherNode ~= node and entityExists(otherNode) then
+            local otherX, _, otherZ = getWorldTranslation(otherNode)
+            local dx = otherX - x
+            local dz = otherZ - z
+            if dx * dx + dz * dz <= radiusSq then
+                count = count + 1
+            end
+        end
+    end
+
+    return count
+end
+
+
+-- Выбирает первую точку рубки у края участка. Сначала оставляются участки края
+-- с минимальной локальной плотностью деревьев; среди примерно одинаково
+-- свободных вариантов предпочтение отдаётся ближайшему к штатной AI-дороге.
+function LoggingContractor:selectContractorInitialTarget(job, targets)
+    local farmland = g_farmlandManager:getFarmlandById(job.farmlandId)
+    if farmland == nil or #targets == 0 then
+        return targets[1]
+    end
+
+    local minX, minZ, maxX, maxZ = farmland:getBoundingBox()
+    if minX == nil then
+        return targets[1]
+    end
+
+    local width = math.max(maxX - minX, 1)
+    local depth = math.max(maxZ - minZ, 1)
+    local edgeBand = math.min(
+        LoggingContractor.START_EDGE_BAND,
+        math.min(width, depth) * 0.25
+    )
+
+    local edgeTargets = {}
+    for _, node in ipairs(targets) do
+        if entityExists(node) then
+            local x, _, z = getWorldTranslation(node)
+            local edgeDistance = math.min(
+                x - minX,
+                maxX - x,
+                z - minZ,
+                maxZ - z
+            )
+
+            if edgeDistance <= edgeBand then
+                table.insert(edgeTargets, {
+                    node = node,
+                    edgeDistance = edgeDistance
+                })
+            end
+        end
+    end
+
+    if #edgeTargets == 0 then
+        for _, node in ipairs(targets) do
+            table.insert(edgeTargets, {
+                node = node,
+                edgeDistance = math.huge
+            })
+        end
+    end
+
+    local minDensity = math.huge
+    for _, candidate in ipairs(edgeTargets) do
+        candidate.density = self:getContractorLocalTreeDensity(
+            candidate.node,
+            targets,
+            LoggingContractor.START_ACCESS_RADIUS
+        )
+        minDensity = math.min(minDensity, candidate.density)
+    end
+
+    local best = nil
+    for _, candidate in ipairs(edgeTargets) do
+        if candidate.density <= minDensity + LoggingContractor.START_DENSITY_TOLERANCE then
+            local x, y, z = getWorldTranslation(candidate.node)
+            candidate.roadDistance = self:getContractorRoadDistance(x, y, z)
+
+            if best == nil
+                or candidate.roadDistance < best.roadDistance - 0.001
+                or (math.abs(candidate.roadDistance - best.roadDistance) <= 0.001
+                    and candidate.edgeDistance < best.edgeDistance) then
+                best = candidate
+            end
+        end
+    end
+
+    return best ~= nil and best.node or edgeTargets[1].node
+end
+
+
+-- Возвращает ближайшее дерево к последней точке рубки.
+function LoggingContractor:selectNearestContractTarget(targets, x, z)
+    local bestNode = nil
+    local bestDistanceSq = math.huge
+
+    for _, node in ipairs(targets) do
+        if entityExists(node) then
+            local nodeX, _, nodeZ = getWorldTranslation(node)
+            local dx = nodeX - x
+            local dz = nodeZ - z
+            local distanceSq = dx * dx + dz * dz
+
+            if distanceSq < bestDistanceSq then
+                bestDistanceSq = distanceSq
+                bestNode = node
+            end
+        end
+    end
+
+    return bestNode
+end
+
+
+-- Выбирает следующую цель договора:
+-- 1) пока существуют маркированные деревья, используются только они;
+-- 2) после первого спила выбирается ближайшее дерево к последней точке;
+-- 3) если маркировки нет и рубка ещё не началась, выбирается доступный край.
+function LoggingContractor:selectNextContractTarget(job, targets)
+    if #targets == 0 then
+        return nil
+    end
+
+    local markedTargets = {}
+    for _, node in ipairs(targets) do
+        if self:isContractTargetMarked(node) then
+            table.insert(markedTargets, node)
+        end
+    end
+
+    local candidates = #markedTargets > 0 and markedTargets or targets
+
+    if job.lastCutX ~= nil and job.lastCutZ ~= nil then
+        return self:selectNearestContractTarget(
+            candidates,
+            job.lastCutX,
+            job.lastCutZ
+        )
+    end
+
+    return self:selectContractorInitialTarget(job, candidates)
+end
+
+
 -- Фиксирует исходные цели только что созданной задачи. plannedTrees остаётся
 -- серверным числом на момент оплаты, а targetNodes определяет именно те деревья,
 -- которые подрядчик имеет право обрабатывать в рамках этого договора.
@@ -175,6 +381,8 @@ function LoggingContractor:initializeJobTargets(job)
     job.targetNodes = self:collectContractTargets(job.farmlandId)
     job.remainingTrees = #job.targetNodes
     job.processTimerMs = 0
+    job.lastCutX = nil
+    job.lastCutZ = nil
 
     if job.remainingTrees > job.plannedTrees then
         while #job.targetNodes > job.plannedTrees do
@@ -510,11 +718,30 @@ function LoggingContractor:processJobBatch(job)
         return
     end
 
-    local count = math.min(job.equipmentCount, #targets)
-    for i = 1, count do
-        local shape = targets[i]
+    local processed = 0
+    local maxProcessed = math.min(job.equipmentCount, #targets)
+
+    while processed < maxProcessed and job.isActive do
+        targets = self:refreshJobTargets(job)
+        if #targets == 0 then
+            break
+        end
+
+        local shape = self:selectNextContractTarget(job, targets)
+        if shape == nil or not entityExists(shape) then
+            break
+        end
+
+        local treeX, _, treeZ = getWorldTranslation(shape)
+
         if self:processContractTree(job, shape) then
             job.contractorCutTrees = (job.contractorCutTrees or 0) + 1
+            job.lastCutX = treeX
+            job.lastCutZ = treeZ
+            processed = processed + 1
+        else
+            -- Неудачный shape не должен бесконечно блокировать весь такт.
+            break
         end
     end
 
@@ -534,7 +761,6 @@ function LoggingContractor:processJobBatch(job)
     end
 end
 
-
 -- Обновляет серверные договоры в игровом времени. При высоком ускорении времени
 -- за кадр допускается несколько рабочих тактов, но их число ограничено, чтобы
 -- массовая рубка не создавала длинный кадр.
@@ -543,11 +769,20 @@ function LoggingContractor:update(dt)
         return
     end
 
-    local effectiveTimeScale = self.mission:getEffectiveTimeScale()
-    local dtGame = dt * effectiveTimeScale
-    if dtGame <= 0 then
-        return
+    local hasActiveJob = self:hasAnyActiveJob()
+
+    -- Даже если ускорение пришло сетевым изменением настроек, сервер
+    -- принудительно возвращает допустимый максимум.
+    if hasActiveJob
+        and not self.sleepTimeScaleOverride
+        and not g_sleepManager:getIsSleeping()
+        and self.mission.missionInfo.timeScale > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
+        self.mission:setTimeScale(LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE)
     end
+
+    local isWorkingTime = self:getIsWorkingTime()
+    local effectiveTimeScale = self.mission:getEffectiveTimeScale()
+    local dtGame = isWorkingTime and dt * effectiveTimeScale or 0
 
     for _, job in pairs(self.activeJobs) do
         if job.isActive then
@@ -561,26 +796,31 @@ function LoggingContractor:update(dt)
                 self:broadcastJobProgress(job)
             end
 
-            job.processTimerMs = (job.processTimerMs or 0) + dtGame
-            local batchCount = math.min(
-                math.floor(job.processTimerMs / LoggingContractor.PROCESS_INTERVAL_MS),
-                LoggingContractor.MAX_BATCHES_PER_UPDATE
-            )
+            -- С 21:00 до 08:00 договор остаётся активным, но рабочее время
+            -- подрядчика не накапливается и деревья не обрабатываются.
+            if dtGame > 0 then
+                job.processTimerMs = (job.processTimerMs or 0) + dtGame
+                local batchCount = math.min(
+                    math.floor(job.processTimerMs / LoggingContractor.PROCESS_INTERVAL_MS),
+                    LoggingContractor.MAX_BATCHES_PER_UPDATE
+                )
 
-            if batchCount > 0 then
-                job.processTimerMs = job.processTimerMs - batchCount * LoggingContractor.PROCESS_INTERVAL_MS
+                if batchCount > 0 then
+                    job.processTimerMs =
+                        job.processTimerMs
+                        - batchCount * LoggingContractor.PROCESS_INTERVAL_MS
 
-                for _ = 1, batchCount do
-                    if not job.isActive then
-                        break
+                    for _ = 1, batchCount do
+                        if not job.isActive then
+                            break
+                        end
+                        self:processJobBatch(job)
                     end
-                    self:processJobBatch(job)
                 end
             end
         end
     end
 end
-
 
 -- Рисует компактную строку прогресса для активных договоров текущей фермы.
 -- Прогресс считается по исчезнувшим исходным целям, поэтому собственная рубка
@@ -643,6 +883,13 @@ function LoggingContractor:startContractWithExecution(superFunc, connection, far
         if job ~= nil then
             self:initializeJobTargets(job)
             job.progressBroadcastPending = true
+
+            if self.mission.missionInfo.timeScale
+                > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
+                self.mission:setTimeScale(
+                    LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE
+                )
+            end
         end
     end
 
