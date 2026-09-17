@@ -230,9 +230,20 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
 end
 
 
--- Рассчитывает количество техники, округлённое время работы и полную стоимость
--- подрядчика по зафиксированным правилам проекта.
-function LoggingContractor:calculateEstimate(treeCount)
+-- Возвращает расчётное количество техники по правилу одна единица на каждые
+-- сто деревьев. Это значение используется как начальное при открытии окна.
+function LoggingContractor:getRecommendedEquipmentCount(treeCount)
+    if treeCount == nil or treeCount <= 0 then
+        return 0
+    end
+
+    return math.ceil(treeCount / LoggingContractor.TREES_PER_EQUIPMENT)
+end
+
+
+-- Рассчитывает округлённое время работы и полную стоимость подрядчика.
+-- Если количество техники не передано, используется расчётное значение.
+function LoggingContractor:calculateEstimate(treeCount, equipmentCount)
     if treeCount == nil or treeCount <= 0 then
         return {
             equipmentCount = 0,
@@ -241,7 +252,12 @@ function LoggingContractor:calculateEstimate(treeCount)
         }
     end
 
-    local equipmentCount = math.ceil(treeCount / LoggingContractor.TREES_PER_EQUIPMENT)
+    if equipmentCount == nil then
+        equipmentCount = self:getRecommendedEquipmentCount(treeCount)
+    end
+
+    equipmentCount = math.max(math.floor(equipmentCount), 1)
+
     local workMinutes = (treeCount * LoggingContractor.MINUTES_PER_TREE) / equipmentCount
     local workHours = math.ceil(workMinutes / 60)
     local totalCost = equipmentCount * LoggingContractor.EQUIPMENT_RENT_COST

@@ -16,6 +16,7 @@ MissionTayga.loggingContractorModulesLoaded = false
 -- Загружает модули системы подрядчиков один раз при создании MissionTayga.
 function MissionTayga.loadLoggingContractorModules(baseDirectory)
     if MissionTayga.loggingContractorModulesLoaded then
+        LoggingContractorDialog.setBaseDirectory(baseDirectory)
         return
     end
 
@@ -23,6 +24,7 @@ function MissionTayga.loadLoggingContractorModules(baseDirectory)
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTrigger.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractor.lua", baseDirectory))
 
+    LoggingContractorDialog.setBaseDirectory(baseDirectory)
     MissionTayga.loggingContractorModulesLoaded = true
 end
 
