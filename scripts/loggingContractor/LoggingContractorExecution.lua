@@ -308,9 +308,16 @@ function LoggingContractor:selectContractorInitialTarget(job, targets)
             local x, y, z = getWorldTranslation(candidate.node)
             candidate.roadDistance = self:getContractorRoadDistance(x, y, z)
 
+            local candidateHasRoad = candidate.roadDistance < math.huge
+            local bestHasRoad = best ~= nil and best.roadDistance < math.huge
+
             if best == nil
-                or candidate.roadDistance < best.roadDistance - 0.001
-                or (math.abs(candidate.roadDistance - best.roadDistance) <= 0.001
+                or (candidateHasRoad and not bestHasRoad)
+                or (candidateHasRoad and bestHasRoad
+                    and candidate.roadDistance < best.roadDistance - 0.001)
+                or (candidateHasRoad == bestHasRoad
+                    and (not candidateHasRoad
+                        or math.abs(candidate.roadDistance - best.roadDistance) <= 0.001)
                     and candidate.edgeDistance < best.edgeDistance) then
                 best = candidate
             end
