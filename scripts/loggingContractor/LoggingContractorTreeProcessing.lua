@@ -1,18 +1,17 @@
 --[[
     LoggingContractorTreeProcessing
 
-    Постоянная обработка спиленного дерева подрядчиком.
+    Обработка спиленного дерева подрядчиком.
 
-    Основной ствол сканируется через каждые 0.10 м. Первые 5 м используются
-    как классификационное окно крупных ветвей: если в нём найдена ветвь,
-    геометрический поиск продолжается до конца дерева. Продольный отпил
-    повторяется в направлениях 0/-30/+30 градусов и при необходимости
-    сдвигается вдоль ствола с шагом 0.10 м.
+    Основной ствол сканируется через 0.10 м. Первые 5 м являются только
+    классификационным окном: если там обнаружена крупная ветвь, её поиск
+    продолжается до конца ствола. Крупные ветви отделяются продольными резами
+    с повторными попытками 0/-30/+30 градусов и сдвигом вдоль оси на 0.10 м.
 
     Attachments удаляются штатным removeSplitShapeAttachments. Для обычных
-    деревьев сохраняется лёгкий четырёхсторонний проход. Только SPRUCE и уже
-    отделённые крупные ветви очищаются полным кругом из 12 радиальных направлений
-    через 30 градусов. Это ограничивает нагрузку при массовой обработке леса.
+    деревьев используется лёгкий четырёхсторонний радиальный проход. Для SPRUCE
+    и для отделённых крупных ветвей на каждом сечении выполняется полный круг
+    из 12 уникальных радиальных направлений через 30 градусов.
 ]]
 
 local function getMedian(values)
@@ -38,7 +37,7 @@ LoggingContractor.BRANCH_GROUP_END_FACTOR = 0.35
 LoggingContractor.BRANCH_SEPARATION_SPEED = 0.55
 LoggingContractor.BRANCH_SEPARATION_UP_SPEED = 0.15
 
--- Формирует устойчивое базовое сечение по нескольким предыдущим замерам.
+-- Формирует базовое сечение по медиане предыдущих замеров.
 function LoggingContractor:getContractorBranchBaseline(samples, firstIndex, lastIndex)
     local minUp, maxUp, minSide, maxSide = {}, {}, {}, {}
     local widthUp, widthSide, centerUp, centerSide = {}, {}, {}, {}
@@ -67,7 +66,7 @@ function LoggingContractor:getContractorBranchBaseline(samples, firstIndex, last
     }
 end
 
--- Возвращает одностороннее расширение сечения и прирост полной ширины.
+-- Возвращает одностороннее расширение сечения и прирост его полной ширины.
 function LoggingContractor:getContractorBranchSideGrowth(sample, baseline, direction)
     if direction == "SIDE_POS" then
         return sample.maxSide - baseline.maxSide, sample.widthSide - baseline.widthSide
@@ -78,7 +77,6 @@ function LoggingContractor:getContractorBranchSideGrowth(sample, baseline, direc
     elseif direction == "UP_NEG" then
         return baseline.minUp - sample.minUp, sample.widthUp - baseline.widthUp
     end
-
     return 0, 0
 end
 
@@ -93,11 +91,10 @@ function LoggingContractor:getContractorBranchDirection(direction, sideX, sideY,
     elseif direction == "UP_NEG" then
         return -upX, -upY, -upZ
     end
-
     return nil
 end
 
--- Возвращает расстояние от оси до нормальной поверхности ствола.
+-- Возвращает радиус нормального ствола в выбранном направлении.
 function LoggingContractor:getContractorBranchSurfaceOffset(baseline, direction)
     if direction == "SIDE_POS" then
         return baseline.maxSide
@@ -108,24 +105,15 @@ function LoggingContractor:getContractorBranchSurfaceOffset(baseline, direction)
     elseif direction == "UP_NEG" then
         return -baseline.minUp
     end
-
     return 0
 end
 
--- Проверяет пересечение рассчитанной продольной плоскости с текущим shape.
+-- Проверяет, пересекает ли продольная плоскость древесную геометрию.
 function LoggingContractor:probeContractorLongitudinalCut(
-    shape,
-    centerX,
-    centerY,
-    centerZ,
-    normalX,
-    normalY,
-    normalZ,
-    axisX,
-    axisY,
-    axisZ,
-    sizeY,
-    sizeZ
+    shape, centerX, centerY, centerZ,
+    normalX, normalY, normalZ,
+    axisX, axisY, axisZ,
+    sizeY, sizeZ
 )
     local sideX, sideY, sideZ = MathUtil.crossProduct(
         normalX, normalY, normalZ,
@@ -134,7 +122,6 @@ function LoggingContractor:probeContractorLongitudinalCut(
     if MathUtil.vector3Length(sideX, sideY, sideZ) < 0.001 then
         return nil
     end
-
     sideX, sideY, sideZ = MathUtil.vector3Normalize(sideX, sideY, sideZ)
 
     local planeX = centerX - axisX * sizeY * 0.5 - sideX * sizeZ * 0.5
@@ -148,15 +135,11 @@ function LoggingContractor:probeContractorLongitudinalCut(
         axisX, axisY, axisZ,
         sizeY, sizeZ
     )
-
     if minY == nil then
         return nil
     end
 
-    return {
-        widthY = maxY - minY,
-        widthZ = maxZ - minZ
-    }
+    return {widthY = maxY - minY, widthZ = maxZ - minZ}
 end
 
 
@@ -537,6 +520,22 @@ function LoggingContractor:cutContractorProcessingBranch(
                     geometry.sizeZ
                 )
 
+                Logging.info(
+                    "[LoggingContractor][BranchCutTry] shape=%d detected=%.2f cutD=%.2f direction=%s angle=%+.0f outset=%.2f surface=%.3f span=%.2f..%.2f plane=%.2fx%.2f probe=%s",
+                    currentShape,
+                    initialDistance,
+                    attemptDistance,
+                    candidate.direction,
+                    angleOffset,
+                    outset,
+                    geometry.surfaceOffset,
+                    geometry.cutStart,
+                    geometry.cutEnd,
+                    geometry.sizeY,
+                    geometry.sizeZ,
+                    probe == nil and "none" or string.format("%.2fx%.2f", probe.widthY, probe.widthZ)
+                )
+
                 if probe ~= nil then
                     local parts = self:splitContractorShapeSized(
                         currentShape,
@@ -637,6 +636,14 @@ function LoggingContractor:cutContractorProcessingBranch(
         end
 
         attemptDistance = attemptDistance + LoggingContractor.PROCESSING_BRANCH_ADVANCE_STEP
+
+        Logging.info(
+            "[LoggingContractor][BranchCutAdvance] shape=%d detected=%.2f nextCutD=%.2f direction=%s",
+            currentShape,
+            initialDistance,
+            attemptDistance,
+            candidate.direction
+        )
     end
 
     if shapeChanged then
@@ -724,9 +731,6 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
 
     rotationAngle = rotationAngle or 0
 
-    local axisPointX = baseX + axisX * distance
-    local axisPointY = baseY + axisY * distance
-    local axisPointZ = baseZ + axisZ * distance
     local sideX, sideY, sideZ = MathUtil.crossProduct(
         axisX, axisY, axisZ,
         upX, upY, upZ
@@ -746,13 +750,15 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
         LoggingContractor.PROCESSING_ATTACHMENT_MIN_SIZE,
         LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
     )
-    local outset = LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET
 
+    local axisPointX = baseX + axisX * distance
+    local axisPointY = baseY + axisY * distance
+    local axisPointZ = baseZ + axisZ * distance
     local centerX = axisPointX + upX * centerUp + sideX * centerSide
     local centerY = axisPointY + upY * centerUp + sideY * centerSide
     local centerZ = axisPointZ + upZ * centerUp + sideZ * centerSide
+    local outset = LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET
 
-    -- Центральный проход выполняется один раз на сечение.
     removeSplitShapeAttachments(
         shape,
         centerX, centerY, centerZ,
@@ -775,11 +781,9 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
         or 90
 
     for index = 0, directionCount - 1 do
-        local angleDegrees = rotationAngle + index * angleStep
-        local angle = math.rad(angleDegrees)
+        local angle = math.rad(rotationAngle + index * angleStep)
         local cosAngle = math.cos(angle)
         local sinAngle = math.sin(angle)
-
         local radialX = upX * cosAngle + sideX * sinAngle
         local radialY = upY * cosAngle + sideY * sinAngle
         local radialZ = upZ * cosAngle + sideZ * sinAngle
@@ -1050,6 +1054,19 @@ function LoggingContractor:pruneContractorBranches(
         end
 
         if sample ~= nil and searchLargeBranches then
+            Logging.info(
+                "[LoggingContractor][BranchProfile] shape=%d d=%.2f side=%.3f..%.3f up=%.3f..%.3f width=%.3f/%.3f center=%.3f/%.3f",
+                currentShape,
+                distance,
+                sample.minSide,
+                sample.maxSide,
+                sample.minUp,
+                sample.maxUp,
+                sample.widthSide,
+                sample.widthUp,
+                sample.centerSide,
+                sample.centerUp
+            )
 
             if #history >= LoggingContractor.PROCESSING_BRANCH_BASELINE_SAMPLES
                 and cutCount < LoggingContractor.PROCESSING_BRANCH_MAX_TOTAL_CUTS then
