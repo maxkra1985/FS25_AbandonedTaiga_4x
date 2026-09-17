@@ -409,9 +409,8 @@ function LoggingContractor:cutContractorProcessingBranch(
     local attemptDistance = initialDistance
     local shapeChanged = false
 
-    -- Пока обнаруженное одностороннее утолщение сохраняется, последовательно
-    -- пробуем рез в исходном направлении и с поворотом +/-30 градусов. Если
-    -- ветвь не отделилась, точка реза поднимается на 0.10 м вдоль ствола.
+    -- Для найденной ветви проверяем исходное направление и повороты +/-30°.
+    -- Если ветвь не отделилась, поднимаем точку реза вдоль ствола на 0.10 м.
     while currentShape ~= nil
         and currentShape ~= 0
         and entityExists(currentShape)
@@ -441,21 +440,12 @@ function LoggingContractor:cutContractorProcessingBranch(
         )
 
         if attemptDistance > initialDistance then
-            local minGrowth = candidate.growthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR
-            local minWidthGrowth = candidate.widthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR
+            local minGrowth =
+                candidate.growthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR
+            local minWidthGrowth =
+                candidate.widthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR
 
             if growth < minGrowth or widthGrowth < minWidthGrowth then
-                Logging.info(
-                    "[LoggingContractor][BranchCutAdvanceStop] shape=%d start=%.2f d=%.2f direction=%s growth=%.3f/%.3f widthGrowth=%.3f/%.3f",
-                    currentShape,
-                    initialDistance,
-                    attemptDistance,
-                    candidate.direction,
-                    growth,
-                    minGrowth,
-                    widthGrowth,
-                    minWidthGrowth
-                )
                 break
             end
         end
@@ -486,15 +476,16 @@ function LoggingContractor:cutContractorProcessingBranch(
                 break
             end
 
-            local normalX, normalY, normalZ = self:rotateContractorProcessingBranchNormal(
-                geometry.normalX,
-                geometry.normalY,
-                geometry.normalZ,
-                axisX,
-                axisY,
-                axisZ,
-                angleOffset
-            )
+            local normalX, normalY, normalZ =
+                self:rotateContractorProcessingBranchNormal(
+                    geometry.normalX,
+                    geometry.normalY,
+                    geometry.normalZ,
+                    axisX,
+                    axisY,
+                    axisZ,
+                    angleOffset
+                )
 
             for _, outset in ipairs(LoggingContractor.PROCESSING_BRANCH_OUTSETS) do
                 if currentShape == nil or currentShape == 0 or not entityExists(currentShape) then
@@ -505,6 +496,7 @@ function LoggingContractor:cutContractorProcessingBranch(
                 local cutX = geometry.axisPointX + normalX * cutOffset
                 local cutY = geometry.axisPointY + normalY * cutOffset
                 local cutZ = geometry.axisPointZ + normalZ * cutOffset
+
                 local probe = self:probeContractorLongitudinalCut(
                     currentShape,
                     cutX,
@@ -520,11 +512,105 @@ function LoggingContractor:cutContractorProcessingBranch(
                     geometry.sizeZ
                 )
 
+                if probe ~= nil then
+                    local parts = self:splitContractorShapeSized(
+                        currentShape,
+                        cutX,
+                        cutY,
+                        cutZ,
+                        normalX,
+                        normalY,
+                        normalZ,
+                        geometry.upX,
+                        geometry.upY,
+                        geometry.upZ,
+                        geometry.sizeY,
+                        geometry.sizeZ
+                    )
+
+                    if #parts > 0 then
+                        local mainPart, mainAxisLength, mainMeasure =
+                            self:selectContractorMainStemPart(
+                                parts,
+                                baseX,
+                                baseY,
+                                baseZ,
+                                axisX,
+                                axisY,
+                                axisZ
+                            )
+
+                        if mainPart ~= nil
+                            and mainPart.shape ~= nil
+                            and entityExists(mainPart.shape) then
+                            local oldShape = currentShape
+                            currentShape = mainPart.shape
+                            currentLength =
+                                mainAxisLength > 0 and mainAxisLength or currentLength
+                            shapeChanged = true
+                            local detachedCount = 0
+
+                            for _, part in ipairs(parts) do
+                                if part.shape ~= nil
+                                    and part.shape ~= currentShape
+                                    and entityExists(part.shape) then
+                                    detachedCount = detachedCount + 1
+
+                                    self:scanContractorProcessingDetachedAttachments(part.shape)
+
+                                    if entityExists(part.shape) then
+                                        self:separateContractorBranch(
+                                            part.shape,
+                                            normalX,
+                                            normalY,
+                                            normalZ
+                                        )
+
+                                        local angularX, angularY, angularZ =
+                                            self:getContractorFallAngularVelocity(
+                                                upX,
+                                                upY,
+                                                upZ
+                                            )
+                                        self:applyContractorFall(
+                                            part.shape,
+                                            angularX,
+                                            angularY,
+                                            angularZ
+                                        )
+                                    end
+                                end
+                            end
+
+                            Logging.info(
+                                "[LoggingContractor][BranchCut] oldShape=%d mainShape=%d detected=%.2f cutD=%.2f direction=%s angle=%+.0f detached=%d length=%.2f measure=%.3f",
+                                oldShape,
+                                currentShape,
+                                initialDistance,
+                                attemptDistance,
+                                candidate.direction,
+                                angleOffset,
+                                detachedCount,
+                                currentLength,
+                                mainMeasure
+                            )
+
+                            if detachedCount > 0 then
+                                return currentShape, currentLength, true, detachedCount
+                            end
+                        end
+                    end
+                end
             end
+        end
+
+        attemptDistance =
+            attemptDistance + LoggingContractor.PROCESSING_BRANCH_ADVANCE_STEP
+    end
 
     if shapeChanged then
         Logging.info(
-            "[LoggingContractor][BranchCutNoDetach] shape=%d detected=%.2f direction=%s geometry changed but no branch detached",
+            "[LoggingContractor][BranchCutNoDetach] shape=%d detected=%.2f direction=%s",
             currentShape,
             initialDistance,
             candidate.direction
