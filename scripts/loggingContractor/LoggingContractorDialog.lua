@@ -10,7 +10,7 @@
     - выбор длины брёвен 3 / 6 / 9 / 12 м;
     - отображение фактического времени с точностью до 0.1 часа;
     - расчёт почасовой стоимости по оплачиваемым часам, округлённым вверх;
-    - подготовка проверенного draft договора по кнопке заключения.
+    - отправка серверного запроса на заключение договора и показ результата.
 ]]
 
 LoggingContractorDialog = {}
@@ -35,6 +35,7 @@ function LoggingContractorDialog.new(target, customMt)
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
+    self.startRequestPending = false
 
     return self
 end
@@ -82,7 +83,7 @@ function LoggingContractorDialog.getScanErrorText(errorCode)
 end
 
 
--- Возвращает сообщение для ошибки подготовки draft договора.
+-- Возвращает сообщение для ошибки подготовки локального draft договора.
 function LoggingContractorDialog.getContractDraftErrorText(errorCode)
     if errorCode == "noTrees" then
         return "На выбранном участке больше нет стоящих деревьев."
@@ -96,6 +97,32 @@ function LoggingContractorDialog.getContractDraftErrorText(errorCode)
 end
 
 
+-- Возвращает понятное сообщение для отклонённого сервером запроса.
+function LoggingContractorDialog.getStartContractResultErrorText(state)
+    if state == LoggingContractorResultEvent.STATE_NO_PERMISSION then
+        return "Недостаточно прав для заключения договоров от имени фермы."
+    elseif state == LoggingContractorResultEvent.STATE_FARM_NOT_FOUND then
+        return "Не удалось определить ферму игрока."
+    elseif state == LoggingContractorResultEvent.STATE_FARMLAND_NOT_FOUND then
+        return "Выбранный участок больше не существует."
+    elseif state == LoggingContractorResultEvent.STATE_FARMLAND_NOT_OWNED then
+        return "Выбранный участок больше не принадлежит вашей ферме."
+    elseif state == LoggingContractorResultEvent.STATE_NO_TREES then
+        return "На выбранном участке больше нет стоящих деревьев."
+    elseif state == LoggingContractorResultEvent.STATE_INVALID_EQUIPMENT then
+        return "Сервер отклонил выбранное количество техники."
+    elseif state == LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH then
+        return "Сервер отклонил выбранную длину брёвен."
+    elseif state == LoggingContractorResultEvent.STATE_NOT_ENOUGH_MONEY then
+        return "На счету фермы недостаточно средств для заключения договора."
+    elseif state == LoggingContractorResultEvent.STATE_ALREADY_ACTIVE then
+        return "На этом участке уже выполняется договор подрядчика вашей фермы."
+    end
+
+    return "Не удалось заключить договор подряда из-за внутренней ошибки."
+end
+
+
 -- Заполняет селекторы окна и подготавливает первый принадлежащий ферме участок.
 function LoggingContractorDialog:setData(contractor, farmlands)
     self.contractor = contractor
@@ -106,6 +133,7 @@ function LoggingContractorDialog:setData(contractor, farmlands)
     self.currentContractDraft = nil
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
+    self.startRequestPending = false
 
     local logLengthTexts = {}
     for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
@@ -226,7 +254,8 @@ function LoggingContractorDialog:updateStartContractButton()
         return
     end
 
-    local canStart = self.contractor ~= nil
+    local canStart = not self.startRequestPending
+        and self.contractor ~= nil
         and self.currentFarmland ~= nil
         and self.currentScan ~= nil
         and self.currentScan.totalCount > 0
@@ -278,8 +307,8 @@ function LoggingContractorDialog:updateEstimate()
 end
 
 
--- Повторно проверяет выбранный участок непосредственно перед заключением
--- договора и формирует неизменяемый набор параметров для будущего StartEvent.
+-- Повторно проверяет выбранный участок непосредственно перед отправкой запроса
+-- и формирует локальный draft. Сервер всё равно независимо повторит проверки.
 function LoggingContractorDialog:createContractDraft()
     if self.contractor == nil or self.currentFarmland == nil then
         return nil, "farmlandNotFound"
@@ -381,10 +410,13 @@ function LoggingContractorDialog:onClickLogLength(state)
 end
 
 
--- Подготавливает параметры будущего договора по кнопке заключения.
--- На этом этапе деньги не списываются и LoggingContractorJob ещё не запускается:
--- следующий серверный этап получит этот набор параметров через StartEvent.
+-- Отправляет серверу запрос на заключение договора. Клиентские рассчитанные
+-- стоимость и количество деревьев в сетевое событие не передаются.
 function LoggingContractorDialog:onClickStartContract()
+    if self.startRequestPending then
+        return
+    end
+
     local draft, errorCode = self:createContractDraft()
     if draft == nil then
         InfoDialog.show(
@@ -396,8 +428,11 @@ function LoggingContractorDialog:onClickStartContract()
         return
     end
 
+    self.startRequestPending = true
+    self:updateStartContractButton()
+
     Logging.info(
-        "[LoggingContractor] Contract draft: farm=%d farmland=%d trees=%d equipment=%d logLength=%d cost=%d",
+        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d equipment=%d logLength=%d previewCost=%d",
         draft.farmId,
         draft.farmlandId,
         draft.plannedTrees,
@@ -406,23 +441,63 @@ function LoggingContractorDialog:onClickStartContract()
         draft.totalCost
     )
 
-    local workHoursText = string.format("%.1f", draft.workHours):gsub("%.", ",")
+    if not LoggingContractorStartEvent.sendEvent(
+        draft.farmlandId,
+        draft.equipmentCount,
+        draft.logLength
+    ) then
+        self.startRequestPending = false
+        self:updateStartContractButton()
+
+        InfoDialog.show(
+            "Не удалось отправить запрос на заключение договора серверу.",
+            nil,
+            nil,
+            DialogElement.TYPE_INFO
+        )
+    end
+end
+
+
+-- Обрабатывает ответ сервера на заключение договора. При успехе отображаются
+-- именно серверные параметры и фактически списанная стоимость.
+function LoggingContractorDialog.onStartContractResult(event)
+    local dialog = LoggingContractorDialog.INSTANCE
+    if dialog ~= nil then
+        dialog.startRequestPending = false
+        dialog:updateStartContractButton()
+    end
+
+    if event.state ~= LoggingContractorResultEvent.STATE_SUCCESS then
+        InfoDialog.show(
+            LoggingContractorDialog.getStartContractResultErrorText(event.state),
+            nil,
+            nil,
+            DialogElement.TYPE_INFO
+        )
+        return
+    end
+
+    if g_gui ~= nil then
+        g_gui:closeDialogByName(LoggingContractorDialog.GUI_NAME)
+    end
+
+    local workHoursText = string.format("%.1f", event.workHours):gsub("%.", ",")
     InfoDialog.show(
         string.format(
-            "Параметры договора подготовлены для серверного запуска.\n\n"
+            "Договор подряда заключён.\n\n"
                 .. "Участок: %d\n"
-                .. "Запланировано деревьев: %d\n"
+                .. "Запланировано к спилу: %d\n"
                 .. "Техника: %d\n"
                 .. "Длина брёвен: %d м\n"
                 .. "Расчётное время: %s ч\n"
-                .. "Стоимость: %d\n\n"
-                .. "На этом этапе средства не списываются.",
-            draft.farmlandId,
-            draft.plannedTrees,
-            draft.equipmentCount,
-            draft.logLength,
+                .. "Списано со счёта фермы: %d",
+            event.farmlandId,
+            event.plannedTrees,
+            event.equipmentCount,
+            event.logLength,
             workHoursText,
-            draft.totalCost
+            event.totalCost
         ),
         nil,
         nil,
@@ -461,6 +536,7 @@ function LoggingContractorDialog:onClose()
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
+    self.startRequestPending = false
 
     LoggingContractorDialog:superClass().onClose(self)
 end

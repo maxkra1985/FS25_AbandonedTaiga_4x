@@ -7,10 +7,11 @@
     - поиск и регистрация специального триггера карты;
     - получение списка участков, принадлежащих текущей ферме;
     - подсчёт стоящих деревьев выбранного участка по породам;
-    - расчёт количества техники, длительности и стоимости подрядчика.
+    - расчёт количества техники, длительности и стоимости подрядчика;
+    - серверная проверка запроса, списание средств и создание LoggingContractorJob.
 
-    В дальнейшем модуль также будет отвечать за создание, восстановление и
-    завершение активного LoggingContractorJob, а также за сетевую синхронизацию.
+    Периодическая обработка деревьев активным договором будет добавлена
+    следующим этапом.
 ]]
 
 LoggingContractor = {}
@@ -21,6 +22,12 @@ LoggingContractor.MINUTES_PER_TREE = 1.5
 LoggingContractor.EQUIPMENT_RENT_COST = 10000
 LoggingContractor.EQUIPMENT_WORK_COST_PER_HOUR = 1000
 LoggingContractor.WORKER_COST_PER_HOUR = 2000
+LoggingContractor.VALID_LOG_LENGTHS = {
+    [3] = true,
+    [6] = true,
+    [9] = true,
+    [12] = true
+}
 
 
 -- Создаёт менеджер подрядчиков для текущей миссии.
@@ -29,6 +36,9 @@ function LoggingContractor.new(mission)
     self.mission = mission
     self.trigger = nil
     self.activeTreeScan = nil
+    self.activeJobs = {}
+    self.clientJobs = {}
+    self.nextJobId = 1
 
     return self
 end
@@ -284,6 +294,170 @@ function LoggingContractor:calculateEstimate(treeCount, equipmentCount)
 end
 
 
+-- Проверяет допустимость выбранной длины брёвен на сервере независимо от GUI.
+function LoggingContractor:isValidLogLength(logLength)
+    return LoggingContractor.VALID_LOG_LENGTHS[logLength] == true
+end
+
+
+-- Определяет ферму по сетевому соединению отправителя. Клиентский farmId для
+-- заключения договора не используется и поэтому не может быть подменён.
+function LoggingContractor:getFarmForConnection(connection)
+    if connection == nil or self.mission.userManager == nil or g_farmManager == nil then
+        return nil
+    end
+
+    local userId = self.mission.userManager:getUserIdByConnection(connection)
+    if userId == nil then
+        return nil
+    end
+
+    return g_farmManager:getFarmByUserId(userId)
+end
+
+
+-- Проверяет, не выполняется ли уже договор этой фермы на том же участке.
+-- Это не ограничивает ферму одним договором, но исключает двойную оплату и
+-- одновременную обработку одного набора деревьев.
+function LoggingContractor:hasActiveJobForFarmland(farmId, farmlandId)
+    for _, job in pairs(self.activeJobs) do
+        if job.isActive and job.farmId == farmId and job.farmlandId == farmlandId then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+-- Преобразует внутреннюю ошибку сканирования в код сетевого ответа.
+function LoggingContractor:getStartResultStateForScanError(errorCode)
+    if errorCode == "farmlandNotFound" then
+        return LoggingContractorResultEvent.STATE_FARMLAND_NOT_FOUND
+    elseif errorCode == "farmlandNotOwned" then
+        return LoggingContractorResultEvent.STATE_FARMLAND_NOT_OWNED
+    end
+
+    return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
+end
+
+
+-- Выполняет серверную часть заключения договора: определяет ферму отправителя,
+-- проверяет право manageContracts, участок и деревья, заново рассчитывает цену,
+-- проверяет баланс, списывает средства и создаёт LoggingContractorJob.
+function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength)
+    if not self.mission:getIsServer() then
+        return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
+    end
+
+    local farm = self:getFarmForConnection(connection)
+    if farm == nil or farm.farmId == FarmlandManager.NO_OWNER_FARM_ID then
+        return LoggingContractorResultEvent.STATE_FARM_NOT_FOUND
+    end
+
+    local farmId = farm.farmId
+    if not self.mission:getHasPlayerPermission("manageContracts", connection, farmId) then
+        return LoggingContractorResultEvent.STATE_NO_PERMISSION
+    end
+
+    equipmentCount = math.floor(equipmentCount or 0)
+    if equipmentCount <= 0 then
+        return LoggingContractorResultEvent.STATE_INVALID_EQUIPMENT
+    end
+
+    if not self:isValidLogLength(logLength) then
+        return LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH
+    end
+
+    local scan, errorCode = self:scanFarmlandTrees(farmlandId, farmId)
+    if scan == nil then
+        return self:getStartResultStateForScanError(errorCode)
+    end
+
+    if scan.totalCount <= 0 then
+        return LoggingContractorResultEvent.STATE_NO_TREES
+    end
+
+    if equipmentCount > scan.totalCount then
+        return LoggingContractorResultEvent.STATE_INVALID_EQUIPMENT
+    end
+
+    if self:hasActiveJobForFarmland(farmId, farmlandId) then
+        return LoggingContractorResultEvent.STATE_ALREADY_ACTIVE
+    end
+
+    local estimate = self:calculateEstimate(scan.totalCount, equipmentCount)
+    if self.mission:getMoney(farmId) < estimate.totalCost then
+        return LoggingContractorResultEvent.STATE_NOT_ENOUGH_MONEY
+    end
+
+    local job = LoggingContractorJob.new({
+        jobId = self.nextJobId,
+        farmId = farmId,
+        farmlandId = farmlandId,
+        plannedTrees = scan.totalCount,
+        equipmentCount = equipmentCount,
+        logLength = logLength,
+        workHours = estimate.workHours,
+        billableHours = estimate.billableHours,
+        rentCost = estimate.rentCost,
+        equipmentWorkCost = estimate.equipmentWorkCost,
+        workerCost = estimate.workerCost,
+        totalCost = estimate.totalCost
+    })
+
+    if job == nil then
+        return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
+    end
+
+    -- Списание выполняется только сервером после всех проверок. Для текущего
+    -- этапа используется штатная нейтральная финансовая категория OTHER.
+    self.mission:addMoney(-estimate.totalCost, farmId, MoneyType.OTHER, true, true)
+
+    self.activeJobs[job.jobId] = job
+    self.nextJobId = self.nextJobId + 1
+
+    Logging.info(
+        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d equipment=%d logLength=%d cost=%d",
+        job.jobId,
+        job.farmId,
+        job.farmlandId,
+        job.plannedTrees,
+        job.equipmentCount,
+        job.logLength,
+        job.totalCost
+    )
+
+    return LoggingContractorResultEvent.STATE_SUCCESS, job:getNetworkData()
+end
+
+
+-- Применяет на клиенте подтверждённый сервером результат заключения договора.
+-- Успешная задача сохраняется отдельно от server-side activeJobs для будущего HUD.
+function LoggingContractor:onStartContractResult(event)
+    if event.state == LoggingContractorResultEvent.STATE_SUCCESS then
+        self.clientJobs[event.jobId] = LoggingContractorJob.new({
+            jobId = event.jobId,
+            farmId = event.farmId,
+            farmlandId = event.farmlandId,
+            plannedTrees = event.plannedTrees,
+            equipmentCount = event.equipmentCount,
+            logLength = event.logLength,
+            workHours = event.workHours,
+            billableHours = event.billableHours,
+            rentCost = event.rentCost,
+            equipmentWorkCost = event.equipmentWorkCost,
+            workerCost = event.workerCost,
+            totalCost = event.totalCost
+        })
+    end
+
+    if LoggingContractorDialog ~= nil then
+        LoggingContractorDialog.onStartContractResult(event)
+    end
+end
+
+
 -- Регистрирует клиентский activatable на специальном триггере карты.
 function LoggingContractor:initialize()
     if not self.mission:getIsClient() then
@@ -301,7 +475,8 @@ function LoggingContractor:initialize()
 end
 
 
--- Удаляет зарегистрированный триггер при завершении миссии.
+-- Удаляет зарегистрированный триггер и созданные объекты договоров при
+-- завершении миссии.
 function LoggingContractor:delete()
     self.activeTreeScan = nil
 
@@ -309,4 +484,14 @@ function LoggingContractor:delete()
         self.trigger:delete()
         self.trigger = nil
     end
+
+    for _, job in pairs(self.activeJobs) do
+        job:delete()
+    end
+    self.activeJobs = {}
+
+    for _, job in pairs(self.clientJobs) do
+        job:delete()
+    end
+    self.clientJobs = {}
 end

@@ -14,12 +14,17 @@ MissionTayga.loggingContractorModulesLoaded = false
 
 
 -- Загружает модули системы подрядчиков один раз при создании MissionTayga.
+-- Сетевые Event-классы загружаются здесь до создания g_currentMission, потому
+-- что GIANTS разрешает InitEventClass только на этапе компиляции скриптов.
 function MissionTayga.loadLoggingContractorModules(baseDirectory)
     if MissionTayga.loggingContractorModulesLoaded then
         LoggingContractorDialog.setBaseDirectory(baseDirectory)
         return
     end
 
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractorJob.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/events/LoggingContractorResultEvent.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/events/LoggingContractorStartEvent.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorDialog.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTrigger.lua", baseDirectory))
     source(Utils.getFilename("scripts/loggingContractor/LoggingContractor.lua", baseDirectory))
