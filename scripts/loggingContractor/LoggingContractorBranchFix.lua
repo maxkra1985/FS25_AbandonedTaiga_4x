@@ -1,58 +1,201 @@
 --[[
     LoggingContractorBranchFix
 
-    Уточняет обработку крупных развилок после валки дерева.
+    Поиск и снятие крупных боковых ветвей после валки дерева.
 
-    Диагностика показала две особенности движка:
-    - getVolume() для древесных split-shape в наших тестах возвращает 0;
-    - продольная плоскость вдоль основного ствола может срезать только узкую
-      щепу с крупной ветви, не отделяя саму ветвь.
+    Алгоритм опирается на штатный testSplitShape. От комля по основной оси
+    ствола строятся поперечные сечения с шагом 0.25 м только на первых 5 м.
+    Для каждого сечения сохраняются четыре границы. Резкое устойчивое
+    расширение одной из сторон относительно нескольких предыдущих сечений
+    считается началом крупной ветви.
 
-    Поэтому ветвь теперь режется поперёк её предполагаемой собственной оси.
-    Ось оценивается по началу расширения ствола и наиболее удалённой стороне
-    широкого поперечного сечения. Перед реальным splitShape несколько точек
-    вдоль этой оси проверяются штатным testSplitShape, чтобы выбрать компактное
-    сечение уже за пределами основного ствола.
+    Найденная ветвь отделяется продольной плоскостью: плоскость параллельна
+    основной оси ствола и располагается со стороны обнаруженного расширения,
+    около поверхности ствола до начала развилки. После успешного реза основной
+    ствол сканируется заново, чтобы найти следующую крупную ветвь.
 ]]
 
-LoggingContractor.BRANCH_CUT_MIN_SIZE = 1.25
-LoggingContractor.BRANCH_CUT_SIZE_FACTOR = 2.5
-LoggingContractor.BRANCH_CUT_MIN_WIDTH_FACTOR = 0.20
-LoggingContractor.BRANCH_CUT_MAX_WIDTH_FACTOR = 1.65
+LoggingContractor.BRANCH_SCAN_STEP = 0.25
+LoggingContractor.BRANCH_SCAN_LENGTH = 5.0
+LoggingContractor.BRANCH_BASELINE_SAMPLES = 4
+LoggingContractor.BRANCH_MIN_SIDE_GROWTH = 0.12
+LoggingContractor.BRANCH_SIDE_GROWTH_FACTOR = 0.25
+LoggingContractor.BRANCH_MIN_WIDTH_GROWTH = 0.08
+LoggingContractor.BRANCH_WIDTH_GROWTH_FACTOR = 0.15
+LoggingContractor.BRANCH_PERSISTENCE_FACTOR = 0.60
+LoggingContractor.BRANCH_GROUP_END_FACTOR = 0.35
+LoggingContractor.BRANCH_CUT_MIN_LENGTH = 1.0
+LoggingContractor.BRANCH_CUT_MIN_WIDTH = 1.25
+LoggingContractor.BRANCH_CUT_WIDTH_FACTOR = 2.0
+LoggingContractor.BRANCH_MAX_CUTS = 6
+LoggingContractor.BRANCH_SEPARATION_SPEED = 0.55
+LoggingContractor.BRANCH_SEPARATION_UP_SPEED = 0.15
 
 
--- Возвращает геометрическую оценку размера split-shape без getVolume().
--- Произведение габаритов используется только для сравнения полученных частей.
-function LoggingContractor:getContractorShapeMeasure(shape)
-    local sizeX, sizeY, sizeZ, numConvexes, numAttachments = self:getContractorSplitShapeStats(shape)
-    return sizeX * sizeY * sizeZ, sizeX, sizeY, sizeZ, numConvexes, numAttachments
+-- Возвращает медиану набора чисел. Медиана используется для базовой формы
+-- ствола, чтобы одиночное неточное сечение не смещало порог обнаружения ветви.
+local function getMedian(values)
+    if #values == 0 then
+        return 0
+    end
+
+    table.sort(values)
+    local middle = math.floor((#values + 1) * 0.5)
+    if #values % 2 == 0 then
+        return (values[middle] + values[middle + 1]) * 0.5
+    end
+
+    return values[middle]
 end
 
 
--- Проверяет предполагаемую плоскость реза штатным testSplitShape.
--- Центр переводится в нижний левый угол прямоугольника тем же способом,
+-- Формирует базовое поперечное сечение по нескольким предыдущим замерам.
+-- Все координаты остаются в локальной системе плоскости testSplitShape.
+function LoggingContractor:getContractorBranchBaseline(samples, firstIndex, lastIndex)
+    local minUp = {}
+    local maxUp = {}
+    local minSide = {}
+    local maxSide = {}
+    local widthUp = {}
+    local widthSide = {}
+    local centerUp = {}
+    local centerSide = {}
+
+    for index = firstIndex, lastIndex do
+        local sample = samples[index]
+        table.insert(minUp, sample.minUp)
+        table.insert(maxUp, sample.maxUp)
+        table.insert(minSide, sample.minSide)
+        table.insert(maxSide, sample.maxSide)
+        table.insert(widthUp, sample.widthUp)
+        table.insert(widthSide, sample.widthSide)
+        table.insert(centerUp, sample.centerUp)
+        table.insert(centerSide, sample.centerSide)
+    end
+
+    return {
+        minUp = getMedian(minUp),
+        maxUp = getMedian(maxUp),
+        minSide = getMedian(minSide),
+        maxSide = getMedian(maxSide),
+        widthUp = getMedian(widthUp),
+        widthSide = getMedian(widthSide),
+        centerUp = getMedian(centerUp),
+        centerSide = getMedian(centerSide)
+    }
+end
+
+
+-- Возвращает расширение конкретной стороны относительно базового сечения.
+-- Дополнительно возвращается увеличение полной ширины по соответствующей оси:
+-- это позволяет отличить ветвь от простого плавного смещения кривого ствола.
+function LoggingContractor:getContractorBranchSideGrowth(sample, baseline, direction)
+    if direction == "SIDE_POS" then
+        return sample.maxSide - baseline.maxSide, sample.widthSide - baseline.widthSide
+    elseif direction == "SIDE_NEG" then
+        return baseline.minSide - sample.minSide, sample.widthSide - baseline.widthSide
+    elseif direction == "UP_POS" then
+        return sample.maxUp - baseline.maxUp, sample.widthUp - baseline.widthUp
+    elseif direction == "UP_NEG" then
+        return baseline.minUp - sample.minUp, sample.widthUp - baseline.widthUp
+    end
+
+    return 0, 0
+end
+
+
+-- Определяет наиболее выраженную сторону утолщения текущего сечения.
+-- Кандидат принимается только когда одновременно выросла сама сторона и
+-- общая ширина сечения по этой оси.
+function LoggingContractor:getContractorBranchGrowthCandidate(sample, baseline)
+    local baselineDiameter = math.max(baseline.widthUp, baseline.widthSide)
+    local growthThreshold = math.max(
+        LoggingContractor.BRANCH_MIN_SIDE_GROWTH,
+        baselineDiameter * LoggingContractor.BRANCH_SIDE_GROWTH_FACTOR
+    )
+    local widthThreshold = math.max(
+        LoggingContractor.BRANCH_MIN_WIDTH_GROWTH,
+        baselineDiameter * LoggingContractor.BRANCH_WIDTH_GROWTH_FACTOR
+    )
+
+    local candidates = {}
+    for _, direction in ipairs({"SIDE_POS", "SIDE_NEG", "UP_POS", "UP_NEG"}) do
+        local growth, widthGrowth = self:getContractorBranchSideGrowth(sample, baseline, direction)
+        if growth >= growthThreshold and widthGrowth >= widthThreshold then
+            table.insert(candidates, {
+                direction = direction,
+                growth = growth,
+                widthGrowth = widthGrowth,
+                growthThreshold = growthThreshold,
+                widthThreshold = widthThreshold,
+                baselineDiameter = baselineDiameter
+            })
+        end
+    end
+
+    table.sort(candidates, function(a, b)
+        return a.growth > b.growth
+    end)
+
+    return candidates[1]
+end
+
+
+-- Возвращает мировой вектор наружу для одной из четырёх сторон сечения.
+function LoggingContractor:getContractorBranchDirection(direction, sideX, sideY, sideZ, upX, upY, upZ)
+    if direction == "SIDE_POS" then
+        return sideX, sideY, sideZ
+    elseif direction == "SIDE_NEG" then
+        return -sideX, -sideY, -sideZ
+    elseif direction == "UP_POS" then
+        return upX, upY, upZ
+    elseif direction == "UP_NEG" then
+        return -upX, -upY, -upZ
+    end
+
+    return nil
+end
+
+
+-- Возвращает расстояние от исходной оси до поверхности нормального ствола
+-- с выбранной стороны. Это положение используется для продольного реза.
+function LoggingContractor:getContractorBranchSurfaceOffset(baseline, direction)
+    if direction == "SIDE_POS" then
+        return baseline.maxSide
+    elseif direction == "SIDE_NEG" then
+        return -baseline.minSide
+    elseif direction == "UP_POS" then
+        return baseline.maxUp
+    elseif direction == "UP_NEG" then
+        return -baseline.minUp
+    end
+
+    return 0
+end
+
+
+-- Проверяет, пересекает ли рассчитанная продольная плоскость древесную
+-- геометрию. Положение плоскости переводится из центра в угол тем же способом,
 -- который используется в splitContractorShapeSized().
-function LoggingContractor:probeContractorBranchCut(shape, centerX, centerY, centerZ, normalX, normalY, normalZ, planeUpX, planeUpY, planeUpZ, cutSize)
+function LoggingContractor:probeContractorLongitudinalCut(shape, centerX, centerY, centerZ, normalX, normalY, normalZ, axisX, axisY, axisZ, sizeY, sizeZ)
     local sideX, sideY, sideZ = MathUtil.crossProduct(
         normalX,
         normalY,
         normalZ,
-        planeUpX,
-        planeUpY,
-        planeUpZ
+        axisX,
+        axisY,
+        axisZ
     )
 
-    local sideLength = MathUtil.vector3Length(sideX, sideY, sideZ)
-    if sideLength < 0.001 then
+    if MathUtil.vector3Length(sideX, sideY, sideZ) < 0.001 then
         return nil
     end
 
     sideX, sideY, sideZ = MathUtil.vector3Normalize(sideX, sideY, sideZ)
 
-    local halfSize = cutSize * 0.5
-    local planeX = centerX - planeUpX * halfSize - sideX * halfSize
-    local planeY = centerY - planeUpY * halfSize - sideY * halfSize
-    local planeZ = centerZ - planeUpZ * halfSize - sideZ * halfSize
+    local planeX = centerX - axisX * sizeY * 0.5 - sideX * sizeZ * 0.5
+    local planeY = centerY - axisY * sizeY * 0.5 - sideY * sizeZ * 0.5
+    local planeZ = centerZ - axisZ * sizeY * 0.5 - sideZ * sizeZ * 0.5
 
     local minY, maxY, minZ, maxZ = testSplitShape(
         shape,
@@ -62,90 +205,51 @@ function LoggingContractor:probeContractorBranchCut(shape, centerX, centerY, cen
         normalX,
         normalY,
         normalZ,
-        planeUpX,
-        planeUpY,
-        planeUpZ,
-        cutSize,
-        cutSize
+        axisX,
+        axisY,
+        axisZ,
+        sizeY,
+        sizeZ
     )
 
     if minY == nil then
         return nil
     end
 
-    local below, above = getSplitShapePlaneExtents(
-        shape,
-        centerX,
-        centerY,
-        centerZ,
-        normalX,
-        normalY,
-        normalZ
-    )
-
-    local widthY = maxY - minY
-    local widthZ = maxZ - minZ
-
     return {
-        widthY = widthY,
-        widthZ = widthZ,
-        maxWidth = math.max(widthY, widthZ),
-        below = below or 0,
-        above = above or 0
+        widthY = maxY - minY,
+        widthZ = maxZ - minZ
     }
 end
 
 
--- Выбирает наиболее выраженное боковое направление широкого сечения.
--- Намеренно используются четыре стороны bounding rectangle, а не небольшое
--- смещение его центра: у симметричной кроны центр почти не смещается даже при
--- наличии нескольких очень крупных ветвей.
-function LoggingContractor:getContractorBranchRadialDirection(sample, upX, upY, upZ)
-    local candidates = {
-        {side = 1, up = 0, extent = math.max(sample.maxSide, 0)},
-        {side = -1, up = 0, extent = math.max(-sample.minSide, 0)},
-        {side = 0, up = 1, extent = math.max(sample.maxUp, 0)},
-        {side = 0, up = -1, extent = math.max(-sample.minUp, 0)}
-    }
-
-    table.sort(candidates, function(a, b)
-        return a.extent > b.extent
-    end)
-
-    local best = candidates[1]
-    if best == nil or best.extent <= 0 then
-        return nil
-    end
-
-    local radialX = sample.sideX * best.side + upX * best.up
-    local radialY = sample.sideY * best.side + upY * best.up
-    local radialZ = sample.sideZ * best.side + upZ * best.up
-    radialX, radialY, radialZ = MathUtil.vector3Normalize(radialX, radialY, radialZ)
-
-    return radialX, radialY, radialZ, best.extent, best.side, best.up
-end
-
-
--- Находит первую крупную развилку и строит плоскость, перпендикулярную
--- предполагаемой оси самой ветви. В отличие от прежнего варианта точка реза
--- берётся возле начала расширения, а не в середине всей широкой зоны.
+-- Находит первую крупную боковую ветвь в пределах первых пяти метров ствола.
+-- Сечение снимается каждые 0.25 м. После обнаружения утолщения базовое сечение
+-- фиксируется и по нему определяется вся непрерывная зона этой ветви.
 function LoggingContractor:findContractorBranchCandidate(shape, baseX, baseY, baseZ, axisX, axisY, axisZ, upX, upY, upZ, trunkLength)
     if shape == nil or shape == 0 or not entityExists(shape) then
         return nil
     end
 
     local sizeX, sizeY, sizeZ, numConvexes, numAttachments = self:getContractorSplitShapeStats(shape)
+    local step = LoggingContractor.BRANCH_SCAN_STEP
+    local scanLimit = math.min(LoggingContractor.BRANCH_SCAN_LENGTH, trunkLength - step)
+
+    if scanLimit < step * (LoggingContractor.BRANCH_BASELINE_SAMPLES + 1) then
+        Logging.info(
+            "[LoggingContractor][BranchScan] shape=%d skipped length=%.2f scanLimit=%.2f",
+            shape,
+            trunkLength,
+            math.max(scanLimit, 0)
+        )
+        return nil
+    end
+
     local scanSize = math.max(sizeX, sizeY, sizeZ, 4) + 2
-    local step = math.clamp(
-        trunkLength / 40,
-        LoggingContractor.BRANCH_SCAN_MIN_STEP,
-        LoggingContractor.BRANCH_SCAN_MAX_STEP
-    )
-
     local samples = {}
-    local distance = math.min(step, trunkLength * 0.1)
+    local distance = step
 
-    while distance < trunkLength - step * 0.5 do
+    while distance <= scanLimit + 0.001 do
         local sample = self:sampleContractorCrossSection(
             shape,
             baseX + axisX * distance,
@@ -163,247 +267,233 @@ function LoggingContractor:findContractorBranchCandidate(shape, baseX, baseY, ba
         if sample ~= nil then
             sample.distance = distance
             table.insert(samples, sample)
+
+            Logging.info(
+                "[LoggingContractor][BranchProfile] shape=%d d=%.2f side=%.3f..%.3f up=%.3f..%.3f width=%.3f/%.3f center=%.3f/%.3f",
+                shape,
+                distance,
+                sample.minSide,
+                sample.maxSide,
+                sample.minUp,
+                sample.maxUp,
+                sample.widthSide,
+                sample.widthUp,
+                sample.centerSide,
+                sample.centerUp
+            )
         end
 
         distance = distance + step
     end
 
-    if #samples < 3 then
-        return nil
-    end
-
-    local baseLimit = trunkLength * LoggingContractor.BRANCH_BASE_SAMPLE_FRACTION
-    local baselineDiameter = nil
-
-    for _, sample in ipairs(samples) do
-        if sample.distance <= baseLimit then
-            if baselineDiameter == nil or sample.maxWidth < baselineDiameter then
-                baselineDiameter = sample.maxWidth
-            end
-        end
-    end
-
-    if baselineDiameter == nil or baselineDiameter <= 0 then
-        return nil
-    end
-
-    local threshold = math.max(
-        baselineDiameter * LoggingContractor.BRANCH_WIDTH_FACTOR,
-        baselineDiameter + LoggingContractor.BRANCH_MIN_WIDTH_GROWTH
-    )
-
     Logging.info(
-        "[LoggingContractor][BranchScan] shape=%d length=%.2f stats=%.2fx%.2fx%.2f convexes=%d attachments=%d baseline=%.2f threshold=%.2f step=%.2f samples=%d",
+        "[LoggingContractor][BranchScan] shape=%d length=%.2f scan=%.2f step=%.2f samples=%d stats=%.2fx%.2fx%.2f convexes=%d attachments=%d",
         shape,
         trunkLength,
+        scanLimit,
+        step,
+        #samples,
         sizeX,
         sizeY,
         sizeZ,
         numConvexes,
-        numAttachments,
-        baselineDiameter,
-        threshold,
-        step,
-        #samples
+        numAttachments
     )
 
-    local groupStart = nil
-    local groupEnd = nil
-    local widestSample = nil
+    if #samples <= LoggingContractor.BRANCH_BASELINE_SAMPLES then
+        return nil
+    end
 
-    for _, sample in ipairs(samples) do
-        if sample.maxWidth >= threshold then
-            if groupStart == nil then
-                groupStart = sample.distance
+    for index = LoggingContractor.BRANCH_BASELINE_SAMPLES + 1, #samples do
+        local baseline = self:getContractorBranchBaseline(
+            samples,
+            index - LoggingContractor.BRANCH_BASELINE_SAMPLES,
+            index - 1
+        )
+        local candidate = self:getContractorBranchGrowthCandidate(samples[index], baseline)
+
+        if candidate ~= nil then
+            local persistent = true
+            if index < #samples then
+                local nextGrowth, nextWidthGrowth = self:getContractorBranchSideGrowth(
+                    samples[index + 1],
+                    baseline,
+                    candidate.direction
+                )
+                persistent = nextGrowth >= candidate.growthThreshold * LoggingContractor.BRANCH_PERSISTENCE_FACTOR
+                    and nextWidthGrowth >= candidate.widthThreshold * LoggingContractor.BRANCH_PERSISTENCE_FACTOR
             end
 
-            groupEnd = sample.distance
-            if widestSample == nil or sample.maxWidth > widestSample.maxWidth then
-                widestSample = sample
+            if persistent then
+                local groupStart = samples[index].distance
+                local groupEnd = groupStart
+                local strongestSample = samples[index]
+                local strongestGrowth = candidate.growth
+
+                for groupIndex = index + 1, #samples do
+                    local groupGrowth, groupWidthGrowth = self:getContractorBranchSideGrowth(
+                        samples[groupIndex],
+                        baseline,
+                        candidate.direction
+                    )
+
+                    if groupGrowth >= candidate.growthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR
+                        and groupWidthGrowth >= candidate.widthThreshold * LoggingContractor.BRANCH_GROUP_END_FACTOR then
+                        groupEnd = samples[groupIndex].distance
+                        if groupGrowth > strongestGrowth then
+                            strongestGrowth = groupGrowth
+                            strongestSample = samples[groupIndex]
+                        end
+                    else
+                        break
+                    end
+                end
+
+                local normalX, normalY, normalZ = self:getContractorBranchDirection(
+                    candidate.direction,
+                    strongestSample.sideX,
+                    strongestSample.sideY,
+                    strongestSample.sideZ,
+                    upX,
+                    upY,
+                    upZ
+                )
+
+                if normalX ~= nil then
+                    normalX, normalY, normalZ = MathUtil.vector3Normalize(normalX, normalY, normalZ)
+
+                    local cutStart = math.max(0, groupStart - step)
+                    local cutEnd = math.min(trunkLength, groupEnd + step * 2)
+                    local cutDistance = (cutStart + cutEnd) * 0.5
+                    local cutLength = math.max(
+                        cutEnd - cutStart,
+                        LoggingContractor.BRANCH_CUT_MIN_LENGTH
+                    )
+                    local orthogonalWidth
+                    if candidate.direction == "SIDE_POS" or candidate.direction == "SIDE_NEG" then
+                        orthogonalWidth = math.max(strongestSample.widthUp, baseline.widthUp)
+                    else
+                        orthogonalWidth = math.max(strongestSample.widthSide, baseline.widthSide)
+                    end
+
+                    local cutWidth = math.max(
+                        LoggingContractor.BRANCH_CUT_MIN_WIDTH,
+                        candidate.baselineDiameter * LoggingContractor.BRANCH_CUT_WIDTH_FACTOR,
+                        orthogonalWidth + candidate.baselineDiameter * 0.5
+                    )
+                    local surfaceOffset = math.max(
+                        self:getContractorBranchSurfaceOffset(baseline, candidate.direction),
+                        candidate.baselineDiameter * 0.25
+                    )
+                    local axisPointX = baseX + axisX * cutDistance
+                    local axisPointY = baseY + axisY * cutDistance
+                    local axisPointZ = baseZ + axisZ * cutDistance
+                    local selected = nil
+
+                    -- Начинаем почти по поверхности нормального ствола. Если
+                    -- плоскость проходит снаружи геометрии, последовательно
+                    -- смещаем её внутрь максимум на десять сантиметров.
+                    for _, inset in ipairs({0.03, 0.06, 0.10}) do
+                        local safeInset = math.min(inset, surfaceOffset * 0.30)
+                        local cutOffset = math.max(surfaceOffset - safeInset, 0.02)
+                        local cutX = axisPointX + normalX * cutOffset
+                        local cutY = axisPointY + normalY * cutOffset
+                        local cutZ = axisPointZ + normalZ * cutOffset
+                        local probe = self:probeContractorLongitudinalCut(
+                            shape,
+                            cutX,
+                            cutY,
+                            cutZ,
+                            normalX,
+                            normalY,
+                            normalZ,
+                            axisX,
+                            axisY,
+                            axisZ,
+                            cutLength,
+                            cutWidth
+                        )
+
+                        if probe ~= nil then
+                            selected = {
+                                cutX = cutX,
+                                cutY = cutY,
+                                cutZ = cutZ,
+                                cutOffset = cutOffset,
+                                probe = probe
+                            }
+                            break
+                        end
+                    end
+
+                    if selected ~= nil then
+                        Logging.info(
+                            "[LoggingContractor][BranchDetected] shape=%d direction=%s zone=%.2f..%.2f growth=%.3f threshold=%.3f widthGrowth=%.3f baselineDiameter=%.3f surface=%.3f cutOffset=%.3f plane=%.2fx%.2f probe=%.2fx%.2f",
+                            shape,
+                            candidate.direction,
+                            groupStart,
+                            groupEnd,
+                            strongestGrowth,
+                            candidate.growthThreshold,
+                            candidate.widthGrowth,
+                            candidate.baselineDiameter,
+                            surfaceOffset,
+                            selected.cutOffset,
+                            cutLength,
+                            cutWidth,
+                            selected.probe.widthY,
+                            selected.probe.widthZ
+                        )
+
+                        return {
+                            cutX = selected.cutX,
+                            cutY = selected.cutY,
+                            cutZ = selected.cutZ,
+                            normalX = normalX,
+                            normalY = normalY,
+                            normalZ = normalZ,
+                            upX = axisX,
+                            upY = axisY,
+                            upZ = axisZ,
+                            sizeY = cutLength,
+                            sizeZ = cutWidth,
+                            direction = candidate.direction,
+                            rootDistance = groupStart,
+                            baselineDiameter = candidate.baselineDiameter
+                        }
+                    end
+
+                    Logging.warning(
+                        "[LoggingContractor][BranchDetected] shape=%d direction=%s zone=%.2f..%.2f no longitudinal plane intersection",
+                        shape,
+                        candidate.direction,
+                        groupStart,
+                        groupEnd
+                    )
+                end
             end
-        elseif groupStart ~= nil then
-            break
         end
     end
 
-    if groupStart == nil or widestSample == nil then
-        return nil
-    end
-
-    local radialX, radialY, radialZ, radialExtent, radialSide, radialUp =
-        self:getContractorBranchRadialDirection(widestSample, upX, upY, upZ)
-
-    if radialX == nil then
-        return nil
-    end
-
-    local baseRadius = baselineDiameter * 0.5
-    local axialTravel = math.max(widestSample.distance - groupStart, step)
-    local radialTravel = math.max(radialExtent - baseRadius, baselineDiameter * 0.5)
-
-    -- Вектор от корня к наиболее выступающей части ветви даёт оценку её
-    -- собственной оси и, в отличие от чисто радиального направления, содержит
-    -- продольную составляющую вдоль ствола.
-    local branchDirX = axisX * axialTravel + radialX * radialTravel
-    local branchDirY = axisY * axialTravel + radialY * radialTravel
-    local branchDirZ = axisZ * axialTravel + radialZ * radialTravel
-    branchDirX, branchDirY, branchDirZ = MathUtil.vector3Normalize(
-        branchDirX,
-        branchDirY,
-        branchDirZ
-    )
-
-    -- Ось основного ствола проецируется на плоскость поперечного реза и служит
-    -- её локальным направлением Y. Для почти параллельной ветви предусмотрен
-    -- запасной вариант на основе исходного up-вектора.
-    local axisDotBranch = axisX * branchDirX + axisY * branchDirY + axisZ * branchDirZ
-    local planeUpX = axisX - branchDirX * axisDotBranch
-    local planeUpY = axisY - branchDirY * axisDotBranch
-    local planeUpZ = axisZ - branchDirZ * axisDotBranch
-
-    if MathUtil.vector3Length(planeUpX, planeUpY, planeUpZ) < 0.001 then
-        local upDotBranch = upX * branchDirX + upY * branchDirY + upZ * branchDirZ
-        planeUpX = upX - branchDirX * upDotBranch
-        planeUpY = upY - branchDirY * upDotBranch
-        planeUpZ = upZ - branchDirZ * upDotBranch
-    end
-
-    if MathUtil.vector3Length(planeUpX, planeUpY, planeUpZ) < 0.001 then
-        return nil
-    end
-
-    planeUpX, planeUpY, planeUpZ = MathUtil.vector3Normalize(
-        planeUpX,
-        planeUpY,
-        planeUpZ
-    )
-
-    local rootX = baseX + axisX * groupStart
-    local rootY = baseY + axisY * groupStart
-    local rootZ = baseZ + axisZ * groupStart
-    local cutSize = math.max(
-        baselineDiameter * LoggingContractor.BRANCH_CUT_SIZE_FACTOR,
-        LoggingContractor.BRANCH_CUT_MIN_SIZE
-    )
-
-    local selected = nil
-    local fallback = nil
-    local travelFactors = {0.55, 0.8, 1.05, 1.3}
-
-    -- Идём от места срастания наружу по оси ветви. Предпочтительно первое
-    -- сечение, которое уже стало компактнее основного ствола и при этом имеет
-    -- достаточную толщину, чтобы не принять тонкую щепу за целую ветвь.
-    for _, factor in ipairs(travelFactors) do
-        local travel = math.max(baselineDiameter * factor, 0.25)
-        local cutX = rootX + branchDirX * travel
-        local cutY = rootY + branchDirY * travel
-        local cutZ = rootZ + branchDirZ * travel
-
-        local probe = self:probeContractorBranchCut(
-            shape,
-            cutX,
-            cutY,
-            cutZ,
-            branchDirX,
-            branchDirY,
-            branchDirZ,
-            planeUpX,
-            planeUpY,
-            planeUpZ,
-            cutSize
-        )
-
-        if probe ~= nil then
-            fallback = fallback or {
-                cutX = cutX,
-                cutY = cutY,
-                cutZ = cutZ,
-                travel = travel,
-                probe = probe
-            }
-
-            local minWidth = baselineDiameter * LoggingContractor.BRANCH_CUT_MIN_WIDTH_FACTOR
-            local maxWidth = baselineDiameter * LoggingContractor.BRANCH_CUT_MAX_WIDTH_FACTOR
-
-            if probe.maxWidth >= minWidth
-                and probe.maxWidth <= maxWidth
-                and math.max(probe.below, probe.above) >= baselineDiameter then
-                selected = {
-                    cutX = cutX,
-                    cutY = cutY,
-                    cutZ = cutZ,
-                    travel = travel,
-                    probe = probe
-                }
-                break
-            end
-        end
-    end
-
-    selected = selected or fallback
-    if selected == nil then
-        Logging.warning(
-            "[LoggingContractor][BranchCutProbe] shape=%d no intersection for candidate root=%.2f",
-            shape,
-            groupStart
-        )
-        return nil
-    end
-
     Logging.info(
-        "[LoggingContractor][BranchCandidate] shape=%d zone=%.2f..%.2f widest=%.2f width=%.2f radialExtent=%.2f radial=(%d,%d) axisTravel=%.2f radialTravel=%.2f dir=(%.3f,%.3f,%.3f)",
+        "[LoggingContractor][BranchScanDone] shape=%d no large branches in first %.2f m",
         shape,
-        groupStart,
-        groupEnd,
-        widestSample.distance,
-        widestSample.maxWidth,
-        radialExtent,
-        radialSide,
-        radialUp,
-        axialTravel,
-        radialTravel,
-        branchDirX,
-        branchDirY,
-        branchDirZ
+        scanLimit
     )
-
-    Logging.info(
-        "[LoggingContractor][BranchCutProbe] shape=%d root=%.2f travel=%.2f cut=(%.2f,%.2f,%.2f) plane=%.2fx%.2f cross=%.2fx%.2f extents=%.2f/%.2f",
-        shape,
-        groupStart,
-        selected.travel,
-        selected.cutX,
-        selected.cutY,
-        selected.cutZ,
-        cutSize,
-        cutSize,
-        selected.probe.widthY,
-        selected.probe.widthZ,
-        selected.probe.below,
-        selected.probe.above
-    )
-
-    return {
-        cutX = selected.cutX,
-        cutY = selected.cutY,
-        cutZ = selected.cutZ,
-        normalX = branchDirX,
-        normalY = branchDirY,
-        normalZ = branchDirZ,
-        upX = planeUpX,
-        upY = planeUpY,
-        upZ = planeUpZ,
-        sizeY = cutSize,
-        sizeZ = cutSize,
-        baselineDiameter = baselineDiameter,
-        rootDistance = groupStart
-    }
+    return nil
 end
 
 
--- Выбирает часть, которая продолжает основной ствол после реза ветви.
--- Главный критерий -- длина пересечения исходной оси ствола; при равенстве
--- сравниваются реальные габариты, а не всегда нулевой getVolume().
+-- Возвращает геометрическую оценку размера split-shape без getVolume().
+-- Она нужна только как дополнительный критерий при выборе основного ствола.
+function LoggingContractor:getContractorShapeMeasure(shape)
+    local sizeX, sizeY, sizeZ, numConvexes, numAttachments = self:getContractorSplitShapeStats(shape)
+    return sizeX * sizeY * sizeZ, sizeX, sizeY, sizeZ, numConvexes, numAttachments
+end
+
+
+-- Выбирает после продольного реза часть, которая продолжает исходную ось
+-- основного ствола. При равной длине сравниваются реальные габариты shape.
 function LoggingContractor:selectContractorMainStemPart(parts, baseX, baseY, baseZ, axisX, axisY, axisZ)
     local mainPart = nil
     local bestAxisLength = -1
@@ -420,9 +510,8 @@ function LoggingContractor:selectContractorMainStemPart(parts, baseX, baseY, bas
                 axisY,
                 axisZ
             )
-
             local axisLength = (below or 0) + (above or 0)
-            local measure, sizeX, sizeY, sizeZ, numConvexes, numAttachments =
+            local measure, partSizeX, partSizeY, partSizeZ, convexes, attachments =
                 self:getContractorShapeMeasure(part.shape)
 
             Logging.info(
@@ -431,11 +520,11 @@ function LoggingContractor:selectContractorMainStemPart(parts, baseX, baseY, bas
                 part.shape,
                 axisLength,
                 measure,
-                sizeX,
-                sizeY,
-                sizeZ,
-                numConvexes,
-                numAttachments
+                partSizeX,
+                partSizeY,
+                partSizeZ,
+                convexes,
+                attachments
             )
 
             if axisLength > bestAxisLength + 0.001
@@ -451,14 +540,44 @@ function LoggingContractor:selectContractorMainStemPart(parts, baseX, baseY, bas
 end
 
 
--- Последовательно отделяет крупные ветви. Каждая реальная часть, кроме
--- выбранного основного ствола, обрабатывается независимо от getVolume().
+-- Раздвигает уже реально разделённые динамические части в сторону обнаруженной
+-- ветви. Тип rigid body не меняется; скорость нужна только для наглядного
+-- отделения частей, которые после splitShape начинают в совпадающем положении.
+function LoggingContractor:separateContractorBranch(shape, normalX, normalY, normalZ)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return
+    end
+
+    if getRigidBodyType(shape) ~= RigidBodyType.DYNAMIC then
+        return
+    end
+
+    local velocityX = normalX * LoggingContractor.BRANCH_SEPARATION_SPEED
+    local velocityY = normalY * LoggingContractor.BRANCH_SEPARATION_SPEED
+        + LoggingContractor.BRANCH_SEPARATION_UP_SPEED
+    local velocityZ = normalZ * LoggingContractor.BRANCH_SEPARATION_SPEED
+    setLinearVelocity(shape, velocityX, velocityY, velocityZ)
+
+    Logging.info(
+        "[LoggingContractor][BranchSeparate] shape=%d velocity=(%.2f,%.2f,%.2f)",
+        shape,
+        velocityX,
+        velocityY,
+        velocityZ
+    )
+end
+
+
+-- Последовательно отделяет крупные ветви. После каждого успешного продольного
+-- реза основной ствол снова сканируется от основания на первых пяти метрах.
+-- Если новых утолщений нет, управление возвращается обычной очистке attachments.
 function LoggingContractor:pruneContractorBranches(shape, baseX, baseY, baseZ, axisX, axisY, axisZ, upX, upY, upZ, trunkLength)
     local currentShape = shape
     local currentLength = trunkLength
     local cutCount = 0
 
     while currentShape ~= nil
+        and currentShape ~= 0
         and entityExists(currentShape)
         and cutCount < LoggingContractor.BRANCH_MAX_CUTS do
         local candidate = self:findContractorBranchCandidate(
@@ -496,8 +615,9 @@ function LoggingContractor:pruneContractorBranches(shape, baseX, baseY, baseZ, a
 
         if #parts < 2 then
             Logging.warning(
-                "[LoggingContractor][BranchCut] shape=%d candidate did not split geometry",
-                currentShape
+                "[LoggingContractor][BranchCut] shape=%d direction=%s candidate did not split geometry",
+                currentShape,
+                candidate.direction
             )
             break
         end
@@ -519,26 +639,27 @@ function LoggingContractor:pruneContractorBranches(shape, baseX, baseY, baseZ, a
 
         local oldShape = currentShape
         currentShape = mainPart.shape
-        currentLength = mainAxisLength > 0 and mainAxisLength or currentLength
+        if mainAxisLength > 0 then
+            currentLength = mainAxisLength
+        end
         cutCount = cutCount + 1
 
         Logging.info(
-            "[LoggingContractor][BranchCut] oldShape=%d mainShape=%d parts=%d mainLength=%.2f mainMeasure=%.3f",
+            "[LoggingContractor][BranchCut] oldShape=%d mainShape=%d direction=%s parts=%d mainLength=%.2f mainMeasure=%.3f",
             oldShape,
             currentShape,
+            candidate.direction,
             #parts,
             currentLength,
             mainMeasure
         )
 
         local detachedCount = 0
-
         for _, part in ipairs(parts) do
             if part.shape ~= nil
                 and part.shape ~= currentShape
                 and entityExists(part.shape) then
                 detachedCount = detachedCount + 1
-
                 local measure, partSizeX, partSizeY, partSizeZ, convexes, attachments =
                     self:getContractorShapeMeasure(part.shape)
 
@@ -556,8 +677,13 @@ function LoggingContractor:pruneContractorBranches(shape, baseX, baseY, baseZ, a
                 self:cleanContractorDetachedBranch(part.shape)
 
                 if entityExists(part.shape) then
-                    local angularX, angularY, angularZ =
-                        self:getContractorFallAngularVelocity(upX, upY, upZ)
+                    self:separateContractorBranch(
+                        part.shape,
+                        candidate.normalX,
+                        candidate.normalY,
+                        candidate.normalZ
+                    )
+                    local angularX, angularY, angularZ = self:getContractorFallAngularVelocity(upX, upY, upZ)
                     self:applyContractorFall(part.shape, angularX, angularY, angularZ)
                 end
             end
@@ -572,10 +698,11 @@ function LoggingContractor:pruneContractorBranches(shape, baseX, baseY, baseZ, a
     end
 
     Logging.info(
-        "[LoggingContractor][BranchPruneDone] shape=%s cuts=%d length=%.2f",
+        "[LoggingContractor][BranchPruneDone] shape=%s cuts=%d length=%.2f scanLimit=%.2f",
         tostring(currentShape),
         cutCount,
-        currentLength
+        currentLength,
+        math.min(LoggingContractor.BRANCH_SCAN_LENGTH, currentLength)
     )
 
     return currentShape, currentLength
