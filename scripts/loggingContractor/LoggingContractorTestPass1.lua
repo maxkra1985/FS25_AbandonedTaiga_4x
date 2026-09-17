@@ -5,7 +5,7 @@
 
     Цели прохода:
     1. Проверить removeSplitShapeAttachments() как единственный алгоритм
-       удаления attachments. На каждом шаге 0.25 м выполняются пять вызовов.
+       удаления attachments. На каждом шаге 0.12 м выполняются пять вызовов.
        Центральный вызов ориентирован вдоль оси ствола. Четыре наружных вызова
        располагаются чуть за поверхностью древесины и направлены радиально
        снаружи к центру ствола. Количество attachments проверяется после всей
@@ -14,7 +14,7 @@
        используются только как классификационное окно: если там найдена хотя бы
        одна крупная ветвь, геометрический поиск продолжается до конца ствола.
        Для найденной ветви выполняются резы в исходном направлении и с поворотом
-       +/-30 градусов; при неудаче точка реза сдвигается на 0.25 м вверх по
+       +/-30 градусов; при неудаче точка реза сдвигается на 0.12 м вверх по
        стволу. После успешного отделения та же исходная позиция проверяется снова.
 
     Чтобы результаты теста не смешивались, прежние delimb-алгоритмы этого
@@ -22,9 +22,9 @@
     загрузки без изменения основной реализации подрядчиков.
 ]]
 
-LoggingContractor.TEST_PASS1_SCAN_STEP = 0.25
+LoggingContractor.TEST_PASS1_SCAN_STEP = 0.12
 LoggingContractor.TEST_PASS1_BRANCH_SCAN_LENGTH = 5.0
-LoggingContractor.TEST_PASS1_BRANCH_BASELINE_SAMPLES = 4
+LoggingContractor.TEST_PASS1_BRANCH_BASELINE_SAMPLES = 8
 LoggingContractor.TEST_PASS1_BRANCH_MAX_TOTAL_CUTS = 32
 LoggingContractor.TEST_PASS1_BRANCH_MAX_CUTS_PER_STEP = 8
 LoggingContractor.TEST_PASS1_BRANCH_CUT_LENGTH = 5.0
@@ -32,7 +32,7 @@ LoggingContractor.TEST_PASS1_BRANCH_CUT_BACK = 0.25
 LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH = 6.0
 LoggingContractor.TEST_PASS1_BRANCH_OUTSETS = {0.10, 0.05, 0.02, 0.00}
 LoggingContractor.TEST_PASS1_BRANCH_ANGLE_OFFSETS = {0, -30, 30}
-LoggingContractor.TEST_PASS1_BRANCH_ADVANCE_STEP = 0.25
+LoggingContractor.TEST_PASS1_BRANCH_ADVANCE_STEP = 0.12
 
 LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS = 0.30
 LoggingContractor.TEST_PASS1_ATTACHMENT_MIN_SIZE = 1.00
@@ -286,7 +286,7 @@ function LoggingContractor:cutContractorTestPass1Branch(
 
     -- Пока обнаруженное одностороннее утолщение сохраняется, последовательно
     -- пробуем рез в исходном направлении и с поворотом +/-30 градусов. Если
-    -- ветвь не отделилась, точка реза поднимается на 0.25 м вдоль ствола.
+    -- ветвь не отделилась, точка реза поднимается на 0.12 м вдоль ствола.
     while currentShape ~= nil
         and currentShape ~= 0
         and entityExists(currentShape)
@@ -794,7 +794,7 @@ end
 
 
 -- Новый тестовый проход крупных ветвей и attachments. Движение по стволу идёт
--- строго с шагом 0.25 м. На первых 5 м в каждой точке сначала исчерпываются все
+-- строго с шагом 0.12 м. На первых 5 м в каждой точке сначала исчерпываются все
 -- доступные крупные ветви с повторным измерением того же сечения, затем там же
 -- выполняется пятисторонняя очистка attachments. После 5 м остаётся только
 -- очистка attachments, но сечение всё равно измеряется для расчёта радиусов.
