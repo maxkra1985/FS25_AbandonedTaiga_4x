@@ -241,13 +241,18 @@ function LoggingContractor:getRecommendedEquipmentCount(treeCount)
 end
 
 
--- Рассчитывает округлённое время работы и полную стоимость подрядчика.
--- Если количество техники не передано, используется расчётное значение.
+-- Рассчитывает фактическую длительность работы и стоимость подрядчика.
+-- Фактические часы не округляются; для почасовых статей стоимости отдельно
+-- используются оплачиваемые часы, округлённые вверх до целого.
 function LoggingContractor:calculateEstimate(treeCount, equipmentCount)
     if treeCount == nil or treeCount <= 0 then
         return {
             equipmentCount = 0,
             workHours = 0,
+            billableHours = 0,
+            rentCost = 0,
+            equipmentWorkCost = 0,
+            workerCost = 0,
             totalCost = 0
         }
     end
@@ -259,14 +264,21 @@ function LoggingContractor:calculateEstimate(treeCount, equipmentCount)
     equipmentCount = math.max(math.floor(equipmentCount), 1)
 
     local workMinutes = (treeCount * LoggingContractor.MINUTES_PER_TREE) / equipmentCount
-    local workHours = math.ceil(workMinutes / 60)
-    local totalCost = equipmentCount * LoggingContractor.EQUIPMENT_RENT_COST
-        + equipmentCount * workHours * LoggingContractor.EQUIPMENT_WORK_COST_PER_HOUR
-        + equipmentCount * workHours * LoggingContractor.WORKER_COST_PER_HOUR
+    local workHours = workMinutes / 60
+    local billableHours = math.ceil(workHours)
+
+    local rentCost = equipmentCount * LoggingContractor.EQUIPMENT_RENT_COST
+    local equipmentWorkCost = equipmentCount * billableHours * LoggingContractor.EQUIPMENT_WORK_COST_PER_HOUR
+    local workerCost = equipmentCount * billableHours * LoggingContractor.WORKER_COST_PER_HOUR
+    local totalCost = rentCost + equipmentWorkCost + workerCost
 
     return {
         equipmentCount = equipmentCount,
         workHours = workHours,
+        billableHours = billableHours,
+        rentCost = rentCost,
+        equipmentWorkCost = equipmentWorkCost,
+        workerCost = workerCost,
         totalCost = totalCost
     }
 end

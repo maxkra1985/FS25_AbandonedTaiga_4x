@@ -8,7 +8,8 @@
     - немедленный подсчёт стоящих деревьев выбранного участка по породам;
     - ручная настройка количества техники;
     - выбор длины брёвен 3 / 6 / 9 / 12 м;
-    - немедленный пересчёт времени и стоимости без открытия второго окна.
+    - отображение фактического времени с точностью до 0.1 часа;
+    - расчёт почасовой стоимости по оплачиваемым часам, округлённым вверх.
 ]]
 
 LoggingContractorDialog = {}
@@ -99,7 +100,8 @@ function LoggingContractorDialog:setData(contractor, farmlands)
         self.farmlandOption:setTexts({"Нет принадлежащих участков"})
         self.farmlandOption:setState(1)
         self.farmlandOption:setDisabled(true)
-        self.statisticsText:setText("У текущей фермы нет принадлежащих ей участков.")
+        self.treeCountText:setText("У текущей фермы нет принадлежащих ей участков.")
+        self.speciesText:setText("")
         self.equipmentHintText:setText("Расчётное количество техники: 0")
         self:setEquipmentOptions(0, 0)
         return
@@ -117,21 +119,21 @@ function LoggingContractorDialog:setData(contractor, farmlands)
 end
 
 
--- Формирует многострочную статистику пород для выбранного участка.
+-- Формирует отдельную строку общего количества деревьев и визуально вложенный
+-- список пород с дополнительным отступом вправо.
 function LoggingContractorDialog:updateStatisticsText(scan)
-    local lines = {
-        string.format("Стоящих деревьев: %d", scan.totalCount)
-    }
+    self.treeCountText:setText(string.format("Стоящих деревьев: %d", scan.totalCount))
 
+    local lines = {}
     if #scan.species == 0 then
-        table.insert(lines, "Породы: деревьев нет")
+        table.insert(lines, "Деревьев нет")
     else
         for _, species in ipairs(scan.species) do
             table.insert(lines, string.format("%s: %d", species.title, species.count))
         end
     end
 
-    self.statisticsText:setText(table.concat(lines, "\n"))
+    self.speciesText:setText(table.concat(lines, "\n"))
 end
 
 
@@ -181,7 +183,8 @@ function LoggingContractorDialog:selectFarmland(index)
     local scan, errorCode = self.contractor:scanFarmlandTrees(farmland.id, farmId)
     if scan == nil then
         self.currentScan = nil
-        self.statisticsText:setText(LoggingContractorDialog.getScanErrorText(errorCode))
+        self.treeCountText:setText(LoggingContractorDialog.getScanErrorText(errorCode))
+        self.speciesText:setText("")
         self.equipmentHintText:setText("Расчётное количество техники: 0")
         self:setEquipmentOptions(0, 0)
         return
@@ -196,11 +199,16 @@ function LoggingContractorDialog:selectFarmland(index)
 end
 
 
--- Пересчитывает время и стоимость для выбранного пользователем количества техники.
+-- Пересчитывает время и детализированную стоимость для выбранного количества
+-- техники. Время показывается с точностью до 0.1 часа, а почасовые статьи
+-- используют billableHours, уже округлённые вверх в расчёте подрядчика.
 function LoggingContractorDialog:updateEstimate()
     if self.currentScan == nil or self.currentScan.totalCount <= 0 or self.currentEquipmentCount <= 0 then
-        self.estimateTimeText:setText("Расчётное время: 0 ч")
-        self.estimateCostText:setText("Стоимость подрядчика: 0")
+        self.estimateTimeText:setText("Расчётное время: 0,0 ч")
+        self.rentCostText:setText("Аренда техники: 0")
+        self.equipmentWorkCostText:setText("Работа техники: 0")
+        self.workerCostText:setText("Рабочие: 0")
+        self.totalCostText:setText("Итого: 0")
         return
     end
 
@@ -209,8 +217,20 @@ function LoggingContractorDialog:updateEstimate()
         self.currentEquipmentCount
     )
 
-    self.estimateTimeText:setText(string.format("Расчётное время: %d ч", estimate.workHours))
-    self.estimateCostText:setText(string.format("Стоимость подрядчика: %d", estimate.totalCost))
+    local workHoursText = string.format("%.1f", estimate.workHours):gsub("%.", ",")
+    self.estimateTimeText:setText(string.format("Расчётное время: %s ч", workHoursText))
+    self.rentCostText:setText(string.format("Аренда техники: %d", estimate.rentCost))
+    self.equipmentWorkCostText:setText(string.format(
+        "Работа техники (%d оплач. ч): %d",
+        estimate.billableHours,
+        estimate.equipmentWorkCost
+    ))
+    self.workerCostText:setText(string.format(
+        "Рабочие (%d оплач. ч): %d",
+        estimate.billableHours,
+        estimate.workerCost
+    ))
+    self.totalCostText:setText(string.format("Итого: %d", estimate.totalCost))
 end
 
 

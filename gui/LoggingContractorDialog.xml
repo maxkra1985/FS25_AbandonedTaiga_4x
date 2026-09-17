@@ -17,23 +17,27 @@
                              onClick="onClickFarmland"
                              focusInit="onOpen"/>
 
-            <Text profile="loggingContractorStatistics" id="statisticsText"/>
+            <Text profile="loggingContractorTreeCount" id="treeCountText"/>
+            <Text profile="loggingContractorSpecies" id="speciesText"/>
 
-            <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -390px"/>
+            <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -455px"/>
             <MultiTextOption profile="loggingContractorSettingOption"
                              id="equipmentOption"
-                             position="0px -420px"
+                             position="0px -485px"
                              onClick="onClickEquipment"/>
             <Text profile="loggingContractorEquipmentHint" id="equipmentHintText"/>
 
-            <Text profile="loggingContractorSettingLabel" text="Длина брёвен" position="0px -500px"/>
+            <Text profile="loggingContractorSettingLabel" text="Длина брёвен" position="0px -565px"/>
             <MultiTextOption profile="loggingContractorSettingOption"
                              id="logLengthOption"
-                             position="0px -530px"
+                             position="0px -595px"
                              onClick="onClickLogLength"/>
 
-            <Text profile="loggingContractorEstimate" id="estimateTimeText" position="0px -590px"/>
-            <Text profile="loggingContractorEstimate" id="estimateCostText" position="0px -625px"/>
+            <Text profile="loggingContractorEstimate" id="estimateTimeText" position="0px -660px"/>
+            <Text profile="loggingContractorCostLine" id="rentCostText" position="0px -700px"/>
+            <Text profile="loggingContractorCostLine" id="equipmentWorkCostText" position="0px -730px"/>
+            <Text profile="loggingContractorCostLine" id="workerCostText" position="0px -760px"/>
+            <Text profile="loggingContractorTotalCost" id="totalCostText" position="0px -800px"/>
         </GuiElement>
 
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
@@ -43,11 +47,11 @@
 
     <GUIProfiles>
         <Profile name="loggingContractorDialogBg" extends="fs25_dialogBg">
-            <size value="780px 720px"/>
+            <size value="780px 900px"/>
         </Profile>
 
         <Profile name="loggingContractorContent" extends="baseReference" with="anchorTopCenter">
-            <size value="720px 650px"/>
+            <size value="720px 830px"/>
             <position value="0px -15px"/>
         </Profile>
 
@@ -67,9 +71,17 @@
             <position value="0px -105px"/>
         </Profile>
 
-        <Profile name="loggingContractorStatistics" extends="fs25_dialogText" with="anchorTopCenter">
-            <size value="570px 220px"/>
+        <Profile name="loggingContractorTreeCount" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="570px 30px"/>
             <position value="0px -165px"/>
+            <textSize value="20px"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
+        </Profile>
+
+        <Profile name="loggingContractorSpecies" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="535px 245px"/>
+            <position value="18px -195px"/>
             <textSize value="20px"/>
             <textAlignment value="left"/>
             <textVerticalAlignment value="top"/>
@@ -89,12 +101,26 @@
 
         <Profile name="loggingContractorEquipmentHint" extends="fs25_dialogText" with="anchorTopCenter">
             <size value="570px 24px"/>
-            <position value="0px -472px"/>
+            <position value="0px -537px"/>
             <textSize value="17px"/>
             <textAlignment value="center"/>
         </Profile>
 
         <Profile name="loggingContractorEstimate" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="570px 30px"/>
+            <textSize value="22px"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
+        </Profile>
+
+        <Profile name="loggingContractorCostLine" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="535px 26px"/>
+            <textSize value="19px"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
+        </Profile>
+
+        <Profile name="loggingContractorTotalCost" extends="fs25_textDefault" with="anchorTopCenter">
             <size value="570px 30px"/>
             <textSize value="22px"/>
             <textAlignment value="left"/>
