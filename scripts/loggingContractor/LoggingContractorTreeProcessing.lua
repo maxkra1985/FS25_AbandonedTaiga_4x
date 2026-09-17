@@ -520,131 +520,7 @@ function LoggingContractor:cutContractorProcessingBranch(
                     geometry.sizeZ
                 )
 
-                Logging.info(
-                    "[LoggingContractor][BranchCutTry] shape=%d detected=%.2f cutD=%.2f direction=%s angle=%+.0f outset=%.2f surface=%.3f span=%.2f..%.2f plane=%.2fx%.2f probe=%s",
-                    currentShape,
-                    initialDistance,
-                    attemptDistance,
-                    candidate.direction,
-                    angleOffset,
-                    outset,
-                    geometry.surfaceOffset,
-                    geometry.cutStart,
-                    geometry.cutEnd,
-                    geometry.sizeY,
-                    geometry.sizeZ,
-                    probe == nil and "none" or string.format("%.2fx%.2f", probe.widthY, probe.widthZ)
-                )
-
-                if probe ~= nil then
-                    local parts = self:splitContractorShapeSized(
-                        currentShape,
-                        cutX,
-                        cutY,
-                        cutZ,
-                        normalX,
-                        normalY,
-                        normalZ,
-                        geometry.upX,
-                        geometry.upY,
-                        geometry.upZ,
-                        geometry.sizeY,
-                        geometry.sizeZ
-                    )
-
-                    if #parts > 0 then
-                        local mainPart, mainAxisLength, mainMeasure = self:selectContractorMainStemPart(
-                            parts,
-                            baseX,
-                            baseY,
-                            baseZ,
-                            axisX,
-                            axisY,
-                            axisZ
-                        )
-
-                        if mainPart ~= nil and mainPart.shape ~= nil and entityExists(mainPart.shape) then
-                            local oldShape = currentShape
-                            currentShape = mainPart.shape
-                            currentLength = mainAxisLength > 0 and mainAxisLength or currentLength
-                            shapeChanged = true
-                            local detachedCount = 0
-
-                            for _, part in ipairs(parts) do
-                                if part.shape ~= nil
-                                    and part.shape ~= currentShape
-                                    and entityExists(part.shape) then
-                                    detachedCount = detachedCount + 1
-                                    local measure, sizeX, sizeY, sizeZ, convexes, attachments =
-                                        self:getContractorShapeMeasure(part.shape)
-
-                                    Logging.info(
-                                        "[LoggingContractor][BranchDetached] shape=%d detected=%.2f cutD=%.2f direction=%s angle=%+.0f measure=%.3f size=%.2fx%.2fx%.2f convexes=%d attachments=%d",
-                                        part.shape,
-                                        initialDistance,
-                                        attemptDistance,
-                                        candidate.direction,
-                                        angleOffset,
-                                        measure,
-                                        sizeX,
-                                        sizeY,
-                                        sizeZ,
-                                        convexes,
-                                        attachments
-                                    )
-
-                                    -- Отделённая ветвь сразу проходит тот же радиальный
-                                    -- алгоритм очистки attachments по собственной оси.
-                                    self:scanContractorProcessingDetachedAttachments(part.shape)
-
-                                    if entityExists(part.shape) then
-                                        self:separateContractorBranch(
-                                            part.shape,
-                                            normalX,
-                                            normalY,
-                                            normalZ
-                                        )
-                                        local angularX, angularY, angularZ =
-                                            self:getContractorFallAngularVelocity(upX, upY, upZ)
-                                        self:applyContractorFall(part.shape, angularX, angularY, angularZ)
-                                    end
-                                end
-                            end
-
-                            Logging.info(
-                                "[LoggingContractor][BranchCutResult] oldShape=%d mainShape=%d detected=%.2f cutD=%.2f direction=%s angle=%+.0f outset=%.2f parts=%d detached=%d mainLength=%.2f mainMeasure=%.3f",
-                                oldShape,
-                                currentShape,
-                                initialDistance,
-                                attemptDistance,
-                                candidate.direction,
-                                angleOffset,
-                                outset,
-                                #parts,
-                                detachedCount,
-                                currentLength,
-                                mainMeasure
-                            )
-
-                            if detachedCount > 0 then
-                                return currentShape, currentLength, true, detachedCount
-                            end
-                        end
-                    end
-                end
             end
-        end
-
-        attemptDistance = attemptDistance + LoggingContractor.PROCESSING_BRANCH_ADVANCE_STEP
-
-        Logging.info(
-            "[LoggingContractor][BranchCutAdvance] shape=%d detected=%.2f nextCutD=%.2f direction=%s",
-            currentShape,
-            initialDistance,
-            attemptDistance,
-            candidate.direction
-        )
-    end
 
     if shapeChanged then
         Logging.info(
@@ -658,52 +534,10 @@ function LoggingContractor:cutContractorProcessingBranch(
     return currentShape, currentLength, false, 0
 end
 
--- Строит повернутую поперечную систему для очередного шага очистки.
--- Исходный up поворачивается вокруг продольной оси, после чего side
--- вычисляется заново. Это даёт спиральный обход поверхности ствола.
-function LoggingContractor:getContractorProcessingAttachmentFrame(
-    axisX,
-    axisY,
-    axisZ,
-    upX,
-    upY,
-    upZ,
-    angleDegrees
-)
-    local rotatedUpX, rotatedUpY, rotatedUpZ = self:rotateContractorProcessingBranchNormal(
-        upX,
-        upY,
-        upZ,
-        axisX,
-        axisY,
-        axisZ,
-        angleDegrees
-    )
-    local rotatedSideX, rotatedSideY, rotatedSideZ = MathUtil.crossProduct(
-        axisX,
-        axisY,
-        axisZ,
-        rotatedUpX,
-        rotatedUpY,
-        rotatedUpZ
-    )
-
-    if MathUtil.vector3Length(rotatedSideX, rotatedSideY, rotatedSideZ) < 0.001 then
-        return nil
-    end
-
-    rotatedSideX, rotatedSideY, rotatedSideZ =
-        MathUtil.vector3Normalize(rotatedSideX, rotatedSideY, rotatedSideZ)
-
-    return rotatedUpX, rotatedUpY, rotatedUpZ, rotatedSideX, rotatedSideY, rotatedSideZ
-end
-
-
--- Выполняет первый тестовый алгоритм удаления attachments. Центральный вызов
--- остаётся контрольным и ориентирован вдоль оси ствола. Четыре наружных вызова
--- начинаются на 10 см за фактической поверхностью текущего сечения и направлены
--- радиально к центру. Это имитирует подвод сучкорезного механизма извне.
--- Счётчик attachments читается только до и после всей группы из пяти вызовов.
+-- Удаляет attachments в текущем поперечном сечении. Центральный вызов
+-- выполняется один раз, затем рабочая область прикладывается к поверхности
+-- радиально снаружи к центру. Для SPRUCE и отделённых ветвей используется
+-- полный круг из 12 направлений; для остальных деревьев достаточно 4.
 function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     shape,
     sample,
@@ -816,10 +650,8 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     return math.max(attachmentsBefore - attachmentsAfter, 0)
 end
 
--- Проходит уже отделённую крупную ветвь тем же пятисторонним радиальным
--- алгоритмом. Продольная ось и поперечное направление определяются по OBB
--- самой отделённой части, поэтому оставшиеся на ней листья/хвоя очищаются
--- независимо от ориентации исходного ствола.
+-- Очищает уже отделённую крупную ветвь по её собственной продольной оси.
+-- На каждом сечении выполняется полный круг из 12 радиальных направлений.
 function LoggingContractor:scanContractorProcessingDetachedAttachments(shape)
     if shape == nil or shape == 0 or not entityExists(shape) then
         return
@@ -963,11 +795,9 @@ function LoggingContractor:scanContractorProcessingDetachedAttachments(shape)
     )
 end
 
--- Новый тестовый проход крупных ветвей и attachments. Движение по стволу идёт
--- строго с шагом 0.10 м. На первых 5 м в каждой точке сначала исчерпываются все
--- доступные крупные ветви с повторным измерением того же сечения, затем там же
--- выполняется пятисторонняя очистка attachments. После 5 м остаётся только
--- очистка attachments, но сечение всё равно измеряется для расчёта радиусов.
+-- Совмещает поиск крупных ветвей и очистку attachments за один проход ствола.
+-- Первые 5 м определяют, нужно ли продолжать геометрический поиск до конца;
+-- очистка attachments выполняется по всей длине независимо от этого решения.
 function LoggingContractor:pruneContractorBranches(
     shape,
     baseX,
@@ -1006,15 +836,11 @@ function LoggingContractor:pruneContractorBranches(
     local fullCircleAttachments = splitTypeName == "SPRUCE"
 
     Logging.info(
-        "[LoggingContractor][ProcessingStart] shape=%d splitType=%s splitTypeName=%s length=%.2f step=%.2f branchFlagWindow=%.2f branchPlane=%.2fx%.2f branchAngles=0/-30/+30 attachmentAlgorithm=removeSplitShapeAttachments orientation=radialIn rotationStep=30 detachedStep=0.05",
+        "[LoggingContractor][TreeProcessingStart] shape=%d type=%s length=%.2f fullCircleAttachments=%s",
         currentShape,
-        tostring(splitTypeIndex),
         tostring(splitTypeName),
         currentLength,
-        step,
-        LoggingContractor.PROCESSING_BRANCH_SCAN_LENGTH,
-        LoggingContractor.PROCESSING_BRANCH_CUT_LENGTH,
-        LoggingContractor.PROCESSING_BRANCH_CUT_WIDTH
+        tostring(fullCircleAttachments)
     )
 
     while currentShape ~= nil
@@ -1054,193 +880,7 @@ function LoggingContractor:pruneContractorBranches(
         end
 
         if sample ~= nil and searchLargeBranches then
-            Logging.info(
-                "[LoggingContractor][BranchProfile] shape=%d d=%.2f side=%.3f..%.3f up=%.3f..%.3f width=%.3f/%.3f center=%.3f/%.3f",
-                currentShape,
-                distance,
-                sample.minSide,
-                sample.maxSide,
-                sample.minUp,
-                sample.maxUp,
-                sample.widthSide,
-                sample.widthUp,
-                sample.centerSide,
-                sample.centerUp
-            )
-
-            if #history >= LoggingContractor.PROCESSING_BRANCH_BASELINE_SAMPLES
-                and cutCount < LoggingContractor.PROCESSING_BRANCH_MAX_TOTAL_CUTS then
-                local baseline = self:getContractorBranchBaseline(history, 1, #history)
-                local blockedDirections = {}
-                local cutsAtStep = 0
-                local keepChecking = true
-
-                while keepChecking
-                    and currentShape ~= nil
-                    and currentShape ~= 0
-                    and entityExists(currentShape)
-                    and cutsAtStep < LoggingContractor.PROCESSING_BRANCH_MAX_CUTS_PER_STEP
-                    and cutCount < LoggingContractor.PROCESSING_BRANCH_MAX_TOTAL_CUTS do
-                    sample = self:sampleContractorProcessingSection(
-                        currentShape,
-                        baseX,
-                        baseY,
-                        baseZ,
-                        axisX,
-                        axisY,
-                        axisZ,
-                        upX,
-                        upY,
-                        upZ,
-                        distance
-                    )
-
-                    if sample == nil then
-                        break
-                    end
-
-                    local nextSample = nil
-                    if distance + step <= currentLength + 0.001 then
-                        nextSample = self:sampleContractorProcessingSection(
-                            currentShape,
-                            baseX,
-                            baseY,
-                            baseZ,
-                            axisX,
-                            axisY,
-                            axisZ,
-                            upX,
-                            upY,
-                            upZ,
-                            distance + step
-                        )
-                    end
-
-                    local candidates = self:getContractorProcessingBranchCandidates(
-                        sample,
-                        baseline,
-                        nextSample,
-                        blockedDirections
-                    )
-                    local candidate = candidates[1]
-
-                    if candidate == nil then
-                        keepChecking = false
-                    else
-                        if distance <= LoggingContractor.PROCESSING_BRANCH_SCAN_LENGTH + 0.001 then
-                            branchFoundInInitialWindow = true
-                        end
-
-                        Logging.info(
-                            "[LoggingContractor][BranchDetected] shape=%d d=%.2f direction=%s growth=%.3f threshold=%.3f widthGrowth=%.3f widthThreshold=%.3f baselineDiameter=%.3f initialWindowFound=%s",
-                            currentShape,
-                            distance,
-                            candidate.direction,
-                            candidate.growth,
-                            candidate.growthThreshold,
-                            candidate.widthGrowth,
-                            candidate.widthThreshold,
-                            candidate.baselineDiameter,
-                            tostring(branchFoundInInitialWindow)
-                        )
-
-                        local newShape, newLength, detached, detachedCount =
-                            self:cutContractorProcessingBranch(
-                                currentShape,
-                                sample,
-                                baseline,
-                                candidate,
-                                baseX,
-                                baseY,
-                                baseZ,
-                                axisX,
-                                axisY,
-                                axisZ,
-                                upX,
-                                upY,
-                                upZ,
-                                currentLength
-                            )
-
-                        currentShape = newShape
-                        currentLength = newLength
-
-                        if detached then
-                            cutCount = cutCount + 1
-                            cutsAtStep = cutsAtStep + 1
-                            blockedDirections = {}
-
-                            Logging.info(
-                                "[LoggingContractor][BranchRecheck] shape=%d d=%.2f detached=%d cutsAtStep=%d totalCuts=%d -- repeat same position",
-                                currentShape,
-                                distance,
-                                detachedCount,
-                                cutsAtStep,
-                                cutCount
-                            )
-                        else
-                            blockedDirections[candidate.direction] = true
-                            Logging.info(
-                                "[LoggingContractor][BranchDirectionDone] shape=%d d=%.2f direction=%s -- no detachable branch, checking other sides",
-                                currentShape,
-                                distance,
-                                candidate.direction
-                            )
-                        end
-                    end
-                end
-
-                sample = self:sampleContractorProcessingSection(
-                    currentShape,
-                    baseX,
-                    baseY,
-                    baseZ,
-                    axisX,
-                    axisY,
-                    axisZ,
-                    upX,
-                    upY,
-                    upZ,
-                    distance
-                )
-            end
-        end
-
-        if currentShape == nil or currentShape == 0 or not entityExists(currentShape) then
-            break
-        end
-
-        -- Пока дерево признано ветвистым, сохраняем скользящую базу по всему
-        -- стволу. Если первые 5 м ветвей не дали, после них профиль больше не нужен.
-        if sample ~= nil
-            and (distance <= LoggingContractor.PROCESSING_BRANCH_SCAN_LENGTH + 0.001
-                or branchFoundInInitialWindow) then
-            table.insert(history, sample)
-            while #history > LoggingContractor.PROCESSING_BRANCH_BASELINE_SAMPLES do
-                table.remove(history, 1)
-            end
-        end
-
-        if sample == nil then
-            sample = self:sampleContractorProcessingSection(
-                currentShape,
-                baseX,
-                baseY,
-                baseZ,
-                axisX,
-                axisY,
-                axisZ,
-                upX,
-                upY,
-                upZ,
-                distance
-            )
-        end
-
-        attachmentSteps = attachmentSteps + 1
-        local attachmentAngle = (
-            (attachmentSteps - 1) * LoggingContractor.PROCESSING_ATTACHMENT_ROTATION_STEP
-        ) % 360
+    % 360
         local removed = self:removeContractorProcessingAttachmentsAtStep(
             currentShape,
             sample,
@@ -1267,7 +907,7 @@ function LoggingContractor:pruneContractorBranches(
 
     local _, _, _, _, attachmentsRemaining = self:getContractorSplitShapeStats(currentShape)
     Logging.info(
-        "[LoggingContractor][ProcessingDone] shape=%s cuts=%d length=%.2f branchFoundInFirst5m=%s attachmentSteps=%d hitSteps=%d removed=%d remainingAttachments=%d",
+        "[LoggingContractor][TreeProcessingDone] shape=%s cuts=%d length=%.2f branchFoundInFirst5m=%s attachmentSteps=%d hitSteps=%d removed=%d remainingAttachments=%d",
         tostring(currentShape),
         cutCount,
         currentLength,
