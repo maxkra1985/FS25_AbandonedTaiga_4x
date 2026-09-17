@@ -6,7 +6,7 @@
     Текущий этап:
     - привязка к trigger-node карты с атрибутом loggingContractor=true;
     - добавление действия по кнопке R через ActivatableObjectsSystem;
-    - открытие окна подрядчиков при активации.
+    - открытие окна выбора принадлежащего ферме участка.
 
     В дальнейшем сюда будет добавлена проверка доступности действия с учётом
     состояния активного договора и прав игрока.
@@ -19,10 +19,12 @@ LoggingContractorTriggerActivatable = {}
 local LoggingContractorTriggerActivatable_mt = Class(LoggingContractorTriggerActivatable)
 
 
--- Создаёт объект триггера и регистрирует callback для локального клиента.
-function LoggingContractorTrigger.new(triggerNode)
+-- Создаёт объект триггера, сохраняет менеджер подрядчика и регистрирует callback
+-- для локального клиента.
+function LoggingContractorTrigger.new(triggerNode, contractor)
     local self = setmetatable({}, LoggingContractorTrigger_mt)
     self.triggerNode = triggerNode
+    self.contractor = contractor
     self.activatable = LoggingContractorTriggerActivatable.new(self)
 
     addTrigger(triggerNode, "triggerCallback", self)
@@ -42,6 +44,8 @@ function LoggingContractorTrigger:delete()
         removeTrigger(self.triggerNode)
         self.triggerNode = nil
     end
+
+    self.contractor = nil
 end
 
 
@@ -79,7 +83,7 @@ function LoggingContractorTriggerActivatable:getIsActivatable()
 end
 
 
--- Открывает окно подрядчиков.
+-- Открывает окно выбора участка через менеджер подрядчиков текущей миссии.
 function LoggingContractorTriggerActivatable:run()
-    LoggingContractorDialog.show()
+    LoggingContractorDialog.show(self.trigger.contractor)
 end
