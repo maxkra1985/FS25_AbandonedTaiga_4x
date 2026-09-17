@@ -5,14 +5,16 @@
 
     Цели прохода:
     1. Проверить removeSplitShapeAttachments() как единственный алгоритм
-       удаления attachments. На каждом шаге 0.25 м выполняются пять вызовов:
-       в центре сечения и на поверхности ствола в четырёх направлениях.
-       Количество attachments проверяется только после всех пяти вызовов.
+       удаления attachments. На каждом шаге 0.25 м выполняются пять вызовов.
+       Центральный вызов ориентирован вдоль оси ствола. Четыре наружных вызова
+       располагаются чуть за поверхностью древесины и направлены радиально
+       снаружи к центру ствола. Количество attachments проверяется после всей
+       группы, а возвращаемый bool сохраняется отдельно для каждой точки.
     2. Проверить новый локальный алгоритм снятия крупных ветвей. В пределах
        первых 5 м ствола после обнаружения одностороннего утолщения выполняется
-       короткий продольный рез чуть снаружи нормальной поверхности ствола.
-       После успешного реза та же точка измеряется повторно; переход к следующему
-       шагу выполняется только когда в текущем сечении больше нет кандидатов.
+       увеличенный продольный рез размером до 5x6 м чуть снаружи нормальной
+       поверхности ствола. После успешного реза та же точка измеряется повторно;
+       переход к следующему шагу выполняется только когда кандидатов больше нет.
 
     Чтобы результаты теста не смешивались, прежние delimb-алгоритмы этого
     прохода отключены. После окончания эксперимента модуль можно снять из
@@ -24,17 +26,16 @@ LoggingContractor.TEST_PASS1_BRANCH_SCAN_LENGTH = 5.0
 LoggingContractor.TEST_PASS1_BRANCH_BASELINE_SAMPLES = 4
 LoggingContractor.TEST_PASS1_BRANCH_MAX_TOTAL_CUTS = 8
 LoggingContractor.TEST_PASS1_BRANCH_MAX_CUTS_PER_STEP = 4
-LoggingContractor.TEST_PASS1_BRANCH_CUT_FORWARD = 0.75
+LoggingContractor.TEST_PASS1_BRANCH_CUT_LENGTH = 5.0
 LoggingContractor.TEST_PASS1_BRANCH_CUT_BACK = 0.25
-LoggingContractor.TEST_PASS1_BRANCH_CUT_MIN_LENGTH = 0.75
-LoggingContractor.TEST_PASS1_BRANCH_CUT_MIN_WIDTH = 1.00
-LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH_FACTOR = 1.75
+LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH = 6.0
 LoggingContractor.TEST_PASS1_BRANCH_OUTSETS = {0.10, 0.05, 0.02, 0.00}
 
 LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS = 0.30
 LoggingContractor.TEST_PASS1_ATTACHMENT_MIN_SIZE = 1.00
 LoggingContractor.TEST_PASS1_ATTACHMENT_MAX_SIZE = 2.00
 LoggingContractor.TEST_PASS1_ATTACHMENT_SIZE_FACTOR = 1.50
+LoggingContractor.TEST_PASS1_ATTACHMENT_RADIAL_OUTSET = 0.10
 
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
@@ -141,10 +142,11 @@ function LoggingContractor:getContractorTestPass1BranchCandidates(sample, baseli
 end
 
 
--- Формирует параметры короткой продольной плоскости для ветви, найденной в
--- конкретном сечении. Плоскость не проходит через нормальный ствол: начальная
--- попытка располагается на 10 см снаружи его базовой поверхности, затем отступ
--- последовательно уменьшается до нуля.
+-- Формирует параметры увеличенной продольной плоскости для ветви, найденной
+-- в конкретном сечении. Плоскость начинается немного ниже точки обнаружения и
+-- продолжается до 5 м вверх по стволу. Поперечная ширина 6 м выбрана намеренно
+-- большой для эксперимента: она должна исключить нехватку охвата как причину
+-- отсутствия splitShape на раскидистых деревьях.
 function LoggingContractor:getContractorTestPass1BranchCutGeometry(
     shape,
     sample,
@@ -180,26 +182,15 @@ function LoggingContractor:getContractorTestPass1BranchCutGeometry(
     local cutStart = math.max(0, sample.distance - LoggingContractor.TEST_PASS1_BRANCH_CUT_BACK)
     local cutEnd = math.min(
         trunkLength,
-        sample.distance + LoggingContractor.TEST_PASS1_BRANCH_CUT_FORWARD
+        cutStart + LoggingContractor.TEST_PASS1_BRANCH_CUT_LENGTH
     )
-    local cutLength = math.max(
-        cutEnd - cutStart,
-        LoggingContractor.TEST_PASS1_BRANCH_CUT_MIN_LENGTH
-    )
-    local cutDistance = (cutStart + cutEnd) * 0.5
-
-    local orthogonalWidth
-    if candidate.direction == "SIDE_POS" or candidate.direction == "SIDE_NEG" then
-        orthogonalWidth = math.max(sample.widthUp, baseline.widthUp)
-    else
-        orthogonalWidth = math.max(sample.widthSide, baseline.widthSide)
+    local cutLength = cutEnd - cutStart
+    if cutLength <= 0.05 then
+        return nil
     end
 
-    local cutWidth = math.max(
-        LoggingContractor.TEST_PASS1_BRANCH_CUT_MIN_WIDTH,
-        candidate.baselineDiameter * LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH_FACTOR,
-        orthogonalWidth + candidate.baselineDiameter * 0.25
-    )
+    local cutDistance = (cutStart + cutEnd) * 0.5
+    local cutWidth = LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH
     local surfaceOffset = math.max(
         self:getContractorBranchSurfaceOffset(baseline, candidate.direction),
         candidate.baselineDiameter * 0.25
@@ -219,11 +210,12 @@ function LoggingContractor:getContractorTestPass1BranchCutGeometry(
         axisPointY = axisPointY,
         axisPointZ = axisPointZ,
         surfaceOffset = surfaceOffset,
+        cutStart = cutStart,
+        cutEnd = cutEnd,
         sizeY = cutLength,
         sizeZ = cutWidth
     }
 end
-
 
 -- Выполняет один локальный продольный отпил. Если splitShape создал только одну
 -- новую часть, она всё равно принимается как новый основной shape, чтобы после
@@ -295,12 +287,14 @@ function LoggingContractor:cutContractorTestPass1Branch(
         )
 
         Logging.info(
-            "[LoggingContractor][BranchCutTry] shape=%d d=%.2f direction=%s outset=%.2f surface=%.3f plane=%.2fx%.2f probe=%s",
+            "[LoggingContractor][BranchCutTry] shape=%d d=%.2f direction=%s outset=%.2f surface=%.3f span=%.2f..%.2f plane=%.2fx%.2f probe=%s",
             currentShape,
             sample.distance,
             candidate.direction,
             outset,
             geometry.surfaceOffset,
+            geometry.cutStart,
+            geometry.cutEnd,
             geometry.sizeY,
             geometry.sizeZ,
             probe == nil and "none" or string.format("%.2fx%.2f", probe.widthY, probe.widthZ)
@@ -406,10 +400,11 @@ function LoggingContractor:cutContractorTestPass1Branch(
 end
 
 
--- Выполняет первый тестовый алгоритм удаления attachments. Для одного шага
--- сначала вычисляется фактический центр текущего сечения. Затем движок вызывается
--- пять раз: в центре и на поверхности в направлениях +/-side и +/-up.
--- Счётчик attachments читается только до и после всей группы вызовов.
+-- Выполняет первый тестовый алгоритм удаления attachments. Центральный вызов
+-- остаётся контрольным и ориентирован вдоль оси ствола. Четыре наружных вызова
+-- начинаются на 10 см за фактической поверхностью текущего сечения и направлены
+-- радиально к центру. Это имитирует подвод сучкорезного механизма извне.
+-- Счётчик attachments читается только до и после всей группы из пяти вызовов.
 function LoggingContractor:removeContractorTestPass1AttachmentsAtStep(
     shape,
     sample,
@@ -446,52 +441,31 @@ function LoggingContractor:removeContractorTestPass1AttachmentsAtStep(
 
     local centerUp = sample ~= nil and sample.centerUp or 0
     local centerSide = sample ~= nil and sample.centerSide or 0
-    local radiusUp = sample ~= nil and sample.widthUp * 0.5 or 0.5
-    local radiusSide = sample ~= nil and sample.widthSide * 0.5 or 0.5
-    local localDiameter = math.max(radiusUp * 2, radiusSide * 2)
+    local radiusUpPos = sample ~= nil and math.max(sample.maxUp - sample.centerUp, 0) or 0.5
+    local radiusUpNeg = sample ~= nil and math.max(sample.centerUp - sample.minUp, 0) or 0.5
+    local radiusSidePos = sample ~= nil and math.max(sample.maxSide - sample.centerSide, 0) or 0.5
+    local radiusSideNeg = sample ~= nil and math.max(sample.centerSide - sample.minSide, 0) or 0.5
+    local localDiameter = math.max(
+        radiusUpPos + radiusUpNeg,
+        radiusSidePos + radiusSideNeg
+    )
     local probeSize = math.clamp(
         localDiameter * LoggingContractor.TEST_PASS1_ATTACHMENT_SIZE_FACTOR,
         LoggingContractor.TEST_PASS1_ATTACHMENT_MIN_SIZE,
         LoggingContractor.TEST_PASS1_ATTACHMENT_MAX_SIZE
     )
+    local outset = LoggingContractor.TEST_PASS1_ATTACHMENT_RADIAL_OUTSET
 
     local centerX = axisPointX + upX * centerUp + sideX * centerSide
     local centerY = axisPointY + upY * centerUp + sideY * centerSide
     local centerZ = axisPointZ + upZ * centerUp + sideZ * centerSide
-    local points = {
-        {name = "CENTER", x = centerX, y = centerY, z = centerZ},
-        {
-            name = "SIDE_POS",
-            x = centerX + sideX * radiusSide,
-            y = centerY + sideY * radiusSide,
-            z = centerZ + sideZ * radiusSide
-        },
-        {
-            name = "SIDE_NEG",
-            x = centerX - sideX * radiusSide,
-            y = centerY - sideY * radiusSide,
-            z = centerZ - sideZ * radiusSide
-        },
-        {
-            name = "UP_POS",
-            x = centerX + upX * radiusUp,
-            y = centerY + upY * radiusUp,
-            z = centerZ + upZ * radiusUp
-        },
-        {
-            name = "UP_NEG",
-            x = centerX - upX * radiusUp,
-            y = centerY - upY * radiusUp,
-            z = centerZ - upZ * radiusUp
-        }
-    }
 
-    for _, point in ipairs(points) do
-        removeSplitShapeAttachments(
+    local hits = {
+        center = removeSplitShapeAttachments(
             shape,
-            point.x,
-            point.y,
-            point.z,
+            centerX,
+            centerY,
+            centerZ,
             axisX,
             axisY,
             axisZ,
@@ -502,7 +476,68 @@ function LoggingContractor:removeContractorTestPass1AttachmentsAtStep(
             probeSize,
             probeSize
         )
-    end
+    }
+
+    hits.sidePos = removeSplitShapeAttachments(
+        shape,
+        centerX + sideX * (radiusSidePos + outset),
+        centerY + sideY * (radiusSidePos + outset),
+        centerZ + sideZ * (radiusSidePos + outset),
+        -sideX,
+        -sideY,
+        -sideZ,
+        axisX,
+        axisY,
+        axisZ,
+        LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS,
+        probeSize,
+        probeSize
+    )
+    hits.sideNeg = removeSplitShapeAttachments(
+        shape,
+        centerX - sideX * (radiusSideNeg + outset),
+        centerY - sideY * (radiusSideNeg + outset),
+        centerZ - sideZ * (radiusSideNeg + outset),
+        sideX,
+        sideY,
+        sideZ,
+        axisX,
+        axisY,
+        axisZ,
+        LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS,
+        probeSize,
+        probeSize
+    )
+    hits.upPos = removeSplitShapeAttachments(
+        shape,
+        centerX + upX * (radiusUpPos + outset),
+        centerY + upY * (radiusUpPos + outset),
+        centerZ + upZ * (radiusUpPos + outset),
+        -upX,
+        -upY,
+        -upZ,
+        axisX,
+        axisY,
+        axisZ,
+        LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS,
+        probeSize,
+        probeSize
+    )
+    hits.upNeg = removeSplitShapeAttachments(
+        shape,
+        centerX - upX * (radiusUpNeg + outset),
+        centerY - upY * (radiusUpNeg + outset),
+        centerZ - upZ * (radiusUpNeg + outset),
+        upX,
+        upY,
+        upZ,
+        axisX,
+        axisY,
+        axisZ,
+        LoggingContractor.TEST_PASS1_ATTACHMENT_THICKNESS,
+        probeSize,
+        probeSize
+    )
 
     if not entityExists(shape) then
         return 0
@@ -512,11 +547,19 @@ function LoggingContractor:removeContractorTestPass1AttachmentsAtStep(
     local removed = math.max(attachmentsBefore - attachmentsAfter, 0)
 
     Logging.info(
-        "[LoggingContractor][AttachmentProbe1] shape=%d d=%.2f points=5 radiusSide=%.3f radiusUp=%.3f size=%.2f attachments=%d->%d removed=%d",
+        "[LoggingContractor][AttachmentProbe1] shape=%d d=%.2f orientation=radialIn hits=C:%d +S:%d -S:%d +U:%d -U:%d radiusSide=%.3f/%.3f radiusUp=%.3f/%.3f outset=%.2f size=%.2f attachments=%d->%d removed=%d",
         shape,
         distance,
-        radiusSide,
-        radiusUp,
+        hits.center and 1 or 0,
+        hits.sidePos and 1 or 0,
+        hits.sideNeg and 1 or 0,
+        hits.upPos and 1 or 0,
+        hits.upNeg and 1 or 0,
+        radiusSidePos,
+        radiusSideNeg,
+        radiusUpPos,
+        radiusUpNeg,
+        outset,
         probeSize,
         attachmentsBefore,
         attachmentsAfter,
@@ -525,7 +568,6 @@ function LoggingContractor:removeContractorTestPass1AttachmentsAtStep(
 
     return removed
 end
-
 
 -- Новый тестовый проход крупных ветвей и attachments. Движение по стволу идёт
 -- строго с шагом 0.25 м. На первых 5 м в каждой точке сначала исчерпываются все
@@ -562,12 +604,20 @@ function LoggingContractor:pruneContractorBranches(
     local attachmentHitSteps = 0
     local attachmentSteps = 0
 
+    local splitTypeIndex = getSplitType(currentShape)
+    local splitTypeData = g_splitShapeManager:getSplitTypeByIndex(splitTypeIndex)
+    local splitTypeName = splitTypeData ~= nil and splitTypeData.name or "<unknown>"
+
     Logging.info(
-        "[LoggingContractor][TestPass1Start] shape=%d length=%.2f step=%.2f branchLimit=%.2f attachmentAlgorithm=removeSplitShapeAttachments",
+        "[LoggingContractor][TestPass1Start] shape=%d splitType=%s splitTypeName=%s length=%.2f step=%.2f branchLimit=%.2f branchPlane=%.2fx%.2f attachmentAlgorithm=removeSplitShapeAttachments orientation=radialIn",
         currentShape,
+        tostring(splitTypeIndex),
+        tostring(splitTypeName),
         currentLength,
         step,
-        LoggingContractor.TEST_PASS1_BRANCH_SCAN_LENGTH
+        LoggingContractor.TEST_PASS1_BRANCH_SCAN_LENGTH,
+        LoggingContractor.TEST_PASS1_BRANCH_CUT_LENGTH,
+        LoggingContractor.TEST_PASS1_BRANCH_CUT_WIDTH
     )
 
     while currentShape ~= nil
