@@ -10,6 +10,21 @@ local MissionTayga_mt = Class(MissionTayga, Mission00)
 
 MissionTayga.MAX_NUM_TREES = 130000
 MissionTayga.LICENSE_PLATE_FONTS_XML = "map/russianLicensePlates/fonts.xml"
+MissionTayga.loggingContractorModulesLoaded = false
+
+
+-- Загружает модули системы подрядчиков один раз при создании MissionTayga.
+function MissionTayga.loadLoggingContractorModules(baseDirectory)
+    if MissionTayga.loggingContractorModulesLoaded then
+        return
+    end
+
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractorDialog.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractorTrigger.lua", baseDirectory))
+    source(Utils.getFilename("scripts/loggingContractor/LoggingContractor.lua", baseDirectory))
+
+    MissionTayga.loggingContractorModulesLoaded = true
+end
 
 
 -- Загружает материалы русского шрифта перед штатной загрузкой конфигурации
@@ -140,18 +155,18 @@ function MissionTayga.installLicensePlateHooks()
 end
 
 
--- Создаёт экземпляр миссии карты, устанавливает необходимые hooks и сохраняет
+-- Создаёт экземпляр миссии карты, загружает собственные модули и сохраняет
 -- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
+    MissionTayga.loadLoggingContractorModules(baseDirectory)
     MissionTayga.installLicensePlateHooks()
 
     return MissionTayga:superClass().new(baseDirectory, customMt or MissionTayga_mt)
 end
 
 
--- Запускает миссию и до штатного события CURRENT_MISSION_START применяет
--- увеличенный лимит деревьев карты. Благодаря этому TreePlantManager и другие
--- подписчики события сразу получают окончательное значение лимита.
+-- Запускает миссию, применяет увеличенный лимит деревьев и после штатного
+-- запуска регистрирует систему подрядчиков на лесоповал.
 function MissionTayga:onStartMission()
     if g_treePlantManager ~= nil then
         g_treePlantManager.maxNumTrees = MissionTayga.MAX_NUM_TREES
@@ -161,4 +176,18 @@ function MissionTayga:onStartMission()
     end
 
     MissionTayga:superClass().onStartMission(self)
+
+    self.loggingContractor = LoggingContractor.new(self)
+    self.loggingContractor:initialize()
+end
+
+
+-- Освобождает ресурсы собственных систем карты перед удалением Mission00.
+function MissionTayga:delete()
+    if self.loggingContractor ~= nil then
+        self.loggingContractor:delete()
+        self.loggingContractor = nil
+    end
+
+    MissionTayga:superClass().delete(self)
 end
