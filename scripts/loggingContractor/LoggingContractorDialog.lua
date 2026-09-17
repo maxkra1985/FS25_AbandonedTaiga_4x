@@ -269,16 +269,19 @@ end
 -- Пересчитывает время и детализированную стоимость для выбранного количества
 -- техники. Время показывается с точностью до 0.1 часа, а почасовые статьи
 -- используют billableHours, уже округлённые вверх в расчёте подрядчика.
+-- Денежные суммы форматируются штатным I18N, чтобы использовать локальный
+-- разделитель разрядов и активный символ валюты игры или валютного мода.
 function LoggingContractorDialog:updateEstimate()
     self.currentContractDraft = nil
 
+    local zeroMoney = g_i18n:formatMoney(0, 0, true, false)
     if self.currentScan == nil or self.currentScan.totalCount <= 0 or self.currentEquipmentCount <= 0 then
         self.currentEstimate = nil
         self.estimateTimeText:setText("Расчётное время: 0,0 ч")
-        self.rentCostText:setText("Аренда техники: 0")
-        self.equipmentWorkCostText:setText("Работа техники: 0")
-        self.workerCostText:setText("Рабочие: 0")
-        self.totalCostText:setText("Итого: 0")
+        self.rentCostText:setText(string.format("Аренда техники: %s", zeroMoney))
+        self.equipmentWorkCostText:setText(string.format("Работа техники: %s", zeroMoney))
+        self.workerCostText:setText(string.format("Рабочие: %s", zeroMoney))
+        self.totalCostText:setText(string.format("Итого: %s", zeroMoney))
         self:updateStartContractButton()
         return
     end
@@ -290,19 +293,24 @@ function LoggingContractorDialog:updateEstimate()
     self.currentEstimate = estimate
 
     local workHoursText = string.format("%.1f", estimate.workHours):gsub("%.", ",")
+    local rentCostText = g_i18n:formatMoney(estimate.rentCost, 0, true, false)
+    local equipmentWorkCostText = g_i18n:formatMoney(estimate.equipmentWorkCost, 0, true, false)
+    local workerCostText = g_i18n:formatMoney(estimate.workerCost, 0, true, false)
+    local totalCostText = g_i18n:formatMoney(estimate.totalCost, 0, true, false)
+
     self.estimateTimeText:setText(string.format("Расчётное время: %s ч", workHoursText))
-    self.rentCostText:setText(string.format("Аренда техники: %d", estimate.rentCost))
+    self.rentCostText:setText(string.format("Аренда техники: %s", rentCostText))
     self.equipmentWorkCostText:setText(string.format(
-        "Работа техники (%d оплач. ч): %d",
+        "Работа техники (%d оплач. ч): %s",
         estimate.billableHours,
-        estimate.equipmentWorkCost
+        equipmentWorkCostText
     ))
     self.workerCostText:setText(string.format(
-        "Рабочие (%d оплач. ч): %d",
+        "Рабочие (%d оплач. ч): %s",
         estimate.billableHours,
-        estimate.workerCost
+        workerCostText
     ))
-    self.totalCostText:setText(string.format("Итого: %d", estimate.totalCost))
+    self.totalCostText:setText(string.format("Итого: %s", totalCostText))
     self:updateStartContractButton()
 end
 
@@ -483,6 +491,7 @@ function LoggingContractorDialog.onStartContractResult(event)
     end
 
     local workHoursText = string.format("%.1f", event.workHours):gsub("%.", ",")
+    local totalCostText = g_i18n:formatMoney(event.totalCost, 0, true, false)
     InfoDialog.show(
         string.format(
             "Договор подряда заключён.\n\n"
@@ -491,13 +500,13 @@ function LoggingContractorDialog.onStartContractResult(event)
                 .. "Техника: %d\n"
                 .. "Длина брёвен: %d м\n"
                 .. "Расчётное время: %s ч\n"
-                .. "Списано со счёта фермы: %d",
+                .. "Списано со счёта фермы: %s",
             event.farmlandId,
             event.plannedTrees,
             event.equipmentCount,
             event.logLength,
             workHoursText,
-            event.totalCost
+            totalCostText
         ),
         nil,
         nil,
