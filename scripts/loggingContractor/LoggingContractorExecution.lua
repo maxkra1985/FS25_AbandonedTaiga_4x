@@ -20,6 +20,66 @@ LoggingContractor.MAX_BATCHES_PER_UPDATE = 5
 LoggingContractor.SPLIT_PLANE_SIZE = 4
 LoggingContractor.STUMP_HEIGHT = 0.5
 LoggingContractor.MIN_LOG_REMAINDER = 0.001
+LoggingContractor.TREE_DIRTY_RADIUS = 10
+
+
+-- Возвращает имя split type дерева через штатный SplitShapeManager.
+function LoggingContractor:getContractorSplitTypeName(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return nil
+    end
+
+    local splitTypeIndex = getSplitType(shape)
+    local splitType = g_splitShapeManager:getSplitTypeByIndex(splitTypeIndex)
+    return splitType ~= nil and splitType.name or nil
+end
+
+
+-- Помечает область дерева изменённой для collision map и AI.
+function LoggingContractor:markContractorTreeAreaDirty(x, z)
+    local radius = LoggingContractor.TREE_DIRTY_RADIUS
+
+    if g_densityMapHeightManager ~= nil then
+        g_densityMapHeightManager:setCollisionMapAreaDirty(
+            x - radius,
+            z - radius,
+            x + radius,
+            z + radius,
+            true
+        )
+    end
+
+    if self.mission ~= nil and self.mission.aiSystem ~= nil then
+        self.mission.aiSystem:setAreaDirty(
+            x - radius,
+            x + radius,
+            z - radius,
+            z + radius
+        )
+    end
+end
+
+
+-- Полностью удаляет дерево, которое подрядчик не должен превращать в древесину.
+-- Для DOWNYSERVICEBERRY используется прямое delete(), как в штатной команде
+-- TreePlantManager удаления дерева, после чего обновляются collision map и AI.
+function LoggingContractor:removeContractorNonTimberTree(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return false
+    end
+
+    local x, _, z = getWorldTranslation(shape)
+    local splitTypeName = self:getContractorSplitTypeName(shape) or "<unknown>"
+
+    delete(shape)
+    self:markContractorTreeAreaDirty(x, z)
+
+    Logging.info(
+        "[LoggingContractor] Removed non-timber tree: splitType=%s",
+        tostring(splitTypeName)
+    )
+    return true
+end
 
 
 -- Проверяет, остаётся ли node исходной стоящей целью договора.
@@ -162,8 +222,15 @@ function LoggingContractor:contractorSplitShapeCallback(shape, isBelow, isAbove,
         minZ = minZ,
         maxZ = maxZ
     })
-end
 
+    -- При первичном спиле статическая часть является пнём. Удаление повторяет
+    -- принцип StumpCutter:crushSplitShape и не меняет rigid body у ствола.
+    if operation.fromTree and getRigidBodyType(shape) == RigidBodyType.STATIC then
+        local x, _, z = getWorldTranslation(shape)
+        delete(shape)
+        self:markContractorTreeAreaDirty(x, z)
+    end
+end
 
 -- Выполняет один центрированный разрез split-shape плоскостью 4x4 м и
 -- возвращает части из штатного callback. Старый shape снимается с учёта
@@ -240,93 +307,16 @@ function LoggingContractor:getSplitPartsBySide(parts)
 end
 
 
--- Удаляет ветви и хвою/листву со спиленной динамической части по всей длине
--- ствола. Используется штатная engine-функция removeSplitShapeAttachments.
-function LoggingContractor:delimbContractorTrunk(shape, baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength)
-    if not entityExists(shape) or trunkLength <= 0 then
-        return
-    end
-
-    local midX = baseX + dirX * trunkLength * 0.5
-    local midY = baseY + dirY * trunkLength * 0.5
-    local midZ = baseZ + dirZ * trunkLength * 0.5
-
-    removeSplitShapeAttachments(
-        shape,
-        midX,
-        midY,
-        midZ,
-        dirX,
-        dirY,
-        dirZ,
-        upX,
-        upY,
-        upZ,
-        trunkLength + 1,
-        LoggingContractor.SPLIT_PLANE_SIZE,
-        LoggingContractor.SPLIT_PLANE_SIZE
-    )
-end
-
-
--- Режет уже спиленный и очищенный ствол на выбранную длину. Последняя часть
--- намеренно не удаляется и не укорачивается: короткий остаток остаётся отдельным
--- бревном, как зафиксировано в правилах договора.
-function LoggingContractor:cutContractorTrunk(shape, baseX, baseY, baseZ, dirX, dirY, dirZ, upX, upY, upZ, trunkLength, logLength)
-    local currentShape = shape
-    local currentX = baseX
-    local currentY = baseY
-    local currentZ = baseZ
-    local remainingLength = trunkLength
-
-    while remainingLength > logLength + LoggingContractor.MIN_LOG_REMAINDER do
-        if currentShape == nil or not entityExists(currentShape) then
-            return false
-        end
-
-        local cutX = currentX + dirX * logLength
-        local cutY = currentY + dirY * logLength
-        local cutZ = currentZ + dirZ * logLength
-        local parts = self:splitContractorShape(
-            currentShape,
-            cutX,
-            cutY,
-            cutZ,
-            dirX,
-            dirY,
-            dirZ,
-            upX,
-            upY,
-            upZ,
-            false
-        )
-
-        local _, remainderPart = self:getSplitPartsBySide(parts)
-        if remainderPart == nil or remainderPart.shape == nil then
-            Logging.warning(
-                "[LoggingContractor] Unable to split trunk at %.2f m, keeping remaining trunk unsplit",
-                logLength
-            )
-            return false
-        end
-
-        currentShape = remainderPart.shape
-        currentX = cutX
-        currentY = cutY
-        currentZ = cutZ
-        remainingLength = remainingLength - logLength
-    end
-
-    return true
-end
-
-
--- Обрабатывает одно стоящее дерево подрядчиком: определяет направление ствола,
--- выполняет срез на высоте 0.5 м, получает динамическую часть, удаляет ветви и
--- режет ствол на выбранную длину. Возвращает true только после фактического среза.
+-- Обрабатывает одно стоящее дерево подрядчиком. DOWNYSERVICEBERRY удаляется
+-- целиком без получения древесины; остальные деревья отделяются от пня и
+-- передаются модулю обработки ствола для очистки, снятия ветвей и раскряжёвки.
 function LoggingContractor:processContractTree(job, shape)
     if not self:isStandingContractTarget(shape, job.farmlandId) then
         return false
+    end
+
+    if self:getContractorSplitTypeName(shape) == "DOWNYSERVICEBERRY" then
+        return self:removeContractorNonTimberTree(shape)
     end
 
     local treeX, treeY, treeZ = getWorldTranslation(shape)
@@ -408,20 +398,6 @@ function LoggingContractor:processContractTree(job, shape)
     if self.mission.aiSystem ~= nil then
         self.mission.aiSystem:setAreaDirty(treeX - 5, treeX + 5, treeZ - 5, treeZ + 5)
     end
-
-    self:delimbContractorTrunk(
-        trunkShape,
-        cutX,
-        cutY,
-        cutZ,
-        axisX,
-        axisY,
-        axisZ,
-        upX,
-        upY,
-        upZ,
-        trunkLength
-    )
 
     self:cutContractorTrunk(
         trunkShape,
