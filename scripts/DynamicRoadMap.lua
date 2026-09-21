@@ -1,7 +1,7 @@
 -- FS25_DynamicRoadMap
 -- Adds player-painted asphalt/gravel roads to the in-game overview/minimap.
 --
--- v. 1.0.0.2 architecture:
+-- v. 1.0.0.4 architecture:
 --   * The base map is left completely untouched.
 --   * Existing-road import is prepared automatically in the background after load.
 --   * Only terrain areas modified through Landscaping PAINT are recorded.
@@ -27,6 +27,8 @@ DynamicRoadMap.MAX_MASK_RESOLUTION = 4096
 DynamicRoadMap.SCAN_CELLS_PER_FRAME = 8192
 DynamicRoadMap.ROAD_WEIGHT_THRESHOLD = 0.15
 DynamicRoadMap.DIRTY_RESCAN_DELAY_MS = 500
+DynamicRoadMap.PAINT_BATCH_TIMEOUT_MS = 750
+DynamicRoadMap.MAX_PAINT_AREAS_PER_EVENT = 4096
 DynamicRoadMap.DIRTY_MARGIN_METRES = 2
 DynamicRoadMap.LEGACY_IMPORT_STEP = 2
 DynamicRoadMap.LEGACY_CONTINUITY_OFFSET_METRES = 3
@@ -176,7 +178,9 @@ local DynamicRoadMapPaintEvent_mt = Class(DynamicRoadMapPaintEvent, Event)
 InitEventClass(DynamicRoadMapPaintEvent, "DynamicRoadMapPaintEvent")
 
 function DynamicRoadMapPaintEvent.emptyNew()
-	return Event.new(DynamicRoadMapPaintEvent_mt)
+	-- Дельты дорожной маски относятся к тому же типу трафика, что и штатная
+	-- деформация terrain. Выделенный канал не блокируется большой full-sync маской.
+	return Event.new(DynamicRoadMapPaintEvent_mt, NetworkNode.CHANNEL_TERRAIN_DEFORMATION)
 end
 
 function DynamicRoadMapPaintEvent.new(areas, roadValue, revision, clearLegacy)
@@ -228,6 +232,36 @@ end
 function DynamicRoadMapPaintEvent:run(connection)
 	if connection ~= nil and connection:getIsServer() then
 		DynamicRoadMap:applyNetworkPaintAreas(self.areas, self.roadValue, self.revision, self.clearLegacy)
+	end
+end
+
+-- Клиент посылает это событие один раз при отпускании кнопки покраски.
+-- Сервер к этому моменту уже применил все LandscapingSculptEvent и накопил
+-- соответствующие modifiedAreas, поэтому в обратную сторону передаётся только
+-- короткий сигнал завершения мазка.
+DynamicRoadMapPaintCommitEvent = {}
+local DynamicRoadMapPaintCommitEvent_mt = Class(DynamicRoadMapPaintCommitEvent, Event)
+InitEventClass(DynamicRoadMapPaintCommitEvent, "DynamicRoadMapPaintCommitEvent")
+
+function DynamicRoadMapPaintCommitEvent.emptyNew()
+	return Event.new(DynamicRoadMapPaintCommitEvent_mt, NetworkNode.CHANNEL_TERRAIN_DEFORMATION)
+end
+
+function DynamicRoadMapPaintCommitEvent.new()
+	return DynamicRoadMapPaintCommitEvent.emptyNew()
+end
+
+function DynamicRoadMapPaintCommitEvent:writeStream(streamId, connection)
+end
+
+function DynamicRoadMapPaintCommitEvent:readStream(streamId, connection)
+	self:run(connection)
+end
+
+--- Завершает накопленную сервером пачку покраски конкретного клиента.
+function DynamicRoadMapPaintCommitEvent:run(connection)
+	if connection ~= nil and not connection:getIsServer() then
+		DynamicRoadMap:onNetworkPaintCommit(connection)
 	end
 end
 
@@ -489,12 +523,13 @@ function DynamicRoadMap:loadMap(mapName)
 	self.networkLegacyReady = false
 	self.networkRevision = 0
 	self.pendingNetworkPaintEvents = {}
+	self.pendingServerPaintBatches = {}
 
 	self:installMapMenuHooks()
 	self:installHooks()
 
 	self:log("============================================================")
-	self:log("Dynamic Road Map v1.0.0.2 loaded")
+	self:log("Dynamic Road Map v1.0.0.4 loaded")
 	self:log("Map: %s", tostring(mapName))
 	self:log("Mode: player Landscaping roads + background legacy terrain import")
 	self:log("============================================================")
@@ -530,6 +565,7 @@ function DynamicRoadMap:deleteMap()
 	self.networkLegacyReady = false
 	self.networkRevision = 0
 	self.pendingNetworkPaintEvents = {}
+	self.pendingServerPaintBatches = {}
 end
 
 function DynamicRoadMap:installHooks()
@@ -593,6 +629,24 @@ function DynamicRoadMap:installHooks()
 		)
 		self.landscapingHookInstalled = true
 		self:log("Installed Landscaping paint hook")
+	end
+
+	-- В штатной ConstructionBrushPaint отпускание кнопки лишь сбрасывает lastX.
+	-- Отдельного сетевого события об окончании мазка GIANTS не отправляет, поэтому
+	-- добавляем собственный короткий commit после завершения исходной обработки.
+	if not self.constructionBrushPaintHookInstalled
+		and ConstructionBrushPaint ~= nil
+		and ConstructionBrushPaint.onButtonPrimary ~= nil then
+		ConstructionBrushPaint.onButtonPrimary = Utils.appendedFunction(
+			ConstructionBrushPaint.onButtonPrimary,
+			function(brush, isDown, isDrag, isUp)
+				if isUp then
+					DynamicRoadMap:onPaintBrushReleased()
+				end
+			end
+		)
+		self.constructionBrushPaintHookInstalled = true
+		self:log("Installed ConstructionBrushPaint release hook")
 	end
 end
 
@@ -1036,7 +1090,12 @@ end
 
 --- Отправляет клиентский запрос на первичную синхронизацию дорожных масок.
 function DynamicRoadMap:requestNetworkSync(force)
-	if self:getIsServer() or (self.networkSyncRequested and force ~= true) or g_client == nil then
+	-- Обычный запрос допустим только до получения первого полного состояния.
+	-- force используется при обнаружении разрыва ревизий и позволяет запросить
+	-- полную маску повторно уже после успешной первоначальной синхронизации.
+	if self:getIsServer()
+		or ((self.networkSyncReceived or self.networkSyncRequested) and force ~= true)
+		or g_client == nil then
 		return false
 	end
 
@@ -1149,6 +1208,15 @@ function DynamicRoadMap:applyNetworkFullSync(event)
 		self.roadOverlayGenerating = false
 	end
 
+	-- Overlay хранит ссылки на DensityMap/BitVectorMap. Перед заменой InfoLayer
+	-- явно отвязываем старые карты, иначе движок вынужден аварийно сбрасывать
+	-- overlay при delete() и пишет предупреждение на каждой полной синхронизации.
+	if self.roadOverlay ~= nil then
+		resetDensityMapVisualizationOverlay(self.roadOverlay)
+		self.roadOverlayReady = false
+		self.roadOverlayGenerating = false
+	end
+
 	if self.roadInfoLayer ~= nil then
 		self.roadInfoLayer:delete()
 	end
@@ -1210,23 +1278,162 @@ function DynamicRoadMap:applyNetworkFullSync(event)
 end
 
 --- Рассылает клиентам только подтверждённые сервером изменения масок.
+-- Большой мазок режется на ограниченные пакеты, чтобы один event не разрастался
+-- до десятков тысяч parallelogram-описаний.
 function DynamicRoadMap:broadcastPaintAreas(areas, roadValue, clearLegacy)
 	if not self:getIsServer() or g_server == nil or areas == nil or #areas == 0 then
-		return
+		return false
 	end
 
-	self.networkRevision = (self.networkRevision or 0) + 1
-	g_server:broadcastEvent(
-		DynamicRoadMapPaintEvent.new(areas, roadValue, self.networkRevision, clearLegacy),
-		false
-	)
+	local total = #areas
+	local offset = 1
+	local sent = 0
+
+	while offset <= total do
+		local last = math.min(offset + self.MAX_PAINT_AREAS_PER_EVENT - 1, total)
+		local chunk = {}
+		for i = offset, last do
+			chunk[#chunk + 1] = areas[i]
+		end
+
+		self.networkRevision = (self.networkRevision or 0) + 1
+		g_server:broadcastEvent(
+			DynamicRoadMapPaintEvent.new(chunk, roadValue, self.networkRevision, clearLegacy),
+			false
+		)
+
+		sent = sent + #chunk
+		offset = last + 1
+	end
+
 	self:log(
-		"Broadcast road-paint update (revision=%d areas=%d value=%d clearLegacy=%s)",
+		"Broadcast road-paint batch (revision=%d areas=%d value=%d clearLegacy=%s)",
 		self.networkRevision,
-		#areas,
+		sent,
 		roadValue,
 		tostring(clearLegacy == true)
 	)
+	return true
+end
+
+--- Возвращает соединение клиента, породившего серверный LandscapingSculptEvent.
+function DynamicRoadMap:getLandscapingSourceConnection(landscaping)
+	if landscaping == nil then
+		return nil
+	end
+
+	local callbackTarget = landscaping.callbackFunctionTarget
+	if callbackTarget ~= nil and callbackTarget.runConnection ~= nil then
+		return callbackTarget.runConnection
+	end
+
+	return nil
+end
+
+--- Добавляет подтверждённые сервером области в пачку конкретного клиента.
+function DynamicRoadMap:queueServerPaintBatch(connection, areas, roadValue, clearLegacy)
+	if connection == nil or areas == nil or #areas == 0 then
+		return false
+	end
+
+	self.pendingServerPaintBatches = self.pendingServerPaintBatches or {}
+	local batch = self.pendingServerPaintBatches[connection]
+
+	-- В пределах одного удержания кнопки тип terrain layer не меняется. Если
+	-- всё же пришёл другой тип, сначала отправляем предыдущую законченную пачку.
+	if batch ~= nil
+		and (batch.roadValue ~= roadValue or batch.clearLegacy ~= (clearLegacy == true)) then
+		self:flushServerPaintBatch(connection, "paint type changed")
+		batch = nil
+	end
+
+	if batch == nil then
+		batch = {
+			areas = {},
+			roadValue = roadValue,
+			clearLegacy = clearLegacy == true,
+			timer = self.PAINT_BATCH_TIMEOUT_MS
+		}
+		self.pendingServerPaintBatches[connection] = batch
+	end
+
+	-- Копируем координаты: исходный Landscaping после callback больше нам не нужен.
+	for _, area in ipairs(areas) do
+		batch.areas[#batch.areas + 1] = {
+			area[1], area[2], area[3], area[4], area[5], area[6]
+		}
+	end
+	batch.timer = self.PAINT_BATCH_TIMEOUT_MS
+	return true
+end
+
+--- Отправляет накопленную пачку одного клиента всем участникам сетевой игры.
+function DynamicRoadMap:flushServerPaintBatch(connection, reason)
+	if not self:getIsServer() or connection == nil then
+		return false
+	end
+
+	local batches = self.pendingServerPaintBatches
+	local batch = batches ~= nil and batches[connection] or nil
+	if batch == nil then
+		return false
+	end
+
+	batches[connection] = nil
+	if batch.areas == nil or #batch.areas == 0 then
+		return false
+	end
+
+	local sent = self:broadcastPaintAreas(batch.areas, batch.roadValue, batch.clearLegacy)
+	if sent then
+		self:log(
+			"Committed client road-paint batch (%s): areas=%d value=%d",
+			tostring(reason or "commit"),
+			#batch.areas,
+			batch.roadValue
+		)
+	end
+	return sent
+end
+
+--- Сервер принимает короткое уведомление клиента об отпускании кисти.
+function DynamicRoadMap:onNetworkPaintCommit(connection)
+	if not self:getIsServer() then
+		return
+	end
+
+	self:flushServerPaintBatch(connection, "brush released")
+end
+
+--- Клиент уведомляет сервер, что текущий непрерывный мазок завершён.
+function DynamicRoadMap:onPaintBrushReleased()
+	if g_client == nil then
+		return
+	end
+
+	local connection = g_client:getServerConnection()
+	if connection ~= nil then
+		connection:sendEvent(DynamicRoadMapPaintCommitEvent.new())
+	end
+end
+
+--- Аварийно отправляет пачки, для которых не пришёл release-event.
+function DynamicRoadMap:updateServerPaintBatches(dt)
+	if not self:getIsServer() or self.pendingServerPaintBatches == nil then
+		return
+	end
+
+	local expired = {}
+	for connection, batch in pairs(self.pendingServerPaintBatches) do
+		batch.timer = (batch.timer or self.PAINT_BATCH_TIMEOUT_MS) - dt
+		if batch.timer <= 0 then
+			expired[#expired + 1] = connection
+		end
+	end
+
+	for _, connection in ipairs(expired) do
+		self:flushServerPaintBatch(connection, "timeout")
+	end
 end
 
 --- Применяет на клиенте изменение, уже рассчитанное и подтверждённое сервером.
@@ -1918,7 +2125,20 @@ function DynamicRoadMap:onLandscapingApplied(landscaping, errorCode)
 	) or changed
 
 	if changed then
-		self:broadcastPaintAreas(landscaping.modifiedAreas, roadValue, clearLegacy)
+		local sourceConnection = self:getLandscapingSourceConnection(landscaping)
+		if sourceConnection ~= nil then
+			-- Для сетевого клиента копим все подтверждённые мазки до отпускания кисти.
+			self:queueServerPaintBatch(
+				sourceConnection,
+				landscaping.modifiedAreas,
+				roadValue,
+				clearLegacy
+			)
+		else
+			-- Серверная/скриптовая покраска без LandscapingSculptEvent не имеет
+			-- клиентского release-сигнала, поэтому её отправляем сразу.
+			self:broadcastPaintAreas(landscaping.modifiedAreas, roadValue, clearLegacy)
+		end
 	end
 
 	self.loggedPaintLayers = self.loggedPaintLayers or {}
@@ -1984,7 +2204,10 @@ function DynamicRoadMap:update(dt)
 	-- Клиент не сканирует terrain, не формирует маски и не сохраняет их.
 	-- Он только запрашивает/принимает серверное состояние и строит свой overlay.
 	if not self:getIsServer() then
-		if not self.networkSyncRequested then
+		-- После успешного full-sync networkSyncRequested снова становится false,
+		-- поэтому одного этого флага недостаточно. Повторный запрос нужен только
+		-- пока серверное состояние ещё не было получено.
+		if not self.networkSyncReceived and not self.networkSyncRequested then
 			self:requestNetworkSync()
 		end
 
@@ -1997,6 +2220,8 @@ function DynamicRoadMap:update(dt)
 	if self.currentScan ~= nil then
 		self:processCurrentScan()
 	end
+
+	self:updateServerPaintBatches(dt)
 
 	if self.pendingDirtyBounds ~= nil then
 		self.pendingDirtyTimer = self.pendingDirtyTimer - dt
