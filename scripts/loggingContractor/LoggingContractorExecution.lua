@@ -475,6 +475,9 @@ function LoggingContractor:contractorSplitShapeCallback(shape, isBelow, isAbove,
         return
     end
 
+    -- Как и ChainsawUtil, сначала регистрируем все полученные части разреза.
+    -- Решение о том, какая часть является пнём, принимается после splitShape
+    -- по стороне плоскости, а не по типу rigid body.
     g_currentMission:addKnownSplitShape(shape)
     g_treePlantManager:addingSplitShape(shape, operation.oldShape, operation.fromTree)
 
@@ -487,15 +490,25 @@ function LoggingContractor:contractorSplitShapeCallback(shape, isBelow, isAbove,
         minZ = minZ,
         maxZ = maxZ
     })
-
-    -- При первичном спиле статическая часть является пнём. Удаление повторяет
-    -- принцип StumpCutter:crushSplitShape и не меняет rigid body у ствола.
-    if operation.fromTree and getRigidBodyType(shape) == RigidBodyType.STATIC then
-        local x, _, z = getWorldTranslation(shape)
-        delete(shape)
-        self:markContractorTreeAreaDirty(x, z)
-    end
 end
+
+-- Удаляет подтверждённую часть пня после успешного первичного спила.
+-- Shape заранее снимается с учёта известных split-shape и TreePlantManager,
+-- чтобы после delete() не оставались устаревшие записи.
+function LoggingContractor:removeContractorStump(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return
+    end
+
+    local x, _, z = getWorldTranslation(shape)
+
+    g_currentMission:removeKnownSplitShape(shape)
+    g_treePlantManager:removingSplitShape(shape)
+    delete(shape)
+
+    self:markContractorTreeAreaDirty(x, z)
+end
+
 
 -- Выполняет один центрированный разрез split-shape плоскостью 4x4 м и
 -- возвращает части из штатного callback. Старый shape снимается с учёта
@@ -640,19 +653,64 @@ function LoggingContractor:processContractTree(job, shape)
         true
     )
 
-    local _, trunkPart = self:getSplitPartsBySide(parts)
-    if trunkPart == nil or trunkPart.shape == nil then
-        Logging.warning("[LoggingContractor] Unable to obtain trunk after cutting shape %d", shape)
+    local stumpPart, trunkPart = self:getSplitPartsBySide(parts)
+    if trunkPart == nil
+        or trunkPart.shape == nil
+        or not entityExists(trunkPart.shape) then
+        Logging.warning(
+            "[LoggingContractor] Unable to obtain trunk after cutting shape %d",
+            shape
+        )
         return false
     end
 
     local trunkShape = trunkPart.shape
-    if getRigidBodyType(trunkShape) == RigidBodyType.STATIC then
+
+    -- Штатный ChainsawUtil ожидает после валки пару STATIC + DYNAMIC.
+    -- Если конкретное дерево дало необычный результат, не удаляем ни одну
+    -- часть вслепую: древесина должна сохраниться для диагностики.
+    if getRigidBodyType(trunkShape) ~= RigidBodyType.DYNAMIC then
+        local dynamicAbovePart = nil
+        local dynamicAboveMeasure = -1
+
         for _, part in ipairs(parts) do
-            if part.shape ~= nil and entityExists(part.shape) and getRigidBodyType(part.shape) == RigidBodyType.DYNAMIC then
-                trunkShape = part.shape
-                break
+            if part.shape ~= nil
+                and entityExists(part.shape)
+                and part.isAbove
+                and not part.isBelow
+                and getRigidBodyType(part.shape) == RigidBodyType.DYNAMIC then
+                local measure = self:getContractorShapeMeasure(part.shape)
+
+                if measure > dynamicAboveMeasure then
+                    dynamicAbovePart = part
+                    dynamicAboveMeasure = measure
+                end
             end
+        end
+
+        if dynamicAbovePart == nil then
+            Logging.warning(
+                "[LoggingContractor] Initial cut produced no dynamic trunk: shape=%d type=%s parts=%d; split parts preserved",
+                shape,
+                tostring(self:getContractorSplitTypeName(shape) or "<unknown>"),
+                #parts
+            )
+            return false
+        end
+
+        trunkShape = dynamicAbovePart.shape
+    end
+
+    -- Пень определяется геометрически как часть ниже плоскости спила.
+    -- Удаление по RigidBodyType.STATIC запрещено: у некоторых пород статическими
+    -- могут оказаться и другие части дерева.
+    for _, part in ipairs(parts) do
+        if part.shape ~= nil
+            and part.shape ~= trunkShape
+            and entityExists(part.shape)
+            and part.isBelow
+            and not part.isAbove then
+            self:removeContractorStump(part.shape)
         end
     end
 
