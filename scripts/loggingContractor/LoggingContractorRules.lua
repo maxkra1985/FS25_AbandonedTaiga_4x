@@ -2,14 +2,13 @@
     LoggingContractorRules
 
     Ограничения, действующие только пока существует активный договор:
-    - обычное ускорение времени ограничено x10;
-    - с 08:00 до 21:00 сон запрещён;
-    - ночной сон остаётся штатным и использует штатный SleepManager.
+    - обычное ускорение времени ограничено x15;
+    - запрет сна временно отключён для сетевого тестирования;
+    - штатное ускорение времени во время сна не ограничивается x15.
 ]]
 
-LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE = 10
+LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE = 15
 
-local previousSleepManagerGetCanSleep = SleepManager.getCanSleep
 local previousSleepManagerStartSleep = SleepManager.startSleep
 
 
@@ -20,23 +19,8 @@ local function getLoggingContractor()
 end
 
 
--- Запрещает сон в рабочее время подрядчика. Проверка выполняется и на сервере,
--- поэтому сетевой запрос сна не может обойти ограничение клиента.
-function SleepManager:getCanSleep()
-    local contractor = getLoggingContractor()
-    if contractor ~= nil
-        and contractor:hasAnyActiveJob()
-        and contractor:getIsWorkingTime() then
-        return false
-    end
-
-    return previousSleepManagerGetCanSleep(self)
-end
-
-
--- На время штатного запуска сна разрешает SleepManager установить собственное
--- ускорение 5000. Обычное пользовательское ускорение при активном договоре
--- по-прежнему ограничивается x10.
+-- Разрешает штатному SleepManager использовать собственное ускорение времени.
+-- Ограничение x15 относится только к обычному пользовательскому ускорению.
 function SleepManager:startSleep(targetTime)
     local contractor = getLoggingContractor()
     if contractor ~= nil and contractor:hasAnyActiveJob() then
@@ -52,8 +36,7 @@ end
 
 
 -- Ограничивает обычное ускорение времени при активном договоре.
--- Серверная проверка является окончательной; разрешение выше x10 используется
--- только внутри штатного SleepManager:startSleep().
+-- Во время штатного сна ограничение временно снимается.
 function MissionTayga:setTimeScale(timeScale, noEventSend)
     local contractor = self.loggingContractor
 

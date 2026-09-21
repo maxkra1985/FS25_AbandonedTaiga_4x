@@ -424,11 +424,66 @@ function LoggingContractor:selectNextContractTarget(job, targets)
 end
 
 
+-- Возвращает true, если к серверу подключён хотя бы один удалённый клиент.
+-- Условие совпадает со штатной проверкой FSBaseMission перед split-shape update.
+function LoggingContractor:hasRemoteClients()
+    return g_server ~= nil
+        and g_server.clients ~= nil
+        and #g_server.clients > 0
+end
+
+
+-- Вызывается после штатного onConnectionsUpdateTick: предыдущие изменения
+-- split-shape уже получили возможность уйти клиентам.
+function LoggingContractor:onNetworkUpdateTick()
+    if self.mission:getIsServer() and self:hasRemoteClients() then
+        self.networkSyncGeneration = (self.networkSyncGeneration or 0) + 1
+    end
+end
+
+
+-- В multiplayer разрешает одну группу изменений split-shape между двумя
+-- сетевыми update tick. В одиночной игре ограничение не применяется.
+function LoggingContractor:canPerformContractorShapeMutation()
+    if not self:hasRemoteClients() then
+        return true
+    end
+
+    return (self.networkMutationGeneration or -1)
+        < (self.networkSyncGeneration or 0)
+end
+
+
+-- После изменения shape расходует текущий сетевой шаг и блокирует продолжение
+-- конкретного дерева до следующего update split-shape.
+function LoggingContractor:markContractorShapeMutation(state)
+    if not self:hasRemoteClients() then
+        return
+    end
+
+    local generation = self.networkSyncGeneration or 0
+    self.networkMutationGeneration = generation
+    state.waitForSyncGeneration = generation + 1
+end
+
+
+-- Проверяет, прошёл ли сетевой update после последнего изменения дерева.
+function LoggingContractor:getCanAdvanceContractorTreeState(state)
+    if not self:hasRemoteClients() then
+        return true
+    end
+
+    return (state.waitForSyncGeneration or 0)
+        <= (self.networkSyncGeneration or 0)
+end
+
+
 -- Фиксирует исходные цели только что созданной задачи. plannedTrees остаётся
 -- серверным числом на момент оплаты, а targetNodes определяет именно те деревья,
 -- которые подрядчик имеет право обрабатывать в рамках этого договора.
 function LoggingContractor:initializeJobTargets(job)
     job.targetNodes = self:collectContractTargets(job.farmlandId)
+    job.processingTrees = {}
     job.remainingTrees = #job.targetNodes
     job.processTimerMs = 0
     job.routeAnchorX = nil
@@ -442,16 +497,11 @@ function LoggingContractor:initializeJobTargets(job)
         job.remainingTrees = #job.targetNodes
     end
 
-    -- Маркеры, существовавшие до начала работ, задают приоритет первой группы,
-    -- но не считаются новой командой на перенос уже начатого маршрута.
     for _, node in ipairs(job.targetNodes) do
         job.markerStates[node] = self:isContractTargetMarked(node)
     end
 end
 
-
--- Удаляет из задачи исходные цели, которые игрок уже спилил или которые больше
--- не существуют как стоящие деревья на выбранном участке.
 function LoggingContractor:refreshJobTargets(job)
     local validTargets = {}
 
@@ -462,13 +512,24 @@ function LoggingContractor:refreshJobTargets(job)
     end
 
     job.targetNodes = validTargets
-    job.remainingTrees = #validTargets
+    job.processingTrees = job.processingTrees or {}
+    job.remainingTrees = #validTargets + #job.processingTrees
+
     return validTargets
 end
 
 
--- Callback splitShape: регистрирует созданные части тем же штатным путём,
--- которым GIANTS регистрирует части дерева после работы пилы и харвестера.
+-- Удаляет выбранную цель из очереди ожидания. До завершения обработки её
+-- продолжает учитывать processingTrees.
+function LoggingContractor:removePendingContractTarget(job, shape)
+    for index = #job.targetNodes, 1, -1 do
+        if job.targetNodes[index] == shape then
+            table.remove(job.targetNodes, index)
+            return
+        end
+    end
+end
+
 function LoggingContractor:contractorSplitShapeCallback(shape, isBelow, isAbove, minY, maxY, minZ, maxZ)
     local operation = self.activeContractSplitOperation
     if operation == nil then
@@ -588,16 +649,46 @@ end
 -- Обрабатывает одно стоящее дерево подрядчиком. DOWNYSERVICEBERRY удаляется
 -- целиком без получения древесины; остальные деревья отделяются от пня и
 -- передаются модулю обработки ствола для очистки, снятия ветвей и раскряжёвки.
-function LoggingContractor:processContractTree(job, shape)
+function LoggingContractor:createContractorTreeProcess(job, shape)
     if not self:isStandingContractTarget(shape, job.farmlandId) then
-        return false
-    end
-
-    if self:getContractorSplitTypeName(shape) == "DOWNYSERVICEBERRY" then
-        return self:removeContractorNonTimberTree(shape)
+        return nil
     end
 
     local treeX, treeY, treeZ = getWorldTranslation(shape)
+
+    return {
+        sourceShape = shape,
+        shape = shape,
+        splitTypeName = self:getContractorSplitTypeName(shape),
+        treeX = treeX,
+        treeY = treeY,
+        treeZ = treeZ,
+        phase = "INITIAL_CUT",
+        hadMutation = false,
+        waitForSyncGeneration = 0
+    }
+end
+
+
+-- Выполняет первичный спил и сохраняет данные для следующих фаз.
+function LoggingContractor:performContractorInitialCut(job, state, allowMutation)
+    local shape = state.shape
+
+    if not self:isStandingContractTarget(shape, job.farmlandId) then
+        return true, false, false
+    end
+
+    if state.splitTypeName == "DOWNYSERVICEBERRY" then
+        if not allowMutation then
+            return false, false, false
+        end
+
+        local removed = self:removeContractorNonTimberTree(shape)
+        state.hadMutation = removed
+        return true, removed, removed
+    end
+
+    local treeX, treeY, treeZ = state.treeX, state.treeY, state.treeZ
     local localX, localY, localZ = worldToLocal(
         shape,
         treeX,
@@ -621,8 +712,11 @@ function LoggingContractor:processContractTree(job, shape)
         axisZ
     )
     if lengthBelow == nil or lengthAbove == nil then
-        Logging.warning("[LoggingContractor] Unable to determine tree extents for shape %d", shape)
-        return false
+        Logging.warning(
+            "[LoggingContractor] Unable to determine tree extents for shape %d",
+            shape
+        )
+        return true, false, false
     end
 
     local trunkLength
@@ -636,7 +730,11 @@ function LoggingContractor:processContractTree(job, shape)
     end
 
     if trunkLength <= LoggingContractor.MIN_LOG_REMAINDER then
-        return false
+        return true, false, false
+    end
+
+    if not allowMutation then
+        return false, false, false
     end
 
     local parts = self:splitContractorShape(
@@ -653,23 +751,18 @@ function LoggingContractor:processContractTree(job, shape)
         true
     )
 
-    local stumpPart, trunkPart = self:getSplitPartsBySide(parts)
-    if trunkPart == nil
-        or trunkPart.shape == nil
-        or not entityExists(trunkPart.shape) then
-        Logging.warning(
-            "[LoggingContractor] Unable to obtain trunk after cutting shape %d",
-            shape
-        )
-        return false
+    if #parts <= 0 then
+        return true, false, false
     end
 
-    local trunkShape = trunkPart.shape
+    state.hadMutation = true
 
-    -- Штатный ChainsawUtil ожидает после валки пару STATIC + DYNAMIC.
-    -- Если конкретное дерево дало необычный результат, не удаляем ни одну
-    -- часть вслепую: древесина должна сохраниться для диагностики.
-    if getRigidBodyType(trunkShape) ~= RigidBodyType.DYNAMIC then
+    local _, trunkPart = self:getSplitPartsBySide(parts)
+    local trunkShape = trunkPart ~= nil and trunkPart.shape or nil
+
+    if trunkShape == nil
+        or not entityExists(trunkShape)
+        or getRigidBodyType(trunkShape) ~= RigidBodyType.DYNAMIC then
         local dynamicAbovePart = nil
         local dynamicAboveMeasure = -1
 
@@ -690,60 +783,172 @@ function LoggingContractor:processContractTree(job, shape)
 
         if dynamicAbovePart == nil then
             Logging.warning(
-                "[LoggingContractor] Initial cut produced no dynamic trunk: shape=%d type=%s parts=%d; split parts preserved",
-                shape,
-                tostring(self:getContractorSplitTypeName(shape) or "<unknown>"),
+                "[LoggingContractor] Initial cut produced no dynamic trunk: type=%s parts=%d; split parts preserved",
+                tostring(state.splitTypeName or "<unknown>"),
                 #parts
             )
-            return false
+            state.phase = "FAILED_AFTER_SPLIT"
+            return false, true, false
         end
 
         trunkShape = dynamicAbovePart.shape
     end
 
-    -- Пень определяется геометрически как часть ниже плоскости спила.
-    -- Удаление по RigidBodyType.STATIC запрещено: у некоторых пород статическими
-    -- могут оказаться и другие части дерева.
+    state.shape = trunkShape
+    state.cutX = cutX
+    state.cutY = cutY
+    state.cutZ = cutZ
+    state.axisX = axisX
+    state.axisY = axisY
+    state.axisZ = axisZ
+    state.upX = upX
+    state.upY = upY
+    state.upZ = upZ
+    state.trunkLength = trunkLength
+    state.stumpShapes = {}
+
     for _, part in ipairs(parts) do
         if part.shape ~= nil
             and part.shape ~= trunkShape
             and entityExists(part.shape)
             and part.isBelow
             and not part.isAbove then
-            self:removeContractorStump(part.shape)
+            table.insert(state.stumpShapes, part.shape)
         end
     end
 
-    -- Повторяем обновление областей коллизий и AI из штатного ChainsawUtil.
-    if g_densityMapHeightManager ~= nil then
-        g_densityMapHeightManager:setCollisionMapAreaDirty(treeX - 5, treeZ - 5, treeX + 5, treeZ + 5, true)
-    end
-    if self.mission.aiSystem ~= nil then
-        self.mission.aiSystem:setAreaDirty(treeX - 5, treeX + 5, treeZ - 5, treeZ + 5)
+    self:markContractorTreeAreaDirty(treeX, treeZ)
+
+    if job.routeAnchorX == nil or job.routeAnchorZ == nil then
+        job.routeAnchorX = treeX
+        job.routeAnchorZ = treeZ
     end
 
-    self:cutContractorTrunk(
-        trunkShape,
-        cutX,
-        cutY,
-        cutZ,
-        axisX,
-        axisY,
-        axisZ,
-        upX,
-        upY,
-        upZ,
-        trunkLength,
-        job.logLength
-    )
+    state.phase =
+        #state.stumpShapes > 0
+        and "REMOVE_STUMP"
+        or "PRUNE_INIT"
 
-    return true
+    return false, true, false
 end
 
 
--- Синхронизирует состояние задачи всем клиентам. Локальный клиент хоста
--- обновляется напрямую, потому что server broadcast не обязан возвращать event
--- обратно в локальное соединение.
+-- Продвигает одно дерево на одну безопасную фазу.
+-- Возвращает: done, worldChanged, success.
+function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutation)
+    if state.phase == "INITIAL_CUT" then
+        return self:performContractorInitialCut(job, state, allowMutation)
+    end
+
+    if state.phase == "FAILED_AFTER_SPLIT" then
+        return true, false, false
+    end
+
+    if state.phase == "REMOVE_STUMP" then
+        while #state.stumpShapes > 0 do
+            local stumpShape = table.remove(state.stumpShapes, 1)
+
+            if stumpShape ~= nil and entityExists(stumpShape) then
+                if not allowMutation then
+                    table.insert(state.stumpShapes, 1, stumpShape)
+                    return false, false, false
+                end
+
+                self:removeContractorStump(stumpShape)
+                state.hadMutation = true
+
+                if #state.stumpShapes == 0 then
+                    state.phase = "PRUNE_INIT"
+                end
+
+                return false, true, false
+            end
+        end
+
+        state.phase = "PRUNE_INIT"
+        return false, false, false
+    end
+
+    if state.phase == "PRUNE_INIT" then
+        state.pruning = self:createContractorPruningState(
+            state.shape,
+            state.cutX,
+            state.cutY,
+            state.cutZ,
+            state.axisX,
+            state.axisY,
+            state.axisZ,
+            state.upX,
+            state.upY,
+            state.upZ,
+            state.trunkLength
+        )
+        state.phase = "PRUNE"
+        return false, false, false
+    end
+
+    if state.phase == "PRUNE" then
+        local done, changed =
+            self:advanceContractorPruningState(
+                state.pruning,
+                allowMutation
+            )
+
+        if changed then
+            state.hadMutation = true
+            return false, true, false
+        end
+
+        if done then
+            state.shape = state.pruning.shape
+            state.trunkLength = state.pruning.length
+            state.phase = "BUCK_INIT"
+        end
+
+        return false, false, false
+    end
+
+    if state.phase == "BUCK_INIT" then
+        state.bucking = self:createContractorBuckingState(
+            state.shape,
+            state.cutX,
+            state.cutY,
+            state.cutZ,
+            state.axisX,
+            state.axisY,
+            state.axisZ,
+            state.upX,
+            state.upY,
+            state.upZ,
+            state.trunkLength,
+            job.logLength
+        )
+        state.phase = "BUCK"
+        return false, false, false
+    end
+
+    if state.phase == "BUCK" then
+        local done, changed =
+            self:advanceContractorBuckingState(
+                state.bucking,
+                allowMutation
+            )
+
+        if changed then
+            state.hadMutation = true
+            return false, true, false
+        end
+
+        if done then
+            return true, false, true
+        end
+
+        return false, false, false
+    end
+
+    return true, false, false
+end
+
 function LoggingContractor:broadcastJobProgress(job)
     if self.mission:getIsClient() then
         self:applyClientJobProgress(job)
@@ -827,16 +1032,19 @@ end
 -- Выполняет один рабочий такт договора: сначала исключает уже спиленные игроком
 -- цели, затем подрядчик обрабатывает до equipmentCount оставшихся деревьев.
 function LoggingContractor:processJobBatch(job)
+    job.processingTrees = job.processingTrees or {}
+
     local targets = self:refreshJobTargets(job)
-    if #targets == 0 then
-        self:finishJob(job)
+    local availableSlots =
+        math.max(job.equipmentCount - #job.processingTrees, 0)
+
+    if availableSlots <= 0 then
         return
     end
 
-    local processed = 0
-    local maxProcessed = math.min(job.equipmentCount, #targets)
+    local started = 0
 
-    while processed < maxProcessed and job.isActive do
+    while started < availableSlots and job.isActive do
         targets = self:refreshJobTargets(job)
         if #targets == 0 then
             break
@@ -847,20 +1055,69 @@ function LoggingContractor:processJobBatch(job)
             break
         end
 
-        local treeX, _, treeZ = getWorldTranslation(shape)
+        local state = self:createContractorTreeProcess(job, shape)
+        if state == nil then
+            break
+        end
 
-        if self:processContractTree(job, shape) then
-            job.contractorCutTrees = (job.contractorCutTrees or 0) + 1
+        self:removePendingContractTarget(job, shape)
+        table.insert(job.processingTrees, state)
+        started = started + 1
+    end
 
-            if job.routeAnchorX == nil or job.routeAnchorZ == nil then
-                job.routeAnchorX = treeX
-                job.routeAnchorZ = treeZ
+    self:refreshJobTargets(job)
+
+    if job.remainingTrees == 0 then
+        self:finishJob(job)
+    elseif started > 0 then
+        self:broadcastJobProgress(job)
+    end
+end
+
+-- Продвигает уже начатые деревья. В multiplayer одна группа изменений
+-- split-shape расходует текущий сетевой tick.
+function LoggingContractor:updateContractorProcessingTrees(job)
+    job.processingTrees = job.processingTrees or {}
+
+    local index = 1
+    local progressChanged = false
+
+    while index <= #job.processingTrees and job.isActive do
+        local state = job.processingTrees[index]
+
+        if self:getCanAdvanceContractorTreeState(state) then
+            local canMutate = self:canPerformContractorShapeMutation()
+            local done, changed, success =
+                self:advanceContractorTreeProcess(
+                    job,
+                    state,
+                    canMutate
+                )
+
+            if changed then
+                self:markContractorShapeMutation(state)
             end
 
-            processed = processed + 1
+            if done then
+                table.remove(job.processingTrees, index)
+
+                if success then
+                    job.contractorCutTrees =
+                        (job.contractorCutTrees or 0) + 1
+                elseif not state.hadMutation
+                    and self:isStandingContractTarget(
+                        state.sourceShape,
+                        job.farmlandId
+                    ) then
+                    table.insert(job.targetNodes, state.sourceShape)
+                end
+
+                progressChanged = true
+            else
+                index = index + 1
+            end
         else
-            -- Неудачный shape не должен бесконечно блокировать весь такт.
-            break
+            index = index + 1
         end
     end
 
@@ -868,14 +1125,12 @@ function LoggingContractor:processJobBatch(job)
 
     if job.remainingTrees == 0 then
         self:finishJob(job)
-    else
+    elseif progressChanged then
         self:broadcastJobProgress(job)
     end
 end
 
--- Обновляет серверные договоры в игровом времени. При высоком ускорении времени
--- за кадр допускается несколько рабочих тактов, но их число ограничено, чтобы
--- массовая рубка не создавала длинный кадр.
+
 function LoggingContractor:update(dt)
     if not self.mission:getIsServer() then
         return
@@ -883,13 +1138,14 @@ function LoggingContractor:update(dt)
 
     local hasActiveJob = self:hasAnyActiveJob()
 
-    -- Даже если ускорение пришло сетевым изменением настроек, сервер
-    -- принудительно возвращает допустимый максимум.
     if hasActiveJob
         and not self.sleepTimeScaleOverride
         and not g_sleepManager:getIsSleeping()
-        and self.mission.missionInfo.timeScale > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
-        self.mission:setTimeScale(LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE)
+        and self.mission.missionInfo.timeScale
+            > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
+        self.mission:setTimeScale(
+            LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE
+        )
     end
 
     local isWorkingTime = self:getIsWorkingTime()
@@ -908,12 +1164,18 @@ function LoggingContractor:update(dt)
                 self:broadcastJobProgress(job)
             end
 
-            -- С 21:00 до 08:00 договор остаётся активным, но рабочее время
-            -- подрядчика не накапливается и деревья не обрабатываются.
-            if dtGame > 0 then
+            -- С 21:00 до 08:00 замораживаются и уже начатые деревья.
+            if isWorkingTime then
+                self:updateContractorProcessingTrees(job)
+            end
+
+            if job.isActive and dtGame > 0 then
                 job.processTimerMs = (job.processTimerMs or 0) + dtGame
                 local batchCount = math.min(
-                    math.floor(job.processTimerMs / LoggingContractor.PROCESS_INTERVAL_MS),
+                    math.floor(
+                        job.processTimerMs
+                        / LoggingContractor.PROCESS_INTERVAL_MS
+                    ),
                     LoggingContractor.MAX_BATCHES_PER_UPDATE
                 )
 
@@ -934,9 +1196,6 @@ function LoggingContractor:update(dt)
     end
 end
 
--- Рисует компактную строку прогресса для активных договоров текущей фермы.
--- Прогресс считается по исчезнувшим исходным целям, поэтому собственная рубка
--- игрока уменьшает remainingTrees и не может повесить договор.
 function LoggingContractor:draw()
     if not self.mission:getIsClient() then
         return

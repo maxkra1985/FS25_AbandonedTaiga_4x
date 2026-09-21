@@ -194,6 +194,17 @@ function MissionTayga:onStartMission()
 end
 
 
+-- После штатной отправки split-shape update открывает подрядчику следующий
+-- сетевой шаг изменения древесины.
+function MissionTayga:onConnectionsUpdateTick(dt)
+    MissionTayga:superClass().onConnectionsUpdateTick(self, dt)
+
+    if self.loggingContractor ~= nil then
+        self.loggingContractor:onNetworkUpdateTick()
+    end
+end
+
+
 -- Передаёт серверный update в систему подрядчиков после штатного update миссии.
 function MissionTayga:update(dt)
     MissionTayga:superClass().update(self, dt)

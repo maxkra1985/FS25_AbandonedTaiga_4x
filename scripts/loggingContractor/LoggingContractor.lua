@@ -40,6 +40,11 @@ function LoggingContractor.new(mission)
     self.clientJobs = {}
     self.nextJobId = 1
 
+    -- В multiplayer изменения split-shape подрядчика распределяются между
+    -- последовательными сетевыми update tick.
+    self.networkSyncGeneration = 0
+    self.networkMutationGeneration = -1
+
     return self
 end
 

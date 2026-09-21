@@ -305,8 +305,8 @@ function LoggingContractor:applyContractorFall(shape, angularX, angularY, angula
 end
 
 
--- Снимает крупные ветви и раскряжёвывает подготовленный основной ствол.
-function LoggingContractor:cutContractorTrunk(
+-- Создаёт состояние поэтапной раскряжёвки подготовленного ствола.
+function LoggingContractor:createContractorBuckingState(
     shape,
     baseX,
     baseY,
@@ -320,58 +320,104 @@ function LoggingContractor:cutContractorTrunk(
     trunkLength,
     logLength
 )
-    local currentShape, processedLength = self:pruneContractorBranches(
-        shape,
-        baseX, baseY, baseZ,
-        dirX, dirY, dirZ,
-        upX, upY, upZ,
-        trunkLength
-    )
-
-    if currentShape == nil or currentShape == 0 or not entityExists(currentShape) then
-        return false
-    end
-
-    local currentX, currentY, currentZ = baseX, baseY, baseZ
-    local remainingLength = processedLength or trunkLength
     local angularX, angularY, angularZ =
         self:getContractorFallAngularVelocity(upX, upY, upZ)
 
-    while remainingLength > logLength + LoggingContractor.MIN_LOG_REMAINDER do
-        if not entityExists(currentShape) then
-            return false
-        end
+    return {
+        shape = shape,
+        currentX = baseX,
+        currentY = baseY,
+        currentZ = baseZ,
+        dirX = dirX,
+        dirY = dirY,
+        dirZ = dirZ,
+        upX = upX,
+        upY = upY,
+        upZ = upZ,
+        remainingLength = trunkLength,
+        logLength = logLength,
+        angularX = angularX,
+        angularY = angularY,
+        angularZ = angularZ
+    }
+end
 
-        local cutX = currentX + dirX * logLength
-        local cutY = currentY + dirY * logLength
-        local cutZ = currentZ + dirZ * logLength
 
-        local parts = self:splitContractorShape(
-            currentShape,
-            cutX, cutY, cutZ,
-            dirX, dirY, dirZ,
-            upX, upY, upZ,
-            false
-        )
-        local logPart, remainderPart = self:getSplitPartsBySide(parts)
-
-        if logPart == nil or logPart.shape == nil
-            or remainderPart == nil or remainderPart.shape == nil then
-            Logging.warning(
-                "[LoggingContractor] Unable to split trunk at %.2f m; remaining part kept whole",
-                logLength
-            )
-            self:applyContractorFall(currentShape, angularX, angularY, angularZ)
-            return false
-        end
-
-        self:applyContractorFall(logPart.shape, angularX, angularY, angularZ)
-
-        currentShape = remainderPart.shape
-        currentX, currentY, currentZ = cutX, cutY, cutZ
-        remainingLength = remainingLength - logLength
+-- Выполняет не больше одного splitShape раскряжёвки. Возвращает done, changed.
+function LoggingContractor:advanceContractorBuckingState(state, allowMutation)
+    if state.shape == nil
+        or state.shape == 0
+        or not entityExists(state.shape) then
+        return true, false
     end
 
-    self:applyContractorFall(currentShape, angularX, angularY, angularZ)
-    return true
+    if state.remainingLength
+        <= state.logLength + LoggingContractor.MIN_LOG_REMAINDER then
+        self:applyContractorFall(
+            state.shape,
+            state.angularX,
+            state.angularY,
+            state.angularZ
+        )
+        return true, false
+    end
+
+    if not allowMutation then
+        return false, false
+    end
+
+    local cutX = state.currentX + state.dirX * state.logLength
+    local cutY = state.currentY + state.dirY * state.logLength
+    local cutZ = state.currentZ + state.dirZ * state.logLength
+
+    local parts = self:splitContractorShape(
+        state.shape,
+        cutX,
+        cutY,
+        cutZ,
+        state.dirX,
+        state.dirY,
+        state.dirZ,
+        state.upX,
+        state.upY,
+        state.upZ,
+        false
+    )
+    local logPart, remainderPart = self:getSplitPartsBySide(parts)
+
+    if logPart == nil
+        or logPart.shape == nil
+        or remainderPart == nil
+        or remainderPart.shape == nil then
+        Logging.warning(
+            "[LoggingContractor] Unable to split trunk at %.2f m; remaining part kept whole",
+            state.logLength
+        )
+
+        if state.shape ~= nil and entityExists(state.shape) then
+            self:applyContractorFall(
+                state.shape,
+                state.angularX,
+                state.angularY,
+                state.angularZ
+            )
+        end
+
+        return true, #parts > 0
+    end
+
+    self:applyContractorFall(
+        logPart.shape,
+        state.angularX,
+        state.angularY,
+        state.angularZ
+    )
+
+    state.shape = remainderPart.shape
+    state.currentX = cutX
+    state.currentY = cutY
+    state.currentZ = cutZ
+    state.remainingLength = state.remainingLength - state.logLength
+
+    return false, true
 end
