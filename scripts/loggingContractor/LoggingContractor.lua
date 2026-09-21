@@ -18,8 +18,8 @@ LoggingContractor = {}
 local LoggingContractor_mt = Class(LoggingContractor)
 
 LoggingContractor.TREES_PER_EQUIPMENT = 100
-LoggingContractor.MINUTES_PER_TREE = 1.5
-LoggingContractor.EQUIPMENT_RENT_COST = 10000
+LoggingContractor.MINUTES_PER_TREE = 2
+LoggingContractor.EQUIPMENT_RENT_COST = 24000
 LoggingContractor.EQUIPMENT_WORK_COST_PER_HOUR = 1000
 LoggingContractor.WORKER_COST_PER_HOUR = 2000
 LoggingContractor.VALID_LOG_LENGTHS = {
@@ -229,8 +229,6 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
     table.sort(species, function(a, b)
         return a.title < b.title
     end)
-
-    Logging.info("[LoggingContractor] Farmland %d: %d standing trees", farmlandId, scan.totalCount)
 
     return {
         farmlandId = farmlandId,
@@ -499,7 +497,6 @@ function LoggingContractor:initialize()
     end
 
     self.trigger = LoggingContractorTrigger.new(triggerNode, self)
-    Logging.info("[LoggingContractor] Trigger registered: %s", getName(triggerNode))
 end
 
 

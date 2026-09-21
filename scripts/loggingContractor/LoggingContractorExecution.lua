@@ -4,7 +4,7 @@
     Серверное выполнение заключённых договоров на лесоповал.
 
     Основные правила:
-    - один рабочий такт равен 1.5 игровым минутам;
+    - один рабочий такт равен 2 игровым минутам;
     - за такт обрабатывается не больше деревьев, чем выбрано единиц техники;
     - договор хранит исходный набор целей, поэтому новые деревья на участке в
       уже оплаченный договор не попадают;
@@ -72,15 +72,8 @@ function LoggingContractor:removeContractorNonTimberTree(shape)
     end
 
     local x, _, z = getWorldTranslation(shape)
-    local splitTypeName = self:getContractorSplitTypeName(shape) or "<unknown>"
-
     delete(shape)
     self:markContractorTreeAreaDirty(x, z)
-
-    Logging.info(
-        "[LoggingContractor] Removed non-timber tree: splitType=%s",
-        tostring(splitTypeName)
-    )
     return true
 end
 
@@ -328,7 +321,9 @@ function LoggingContractor:selectContractorInitialTarget(job, targets)
 end
 
 
--- Возвращает ближайшее дерево к последней точке рубки.
+-- Возвращает ближайшее дерево к опорной точке текущего маршрута.
+-- Опорная точка не двигается после каждого спила, поэтому подрядчик расширяет
+-- фронт работ вокруг одной исходной позиции вместо движения змейкой.
 function LoggingContractor:selectNearestContractTarget(targets, x, z)
     local bestNode = nil
     local bestDistanceSq = math.huge
@@ -351,29 +346,77 @@ function LoggingContractor:selectNearestContractTarget(targets, x, z)
 end
 
 
--- Выбирает следующую цель договора:
--- 1) пока существуют маркированные деревья, используются только они;
--- 2) после первого спила выбирается ближайшее дерево к последней точке;
--- 3) если маркировки нет и рубка ещё не началась, выбирается доступный край.
+-- Обновляет состояние маркировки и возвращает все текущие и вновь появившиеся
+-- маркированные цели. Переход false -> true считается новой командой игрока.
+function LoggingContractor:updateContractMarkerStates(job, targets)
+    job.markerStates = job.markerStates or {}
+
+    local activeNodes = {}
+    local markedTargets = {}
+    local newlyMarkedTargets = {}
+
+    for _, node in ipairs(targets) do
+        activeNodes[node] = true
+
+        local isMarked = self:isContractTargetMarked(node)
+        if isMarked then
+            table.insert(markedTargets, node)
+
+            if job.markerStates[node] ~= true then
+                table.insert(newlyMarkedTargets, node)
+            end
+        end
+
+        job.markerStates[node] = isMarked
+    end
+
+    for node in pairs(job.markerStates) do
+        if not activeNodes[node] then
+            job.markerStates[node] = nil
+        end
+    end
+
+    return markedTargets, newlyMarkedTargets
+end
+
+
+-- Выбирает следующую цель договора.
+-- До первого спила приоритет имеют маркированные деревья, иначе выбирается
+-- доступный край участка. После первого спила все следующие цели ищутся как
+-- ближайшие к неизменной опорной точке первого дерева. Если игрок во время
+-- работ ставит новый маркер, опорная точка переносится на это дерево.
 function LoggingContractor:selectNextContractTarget(job, targets)
     if #targets == 0 then
         return nil
     end
 
-    local markedTargets = {}
-    for _, node in ipairs(targets) do
-        if self:isContractTargetMarked(node) then
-            table.insert(markedTargets, node)
+    local markedTargets, newlyMarkedTargets =
+        self:updateContractMarkerStates(job, targets)
+
+    if job.routeAnchorX ~= nil
+        and job.routeAnchorZ ~= nil
+        and #newlyMarkedTargets > 0 then
+        local markedNode = self:selectNearestContractTarget(
+            newlyMarkedTargets,
+            job.routeAnchorX,
+            job.routeAnchorZ
+        )
+
+        if markedNode ~= nil then
+            local x, _, z = getWorldTranslation(markedNode)
+            job.routeAnchorX = x
+            job.routeAnchorZ = z
+            return markedNode
         end
     end
 
     local candidates = #markedTargets > 0 and markedTargets or targets
 
-    if job.lastCutX ~= nil and job.lastCutZ ~= nil then
+    if job.routeAnchorX ~= nil and job.routeAnchorZ ~= nil then
         return self:selectNearestContractTarget(
             candidates,
-            job.lastCutX,
-            job.lastCutZ
+            job.routeAnchorX,
+            job.routeAnchorZ
         )
     end
 
@@ -388,14 +431,21 @@ function LoggingContractor:initializeJobTargets(job)
     job.targetNodes = self:collectContractTargets(job.farmlandId)
     job.remainingTrees = #job.targetNodes
     job.processTimerMs = 0
-    job.lastCutX = nil
-    job.lastCutZ = nil
+    job.routeAnchorX = nil
+    job.routeAnchorZ = nil
+    job.markerStates = {}
 
     if job.remainingTrees > job.plannedTrees then
         while #job.targetNodes > job.plannedTrees do
             table.remove(job.targetNodes)
         end
         job.remainingTrees = #job.targetNodes
+    end
+
+    -- Маркеры, существовавшие до начала работ, задают приоритет первой группы,
+    -- но не считаются новой командой на перенос уже начатого маршрута.
+    for _, node in ipairs(job.targetNodes) do
+        job.markerStates[node] = self:isContractTargetMarked(node)
     end
 end
 
@@ -704,13 +754,13 @@ function LoggingContractor:finishJob(job)
     job.remainingTrees = 0
 
     Logging.info(
-        "[LoggingContractor] Contract finished: job=%d farm=%d farmland=%d",
+        "[LoggingContractor] Contract finished: job=%d farm=%d farmland=%d planned=%d contractorCut=%d",
         job.jobId,
         job.farmId,
-        job.farmlandId
+        job.farmlandId,
+        job.plannedTrees,
+        job.contractorCutTrees
     )
-    Logging.info("[LoggingContractor] Запланировано к спилу: %d", job.plannedTrees)
-    Logging.info("[LoggingContractor] Спилено подрядчиком: %d", job.contractorCutTrees)
 
     self:broadcastJobProgress(job)
 end
@@ -743,8 +793,12 @@ function LoggingContractor:processJobBatch(job)
 
         if self:processContractTree(job, shape) then
             job.contractorCutTrees = (job.contractorCutTrees or 0) + 1
-            job.lastCutX = treeX
-            job.lastCutZ = treeZ
+
+            if job.routeAnchorX == nil or job.routeAnchorZ == nil then
+                job.routeAnchorX = treeX
+                job.routeAnchorZ = treeZ
+            end
+
             processed = processed + 1
         else
             -- Неудачный shape не должен бесконечно блокировать весь такт.
@@ -753,13 +807,6 @@ function LoggingContractor:processJobBatch(job)
     end
 
     self:refreshJobTargets(job)
-
-    Logging.info(
-        "[LoggingContractor] Job %d batch: contractorCut=%d remaining=%d",
-        job.jobId,
-        job.contractorCutTrees,
-        job.remainingTrees
-    )
 
     if job.remainingTrees == 0 then
         self:finishJob(job)
