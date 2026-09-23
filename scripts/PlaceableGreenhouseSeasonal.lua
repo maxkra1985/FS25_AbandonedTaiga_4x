@@ -1579,8 +1579,8 @@ function PlaceableGreenhouseSeasonal.productionMenuPopulateCell(
                 greenhouseSeasonalVisualCatalyst = true
             }
 
-            -- Remember the catalyst's UI position before any inner wrapper can
-            -- append its own synthetic inputs (for example inputBoost).
+            -- Запоминаем позицию удобрения до вызова внутренних UI-обёрток:
+            -- они могут добавить свои синтетические inputs, например inputBoost.
             syntheticInputUiIndex = #production.inputs + 1
 
             -- Temporarily let the stock recipe renderer see the catalyst.
