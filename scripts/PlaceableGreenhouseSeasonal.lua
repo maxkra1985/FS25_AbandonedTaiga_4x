@@ -1562,6 +1562,7 @@ function PlaceableGreenhouseSeasonal.productionMenuPopulateCell(
     local spec = nil
     local entry = nil
     local syntheticInput = nil
+    local syntheticInputUiIndex = nil
 
     if isRecipeCell then
         local placeable = productionPoint.owningPlaceable
@@ -1577,6 +1578,10 @@ function PlaceableGreenhouseSeasonal.productionMenuPopulateCell(
                 amount = entry.fertilizerPerCycle or 1.0,
                 greenhouseSeasonalVisualCatalyst = true
             }
+
+            -- Remember the catalyst's UI position before any inner wrapper can
+            -- append its own synthetic inputs (for example inputBoost).
+            syntheticInputUiIndex = #production.inputs + 1
 
             -- Temporarily let the stock recipe renderer see the catalyst.
             table.insert(production.inputs, syntheticInput)
@@ -1627,7 +1632,8 @@ function PlaceableGreenhouseSeasonal.productionMenuPopulateCell(
     local catalystItem =
         inputLayout ~= nil
         and inputLayout.elements ~= nil
-        and inputLayout.elements[#inputLayout.elements]
+        and syntheticInputUiIndex ~= nil
+        and inputLayout.elements[syntheticInputUiIndex]
         or nil
 
     if catalystItem ~= nil then
