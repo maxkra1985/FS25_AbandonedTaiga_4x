@@ -132,7 +132,7 @@
 
 		<loadingStation supportsExtension="true" storageRadius="50">
 			<loadTrigger triggerNode="liquidManureTrigger" fillTypes="LIQUIDMANURE" fillLitersPerSecond="2000" aiNode="aiLoadingNodeLiquidManure" />
-			<loadTrigger triggerNode="milkTrigger" fillTypes="MILK" fillLitersPerSecond="2000" aiNode="aiLoadingNodeMilk"/>
+			<loadTrigger triggerNode="milkTrigger" fillTypes="MILK BUFFALOMILK" fillLitersPerSecond="2000" aiNode="aiLoadingNodeMilk"/>
 		</loadingStation>
 
 		<animals type="COW" maxNumAnimals="300" maxNumVisualAnimals="50">
