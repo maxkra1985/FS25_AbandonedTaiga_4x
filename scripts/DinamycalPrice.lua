@@ -24,8 +24,14 @@ local currentBuyMultiplier = 1.0
 --================================================================================================
 -- Вспомогательные функции для отладки и получения информации
 local function logMessage(typeLog, msg)
-	if config.enableLogging then
-		log(typeLog, config.loggingPrefix .. " " .. tostring(msg))
+	local logType = tostring(typeLog or "INFO")
+	local logTypeUpper = string.upper(logType)
+	local isWarningOrError =
+		string.find(logTypeUpper, "WARN", 1, true) ~= nil
+		or string.find(logTypeUpper, "ERROR", 1, true) ~= nil
+
+	if config.enableLogging or isWarningOrError then
+		log(logType, config.loggingPrefix .. " " .. tostring(msg))
 	end
 end
 
@@ -181,54 +187,32 @@ local function getFullYears ()
 	local environment = g_currentMission.environment
 	local currentYear = 1
 	local currentPeriod = 1
-	local daysPerPeriod = 1
-
 	local calculatedPeriod = 1
 
 	if environment ~= nil then
 		currentYear = environment.currentYear or 1
-		logMessage( "INFO", string.format("Game calendar: currentYear=%d", currentYear))
 		currentPeriod = environment.currentPeriod or 1
-		logMessage( "INFO", string.format("Game calendar: currentPeriod=%d", currentPeriod))
 		calculatedPeriod = currentPeriod + 2
-		logMessage( "INFO", string.format("Game calendar: calculatedPeriod=%d", calculatedPeriod))
 		if calculatedPeriod > 12 then
 			calculatedPeriod = calculatedPeriod - 12
-			logMessage( "INFO", string.format("Game calendar: calculatedPeriod=%d", calculatedPeriod))
 		end
-		daysPerPeriod = environment.daysPerPeriod or 1
-		logMessage( "INFO", string.format("Game calendar: daysPerPeriod=%d", daysPerPeriod))
 	end
 
 	local fullYears = currentYear - 1
-	logMessage( "INFO", string.format("Game calendar: fullYears=%d", fullYears))
 	if fullYears > 0 and calculatedPeriod < 8 then
 		fullYears = fullYears - 1
-		logMessage( "INFO", string.format("Game calendar: fullYears=%d", fullYears))
 	end
 
-	logMessage(
-		"INFO",
-		string.format(
-			"Game calendar: year=%d month=%d period=%d daysPerPeriod=%d =>> fullYears=%d",
-			currentYear,
-			calculatedPeriod,
-			currentPeriod,
-			daysPerPeriod,
-			fullYears
-		)
-	)
 	return fullYears
 end
-
 --================================================================================================
 --================================================================================================
 --================================================================================================
 -- По факту постройки здания вызываем для него обновление цен
 function DinamycalPrice:calculateChanged()
 	logMessage("[EVENT]", "calculateChanged!")
-	self:recalculateMultipliers()
-	self:updatePlaceablesPrices()
+	local sellMultiplierChanged, buyMultiplierChanged = self:recalculateMultipliers()
+	self:updatePlaceablesPrices(sellMultiplierChanged, buyMultiplierChanged)
 	self:broadcastMultipliers()
 end
 
@@ -416,25 +400,26 @@ end
 --================================================================================================
 -- Рассчитываем множители цен на основе полученной игровой статистики
 function DinamycalPrice:recalculateMultipliers()
-	logMessage("[INFO]", "--- === recalculateMultipliers === ---")
+	local previousSellMultiplier = currentSellMultiplier
+	local previousBuyMultiplier = currentBuyMultiplier
 
 	if g_currentMission == nil or g_farmManager == nil then
 		logMessage("[WARN]", "g_currentMission или g_farmManager не определён")
-		return
+		return false, false
 	end
 
 	local farmId = g_currentMission:getFarmId()
 
 	if farmId == nil then
 		logMessage("[WARN]", "Не удалось определить farmId")
-		return
+		return false, false
 	end
 
 	local farm = g_farmManager:getFarmById(farmId)
 
 	if farm == nil or farm.stats == nil then
 		logMessage("[WARN]", "Не удалось получить статистику фермы farmId=" .. tostring(farmId))
-		return
+		return false, false
 	end
 
 	local stats = farm.stats
@@ -442,7 +427,7 @@ function DinamycalPrice:recalculateMultipliers()
 
 	if statistics == nil then
 		logMessage("[WARN]", "farm.stats.statistics не определён")
-		return
+		return false, false
 	end
 
 
@@ -535,16 +520,28 @@ function DinamycalPrice:recalculateMultipliers()
 	currentSellMultiplier = 1.0 - priceChange - 0.05
 	currentBuyMultiplier = 1.0 + priceChange
 
-	--========================================================================
-	-- Логирование
-	--========================================================================
-	logMessage("[INFO]", string.format("Trees: cut=%s planted=%s difference=%s steps=%s", tostring(cutTreeCount), tostring(plantedTreeCount), tostring(treeDifference), tostring(treeSteps)) )
-	logMessage("[INFO]", string.format("Time: fullYears=%s, steps=%s", tostring(fullYears), tostring(yearSteps)) )
-	logMessage("[INFO]", string.format("soldProducts=%.2f, steps=%s", soldProducts, tostring(soldProductsSteps)) )
-	logMessage("[INFO]", string.format("Other sales: wood=%.2f bales=%.2f wool=%.2f milk=%.2f harvest=%.2f total=%.2f steps=%s", soldWood, soldBales, soldWool, soldMilk, harvestIncome, otherSoldProducts, tostring(otherProductsSteps)) )
-	logMessage("[INFO]", string.format("Plowed: %.2f ha, benefitSteps=%s", plowedHectares, tostring(plowedSteps)) )
-	logMessage("[INFO]", string.format("Result: penalties=%s benefits=%s net=%s change=%.2f%% sellMultiplier=%.4f buyMultiplier=%.4f", tostring(penaltySteps), tostring(benefitSteps), tostring(netSteps), priceChange * 100, currentSellMultiplier, currentBuyMultiplier) )
-	logMessage("[INFO]", "--- === recalculateMultipliers === ---")
+	local sellMultiplierChanged =
+		math.abs(currentSellMultiplier - previousSellMultiplier) > 0.000001
+	local buyMultiplierChanged =
+		math.abs(currentBuyMultiplier - previousBuyMultiplier) > 0.000001
+
+	if sellMultiplierChanged or buyMultiplierChanged then
+		logMessage("[INFO]", "--- === multiplier change === ---")
+		logMessage("[INFO]", string.format(
+			"Multipliers: sell %.4f -> %.4f, buy %.4f -> %.4f",
+			previousSellMultiplier, currentSellMultiplier,
+			previousBuyMultiplier, currentBuyMultiplier
+		))
+		logMessage("[INFO]", string.format("Trees: cut=%s planted=%s difference=%s steps=%s", tostring(cutTreeCount), tostring(plantedTreeCount), tostring(treeDifference), tostring(treeSteps)) )
+		logMessage("[INFO]", string.format("Time: fullYears=%s, steps=%s", tostring(fullYears), tostring(yearSteps)) )
+		logMessage("[INFO]", string.format("soldProducts=%.2f, steps=%s", soldProducts, tostring(soldProductsSteps)) )
+		logMessage("[INFO]", string.format("Other sales: wood=%.2f bales=%.2f wool=%.2f milk=%.2f harvest=%.2f total=%.2f steps=%s", soldWood, soldBales, soldWool, soldMilk, harvestIncome, otherSoldProducts, tostring(otherProductsSteps)) )
+		logMessage("[INFO]", string.format("Plowed: %.2f ha, benefitSteps=%s", plowedHectares, tostring(plowedSteps)) )
+		logMessage("[INFO]", string.format("Result: penalties=%s benefits=%s net=%s change=%.2f%% sellMultiplier=%.4f buyMultiplier=%.4f", tostring(penaltySteps), tostring(benefitSteps), tostring(netSteps), priceChange * 100, currentSellMultiplier, currentBuyMultiplier) )
+		logMessage("[INFO]", "--- === multiplier change === ---")
+	end
+
+	return sellMultiplierChanged, buyMultiplierChanged
 end
 
 --================================================================================================
@@ -842,17 +839,6 @@ function DinamycalPrice:capturePalletBuyingStationPriceScales(placeable)
 			end
 
 			foundAny = true
-
-			logMessage(
-				"[PALLET SCALE]",
-				string.format(
-					"'%s' fillType='%s' index=%s XML priceScale=%.4f",
-					placeable.getName ~= nil and tostring(placeable:getName()) or "UNKNOWN",
-					tostring(fillTypeName),
-					tostring(fillTypeIndex),
-					priceScale
-				)
-			)
 		else
 			logMessage(
 				"[WARN]",
@@ -870,36 +856,56 @@ function DinamycalPrice:capturePalletBuyingStationPriceScales(placeable)
 
 	return foundAny
 end
-
 -- appended to PlaceablePalletBuyingStation:onLoad(); base onLoad has already built
 -- fillTypeIndexToPallet by the time this function runs.
 function DinamycalPrice.onPalletBuyingStationLoaded(placeable, savegame)
 	DinamycalPrice:capturePalletBuyingStationPriceScales(placeable)
 end
 
-function DinamycalPrice:updateSinglePlaceablePrice(placeable)
+local function countTableEntries(values)
+	local count = 0
+	if values ~= nil then
+		for _, value in pairs(values) do
+			if value ~= nil and value ~= false then
+				count = count + 1
+			end
+		end
+	end
+	return count
+end
+
+function DinamycalPrice:updateSinglePlaceablePrice(placeable, sellMultiplierChanged, buyMultiplierChanged)
 	if placeable == nil then
-		return false
+		return false, 0
 	end
 
 	local handled = false
+	local changedPriceCount = 0
 
 	-- SellingStation / BuyingStation рассчитываются динамически центральными hooks.
-	if placeable.spec_sellingStation ~= nil or placeable.spec_buyingStation ~= nil then
+	-- При изменении соответствующего коэффициента считаем число затронутых цен,
+	-- но не выводим список fillType.
+	if placeable.spec_sellingStation ~= nil then
 		handled = true
+		if sellMultiplierChanged then
+			local station = placeable.spec_sellingStation.sellingStation
+			changedPriceCount = changedPriceCount
+				+ countTableEntries(station ~= nil and station.acceptedFillTypes or nil)
+		end
+	end
+
+	if placeable.spec_buyingStation ~= nil then
+		handled = true
+		if buyMultiplierChanged then
+			local station = placeable.spec_buyingStation.buyingStation
+			changedPriceCount = changedPriceCount
+				+ countTableEntries(station ~= nil and station.providedFillTypes or nil)
+		end
 	end
 
 	-- PalletBuyingStation:
-	--
-	-- Штатный PlaceablePalletBuyingStation:onLoad() формирует pallet.price как:
-	--   storeItem.price * priceScale * EconomyManager.getPriceMultiplier()
-	--
-	-- Для DinamycalPrice pallet.price не используется как база.
-	-- Все палетные товары без исключений строят BUY от той же штатной
-	-- рыночной цены, что и SELL: getPricePerLiter(fillTypeIndex), включая
-	-- сезонность и economicDifficulty. Далее применяются XML priceScale
-	-- станции, фактический объём палеты и currentBuyMultiplier.
-	-- Подробные значения выводятся через [PALLET PRICE DEBUG].
+	-- pallet.price пересчитывается от штатной рыночной цены с сезонностью,
+	-- XML priceScale, фактической вместимости палеты и currentBuyMultiplier.
 	if placeable.spec_palletBuyingStation ~= nil then
 		handled = true
 		local spec = placeable.spec_palletBuyingStation
@@ -918,14 +924,11 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 						and palletCapacity > 0 then
 
 						local basePalletPrice = basePricePerLiter * palletCapacity
-
 						local economyManager = g_currentMission ~= nil
 							and g_currentMission.economyManager
 							or nil
 
-						-- SELL market price: сезонность + штатная сложность продажи.
 						local marketSellPricePerLiter = nil
-						-- Seasonal base: сезонность есть, difficulty multiplier отключён.
 						local marketBasePricePerLiter = nil
 
 						if economyManager ~= nil
@@ -936,24 +939,6 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 								economyManager:getPricePerLiter(fillTypeIndex, false)
 						end
 
-						local economicDifficulty = 1
-						if g_currentMission ~= nil
-							and g_currentMission.missionInfo ~= nil
-							and g_currentMission.missionInfo.economicDifficulty ~= nil then
-							economicDifficulty =
-								g_currentMission.missionInfo.economicDifficulty
-						end
-
-						-- Все палетные товары без исключений покупаются от той же рыночной
-						-- базы, что и продаются. getPricePerLiter(fillTypeIndex) уже содержит
-						-- сезонность и штатный economicDifficulty.
-						-- stationPriceScale и currentBuyMultiplier накладываются поверх неё.
-
-						-- Берём ТОЛЬКО настоящий XML priceScale станции.
-						-- Никакого обратного вычисления через pallet.price:
-						-- штатный pallet.price основан на storeItem.price и потому
-						-- не позволяет корректно восстановить scale при палетах
-						-- объёмом 250/2000/3000 л и при сезонных ценах.
 						if pallet.dinamycalPricePriceScale == nil then
 							DinamycalPrice:capturePalletBuyingStationPriceScales(placeable)
 						end
@@ -967,10 +952,7 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 						end
 
 						if stationPriceScale == nil then
-							-- XML schema default is 1.0. This fallback is safe only
-							-- when the attribute is absent/unreadable; it is NOT inferred.
 							stationPriceScale = 1.0
-
 							logMessage(
 								"[WARN]",
 								string.format(
@@ -982,21 +964,10 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 							)
 						end
 
-						local effectiveSellPricePerLiter =
-							marketSellPricePerLiter
-							or (
-								marketBasePricePerLiter ~= nil
-								and marketBasePricePerLiter * EconomyManager.getPriceMultiplier()
-								or basePricePerLiter
-							)
-
 						local effectiveBuyBasePricePerLiter =
 							marketSellPricePerLiter
 							or marketBasePricePerLiter
 							or basePricePerLiter
-
-						local calculatedSellPricePerLiter =
-							effectiveSellPricePerLiter * currentSellMultiplier
 
 						local calculatedBuyPricePerLiter =
 							effectiveBuyBasePricePerLiter
@@ -1013,32 +984,9 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 						pallet.dinamycalPriceBasePrice = basePalletPrice
 						pallet.dinamycalPricePriceScale = stationPriceScale
 
-						logMessage(
-							"[PALLET PRICE DEBUG]",
-							string.format(
-								"'%s' product='%s' fillType=%s capacity=%.0f rawPricePerLiter=%.4f getPricePerLiter=%s getPricePerLiterNoDifficulty=%s economicDifficulty=%s buyPriceBasis=%s stationPriceScale=%.4f currentSellMultiplier=%.4f currentBuyMultiplier=%.4f calculatedSellPerLiter=%.4f calculatedBuyPerLiter=%.4f oldPrice=%s newPrice=%s",
-								placeable.getName ~= nil and tostring(placeable:getName()) or "UNKNOWN",
-								tostring(pallet.title),
-								tostring(fillTypeIndex),
-								palletCapacity,
-								basePricePerLiter,
-								marketSellPricePerLiter ~= nil
-									and string.format("%.4f", marketSellPricePerLiter)
-									or "nil",
-								marketBasePricePerLiter ~= nil
-									and string.format("%.4f", marketBasePricePerLiter)
-									or "nil",
-								tostring(economicDifficulty),
-								"MARKET_WITH_DIFFICULTY",
-								stationPriceScale,
-								currentSellMultiplier,
-								currentBuyMultiplier,
-								calculatedSellPricePerLiter,
-								calculatedBuyPricePerLiter,
-								tostring(oldPrice),
-								tostring(newPrice)
-							)
-						)
+						if buyMultiplierChanged and oldPrice ~= newPrice then
+							changedPriceCount = changedPriceCount + 1
+						end
 					else
 						logMessage(
 							"[WARN]",
@@ -1057,20 +1005,46 @@ function DinamycalPrice:updateSinglePlaceablePrice(placeable)
 		end
 	end
 
-	return handled
+	return handled, changedPriceCount
 end
 
 --================================================================================================
--- Обновление цен во всех существующих точках продаж и покупок
-function DinamycalPrice:updatePlaceablesPrices()
-	logMessage("[INFO]", "--- === updatePlaceablesPrices === ---")
-
+-- Обновление цен во всех существующих точках продаж и покупок.
+-- Перечень точек выводится только при фактическом изменении коэффициентов.
+function DinamycalPrice:updatePlaceablesPrices(sellMultiplierChanged, buyMultiplierChanged)
 	if g_currentMission == nil or g_currentMission.placeableSystem == nil or g_currentMission.placeableSystem.placeables == nil then
 		return
 	end
 
+	local logStationSummary =
+		config.enableLogging
+		and (sellMultiplierChanged == true or buyMultiplierChanged == true)
+
+	if logStationSummary then
+		logMessage("[PRICE UPDATE]", "--- === affected price stations === ---")
+	end
+
 	for _, placeable in pairs(g_currentMission.placeableSystem.placeables) do
-		self:updateSinglePlaceablePrice(placeable)
+		local handled, changedPriceCount = self:updateSinglePlaceablePrice(
+			placeable,
+			sellMultiplierChanged,
+			buyMultiplierChanged
+		)
+
+		if logStationSummary and handled then
+			local name = placeable.getName ~= nil
+				and tostring(placeable:getName())
+				or tostring(placeable)
+
+			logMessage(
+				"[PRICE UPDATE]",
+				string.format("'%s': changed prices=%d", name, changedPriceCount or 0)
+			)
+		end
+	end
+
+	if logStationSummary then
+		logMessage("[PRICE UPDATE]", "--- === affected price stations === ---")
 	end
 end
 
@@ -1474,15 +1448,19 @@ function DinamycalPrice.onEconomicDifficultyChanged(mission, economicDifficulty,
 		return
 	end
 
-	logMessage(
-		"[DIFFICULTY]",
-		string.format(
-			"Economic difficulty changed: state=%s priceMultiplier=%.4f costMultiplier=%.4f",
-			tostring(mission.missionInfo.economicDifficulty),
-			EconomyManager.getPriceMultiplier(),
-			EconomyManager.getCostMultiplier()
+	local difficultyState = mission.missionInfo.economicDifficulty
+	if DinamycalPrice.lastLoggedEconomicDifficulty ~= difficultyState then
+		DinamycalPrice.lastLoggedEconomicDifficulty = difficultyState
+		logMessage(
+			"[DIFFICULTY]",
+			string.format(
+				"Economic difficulty changed: state=%s priceMultiplier=%.4f costMultiplier=%.4f",
+				tostring(difficultyState),
+				EconomyManager.getPriceMultiplier(),
+				EconomyManager.getCostMultiplier()
+			)
 		)
-	)
+	end
 
 	-- Переоценка палет и прочих cached placeable prices без ожидания HOUR_CHANGED.
 	if mission.placeableSystem ~= nil
