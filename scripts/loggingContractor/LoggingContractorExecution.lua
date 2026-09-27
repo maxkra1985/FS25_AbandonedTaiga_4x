@@ -126,6 +126,10 @@ function LoggingContractor:collectContractTargets(farmlandId)
         return {}
     end
 
+    if type(farmland.getBoundingBox) ~= "function" then
+        return {}
+    end
+
     local minX, minZ, maxX, maxZ = farmland:getBoundingBox()
     if minX == nil then
         return {}
@@ -241,6 +245,10 @@ end
 function LoggingContractor:selectContractorInitialTarget(job, targets)
     local farmland = g_farmlandManager:getFarmlandById(job.farmlandId)
     if farmland == nil or #targets == 0 then
+        return targets[1]
+    end
+
+    if type(farmland.getBoundingBox) ~= "function" then
         return targets[1]
     end
 

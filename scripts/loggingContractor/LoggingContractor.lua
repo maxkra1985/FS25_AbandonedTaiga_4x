@@ -184,6 +184,10 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
         return nil, "farmlandNotOwned"
     end
 
+    if type(farmland.getBoundingBox) ~= "function" then
+        return nil, "farmlandBoundsUnavailable"
+    end
+
     local minX, minZ, maxX, maxZ = farmland:getBoundingBox()
     if minX == nil then
         return nil, "farmlandBoundsUnavailable"
