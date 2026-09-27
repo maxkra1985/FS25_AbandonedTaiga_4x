@@ -1462,16 +1462,29 @@ function DinamycalPrice.onEconomicDifficultyChanged(mission, economicDifficulty,
 		)
 	end
 
-	-- Переоценка палет и прочих cached placeable prices без ожидания HOUR_CHANGED.
-	if mission.placeableSystem ~= nil
-		and mission.placeableSystem.placeables ~= nil then
-		DinamycalPrice:updatePlaceablesPrices()
-	end
-
-	-- На сервере сразу пересчитываем и рассылаем наши глобальные множители.
+	-- На сервере сначала пересчитываем наши глобальные множители, затем обновляем
+	-- cached placeable prices с теми же флагами изменения, чтобы сводка по точкам
+	-- появлялась только при фактическом изменении коэффициентов.
 	if mission:getIsServer() then
-		DinamycalPrice:recalculateMultipliers()
+		local sellMultiplierChanged, buyMultiplierChanged =
+			DinamycalPrice:recalculateMultipliers()
+
+		if mission.placeableSystem ~= nil
+			and mission.placeableSystem.placeables ~= nil then
+			DinamycalPrice:updatePlaceablesPrices(
+				sellMultiplierChanged,
+				buyMultiplierChanged
+			)
+		end
+
 		DinamycalPrice:broadcastMultipliers()
+	else
+		-- Клиент коэффициенты не рассчитывает, но cached pallet prices должны
+		-- учитывать изменившуюся штатную economicDifficulty.
+		if mission.placeableSystem ~= nil
+			and mission.placeableSystem.placeables ~= nil then
+			DinamycalPrice:updatePlaceablesPrices(false, false)
+		end
 	end
 end
 
