@@ -53,6 +53,21 @@ local function getStoredObjectFillType(abstractObject)
     return nil
 end
 
+local function shouldDebugLogStateChange(data, key, signature)
+    if data == nil then
+        return true
+    end
+
+    data.logState = data.logState or {}
+
+    if data.logState[key] == signature then
+        return false
+    end
+
+    data.logState[key] = signature
+    return true
+end
+
 function PlaceableProductionWarehouseSupply.prerequisitesPresent(specializations)
     return SpecializationUtil.hasSpecialization(PlaceableProductionPoint, specializations)
         and SpecializationUtil.hasSpecialization(PlaceableObjectStorage, specializations)
@@ -88,7 +103,8 @@ function PlaceableProductionWarehouseSupply:onLoad(savegame)
         palletInfoCache = {},
         queue = {},
         pendingByFillType = {},
-        busy = false
+        busy = false,
+        logState = {}
     }
 
     -- All stock manipulation is server authoritative. Clients only receive the
@@ -291,13 +307,25 @@ function PlaceableProductionWarehouseSupply:onHourChanged(hour)
             local fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
             local fillTypeName = fillType ~= nil and fillType.name or tostring(fillTypeIndex)
 
-            debugLog(
-                "hour %s: %s current=%.1f l, hourlyDemand=%.1f l",
-                tostring(hour),
-                fillTypeName,
+            local demandSignature = string.format(
+                "%.1f|%.1f",
                 currentLevel,
                 hourlyDemand
             )
+
+            if shouldDebugLogStateChange(
+                data,
+                "hourlyDemand:" .. tostring(fillTypeIndex),
+                demandSignature
+            ) then
+                debugLog(
+                    "hour %s: %s current=%.1f l, hourlyDemand=%.1f l",
+                    tostring(hour),
+                    fillTypeName,
+                    currentLevel,
+                    hourlyDemand
+                )
+            end
 
             -- Strict trigger: only refill when the production has LESS than one
             -- hour of nominal demand. Exactly one hour is already sufficient.
