@@ -19,7 +19,8 @@
   </Materials>
 
 
-  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">\n  </Shapes>
+  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">
+  </Shapes>
 
   <Scene>
     <TransformGroup name="woodUnloadTrigger" nodeId="11">

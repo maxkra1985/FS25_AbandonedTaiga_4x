@@ -17,7 +17,8 @@
     </Material>
   </Materials>
 
-  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">\n  </Shapes>
+  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">
+  </Shapes>
 
   <Scene>
     <TransformGroup name="markerIconStrawUnload" nodeId="1">

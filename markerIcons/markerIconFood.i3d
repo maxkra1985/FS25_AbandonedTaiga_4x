@@ -14,7 +14,8 @@
       <CustomParameter name="lightControl" value="0.25"/>
     </Material>
   </Materials>
-  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">\n  </Shapes>
+  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">
+  </Shapes>
   <Scene>
     <TransformGroup name="markerIconFood" nodeId="1">
       <Shape name="icon" translation="0 1 0" shapeId="1" clipDistance="300" doubleSided="true" castsShadows="false" receiveShadows="false" materialIds="1" nodeId="2"/>
