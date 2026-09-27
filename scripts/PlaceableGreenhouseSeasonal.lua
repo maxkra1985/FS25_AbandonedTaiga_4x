@@ -436,6 +436,21 @@ local function getPlaceableLogId(placeable)
     )
 end
 
+local function shouldLogStateChange(spec, key, signature)
+    if spec == nil then
+        return true
+    end
+
+    spec.logState = spec.logState or {}
+
+    if spec.logState[key] == signature then
+        return false
+    end
+
+    spec.logState[key] = signature
+    return true
+end
+
 function PlaceableGreenhouseSeasonal:registerGreenhouseCatalystAsUiInput(fillType)
     local spec = self[SPEC_TABLE]
     if spec == nil or spec.productionPoint == nil or fillType == nil then
@@ -478,6 +493,7 @@ function PlaceableGreenhouseSeasonal:onLoad(savegame)
     spec.productionPoint = nil
     spec.productions = {}
     spec.hourlyProducedOutput = {}
+    spec.logState = {}
 
     -- Emergency palletization state for AUTO_DELIVER outputs.
     spec.emergencyPalletJobs = {}
@@ -787,21 +803,23 @@ function PlaceableGreenhouseSeasonal:updateGrowthReadiness(temperature)
             entry.lastGrowthIncrement = readinessIncrement
             entry.growthReadiness = math.clamp(oldReadiness + readinessIncrement, 0.0, 1.0)
 
-            Logging.info(
-                "%s [%s] GROWTH: production=%s temp=%.2f base=%.2f daysPerPeriod=%d calendarScale=%.2f gddHourRaw=%.5f gddHourScaled=%.5f heatReq=%.2f readiness=%.5f->%.5f",
-                LOG_PREFIX,
-                tostring(spec.logId),
-                tostring(productionId),
-                temperature,
-                entry.growthBaseTemperature,
-                daysPerPeriod,
-                calendarScale,
-                gddThisHourUnscaled,
-                gddThisHour,
-                entry.growthHeatRequirement,
-                oldReadiness,
-                entry.growthReadiness
-            )
+            if math.abs(entry.growthReadiness - oldReadiness) > 0.000001 then
+                Logging.info(
+                    "%s [%s] GROWTH: production=%s temp=%.2f base=%.2f daysPerPeriod=%d calendarScale=%.2f gddHourRaw=%.5f gddHourScaled=%.5f heatReq=%.2f readiness=%.5f->%.5f",
+                    LOG_PREFIX,
+                    tostring(spec.logId),
+                    tostring(productionId),
+                    temperature,
+                    entry.growthBaseTemperature,
+                    daysPerPeriod,
+                    calendarScale,
+                    gddThisHourUnscaled,
+                    gddThisHour,
+                    entry.growthHeatRequirement,
+                    oldReadiness,
+                    entry.growthReadiness
+                )
+            end
         end
     end
 end
@@ -886,27 +904,27 @@ function PlaceableGreenhouseSeasonal:onHourChanged(currentHour)
         totalProduced = totalProduced + (amount or 0.0)
     end
 
-    Logging.info(
-        "%s [%s] HOURLY OUTPUT BEGIN: version=%s hour=%s period=%s totalProduced=%.3f l",
-        LOG_PREFIX,
-        tostring(spec.logId),
-        PlaceableGreenhouseSeasonal.VERSION,
-        tostring(currentHour),
-        tostring(currentPeriod),
-        totalProduced
-    )
-
     for _, productionId in ipairs(knownProductionIds) do
-        Logging.info(
-            "%s [%s] HOURLY OUTPUT: production=%s produced=%.3f l",
-            LOG_PREFIX,
-            tostring(spec.logId),
-            productionId,
-            produced[productionId] or 0.0
-        )
+        local amount = produced[productionId] or 0.0
+        local signature = string.format("%.3f", amount)
+
+        if shouldLogStateChange(
+            spec,
+            "hourlyOutput:" .. tostring(productionId),
+            signature
+        ) then
+            Logging.info(
+                "%s [%s] HOURLY OUTPUT: production=%s produced=%.3f l",
+                LOG_PREFIX,
+                tostring(spec.logId),
+                productionId,
+                amount
+            )
+        end
     end
 
-    -- Preserve visibility if an unexpected production id appears.
+    -- Preserve visibility if an unexpected production id appears, but only
+    -- when its produced amount actually changes.
     for productionId, amount in pairs(produced) do
         local known =
             productionId == "whitecabbage"
@@ -915,40 +933,51 @@ function PlaceableGreenhouseSeasonal:onHourChanged(currentHour)
             or productionId == "strawberry"
 
         if not known then
-            Logging.info(
-                "%s [%s] HOURLY OUTPUT EXTRA: production=%s produced=%.3f l",
-                LOG_PREFIX,
-                tostring(spec.logId),
-                tostring(productionId),
-                amount or 0.0
-            )
+            local signature = string.format("%.3f", amount or 0.0)
+
+            if shouldLogStateChange(
+                spec,
+                "hourlyOutputExtra:" .. tostring(productionId),
+                signature
+            ) then
+                Logging.info(
+                    "%s [%s] HOURLY OUTPUT EXTRA: production=%s produced=%.3f l",
+                    LOG_PREFIX,
+                    tostring(spec.logId),
+                    tostring(productionId),
+                    amount or 0.0
+                )
+            end
         end
     end
-
-    Logging.info(
-        "%s [%s] HOURLY OUTPUT END: version=%s hour=%s",
-        LOG_PREFIX,
-        tostring(spec.logId),
-        PlaceableGreenhouseSeasonal.VERSION,
-        tostring(currentHour)
-    )
 
     spec.hourlyProducedOutput = {}
     local temperature, forecastTemperature, weatherApiTemperature, temperatureSource =
         getTemperatureSources()
 
-    Logging.info(
-        "%s [%s] TEMP SOURCE: version=%s hour=%s period=%s forecast=%s weatherApi=%s used=%s source=%s",
-        LOG_PREFIX,
-        tostring(spec.logId),
-        PlaceableGreenhouseSeasonal.VERSION,
-        tostring(currentHour),
+    local temperatureSourceSignature = string.format(
+        "%s|%s|%s|%s|%s",
         tostring(currentPeriod),
         forecastTemperature ~= nil and string.format("%.2f", forecastTemperature) or "-",
         weatherApiTemperature ~= nil and string.format("%.2f", weatherApiTemperature) or "-",
         temperature ~= nil and string.format("%.2f", temperature) or "-",
         tostring(temperatureSource)
     )
+
+    if shouldLogStateChange(spec, "temperatureSource", temperatureSourceSignature) then
+        Logging.info(
+            "%s [%s] TEMP SOURCE: version=%s hour=%s period=%s forecast=%s weatherApi=%s used=%s source=%s",
+            LOG_PREFIX,
+            tostring(spec.logId),
+            PlaceableGreenhouseSeasonal.VERSION,
+            tostring(currentHour),
+            tostring(currentPeriod),
+            forecastTemperature ~= nil and string.format("%.2f", forecastTemperature) or "-",
+            weatherApiTemperature ~= nil and string.format("%.2f", weatherApiTemperature) or "-",
+            temperature ~= nil and string.format("%.2f", temperature) or "-",
+            tostring(temperatureSource)
+        )
+    end
 
     if spec.trackedPeriod == nil then
         spec.trackedPeriod = currentPeriod
@@ -965,20 +994,28 @@ function PlaceableGreenhouseSeasonal:onHourChanged(currentHour)
         stats.min = stats.min == nil and temperature or math.min(stats.min, temperature)
         stats.max = stats.max == nil and temperature or math.max(stats.max, temperature)
 
-        Logging.info(
-            "%s [%s] HOURLY: version=%s mode=%s hour=%s period=%s temperature=%.2f C sessionAvg=%.2f C sessionMin=%.2f C sessionMax=%.2f C samples=%d",
-            LOG_PREFIX,
-            tostring(spec.logId),
-            PlaceableGreenhouseSeasonal.VERSION,
-            PlaceableGreenhouseSeasonal.MODE,
-            tostring(currentHour),
+        local hourlyTemperatureSignature = string.format(
+            "%s|%.2f",
             tostring(currentPeriod),
-            temperature,
-            stats.sum / stats.count,
-            stats.min,
-            stats.max,
-            stats.count
+            temperature
         )
+
+        if shouldLogStateChange(spec, "hourlyTemperature", hourlyTemperatureSignature) then
+            Logging.info(
+                "%s [%s] HOURLY: version=%s mode=%s hour=%s period=%s temperature=%.2f C sessionAvg=%.2f C sessionMin=%.2f C sessionMax=%.2f C samples=%d",
+                LOG_PREFIX,
+                tostring(spec.logId),
+                PlaceableGreenhouseSeasonal.VERSION,
+                PlaceableGreenhouseSeasonal.MODE,
+                tostring(currentHour),
+                tostring(currentPeriod),
+                temperature,
+                stats.sum / stats.count,
+                stats.min,
+                stats.max,
+                stats.count
+            )
+        end
     else
         Logging.warning(
             "%s [%s] HOURLY: version=%s mode=%s hour=%s period=%s temperature unavailable",
@@ -995,16 +1032,7 @@ function PlaceableGreenhouseSeasonal:onHourChanged(currentHour)
         -- First accumulate thermal development for this hour, then use the
         -- updated readiness in the production factor for the same hour.
         self:updateGrowthReadiness(temperature)
-        self:updateGreenhouseTemperatureProductivity(temperature, true)
-
-        Logging.info(
-            "%s [%s] GROWTH UPDATE COMPLETE: version=%s hour=%s period=%s",
-            LOG_PREFIX,
-            tostring(spec.logId),
-            PlaceableGreenhouseSeasonal.VERSION,
-            tostring(currentHour),
-            tostring(currentPeriod)
-        )
+        self:updateGreenhouseTemperatureProductivity(temperature, false)
     end
 
     -- After the new hourly productivity has been calculated, make sure an
@@ -1017,17 +1045,29 @@ function PlaceableGreenhouseSeasonal:onHourChanged(currentHour)
                 local fillLevel =
                     spec.productionPoint.storage:getFillLevel(entry.fertilizerFillType)
 
-                Logging.info(
-                    "%s [%s] CATALYST: production=%s fertilizer=%s level=%.3f perCycle=%.3f outputFactor=%.2f active=%s",
-                    LOG_PREFIX,
-                    tostring(spec.logId),
-                    tostring(productionId),
-                    tostring(entry.fertilizerFillTypeName),
+                local catalystSignature = string.format(
+                    "%.3f|%s",
                     fillLevel or 0,
-                    entry.fertilizerPerCycle,
-                    entry.fertilizerFactor,
                     tostring(entry.fertilizerActive)
                 )
+
+                if shouldLogStateChange(
+                    spec,
+                    "catalyst:" .. tostring(productionId),
+                    catalystSignature
+                ) then
+                    Logging.info(
+                        "%s [%s] CATALYST: production=%s fertilizer=%s level=%.3f perCycle=%.3f outputFactor=%.2f active=%s",
+                        LOG_PREFIX,
+                        tostring(spec.logId),
+                        tostring(productionId),
+                        tostring(entry.fertilizerFillTypeName),
+                        fillLevel or 0,
+                        entry.fertilizerPerCycle,
+                        entry.fertilizerFactor,
+                        tostring(entry.fertilizerActive)
+                    )
+                end
             end
         end
     end
@@ -1133,10 +1173,8 @@ function PlaceableGreenhouseSeasonal:saveToXMLFile(xmlFile, key, usedModNames)
         index = index + 1
     end
 
-    Logging.info(
-        "%s [%s] SAVE STATE: period=%s monthSum=%.3f samples=%d previousAvg=%s productions=%d",
-        LOG_PREFIX,
-        tostring(spec.logId),
+    local saveStateSignature = string.format(
+        "%s|%.3f|%d|%s|%d",
         tostring(spec.trackedPeriod),
         spec.monthTempSum or 0.0,
         spec.monthTempSamples or 0,
@@ -1145,6 +1183,21 @@ function PlaceableGreenhouseSeasonal:saveToXMLFile(xmlFile, key, usedModNames)
             or "-",
         index
     )
+
+    if shouldLogStateChange(spec, "saveState", saveStateSignature) then
+        Logging.info(
+            "%s [%s] SAVE STATE: period=%s monthSum=%.3f samples=%d previousAvg=%s productions=%d",
+            LOG_PREFIX,
+            tostring(spec.logId),
+            tostring(spec.trackedPeriod),
+            spec.monthTempSum or 0.0,
+            spec.monthTempSamples or 0,
+            spec.previousMonthAverageTemperature ~= nil
+                and string.format("%.2f", spec.previousMonthAverageTemperature)
+                or "-",
+            index
+        )
+    end
 end
 
 function PlaceableGreenhouseSeasonal:loadFromXMLFile(xmlFile, key)
@@ -1499,13 +1552,8 @@ function PlaceableGreenhouseSeasonal:scheduleEmergencyPalletsForNextHour(
                     local palletsToSpawn =
                         math.min(requiredPallets, availableFullPallets)
 
-                    Logging.info(
-                        "%s [%s] EMERGENCY PALLET CHECK: hour=%s period=%s fillType=%s predicted=%.3f free=%.3f shortage=%.3f palletCapacity=%.3f required=%d availableFull=%d spawn=%d",
-                        LOG_PREFIX,
-                        tostring(spec.logId),
-                        tostring(currentHour),
-                        tostring(currentPeriod),
-                        tostring(fillTypeId),
+                    local emergencySignature = string.format(
+                        "%.3f|%.3f|%.3f|%.3f|%d|%d|%d",
                         predictedAmount,
                         freeCapacity,
                         shortage,
@@ -1514,6 +1562,28 @@ function PlaceableGreenhouseSeasonal:scheduleEmergencyPalletsForNextHour(
                         availableFullPallets,
                         palletsToSpawn
                     )
+
+                    if shouldLogStateChange(
+                        spec,
+                        "emergencyPalletCheck:" .. tostring(fillTypeId),
+                        emergencySignature
+                    ) then
+                        Logging.info(
+                            "%s [%s] EMERGENCY PALLET CHECK: hour=%s period=%s fillType=%s predicted=%.3f free=%.3f shortage=%.3f palletCapacity=%.3f required=%d availableFull=%d spawn=%d",
+                            LOG_PREFIX,
+                            tostring(spec.logId),
+                            tostring(currentHour),
+                            tostring(currentPeriod),
+                            tostring(fillTypeId),
+                            predictedAmount,
+                            freeCapacity,
+                            shortage,
+                            palletData.capacity,
+                            requiredPallets,
+                            availableFullPallets,
+                            palletsToSpawn
+                        )
+                    end
 
                     if palletsToSpawn > 0
                         and spec.emergencyPalletJobs[fillTypeId] == nil
