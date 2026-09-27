@@ -19,23 +19,7 @@
   </Materials>
 
 
-  <Shapes>
-    <IndexedTriangleSet name="woodUnloadZoneShape" shapeId="1" meshUsage="0" bvCenter="0 0 0" bvRadius="0.707107" isOptimized="true">
-      <Vertices count="4" normal="true" uv0="true">
-        <v p="-0.5 -0.5 0" n="0 0 1" t0="0 0"/>
-        <v p="0.5 -0.5 0" n="0 0 1" t0="1 0"/>
-        <v p="0.5 0.5 0" n="0 0 1" t0="1 1"/>
-        <v p="-0.5 0.5 0" n="0 0 1" t0="0 1"/>
-      </Vertices>
-      <Triangles count="2">
-        <t vi="0 1 2"/>
-        <t vi="0 2 3"/>
-      </Triangles>
-      <Subsets count="1">
-        <Subset firstVertex="0" numVertices="4" firstIndex="0" numIndices="6" uvDensity0="1"/>
-      </Subsets>
-    </IndexedTriangleSet>
-  </Shapes>
+  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">\n  </Shapes>
 
   <Scene>
     <TransformGroup name="woodUnloadZone" nodeId="8">
