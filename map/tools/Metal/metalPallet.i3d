@@ -27,7 +27,7 @@
   </Shapes>
 
   <Scene>
-    <Shape name="metalPallet_main_component1" shapeId="1" meshUsage="256" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfffffbff" clipDistance="300" nodeId="16" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
+    <Shape name="metalPallet_main_component1" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10004" collisionFilterMask="0xfffffbff" clipDistance="300" nodeId="16" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="5">
       <Shape name="metalPallet_vis" translation="0 0.144614 0" shapeId="2" clipDistance="300" nodeId="17" castsShadows="true" receiveShadows="true" materialIds="6">
         <TransformGroup name="dischargeNode" translation="0 -0.144614 0" nodeId="39"/>
       </Shape>
