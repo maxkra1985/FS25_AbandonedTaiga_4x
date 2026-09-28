@@ -19,7 +19,7 @@
   </Materials>
 
 
-  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">
+  <Shapes externalShapesFile="markerIconQuad.i3d.shapes">
   </Shapes>
 
   <Scene>

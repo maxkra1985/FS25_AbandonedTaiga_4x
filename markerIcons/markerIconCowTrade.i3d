@@ -14,7 +14,7 @@
       <CustomParameter name="lightControl" value="0.25"/>
     </Material>
   </Materials>
-  <Shapes externalShapesFile="markerIconStroyka.i3d.shapes">
+  <Shapes externalShapesFile="markerIconQuad.i3d.shapes">
   </Shapes>
   <Scene>
     <TransformGroup name="markerIconCowTrade" nodeId="1">
