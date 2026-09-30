@@ -48,6 +48,10 @@
 		<sourceFile filename="scripts/ObjectStorageAreaFillTypeFilter.lua" />
 	</extraSourceFiles>
 
+	<vehicleSpecializations>
+		<specialization name="uazUniversalAutoloadCompat" className="UazUniversalAutoloadCompat" filename="scripts/UazUniversalAutoloadCompat.lua"/>
+	</vehicleSpecializations>
+
 	<vehicleTypes>
 		<type name="squigglzeJackhammer" parent="base" filename="$dataS/scripts/vehicles/Vehicle.lua">
 			<specialization name="turnOnVehicle"/>
@@ -56,6 +60,7 @@
 		<type name="UazForester" parent="tractor" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
 			<specialization name="tensionBelts"/>
 			<specialization name="dynamicMountAttacher"/>
+			<specialization name="uazUniversalAutoloadCompat"/>
 		</type>
 		<type name="mapVehicleGoodie" className="Vehicle" filename="$dataS/scripts/vehicles/Vehicle.lua">
 			<specialization name="vehicleSettings" />
