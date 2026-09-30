@@ -15,7 +15,7 @@
 	</vehicle>
 
 
-	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehicle3183b485f18724c6c4299e02a1f40b56" age="10000.000000" price="0.0" propertyState="OWNED" operatingTime="10000.000000" farmId="1">
+	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehicle3183b485f18724c6c4299e02a1f40b56" age="10000.000000" price="0.0" propertyState="OWNED" operatingTime="10000.000000">
 		<component index="1" position="998.970 51.021 966.578" rotation="179.69 -31.20 -180.00"/>
 		<component index="2" position="998.375 51.408 965.596" rotation="179.69 -31.20 -180.00"/>
 		<component index="3" position="999.567 51.404 967.564" rotation="179.69 -31.20 -180.00"/>
@@ -48,7 +48,7 @@
 			</universalAutoload>
 		</FS25_UniversalAutoload>
 	</vehicle>
-	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehiclead535e2be6a7cd9e9c2435ab58d884ea" age="10000.000000" price="0.000000" propertyState="OWNED" operatingTime="10000.000000" farmId="1">
+	<vehicle filename="$mapdir$/map/vehicles/UAZ_Forester/UAZ_3303_forester2.xml" uniqueId="vehiclead535e2be6a7cd9e9c2435ab58d884ea" age="10000.000000" price="0.000000" propertyState="OWNED" operatingTime="10000.000000">
 		<component index="1" position="985.232 51.021 937.962" rotation="-0.30 -59.84 -0.00"/>
 		<component index="2" position="984.239 51.408 938.539" rotation="-0.30 -59.84 -0.00"/>
 		<component index="3" position="986.228 51.404 937.383" rotation="-0.30 -59.84 -0.00"/>
