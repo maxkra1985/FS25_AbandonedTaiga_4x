@@ -15,7 +15,11 @@
             <MultiTextOption profile="loggingContractorFarmlandOption"
                              id="farmlandOption"
                              onClick="onClickFarmland"
-                             focusInit="onOpen"/>
+                             focusInit="onOpen">
+                <Text profile="loggingContractorTooltip"
+                      name="ignore"
+                      text="Показаны только участки, находящиеся во владении вашей фермы."/>
+            </MultiTextOption>
 
             <Text profile="loggingContractorTreeCount" id="treeCountText"/>
             <Text profile="loggingContractorSpecies" id="speciesText"/>
@@ -24,26 +28,41 @@
             <MultiTextOption profile="loggingContractorSettingOption"
                              id="onlyMarkedOption"
                              position="0px -475px"
-                             onClick="onClickOnlyMarkedTrees"/>
+                             onClick="onClickOnlyMarkedTrees">
+                <Text profile="loggingContractorTooltip"
+                      name="ignore"
+                      text="При включении подрядчик пересчитает участок и будет работать только с деревьями, отмеченными штатным маркером."/>
+            </MultiTextOption>
 
             <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -535px"/>
             <MultiTextOption profile="loggingContractorSettingOption"
                              id="equipmentOption"
                              position="0px -565px"
-                             onClick="onClickEquipment"/>
+                             onClick="onClickEquipment">
+                <Text profile="loggingContractorTooltip"
+                      name="ignore"
+                      text="Количество техники влияет на итоговую сумму договора и скорость выполнения работ."/>
+            </MultiTextOption>
             <Text profile="loggingContractorEquipmentHint" id="equipmentHintText"/>
 
             <Text profile="loggingContractorSettingLabel" text="Длина брёвен" position="0px -645px"/>
             <MultiTextOption profile="loggingContractorSettingOption"
                              id="logLengthOption"
                              position="0px -675px"
-                             onClick="onClickLogLength"/>
+                             onClick="onClickLogLength">
+                <Text profile="loggingContractorTooltip"
+                      name="ignore"
+                      text="Подрядчик будет раскряжёвывать стволы на выбранную длину. Короткий остаток сохраняется отдельным бревном."/>
+            </MultiTextOption>
 
             <Text profile="loggingContractorEstimate" id="estimateTimeText" position="0px -740px"/>
             <Text profile="loggingContractorCostLine" id="rentCostText" position="0px -780px"/>
             <Text profile="loggingContractorCostLine" id="equipmentWorkCostText" position="0px -810px"/>
             <Text profile="loggingContractorCostLine" id="workerCostText" position="0px -840px"/>
             <Text profile="loggingContractorTotalCost" id="totalCostText" position="0px -880px"/>
+            <Text profile="loggingContractorInfoLine"
+                  text="Рабочее время: 08:00–21:00. Игровое ускорение во время работ ограничено x15."
+                  position="0px -925px"/>
         </GuiElement>
 
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
@@ -58,11 +77,11 @@
 
     <GUIProfiles>
         <Profile name="loggingContractorDialogBg" extends="fs25_dialogBg">
-            <size value="780px 1030px"/>
+            <size value="780px 1080px"/>
         </Profile>
 
         <Profile name="loggingContractorContent" extends="baseReference" with="anchorTopCenter">
-            <size value="720px 960px"/>
+            <size value="720px 1010px"/>
             <position value="0px -15px"/>
         </Profile>
 
@@ -136,6 +155,20 @@
             <textSize value="22px"/>
             <textAlignment value="left"/>
             <textVerticalAlignment value="middle"/>
+        </Profile>
+
+        <Profile name="loggingContractorTooltip" extends="fs25_multiTextOptionTooltip">
+            <size value="520px 72px"/>
+            <position value="595px 0px"/>
+            <textMaxNumLines value="4"/>
+        </Profile>
+
+        <Profile name="loggingContractorInfoLine" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="570px 42px"/>
+            <textSize value="17px"/>
+            <textAlignment value="center"/>
+            <textVerticalAlignment value="middle"/>
+            <textMaxNumLines value="2"/>
         </Profile>
     </GUIProfiles>
 </GUI>
