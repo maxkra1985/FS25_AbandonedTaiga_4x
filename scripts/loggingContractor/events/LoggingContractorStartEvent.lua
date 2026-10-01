@@ -21,11 +21,12 @@ end
 
 -- Создаёт клиентский запрос с параметрами, которые пользователь действительно
 -- выбирает в интерфейсе. Расчётные значения намеренно не передаются.
-function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength)
+function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees)
     local self = LoggingContractorStartEvent.emptyNew()
     self.farmlandId = farmlandId
     self.equipmentCount = equipmentCount
     self.logLength = logLength
+    self.onlyMarkedTrees = onlyMarkedTrees == true
 
     return self
 end
@@ -36,6 +37,7 @@ function LoggingContractorStartEvent:writeStream(streamId, connection)
     streamWriteUIntN(streamId, self.farmlandId, g_farmlandManager.numberOfBits)
     streamWriteUInt32(streamId, self.equipmentCount)
     streamWriteUInt8(streamId, self.logLength)
+    streamWriteBool(streamId, self.onlyMarkedTrees)
 end
 
 
@@ -44,6 +46,7 @@ function LoggingContractorStartEvent:readStream(streamId, connection)
     self.farmlandId = streamReadUIntN(streamId, g_farmlandManager.numberOfBits)
     self.equipmentCount = streamReadUInt32(streamId)
     self.logLength = streamReadUInt8(streamId)
+    self.onlyMarkedTrees = streamReadBool(streamId)
     self:run(connection)
 end
 
@@ -64,7 +67,8 @@ function LoggingContractorStartEvent:run(connection)
             connection,
             self.farmlandId,
             self.equipmentCount,
-            self.logLength
+            self.logLength,
+            self.onlyMarkedTrees
         )
     end
 
@@ -74,7 +78,7 @@ end
 
 -- Отправляет запрос текущему серверу. Метод используется GUI и одинаково
 -- работает для обычного клиента и локального клиента хоста.
-function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength)
+function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength, onlyMarkedTrees)
     if g_client == nil then
         return false
     end
@@ -84,6 +88,6 @@ function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLe
         return false
     end
 
-    connection:sendEvent(LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength))
+    connection:sendEvent(LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees))
     return true
 end

@@ -22,6 +22,7 @@ LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH = 7
 LoggingContractorResultEvent.STATE_NOT_ENOUGH_MONEY = 8
 LoggingContractorResultEvent.STATE_ALREADY_ACTIVE = 9
 LoggingContractorResultEvent.STATE_INTERNAL_ERROR = 10
+LoggingContractorResultEvent.STATE_NO_MARKED_TREES = 11
 
 
 -- Создаёт пустое сетевое событие для десериализации GIANTS Engine.
@@ -41,6 +42,7 @@ function LoggingContractorResultEvent.new(state, data)
         self.farmId = data.farmId
         self.farmlandId = data.farmlandId
         self.plannedTrees = data.plannedTrees
+        self.onlyMarkedTrees = data.onlyMarkedTrees == true
         self.equipmentCount = data.equipmentCount
         self.logLength = data.logLength
         self.workHours = data.workHours
@@ -67,6 +69,7 @@ function LoggingContractorResultEvent:writeStream(streamId, connection)
     streamWriteUIntN(streamId, self.farmId, FarmManager.FARM_ID_SEND_NUM_BITS)
     streamWriteUIntN(streamId, self.farmlandId, g_farmlandManager.numberOfBits)
     streamWriteUInt32(streamId, self.plannedTrees)
+    streamWriteBool(streamId, self.onlyMarkedTrees)
     streamWriteUInt32(streamId, self.equipmentCount)
     streamWriteUInt8(streamId, self.logLength)
     streamWriteFloat32(streamId, self.workHours)
@@ -87,6 +90,7 @@ function LoggingContractorResultEvent:readStream(streamId, connection)
         self.farmId = streamReadUIntN(streamId, FarmManager.FARM_ID_SEND_NUM_BITS)
         self.farmlandId = streamReadUIntN(streamId, g_farmlandManager.numberOfBits)
         self.plannedTrees = streamReadUInt32(streamId)
+        self.onlyMarkedTrees = streamReadBool(streamId)
         self.equipmentCount = streamReadUInt32(streamId)
         self.logLength = streamReadUInt8(streamId)
         self.workHours = streamReadFloat32(streamId)

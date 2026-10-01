@@ -23,6 +23,7 @@ function LoggingContractorJob.new(data, customMt)
     self.farmId = data.farmId
     self.farmlandId = data.farmlandId
     self.plannedTrees = data.plannedTrees
+    self.onlyMarkedTrees = data.onlyMarkedTrees == true
     self.contractorCutTrees = data.contractorCutTrees or 0
     self.remainingTrees = data.remainingTrees or data.plannedTrees
     self.equipmentCount = data.equipmentCount
@@ -48,6 +49,7 @@ function LoggingContractorJob:getNetworkData()
         farmId = self.farmId,
         farmlandId = self.farmlandId,
         plannedTrees = self.plannedTrees,
+        onlyMarkedTrees = self.onlyMarkedTrees,
         contractorCutTrees = self.contractorCutTrees,
         remainingTrees = self.remainingTrees,
         equipmentCount = self.equipmentCount,

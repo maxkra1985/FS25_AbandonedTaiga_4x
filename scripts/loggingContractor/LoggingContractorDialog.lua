@@ -35,6 +35,7 @@ function LoggingContractorDialog.new(target, customMt)
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
+    self.onlyMarkedTrees = false
     self.startRequestPending = false
 
     return self
@@ -87,6 +88,8 @@ end
 function LoggingContractorDialog.getContractDraftErrorText(errorCode)
     if errorCode == "noTrees" then
         return "На выбранном участке больше нет стоящих деревьев."
+    elseif errorCode == "noMarkedTrees" then
+        return "На выбранном участке нет стоящих деревьев, помеченных маркером."
     elseif errorCode == "invalidEquipment" then
         return "Выбрано недопустимое количество техники."
     elseif errorCode == "invalidLogLength" then
@@ -109,6 +112,8 @@ function LoggingContractorDialog.getStartContractResultErrorText(state)
         return "Выбранный участок больше не принадлежит вашей ферме."
     elseif state == LoggingContractorResultEvent.STATE_NO_TREES then
         return "На выбранном участке больше нет стоящих деревьев."
+    elseif state == LoggingContractorResultEvent.STATE_NO_MARKED_TREES then
+        return "На выбранном участке нет стоящих деревьев, помеченных маркером."
     elseif state == LoggingContractorResultEvent.STATE_INVALID_EQUIPMENT then
         return "Сервер отклонил выбранное количество техники."
     elseif state == LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH then
@@ -134,6 +139,10 @@ function LoggingContractorDialog:setData(contractor, farmlands)
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.startRequestPending = false
+    self.onlyMarkedTrees = false
+
+    self.onlyMarkedOption:setTexts({"Нет", "Да"})
+    self.onlyMarkedOption:setState(1)
 
     local logLengthTexts = {}
     for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
@@ -169,7 +178,8 @@ end
 -- Формирует отдельную строку общего количества деревьев и визуально вложенный
 -- список пород с дополнительным отступом вправо.
 function LoggingContractorDialog:updateStatisticsText(scan)
-    self.treeCountText:setText(string.format("Стоящих деревьев: %d", scan.totalCount))
+    local title = scan.onlyMarkedTrees and "Помеченных стоящих деревьев" or "Стоящих деревьев"
+    self.treeCountText:setText(string.format("%s: %d", title, scan.totalCount))
 
     local lines = {}
     if #scan.species == 0 then
@@ -218,17 +228,19 @@ end
 
 -- Выбирает участок, выполняет его сканирование и задаёт начальное количество
 -- техники по правилу ceil(treeCount / 100).
-function LoggingContractorDialog:selectFarmland(index)
-    local farmland = self.farmlands[index]
-    if farmland == nil or self.contractor == nil then
+function LoggingContractorDialog:refreshCurrentFarmlandScan()
+    if self.currentFarmland == nil or self.contractor == nil then
         return
     end
 
-    self.currentFarmland = farmland
     self.currentContractDraft = nil
 
     local farmId = self.contractor.mission:getFarmId()
-    local scan, errorCode = self.contractor:scanFarmlandTrees(farmland.id, farmId)
+    local scan, errorCode = self.contractor:scanFarmlandTrees(
+        self.currentFarmland.id,
+        farmId,
+        self.onlyMarkedTrees
+    )
     if scan == nil then
         self.currentScan = nil
         self.currentEstimate = nil
@@ -245,6 +257,17 @@ function LoggingContractorDialog:selectFarmland(index)
     local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
     self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
     self:setEquipmentOptions(scan.totalCount, recommendedCount)
+end
+
+
+function LoggingContractorDialog:selectFarmland(index)
+    local farmland = self.farmlands[index]
+    if farmland == nil or self.contractor == nil then
+        return
+    end
+
+    self.currentFarmland = farmland
+    self:refreshCurrentFarmlandScan()
 end
 
 
@@ -323,7 +346,11 @@ function LoggingContractorDialog:createContractDraft()
     end
 
     local farmId = self.contractor.mission:getFarmId()
-    local scan, errorCode = self.contractor:scanFarmlandTrees(self.currentFarmland.id, farmId)
+    local scan, errorCode = self.contractor:scanFarmlandTrees(
+        self.currentFarmland.id,
+        farmId,
+        self.onlyMarkedTrees
+    )
     if scan == nil then
         return nil, errorCode
     end
@@ -333,7 +360,7 @@ function LoggingContractorDialog:createContractDraft()
         self:updateStatisticsText(scan)
         self.equipmentHintText:setText("Расчётное количество техники: 0")
         self:setEquipmentOptions(0, 0)
-        return nil, "noTrees"
+        return nil, self.onlyMarkedTrees and "noMarkedTrees" or "noTrees"
     end
 
     local equipmentCount = math.floor(self.currentEquipmentCount or 0)
@@ -375,6 +402,7 @@ function LoggingContractorDialog:createContractDraft()
         farmId = farmId,
         farmlandId = self.currentFarmland.id,
         plannedTrees = scan.totalCount,
+        onlyMarkedTrees = self.onlyMarkedTrees,
         equipmentCount = self.currentEquipmentCount,
         logLength = self.currentLogLength,
         workHours = estimate.workHours,
@@ -397,6 +425,13 @@ end
 
 
 -- Обрабатывает выбор количества техники и сразу обновляет расчёт договора.
+function LoggingContractorDialog:onClickOnlyMarkedTrees(state)
+    self.onlyMarkedTrees = state == 2
+    self.currentContractDraft = nil
+    self:refreshCurrentFarmlandScan()
+end
+
+
 function LoggingContractorDialog:onClickEquipment(state)
     if self.currentScan == nil or self.currentScan.totalCount <= 0 then
         return
@@ -440,10 +475,11 @@ function LoggingContractorDialog:onClickStartContract()
     self:updateStartContractButton()
 
     Logging.info(
-        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d equipment=%d logLength=%d previewCost=%d",
+        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d onlyMarked=%s equipment=%d logLength=%d previewCost=%d",
         draft.farmId,
         draft.farmlandId,
         draft.plannedTrees,
+        tostring(draft.onlyMarkedTrees),
         draft.equipmentCount,
         draft.logLength,
         draft.totalCost
@@ -452,7 +488,8 @@ function LoggingContractorDialog:onClickStartContract()
     if not LoggingContractorStartEvent.sendEvent(
         draft.farmlandId,
         draft.equipmentCount,
-        draft.logLength
+        draft.logLength,
+        draft.onlyMarkedTrees
     ) then
         self.startRequestPending = false
         self:updateStartContractButton()
@@ -497,12 +534,14 @@ function LoggingContractorDialog.onStartContractResult(event)
             "Договор подряда заключён.\n\n"
                 .. "Участок: %d\n"
                 .. "Запланировано к спилу: %d\n"
+                .. "Только помеченные деревья: %s\n"
                 .. "Техника: %d\n"
                 .. "Длина брёвен: %d м\n"
                 .. "Расчётное время: %s ч\n"
                 .. "Списано со счёта фермы: %s",
             event.farmlandId,
             event.plannedTrees,
+            event.onlyMarkedTrees and "Да" or "Нет",
             event.equipmentCount,
             event.logLength,
             workHoursText,
@@ -545,6 +584,7 @@ function LoggingContractorDialog:onClose()
     self.currentEquipmentCount = 0
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
+    self.onlyMarkedTrees = false
     self.startRequestPending = false
 
     LoggingContractorDialog:superClass().onClose(self)

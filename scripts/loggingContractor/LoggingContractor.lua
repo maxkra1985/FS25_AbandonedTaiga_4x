@@ -115,6 +115,16 @@ function LoggingContractor:getTreeSpecies(treeTypeDesc, splitTypeIndex)
 end
 
 
+-- Проверяет наличие штатной маркировки TreeMarkerSystem на standing shape.
+-- Используется как при сканировании участка, так и при выполнении договора.
+function LoggingContractor:isContractTargetMarked(node)
+    local markerSystem = self.mission.treeMarkerSystem
+    return markerSystem ~= nil
+        and markerSystem.treeMarkers ~= nil
+        and markerSystem.treeMarkers[node] ~= nil
+end
+
+
 -- Обрабатывает найденный overlapBox объект и учитывает только стоящее дерево
 -- выбранного участка. Спиленные части, динамические брёвна и пни исключаются.
 function LoggingContractor:treeScanOverlapCallback(transformId)
@@ -146,6 +156,10 @@ function LoggingContractor:treeScanOverlapCallback(transformId)
         return
     end
 
+    if scan.onlyMarkedTrees and not self:isContractTargetMarked(transformId) then
+        return
+    end
+
     local treeTypeDesc = g_treePlantManager:getTreeTypeDescFromSplitType(splitTypeIndex)
     local speciesName, speciesTitle = self:getTreeSpecies(treeTypeDesc, splitTypeIndex)
     local species = scan.bySpecies[speciesName]
@@ -166,7 +180,7 @@ end
 
 -- Сканирует выбранный принадлежащий ферме участок и возвращает количество
 -- стоящих деревьев с разбивкой по породам.
-function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
+function LoggingContractor:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
     if g_farmlandManager == nil or g_treePlantManager == nil then
         return nil, "managerUnavailable"
     end
@@ -200,6 +214,7 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
 
     self.activeTreeScan = {
         farmlandId = farmlandId,
+        onlyMarkedTrees = onlyMarkedTrees == true,
         totalCount = 0,
         bySpecies = {},
         seenNodes = {}
@@ -241,6 +256,7 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId)
 
     return {
         farmlandId = farmlandId,
+        onlyMarkedTrees = scan.onlyMarkedTrees,
         totalCount = scan.totalCount,
         species = species
     }
@@ -380,7 +396,7 @@ end
 -- Выполняет серверную часть заключения договора: определяет ферму отправителя,
 -- проверяет право manageContracts, участок и деревья, заново рассчитывает цену,
 -- проверяет баланс, списывает средства и создаёт LoggingContractorJob.
-function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength)
+function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees)
     if not self.mission:getIsServer() then
         return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
     end
@@ -404,12 +420,17 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
         return LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH
     end
 
-    local scan, errorCode = self:scanFarmlandTrees(farmlandId, farmId)
+    onlyMarkedTrees = onlyMarkedTrees == true
+
+    local scan, errorCode = self:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
     if scan == nil then
         return self:getStartResultStateForScanError(errorCode)
     end
 
     if scan.totalCount <= 0 then
+        if onlyMarkedTrees then
+            return LoggingContractorResultEvent.STATE_NO_MARKED_TREES
+        end
         return LoggingContractorResultEvent.STATE_NO_TREES
     end
 
@@ -431,6 +452,7 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
         farmId = farmId,
         farmlandId = farmlandId,
         plannedTrees = scan.totalCount,
+        onlyMarkedTrees = onlyMarkedTrees,
         equipmentCount = equipmentCount,
         logLength = logLength,
         workHours = estimate.workHours,
@@ -453,11 +475,12 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     self.nextJobId = self.nextJobId + 1
 
     Logging.info(
-        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d equipment=%d logLength=%d cost=%d",
+        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d onlyMarked=%s equipment=%d logLength=%d cost=%d",
         job.jobId,
         job.farmId,
         job.farmlandId,
         job.plannedTrees,
+        tostring(job.onlyMarkedTrees),
         job.equipmentCount,
         job.logLength,
         job.totalCost
@@ -476,6 +499,7 @@ function LoggingContractor:onStartContractResult(event)
             farmId = event.farmId,
             farmlandId = event.farmlandId,
             plannedTrees = event.plannedTrees,
+            onlyMarkedTrees = event.onlyMarkedTrees,
             equipmentCount = event.equipmentCount,
             logLength = event.logLength,
             workHours = event.workHours,
