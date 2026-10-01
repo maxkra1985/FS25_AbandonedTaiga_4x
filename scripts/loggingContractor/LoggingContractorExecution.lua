@@ -1142,6 +1142,7 @@ function LoggingContractor:update(dt)
     local hasActiveJob = self:hasAnyActiveJob()
 
     if hasActiveJob
+        and self:getIsTimeScaleLimitActive()
         and not self.sleepTimeScaleOverride
         and not g_sleepManager:getIsSleeping()
         and self.mission.missionInfo.timeScale
@@ -1258,8 +1259,9 @@ function LoggingContractor:startContractWithExecution(superFunc, connection, far
             self:initializeJobTargets(job)
             job.progressBroadcastPending = true
 
-            if self.mission.missionInfo.timeScale
-                > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
+            if self:getIsTimeScaleLimitActive()
+                and self.mission.missionInfo.timeScale
+                    > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
                 self.mission:setTimeScale(
                     LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE
                 )
