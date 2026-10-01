@@ -1058,8 +1058,6 @@ DinamycalPrice.pendingPlaceableDelayFrames = 2
 DinamycalPrice.pendingPlaceableMaxRetries = 30
 DinamycalPrice.initialUpdateDone = false
 DinamycalPrice.farmlandEventHookInstalled = false
-DinamycalPrice.buyVehicleDataHookInstalled = false
-DinamycalPrice.shopConfigPriceHookInstalled = false
 DinamycalPrice.leaseDialogHookInstalled = false
 DinamycalPrice.placeableHookInstalled = false
 
@@ -1177,61 +1175,6 @@ function DinamycalPrice:update(dt)
 			end
 		end
 	end
-end
-
---================================================================================================
--- Корректировка стоимости покупки материалов через PlaceableSilo.refillAmount.
--- Игра передаёт сюда уже рассчитанную стоимость для конкретного amount.
--- Количество материала не меняем: корректируем только price текущим buy-множителем.
-function DinamycalPrice.overwrittenSiloRefillAmount(self, superFunc, fillTypeIndex, amount, price, ...)
-	local originalPrice = price
-
-	-- Нулевую/nil стоимость не трогаем: такие вызовы могут использоваться
-	-- служебной логикой или обычным перемещением материала без покупки.
-	if price ~= nil
-		and price > 0
-		and currentBuyMultiplier ~= nil
-		and currentBuyMultiplier > 0 then
-
-		price = price * currentBuyMultiplier
-
-		local fillType = nil
-		if g_fillTypeManager ~= nil then
-			fillType = g_fillTypeManager:getFillTypeByIndex(fillTypeIndex)
-		end
-
-		local placeableName = "UNKNOWN"
-		if self ~= nil and self.getName ~= nil then
-			placeableName = tostring(self:getName())
-		end
-
-		logMessage(
-			"INFO",
-			string.format(
-				"BUY SILO '%s': product='%s' fillType=%s amount=%.2f price=%.2f -> %.2f buyMultiplier=%.4f",
-				placeableName,
-				fillType ~= nil and tostring(fillType.title) or tostring(fillTypeIndex),
-				tostring(fillTypeIndex),
-				tonumber(amount) or 0,
-				tonumber(originalPrice) or 0,
-				tonumber(price) or 0,
-				currentBuyMultiplier
-			)
-		)
-	end
-
-	return superFunc(self, fillTypeIndex, amount, price, ...)
-end
-
-
---================================================================================================
--- Установка hook refillAmount непосредственно на экземпляр placeable.
--- Это необходимо, потому что placeableType регистрирует refillAmount до loadMap(),
--- и поздняя замена глобального PlaceableSilo.refillAmount не затрагивает уже
--- зарегистрированные функции конкретных типов.
-function DinamycalPrice:installSiloRefillHook(placeable)
-	-- Не требуется: RefillDialog корректируется до формирования цены.
-	return placeable ~= nil and placeable.spec_silo ~= nil
 end
 
 --================================================================================================
@@ -1574,86 +1517,6 @@ function DinamycalPrice.overwrittenFarmlandStateEventNew(farmlandId, superFunc, 
 	end
 
 	return event
-end
-
---================================================================================================
--- Корректировка фактической стоимости покупки и аренды транспорта/оборудования
-function DinamycalPrice.overwrittenBuyVehicleUpdatePrice(self, superFunc)
-	--====================================================================
-	-- Покупка
-	if not self.leaseVehicle then
-		superFunc(self)
-		if self.price ~= nil and self.price > 0 and currentBuyMultiplier > 0 then
-			local oldPrice = self.price
-			self.price = MathUtil.round(oldPrice * currentBuyMultiplier, 0)
-			logMessage(
-				"INFO",
-				string.format(
-					"SHOP BUY '%s': %s -> %s buyMultiplier=%.4f",
-					self.storeItem ~= nil
-						and tostring(self.storeItem.name)
-						or "UNKNOWN",
-					tostring(oldPrice),
-					tostring(self.price),
-					currentBuyMultiplier
-				)
-			)
-		end
-		return
-	end
-
-	--====================================================================
-	-- Аренда. Сначала получаем полную стоимость техники. Затем применяем наш buyMultiplier. И только после этого считаем первоначальную стоимость аренды штатной функцией игры.
-	local basePrice = g_currentMission.economyManager:getBuyPrice(self.storeItem, self.configurations, self.saleItem)
-	local modifiedPrice = MathUtil.round(basePrice * currentBuyMultiplier, 0)
-	self.price = g_currentMission.economyManager:getInitialLeasingPrice(modifiedPrice)
-	logMessage(
-		"INFO",
-		string.format(
-			"SHOP LEASE '%s': vehiclePrice=%s -> %s initialLease=%s buyMultiplier=%.4f",
-			self.storeItem ~= nil
-				and tostring(self.storeItem.name)
-				or "UNKNOWN",
-			tostring(basePrice),
-			tostring(modifiedPrice),
-			tostring(self.price),
-			currentBuyMultiplier
-		)
-	)
-	logMessage(
-		"INFO",
-		string.format(
-			"SHOP VEHICLE: name='%s' calculatedPrice=%s lease=%s",
-			self.storeItem ~= nil and tostring(self.storeItem.name) or "UNKNOWN",
-			tostring(self.price),
-			tostring(self.leaseVehicle)
-		)
-	)
-end
-
---================================================================================================
--- Перехват интерфейса магазина при покупке техники
-function DinamycalPrice.overwrittenShopUpdatePriceData(self, superFunc, ...)
-	local result = superFunc(self, ...)
-
-	if self.totalPrice ~= nil and self.totalPrice > 0 and currentBuyMultiplier ~= nil and currentBuyMultiplier > 0 then
-		local oldPrice = self.totalPrice
-		self.totalPrice = MathUtil.round(oldPrice * currentBuyMultiplier, 0)
-		if self.totalPriceText ~= nil then
-			self.totalPriceText:setText(g_i18n:formatMoney(self.totalPrice, 0, true, true))
-		end
-		logMessage(
-			"INFO",
-			string.format(
-				"SHOP UI '%s': %s -> %s buyMultiplier=%.4f",
-				self.storeItem ~= nil and tostring(self.storeItem.name) or "UNKNOWN",
-				tostring(oldPrice),
-				tostring(self.totalPrice),
-				currentBuyMultiplier
-			)
-		)
-	end
-	return result
 end
 
 --================================================================================================
