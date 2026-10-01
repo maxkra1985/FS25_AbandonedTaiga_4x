@@ -1141,15 +1141,8 @@ function LoggingContractor:update(dt)
 
     local hasActiveJob = self:hasAnyActiveJob()
 
-    if hasActiveJob
-        and self:getIsTimeScaleLimitActive()
-        and not self.sleepTimeScaleOverride
-        and not g_sleepManager:getIsSleeping()
-        and self.mission.missionInfo.timeScale
-            > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
-        self.mission:setTimeScale(
-            LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE
-        )
+    if hasActiveJob then
+        self:enforceActiveContractTimeScaleLimit()
     end
 
     local isWorkingTime = self:getIsWorkingTime()
@@ -1259,13 +1252,9 @@ function LoggingContractor:startContractWithExecution(superFunc, connection, far
             self:initializeJobTargets(job)
             job.progressBroadcastPending = true
 
-            if self:getIsTimeScaleLimitActive()
-                and self.mission.missionInfo.timeScale
-                    > LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE then
-                self.mission:setTimeScale(
-                    LoggingContractor.MAX_ACTIVE_CONTRACT_TIME_SCALE
-                )
-            end
+            -- В рабочее время новый договор сразу снижает текущий множитель
+            -- до x15, даже если до заключения игрок использовал x30/x60.
+            self:enforceActiveContractTimeScaleLimit()
         end
     end
 
