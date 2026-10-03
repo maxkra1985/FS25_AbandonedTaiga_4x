@@ -48,9 +48,9 @@
 		<sourceFile filename="scripts/ObjectStorageAreaFillTypeFilter.lua" />
 	</extraSourceFiles>
 
-	<vehicleSpecializations>
+	<specializations>
 		<specialization name="uazUniversalAutoloadCompat" className="UazUniversalAutoloadCompat" filename="scripts/UazUniversalAutoloadCompat.lua"/>
-	</vehicleSpecializations>
+	</specializations>
 
 	<vehicleTypes>
 		<type name="squigglzeJackhammer" parent="base" filename="$dataS/scripts/vehicles/Vehicle.lua">
