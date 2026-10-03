@@ -221,7 +221,62 @@ local function installConstructibleInfoHook()
     return true
 end
 
+-- PlaceableInfoTrigger:onDraw зарегистрирован как event listener через таблицу
+-- специализации, поэтому его можно безопасно перехватить уже после регистрации типов.
+-- Это финальная точка перед вызовом placeable:updateInfo(), и именно здесь можно
+-- гарантированно не запускать цепочку будущих husbandry/production/storage специализаций.
+local function installInfoTriggerDrawHook()
+    if PlaceableInfoTrigger == nil
+        or PlaceableInfoTrigger.onDraw == nil
+        or PlaceableInfoTrigger.taigaConstructionInfoDrawHookInstalled then
+        return false
+    end
+
+    local originalOnDraw = PlaceableInfoTrigger.onDraw
+
+    PlaceableInfoTrigger.onDraw = function(placeable, ...)
+        local infoHUD = getInfoHUD()
+        if infoHUD == nil or not infoHUD.shouldSuppressFutureFacilityInfo(placeable) then
+            return originalOnDraw(placeable, ...)
+        end
+
+        local spec = placeable.spec_infoTrigger
+        if spec == nil
+            or not spec.showInfo
+            or (not spec.showAllPlayers and placeable:getOwnerFarmId() ~= g_currentMission:getFarmId()) then
+            return
+        end
+
+        -- Не используем placeable:updateInfo(): у уже зарегистрированного типа эта
+        -- функция содержит всю собранную цепочку specialization.updateInfo, включая
+        -- Animals/Food/Straw/LiquidManure. Во время стройки нужен только constructible HUD.
+        table.clear(spec.info)
+        infoHUD.addConstructionInfo(placeable, spec.info)
+
+        if #spec.info > 0 then
+            local box = spec.hudBox
+            if box ~= nil then
+                box:clear()
+                box:setTitle(placeable:getName())
+
+                for i = 1, #spec.info do
+                    local element = spec.info[i]
+                    box:addLine(element.title, element.text, element.accentuate)
+                    spec.info[i] = nil
+                end
+
+                box:showNextFrame()
+            end
+        end
+    end
+
+    PlaceableInfoTrigger.taigaConstructionInfoDrawHookInstalled = true
+    logInfo("InfoTrigger construction-only HUD hook installed")
+    return true
+end
+
 local function installInfoHUDHooks()
+    installInfoTriggerDrawHook()
     installConstructibleInfoHook()
 
     installFutureFacilityInfoGuard(PlaceableProductionPoint, "PlaceableProductionPoint")
