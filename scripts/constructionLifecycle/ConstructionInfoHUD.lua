@@ -11,7 +11,7 @@
 TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
 local HUD = TaigaConstructionInfoHUD
 
-HUD.VERSION = "1.0.3"
+HUD.VERSION = "1.0.4"
 HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
 
 HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
@@ -325,14 +325,30 @@ local function getObjectStorageGroupKey(abstractObject, fillTypeIndex)
     return "title:" .. getAbstractObjectDialogTitle(abstractObject)
 end
 
--- Проверяет наличие штатного ProductionPoint у placeable.
-function HUD.isProductionPlaceable(placeable)
+-- Возвращает ProductionPoint, принадлежащий placeable.
+-- Поддерживаются как штатная specialization productionPoint, так и используемый картой
+-- ExtendedProductionPoint, который сохраняет runtime-ссылку в spec_extendedProductionPoint.
+function HUD.getProductionPoint(placeable)
     if placeable == nil then
-        return false
+        return nil
     end
 
     local productionSpec = placeable.spec_productionPoint
-    return productionSpec ~= nil and productionSpec.productionPoint ~= nil
+    if productionSpec ~= nil and productionSpec.productionPoint ~= nil then
+        return productionSpec.productionPoint
+    end
+
+    local extendedSpec = placeable.spec_extendedProductionPoint
+    if extendedSpec ~= nil and extendedSpec.productionPoint ~= nil then
+        return extendedSpec.productionPoint
+    end
+
+    return nil
+end
+
+-- Проверяет наличие производственной точки у placeable без привязки к конкретному type.
+function HUD.isProductionPlaceable(placeable)
+    return HUD.getProductionPoint(placeable) ~= nil
 end
 
 -- Проверяет составной объект ProductionPoint + ObjectStorage без привязки к XML filename/type.
@@ -385,7 +401,9 @@ local function addOwnerInfo(productionPoint, infoTable)
     end
 end
 
-local function addProductionInfo(productionPoint, infoTable)
+-- Добавляет базовый блок активных производств. Функция вынесена отдельно, чтобы
+-- специализированные производства могли безопасно декорировать уже готовые строки.
+local function addProductionRows(productionPoint, infoTable)
     addSection(
         infoTable,
         getText(HUD.L10N_PRODUCTION, "infohud_activeProductions", "Production")
@@ -418,11 +436,45 @@ local function addProductionInfo(productionPoint, infoTable)
     end
 end
 
+local function addProductionInfo(productionPoint, infoTable)
+    -- GreenhouseSeasonal уже содержит проверенную логику украшения строк
+    -- процентом продуктивности и признаком активного удобрения. Вызываем её
+    -- напрямую вокруг нашего базового блока, не возвращаясь в глобальную цепочку
+    -- ProductionPoint:updateInfo, которую могут перезаписать сторонние HUD-моды.
+    if PlaceableGreenhouseSeasonal ~= nil
+        and type(PlaceableGreenhouseSeasonal.productionPointUpdateInfo) == "function" then
+        PlaceableGreenhouseSeasonal.productionPointUpdateInfo(
+            productionPoint,
+            function(point, targetInfo)
+                addProductionRows(point, targetInfo)
+            end,
+            infoTable
+        )
+        return
+    end
+
+    addProductionRows(productionPoint, infoTable)
+end
+
 local function addProductionStorageInfo(productionPoint, infoTable)
     addSection(
         infoTable,
         getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage")
     )
+
+    -- WoodElevator хранит четыре культуры, которые намеренно не входят в рецепты.
+    -- Его существующий post-update обработчик вызывается с пустым superFunc:
+    -- так сохраняются строка общей ёмкости и storage-only культуры, но не запускается
+    -- чужая глобальная цепочка ProductionPoint:updateInfo.
+    if WoodElevatorStorageInfo ~= nil
+        and type(WoodElevatorStorageInfo.updateInfo) == "function" then
+        WoodElevatorStorageInfo:updateInfo(
+            productionPoint,
+            function()
+            end,
+            infoTable
+        )
+    end
 
     local displayed = false
     local displayedFillTypes = {}
@@ -550,7 +602,11 @@ function HUD.addFinishedProductionInfo(placeable, infoTable)
         return false
     end
 
-    local productionPoint = placeable.spec_productionPoint.productionPoint
+    local productionPoint = HUD.getProductionPoint(placeable)
+    if productionPoint == nil then
+        return false
+    end
+
     addOwnerInfo(productionPoint, infoTable)
     addProductionInfo(productionPoint, infoTable)
     addProductionStorageInfo(productionPoint, infoTable)
@@ -741,17 +797,135 @@ function HUD.addConstructionInfo(placeable, infoTable)
         end
     end
 
-    -- ConstructibleState может добавлять прогресс текущей фазы. Это строительная,
-    -- а не будущая функциональность объекта, поэтому сохраняем штатный вызов.
+    -- Требования текущего этапа формируем напрямую из ConstructibleStateBuilding.inputs.
+    -- Не вызываем state:updateInfo(): сторонние HUD-моды могут глобально заменить этот
+    -- метод и снова добавить собственный вариант строительного меню.
     local state = spec.stateMachine ~= nil and spec.stateMachine[spec.stateIndex] or nil
-    if state ~= nil and type(state.updateInfo) == "function" then
-        state:updateInfo(infoTable)
+    local requiredInputs = {}
+
+    if state ~= nil and type(state.inputs) == "table" then
+        for _, input in ipairs(state.inputs) do
+            local remainingAmount = input.remainingAmount or 0
+            if remainingAmount > 0.01 then
+                table.insert(requiredInputs, {
+                    fillType = input.fillType,
+                    remainingAmount = remainingAmount
+                })
+            end
+        end
+    end
+
+    if #requiredInputs > 0 then
+        addSection(infoTable, g_i18n:getText("infohud_requiredMaterialsNextStep"))
+
+        for _, requiredInput in ipairs(requiredInputs) do
+            local fillType = requiredInput.fillType
+            local title = fillType ~= nil and fillType.title or nil
+
+            if title == nil and fillType ~= nil and fillType.index ~= nil then
+                title = g_fillTypeManager:getFillTypeTitleByIndex(fillType.index)
+            end
+
+            table.insert(infoTable, {
+                title = title or "",
+                text = g_i18n:formatVolume(math.ceil(requiredInput.remainingAmount))
+            })
+        end
     end
 
     return true
 end
 
+-- Рисует подготовленную infoTable через штатный hudBox конкретного InfoTrigger.
+-- Возвращает false, если trigger сейчас не должен показываться этому игроку.
+local function drawPreparedInfo(placeable, infoTable)
+    local spec = placeable ~= nil and placeable.spec_infoTrigger or nil
+    if spec == nil
+        or not spec.showInfo
+        or (not spec.showAllPlayers and placeable:getOwnerFarmId() ~= g_currentMission:getFarmId()) then
+        return false
+    end
+
+    if #infoTable == 0 then
+        return true
+    end
+
+    local box = spec.hudBox
+    if box == nil then
+        return true
+    end
+
+    box:clear()
+    box:setTitle(placeable:getName())
+
+    for i = 1, #infoTable do
+        local element = infoTable[i]
+        box:addLine(element.title, element.text, element.accentuate)
+        infoTable[i] = nil
+    end
+
+    box:showNextFrame()
+    return true
+end
+
+-- Устанавливает окончательный InfoTrigger-hook после загрузки остальных модов.
+-- Для строящихся объектов и готовых производств HUD собирается здесь напрямую,
+-- поэтому поздние замены ProductionPoint/ConstructibleState.updateInfo не могут
+-- подмешать альтернативные строки. Для всех остальных placeable сохраняется
+-- исходная цепочка игры и сторонних модов.
+function HUD.installAuthoritativeInfoTriggerHook()
+    if PlaceableInfoTrigger == nil or PlaceableInfoTrigger.onDraw == nil then
+        return false
+    end
+
+    if PlaceableInfoTrigger.taigaConstructionInfoAuthoritativeDrawHook
+        == PlaceableInfoTrigger.onDraw then
+        return true
+    end
+
+    local originalOnDraw = PlaceableInfoTrigger.onDraw
+
+    local wrappedOnDraw = function(placeable, ...)
+        local showConstruction = HUD.shouldSuppressFutureFacilityInfo(placeable)
+        local showProduction = not showConstruction and HUD.useFinishedProductionInfo(placeable)
+
+        if not showConstruction and not showProduction then
+            return originalOnDraw(placeable, ...)
+        end
+
+        local spec = placeable.spec_infoTrigger
+        if spec == nil then
+            return
+        end
+
+        table.clear(spec.info)
+
+        if showConstruction then
+            HUD.addConstructionInfo(placeable, spec.info)
+        elseif HUD.useFinishedCompositeInfo(placeable) then
+            HUD.addFinishedCompositeInfo(placeable, spec.info)
+        else
+            HUD.addFinishedProductionInfo(placeable, spec.info)
+        end
+
+        drawPreparedInfo(placeable, spec.info)
+    end
+
+    PlaceableInfoTrigger.onDraw = wrappedOnDraw
+    PlaceableInfoTrigger.taigaConstructionInfoAuthoritativeDrawHook = wrappedOnDraw
+
+    Logging.info("%s authoritative InfoTrigger HUD hook installed", HUD.LOG_PREFIX)
+    return true
+end
+
+-- loadMap выполняется уже после загрузки extraSourceFiles остальных модов.
+-- Поэтому этот hook становится внешним слоем над InfoDisplayExtension и подобными модами.
+function HUD:loadMap(mapName)
+    self.installAuthoritativeInfoTriggerHook()
+end
+
 HUD.installProductionPointInfoHook()
 HUD.installConstructionNotificationLayoutHook()
+addModEventListener(HUD)
 
 Logging.info("%s loaded, version %s", HUD.LOG_PREFIX, HUD.VERSION)
