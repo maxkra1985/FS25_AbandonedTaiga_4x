@@ -27,7 +27,6 @@ Fix.NOTIFICATION_DURATION_MS = 7000
 
 Fix.SPAWN_SPACING = 1.8
 Fix.SPAWN_COLUMNS = 4
-Fix.SPAWN_FORWARD_OFFSET = 2.5
 
 Fix.syncTimer = 0
 Fix.notificationArmTimer = Fix.NOTIFICATION_ARM_DELAY_MS
@@ -923,37 +922,176 @@ local function getPalletDefinition(fillTypeIndex)
     }
 end
 
-local function getResidualSpawnAnchor(placeable)
-    local node = nil
-    local spec = placeable.spec_constructible
+-- Возвращает геометрический центр общего footprint здания в мировых координатах.
+-- Границы рассчитываются только по штатным placement.testAreas, без привязки к конкретному зданию.
+local function getPlaceableFootprintCenter(placeable)
+    local placementSpec = placeable.spec_placement
+    local rootNode = placeable.rootNode
 
-    if spec ~= nil and spec.unloadingStation ~= nil and spec.unloadingStation.unloadTriggers ~= nil then
-        local trigger = spec.unloadingStation.unloadTriggers[1]
-        if trigger ~= nil then
-            node = trigger.exactFillRootNode or trigger.triggerNode or trigger.rootNode
+    if placementSpec == nil
+        or placementSpec.testAreas == nil
+        or #placementSpec.testAreas == 0
+        or rootNode == nil
+        or rootNode == 0 then
+        return nil, nil
+    end
+
+    local minX, maxX = math.huge, -math.huge
+    local minZ, maxZ = math.huge, -math.huge
+    local hasArea = false
+
+    -- testArea.endNode является прямым дочерним узлом startNode. Поэтому его
+    -- локальная трансляция задаёт противоположный угол штатного placement-box.
+    -- Переводим все четыре угла каждой зоны в систему координат rootNode и
+    -- получаем общий footprint независимо от поворота отдельных testAreas.
+    for _, area in ipairs(placementSpec.testAreas) do
+        if area.startNode ~= nil
+            and area.startNode ~= 0
+            and area.endNode ~= nil
+            and area.endNode ~= 0 then
+            local endX, _, endZ = getTranslation(area.endNode)
+            local corners = {
+                {0, 0},
+                {endX, 0},
+                {0, endZ},
+                {endX, endZ}
+            }
+
+            for _, corner in ipairs(corners) do
+                local x, _, z = localToLocal(
+                    area.startNode,
+                    rootNode,
+                    corner[1],
+                    0,
+                    corner[2]
+                )
+                minX = math.min(minX, x)
+                maxX = math.max(maxX, x)
+                minZ = math.min(minZ, z)
+                maxZ = math.max(maxZ, z)
+                hasArea = true
+            end
         end
     end
 
-    if node == nil or node == 0 then
-        node = placeable.rootNode
-            or (placeable.components ~= nil
-                and placeable.components[1] ~= nil
-                and placeable.components[1].node
-                or nil)
+    if not hasArea then
+        return nil, nil
     end
 
-    if node == nil or node == 0 then
+    local centerX = (minX + maxX) * 0.5
+    local centerZ = (minZ + maxZ) * 0.5
+    local worldX, _, worldZ = localToWorld(rootNode, centerX, 0, centerZ)
+
+    return worldX, worldZ
+end
+
+-- Находит фактический центр зоны приёма стройматериалов.
+-- Учитываются все штатные типы входов constructible: pallet, bulk/unload и wood.
+local function getConstructionUnloadCenter(placeable)
+    if placeable.xmlFile == nil then
+        return nil, nil
+    end
+
+    local sumX, sumZ = 0, 0
+    local count = 0
+
+    local function addNode(node)
+        if node == nil or node == 0 then
+            return
+        end
+
+        local x, _, z = getWorldTranslation(node)
+        sumX = sumX + x
+        sumZ = sumZ + z
+        count = count + 1
+    end
+
+    for _, key in placeable.xmlFile:iterator("placeable.constructible.sellingStation.palletTrigger") do
+        addNode(placeable.xmlFile:getValue(
+            key .. "#triggerNode",
+            nil,
+            placeable.components,
+            placeable.i3dMappings
+        ))
+    end
+
+    for _, key in placeable.xmlFile:iterator("placeable.constructible.sellingStation.unloadTrigger") do
+        addNode(placeable.xmlFile:getValue(
+            key .. "#exactFillRootNode",
+            nil,
+            placeable.components,
+            placeable.i3dMappings
+        ))
+    end
+
+    for _, key in placeable.xmlFile:iterator("placeable.constructible.sellingStation.woodTrigger") do
+        addNode(placeable.xmlFile:getValue(
+            key .. "#triggerNode",
+            nil,
+            placeable.components,
+            placeable.i3dMappings
+        ))
+    end
+
+    if count > 0 then
+        return sumX / count, sumZ / count
+    end
+
+    -- Fallback для нестандартных constructible, где доступен только runtime UnloadTrigger.
+    local spec = placeable.spec_constructible
+    if spec ~= nil
+        and spec.unloadingStation ~= nil
+        and spec.unloadingStation.unloadTriggers ~= nil then
+        for _, trigger in ipairs(spec.unloadingStation.unloadTriggers) do
+            local node = trigger.exactFillRootNode or trigger.triggerNode or trigger.rootNode
+            if node ~= nil and node ~= 0 then
+                local x, _, z = getWorldTranslation(node)
+                return x, z
+            end
+        end
+    end
+
+    return nil, nil
+end
+
+-- Формирует мировую систему координат спавна:
+-- начало — точка выгрузки стройматериалов, forward — строго от здания наружу.
+local function getResidualSpawnFrame(placeable)
+    local unloadX, unloadZ = getConstructionUnloadCenter(placeable)
+    if unloadX == nil then
         return nil
     end
 
-    return node
+    local centerX, centerZ = getPlaceableFootprintCenter(placeable)
+    if centerX == nil then
+        return nil
+    end
+
+    local dirX = unloadX - centerX
+    local dirZ = unloadZ - centerZ
+    local length = math.sqrt(dirX * dirX + dirZ * dirZ)
+
+    if length < 0.001 then
+        return nil
+    end
+
+    dirX = dirX / length
+    dirZ = dirZ / length
+
+    return {
+        originX = unloadX,
+        originZ = unloadZ,
+        dirX = dirX,
+        dirZ = dirZ,
+        rotY = MathUtil.getYRotationFromDirection(dirX, dirZ)
+    }
 end
 
 local function enqueueResidualPallets(placeable, fillTypeIndex, amount, palletDefinition, startSlot)
-    local anchorNode = getResidualSpawnAnchor(placeable)
-    if anchorNode == nil then
+    local spawnFrame = getResidualSpawnFrame(placeable)
+    if spawnFrame == nil then
         logWarning(
-            "Cannot spawn leftover %s (%.1f L) for %s: no anchor node",
+            "Cannot spawn leftover %s (%.1f L) for %s: no valid construction unload direction",
             tostring(palletDefinition.title),
             amount,
             getPlaceableName(placeable)
@@ -970,7 +1108,7 @@ local function enqueueResidualPallets(placeable, fillTypeIndex, amount, palletDe
         table.insert(Fix.palletQueue, {
             placeable = placeable,
             placeableName = getPlaceableName(placeable),
-            anchorNode = anchorNode,
+            spawnFrame = spawnFrame,
             fillTypeIndex = fillTypeIndex,
             amount = chunk,
             filename = palletDefinition.filename,
@@ -1059,14 +1197,27 @@ local function getResidualPalletSpawnPosition(job)
     local column = job.slot % Fix.SPAWN_COLUMNS
     local row = math.floor(job.slot / Fix.SPAWN_COLUMNS)
     local centerColumn = (Fix.SPAWN_COLUMNS - 1) * 0.5
-    local offsetX = (column - centerColumn) * Fix.SPAWN_SPACING
-    local offsetZ = Fix.SPAWN_FORWARD_OFFSET + row * Fix.SPAWN_SPACING
+    local lateralOffset = (column - centerColumn) * Fix.SPAWN_SPACING
 
-    local x, _, z = localToWorld(job.anchorNode, offsetX, 0, offsetZ)
+    -- Первый ряд центрируется непосредственно на точке выгрузки.
+    -- Каждый следующий ряд смещается только дальше по направлению от здания.
+    local forwardOffset = row * Fix.SPAWN_SPACING
+
+    local frame = job.spawnFrame
+
+    -- Перпендикуляр к направлению "от здания" задаёт колонки,
+    -- а каждый следующий ряд уходит ещё дальше от здания.
+    local sideX = frame.dirZ
+    local sideZ = -frame.dirX
+    local x = frame.originX
+        + frame.dirX * forwardOffset
+        + sideX * lateralOffset
+    local z = frame.originZ
+        + frame.dirZ * forwardOffset
+        + sideZ * lateralOffset
     local terrainY = getTerrainHeightAtWorldPos(g_terrainNode, x, 0, z) + 0.25
-    local _, rotY, _ = getWorldRotation(job.anchorNode)
 
-    return x, terrainY, z, rotY
+    return x, terrainY, z, frame.rotY
 end
 
 function Fix.startNextPalletJob()
@@ -1089,12 +1240,6 @@ function Fix.startNextPalletJob()
             job.amount,
             job.placeableName
         )
-        table.remove(Fix.palletQueue, 1)
-        return
-    end
-
-    if job.anchorNode == nil or job.anchorNode == 0 or not entityExists(job.anchorNode) then
-        logWarning("Residual pallet anchor disappeared for %s", job.placeableName)
         table.remove(Fix.palletQueue, 1)
         return
     end
