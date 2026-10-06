@@ -1032,11 +1032,13 @@ function LoggingContractor:finishJob(job)
 end
 
 
--- Выполняет один рабочий такт договора: сначала исключает уже спиленные игроком
--- цели, затем подрядчик обрабатывает до equipmentCount оставшихся деревьев.
+-- Выполняет один рабочий такт договора: один раз актуализирует очередь целей,
+-- затем запускает до equipmentCount деревьев без повторного полного обхода участка.
 function LoggingContractor:processJobBatch(job)
     job.processingTrees = job.processingTrees or {}
 
+    -- Полная проверка targetNodes нужна при выборе новой партии: здесь исключаются
+    -- деревья, которые игрок успел спилить самостоятельно между рабочими тактами.
     local targets = self:refreshJobTargets(job)
     local availableSlots =
         math.max(job.equipmentCount - #job.processingTrees, 0)
@@ -1048,7 +1050,6 @@ function LoggingContractor:processJobBatch(job)
     local started = 0
 
     while started < availableSlots and job.isActive do
-        targets = self:refreshJobTargets(job)
         if #targets == 0 then
             break
         end
@@ -1063,12 +1064,12 @@ function LoggingContractor:processJobBatch(job)
             break
         end
 
+        -- removePendingContractTarget изменяет ту же таблицу, которую вернул
+        -- refreshJobTargets, поэтому повторное сканирование очереди здесь не требуется.
         self:removePendingContractTarget(job, shape)
         table.insert(job.processingTrees, state)
         started = started + 1
     end
-
-    self:refreshJobTargets(job)
 
     if job.remainingTrees == 0 then
         self:finishJob(job)
@@ -1077,10 +1078,15 @@ function LoggingContractor:processJobBatch(job)
     end
 end
 
--- Продвигает уже начатые деревья. В multiplayer одна группа изменений
--- split-shape расходует текущий сетевой tick.
+-- Продвигает только уже начатые деревья. В multiplayer одна группа изменений
+-- split-shape расходует текущий сетевой tick. Полная очередь targetNodes здесь
+-- не пересканируется: завершение конкретного дерева обновляет счётчик локально.
 function LoggingContractor:updateContractorProcessingTrees(job)
     job.processingTrees = job.processingTrees or {}
+
+    if #job.processingTrees == 0 then
+        return
+    end
 
     local index = 1
     local progressChanged = false
@@ -1104,6 +1110,8 @@ function LoggingContractor:updateContractorProcessingTrees(job)
             if done then
                 table.remove(job.processingTrees, index)
 
+                local resolved = true
+
                 if success then
                     job.contractorCutTrees =
                         (job.contractorCutTrees or 0) + 1
@@ -1112,7 +1120,17 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                         state.sourceShape,
                         job.farmlandId
                     ) then
+                    -- Если обработка не изменила дерево и оно по-прежнему стоит,
+                    -- возвращаем его в очередь без изменения remainingTrees.
                     table.insert(job.targetNodes, state.sourceShape)
+                    resolved = false
+                end
+
+                if resolved then
+                    job.remainingTrees = math.max(
+                        (job.remainingTrees or 1) - 1,
+                        0
+                    )
                 end
 
                 progressChanged = true
@@ -1123,8 +1141,6 @@ function LoggingContractor:updateContractorProcessingTrees(job)
             index = index + 1
         end
     end
-
-    self:refreshJobTargets(job)
 
     if job.remainingTrees == 0 then
         self:finishJob(job)
@@ -1162,7 +1178,11 @@ function LoggingContractor:update(dt)
             end
 
             -- С 21:00 до 08:00 замораживаются и уже начатые деревья.
-            if isWorkingTime then
+            -- Между партиями не вызываем обработчик вообще: до следующего
+            -- двухминутного такта у договора нет split-shape работы.
+            if isWorkingTime
+                and job.processingTrees ~= nil
+                and #job.processingTrees > 0 then
                 self:updateContractorProcessingTrees(job)
             end
 
