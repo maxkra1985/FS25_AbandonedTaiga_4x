@@ -165,10 +165,9 @@ LoggingContractor.PROCESSING_DETACHED_SCAN_STEP = 0.05
 LoggingContractor.PROCESSING_DETACHED_SECOND_PASS_PHASE = 15
 LoggingContractor.PROCESSING_FULL_CIRCLE_DIRECTIONS = 12
 
--- PRUNE выполняется порциями, чтобы одно дерево не занимало серверный кадр
--- полным проходом по стволу или отделённой ветви. Геометрический шаг и число
--- направлений не меняются, меняется только объём работы за один update.
-LoggingContractor.PROCESSING_BRANCH_SECTIONS_PER_UPDATE = 4
+-- Тяжёлая очистка attachments внутри PRUNE выполняется порциями, чтобы один
+-- вызов не проходил целиком по стволу или отделённой ветви. Геометрический шаг
+-- и число радиальных направлений не меняются.
 LoggingContractor.PROCESSING_ATTACHMENT_SECTIONS_PER_UPDATE = 1
 LoggingContractor.PROCESSING_DETACHED_SECTIONS_PER_UPDATE = 1
 
@@ -763,7 +762,21 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
             return true, changed
         end
 
-        if state.distance > state.length + 0.001 then
+        -- Отделённая ветвь динамическая и между кадрами может двигаться.
+        -- Поэтому мировую ось и начало сканирования пересчитываем для текущего
+        -- transform, а не продолжаем использовать координаты момента split.
+        local centerX, centerY, centerZ,
+            dirX, dirY, dirZ,
+            upX, upY, upZ,
+            currentLength =
+            self:getContractorShapeMainAxis(shape)
+
+        if centerX == nil or currentLength == nil or currentLength <= 0 then
+            state.done = true
+            return true, changed
+        end
+
+        if state.distance > currentLength + 0.001 then
             state.passIndex = state.passIndex + 1
 
             if state.passIndex > 2 then
@@ -776,17 +789,20 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
         else
             state.stepIndex = state.stepIndex + 1
 
+            local baseX = centerX - dirX * currentLength * 0.5
+            local baseY = centerY - dirY * currentLength * 0.5
+            local baseZ = centerZ - dirZ * currentLength * 0.5
             local sample = self:sampleContractorProcessingSection(
                 shape,
-                state.baseX,
-                state.baseY,
-                state.baseZ,
-                state.dirX,
-                state.dirY,
-                state.dirZ,
-                state.upX,
-                state.upY,
-                state.upZ,
+                baseX,
+                baseY,
+                baseZ,
+                dirX,
+                dirY,
+                dirZ,
+                upX,
+                upY,
+                upZ,
                 state.distance
             )
             local phase = state.passIndex == 1 and 0
@@ -800,15 +816,15 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
             local removed = self:removeContractorProcessingAttachmentsAtStep(
                 shape,
                 sample,
-                state.baseX,
-                state.baseY,
-                state.baseZ,
-                state.dirX,
-                state.dirY,
-                state.dirZ,
-                state.upX,
-                state.upY,
-                state.upZ,
+                baseX,
+                baseY,
+                baseZ,
+                dirX,
+                dirY,
+                dirZ,
+                upX,
+                upY,
+                upZ,
                 state.distance,
                 rotationAngle,
                 true
@@ -898,25 +914,44 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
     while processedSections
         < LoggingContractor.PROCESSING_ATTACHMENT_SECTIONS_PER_UPDATE do
-        if not entityExists(state.shape)
-            or cleanup.distance > state.length + 0.001 then
+        if not entityExists(state.shape) then
+            state.attachmentCleanup = nil
+            return true, changed
+        end
+
+        -- Основной ствол после первичного спила динамический. При растянутой
+        -- на несколько кадров очистке используем его текущую мировую ось,
+        -- чтобы точки removeSplitShapeAttachments следовали за движением ствола.
+        local centerX, centerY, centerZ,
+            dirX, dirY, dirZ,
+            upX, upY, upZ,
+            currentLength =
+            self:getContractorShapeMainAxis(state.shape)
+
+        if centerX == nil
+            or currentLength == nil
+            or currentLength <= 0
+            or cleanup.distance > currentLength + 0.001 then
             state.attachmentCleanup = nil
             return true, changed
         end
 
         cleanup.attachmentStep = cleanup.attachmentStep + 1
 
+        local baseX = centerX - dirX * currentLength * 0.5
+        local baseY = centerY - dirY * currentLength * 0.5
+        local baseZ = centerZ - dirZ * currentLength * 0.5
         local sample = self:sampleContractorProcessingSection(
             state.shape,
-            state.baseX,
-            state.baseY,
-            state.baseZ,
-            state.axisX,
-            state.axisY,
-            state.axisZ,
-            state.upX,
-            state.upY,
-            state.upZ,
+            baseX,
+            baseY,
+            baseZ,
+            dirX,
+            dirY,
+            dirZ,
+            upX,
+            upY,
+            upZ,
             cleanup.distance
         )
 
@@ -931,15 +966,15 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
         local removed = self:removeContractorProcessingAttachmentsAtStep(
             state.shape,
             sample,
-            state.baseX,
-            state.baseY,
-            state.baseZ,
-            state.axisX,
-            state.axisY,
-            state.axisZ,
-            state.upX,
-            state.upY,
-            state.upZ,
+            baseX,
+            baseY,
+            baseZ,
+            dirX,
+            dirY,
+            dirZ,
+            upX,
+            upY,
+            upZ,
             cleanup.distance,
             attachmentAngle,
             state.fullCircleAttachments
@@ -960,9 +995,9 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 end
 
 
--- Продвигает PRUNE ограниченными порциями до первого изменения split-shape,
--- исчерпания бюджета текущего update либо завершения фазы. Возвращает:
--- done, shapeChanged.
+-- Продвигает PRUNE до первого изменения split-shape либо завершения текущей
+-- веточной фазы. Длительные проходы удаления attachments ниже выполняются
+-- отдельными порциями между update. Возвращает: done, shapeChanged.
 function LoggingContractor:advanceContractorPruningState(state, allowMutation)
     if state.shape == nil
         or state.shape == 0
@@ -1061,7 +1096,6 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
     end
 
     local step = LoggingContractor.PROCESSING_SCAN_STEP
-    local processedSections = 0
 
     while state.shape ~= nil
         and state.shape ~= 0
@@ -1078,12 +1112,6 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
             state.phase = "ATTACHMENTS"
             return self:advanceContractorPruningState(state, allowMutation)
         end
-
-        if processedSections
-            >= LoggingContractor.PROCESSING_BRANCH_SECTIONS_PER_UPDATE then
-            return false, false
-        end
-        processedSections = processedSections + 1
 
         local sample = self:sampleContractorProcessingSection(
             state.shape,
