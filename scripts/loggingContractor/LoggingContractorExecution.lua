@@ -1418,6 +1418,12 @@ end
 
 
 function LoggingContractor:update(dt)
+    -- Клиент запрашивает состояние активных договоров один раз после входа
+    -- в ферму. Для listen-server локальное представление заполняется напрямую.
+    if self.mission:getIsClient() and self.updateClientJobSync ~= nil then
+        self:updateClientJobSync()
+    end
+
     if not self.mission:getIsServer() then
         return
     end
