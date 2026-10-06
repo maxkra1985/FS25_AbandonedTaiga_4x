@@ -165,6 +165,13 @@ LoggingContractor.PROCESSING_DETACHED_SCAN_STEP = 0.05
 LoggingContractor.PROCESSING_DETACHED_SECOND_PASS_PHASE = 15
 LoggingContractor.PROCESSING_FULL_CIRCLE_DIRECTIONS = 12
 
+-- PRUNE выполняется порциями, чтобы одно дерево не занимало серверный кадр
+-- полным проходом по стволу или отделённой ветви. Геометрический шаг и число
+-- направлений не меняются, меняется только объём работы за один update.
+LoggingContractor.PROCESSING_BRANCH_SECTIONS_PER_UPDATE = 4
+LoggingContractor.PROCESSING_ATTACHMENT_SECTIONS_PER_UPDATE = 1
+LoggingContractor.PROCESSING_DETACHED_SECTIONS_PER_UPDATE = 1
+
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
@@ -677,16 +684,23 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     return math.max(attachmentsBefore - attachmentsAfter, 0)
 end
 
--- Очищает уже отделённую крупную ветвь по её собственной продольной оси.
--- На каждом сечении выполняется полный круг из 12 радиальных направлений.
-function LoggingContractor:scanContractorProcessingDetachedAttachments(shape)
+-- Создаёт состояние поэтапной очистки уже отделённой крупной ветви.
+-- Два исходных прохода и шаг 0.05 м сохраняются без изменений.
+function LoggingContractor:createContractorDetachedAttachmentState(shape)
+    local state = {
+        shape = shape,
+        done = false
+    }
+
     if shape == nil or shape == 0 or not entityExists(shape) then
-        return false
+        state.done = true
+        return state
     end
 
-    local attachmentsBefore = select(5, self:getContractorSplitShapeStats(shape))
-    if attachmentsBefore <= 0 then
-        return false
+    local attachments = select(5, self:getContractorSplitShapeStats(shape))
+    if attachments <= 0 then
+        state.done = true
+        return state
     end
 
     local centerX, centerY, centerZ, dirX, dirY, dirZ, upX, upY, upZ, length =
@@ -697,78 +711,116 @@ function LoggingContractor:scanContractorProcessingDetachedAttachments(shape)
             "[LoggingContractor] Unable to determine detached branch axis for shape %d",
             shape
         )
-        return false
+        state.done = true
+        return state
     end
 
-    local baseX = centerX - dirX * length * 0.5
-    local baseY = centerY - dirY * length * 0.5
-    local baseZ = centerZ - dirZ * length * 0.5
-    local step = LoggingContractor.PROCESSING_DETACHED_SCAN_STEP
-    local removedAny = false
+    state.dirX = dirX
+    state.dirY = dirY
+    state.dirZ = dirZ
+    state.upX = upX
+    state.upY = upY
+    state.upZ = upZ
+    state.length = length
+    state.baseX = centerX - dirX * length * 0.5
+    state.baseY = centerY - dirY * length * 0.5
+    state.baseZ = centerZ - dirZ * length * 0.5
+    state.passIndex = 1
+    state.distance = LoggingContractor.PROCESSING_DETACHED_SCAN_STEP
+    state.stepIndex = 0
 
-    for passIndex = 1, 2 do
+    return state
+end
+
+
+-- Продвигает очистку отделённой ветви только на ограниченное число сечений.
+-- Возвращает done и признак реального изменения attachments в этом update.
+function LoggingContractor:advanceContractorDetachedAttachmentState(state)
+    if state == nil or state.done then
+        return true, false
+    end
+
+    local shape = state.shape
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        state.done = true
+        return true, false
+    end
+
+    local step = LoggingContractor.PROCESSING_DETACHED_SCAN_STEP
+    local processedSections = 0
+    local changed = false
+
+    while processedSections
+        < LoggingContractor.PROCESSING_DETACHED_SECTIONS_PER_UPDATE do
         if not entityExists(shape)
             or select(5, self:getContractorSplitShapeStats(shape)) <= 0 then
-            break
+            state.done = true
+            return true, changed
         end
 
-        local startDistance = passIndex == 1 and step or step * 0.5
-        local phase = passIndex == 1 and 0
-            or LoggingContractor.PROCESSING_DETACHED_SECOND_PASS_PHASE
-        local distance = startDistance
-        local stepIndex = 0
+        if state.passIndex > 2 then
+            state.done = true
+            return true, changed
+        end
 
-        while entityExists(shape) and distance <= length + 0.001 do
-            stepIndex = stepIndex + 1
+        if state.distance > state.length + 0.001 then
+            state.passIndex = state.passIndex + 1
+
+            if state.passIndex > 2 then
+                state.done = true
+                return true, changed
+            end
+
+            state.distance = state.passIndex == 1 and step or step * 0.5
+            state.stepIndex = 0
+        else
+            state.stepIndex = state.stepIndex + 1
 
             local sample = self:sampleContractorProcessingSection(
                 shape,
-                baseX,
-                baseY,
-                baseZ,
-                dirX,
-                dirY,
-                dirZ,
-                upX,
-                upY,
-                upZ,
-                distance
+                state.baseX,
+                state.baseY,
+                state.baseZ,
+                state.dirX,
+                state.dirY,
+                state.dirZ,
+                state.upX,
+                state.upY,
+                state.upZ,
+                state.distance
             )
+            local phase = state.passIndex == 1 and 0
+                or LoggingContractor.PROCESSING_DETACHED_SECOND_PASS_PHASE
             local rotationAngle = (
                 phase
-                + (stepIndex - 1)
+                + (state.stepIndex - 1)
                     * LoggingContractor.PROCESSING_ATTACHMENT_ROTATION_STEP
             ) % 360
 
             local removed = self:removeContractorProcessingAttachmentsAtStep(
                 shape,
                 sample,
-                baseX,
-                baseY,
-                baseZ,
-                dirX,
-                dirY,
-                dirZ,
-                upX,
-                upY,
-                upZ,
-                distance,
+                state.baseX,
+                state.baseY,
+                state.baseZ,
+                state.dirX,
+                state.dirY,
+                state.dirZ,
+                state.upX,
+                state.upY,
+                state.upZ,
+                state.distance,
                 rotationAngle,
                 true
             )
 
-            removedAny = removedAny or removed > 0
-
-            if entityExists(shape)
-                and select(5, self:getContractorSplitShapeStats(shape)) <= 0 then
-                break
-            end
-
-            distance = distance + step
+            changed = changed or removed > 0
+            state.distance = state.distance + step
+            processedSections = processedSections + 1
         end
     end
 
-    return removedAny
+    return false, changed
 end
 
 function LoggingContractor:createContractorPruningState(
@@ -813,30 +865,46 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
--- Очищает attachments окончательного основного ствола после всех branch split.
-function LoggingContractor:cleanContractorMainTrunkAttachments(state)
+-- Продвигает очистку attachments основного ствола порциями.
+-- Шаг 0.10 м и полный круг для ели не меняются; между update сохраняются
+-- текущая позиция и номер сечения.
+function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     if state.shape == nil
         or state.shape == 0
         or not entityExists(state.shape) then
-        return false
+        state.attachmentCleanup = nil
+        return true, false
     end
 
-    local attachmentsBefore = select(
-        5,
-        self:getContractorSplitShapeStats(state.shape)
-    )
-    if attachmentsBefore <= 0 then
-        return false
+    if state.attachmentCleanup == nil then
+        local attachments = select(
+            5,
+            self:getContractorSplitShapeStats(state.shape)
+        )
+        if attachments <= 0 then
+            return true, false
+        end
+
+        state.attachmentCleanup = {
+            distance = LoggingContractor.PROCESSING_SCAN_STEP,
+            attachmentStep = 0
+        }
     end
 
+    local cleanup = state.attachmentCleanup
     local step = LoggingContractor.PROCESSING_SCAN_STEP
-    local distance = step
-    local attachmentStep = 0
-    local removedAny = false
+    local processedSections = 0
+    local changed = false
 
-    while entityExists(state.shape)
-        and distance <= state.length + 0.001 do
-        attachmentStep = attachmentStep + 1
+    while processedSections
+        < LoggingContractor.PROCESSING_ATTACHMENT_SECTIONS_PER_UPDATE do
+        if not entityExists(state.shape)
+            or cleanup.distance > state.length + 0.001 then
+            state.attachmentCleanup = nil
+            return true, changed
+        end
+
+        cleanup.attachmentStep = cleanup.attachmentStep + 1
 
         local sample = self:sampleContractorProcessingSection(
             state.shape,
@@ -849,13 +917,13 @@ function LoggingContractor:cleanContractorMainTrunkAttachments(state)
             state.upX,
             state.upY,
             state.upZ,
-            distance
+            cleanup.distance
         )
 
         local attachmentAngle = 0
         if not state.fullCircleAttachments then
             attachmentAngle = (
-                (attachmentStep - 1)
+                (cleanup.attachmentStep - 1)
                 * LoggingContractor.PROCESSING_ATTACHMENT_ROTATION_STEP
             ) % 360
         end
@@ -872,26 +940,29 @@ function LoggingContractor:cleanContractorMainTrunkAttachments(state)
             state.upX,
             state.upY,
             state.upZ,
-            distance,
+            cleanup.distance,
             attachmentAngle,
             state.fullCircleAttachments
         )
 
-        removedAny = removedAny or removed > 0
+        changed = changed or removed > 0
+        cleanup.distance = cleanup.distance + step
+        processedSections = processedSections + 1
 
-        if select(5, self:getContractorSplitShapeStats(state.shape)) <= 0 then
-            break
+        if not entityExists(state.shape)
+            or select(5, self:getContractorSplitShapeStats(state.shape)) <= 0 then
+            state.attachmentCleanup = nil
+            return true, changed
         end
-
-        distance = distance + step
     end
 
-    return removedAny
+    return false, changed
 end
 
 
--- Продвигает обработку ветвей до первого изменения split-shape либо до конца
--- текущей фазы. Возвращает: done, shapeChanged.
+-- Продвигает PRUNE ограниченными порциями до первого изменения split-shape,
+-- исчерпания бюджета текущего update либо завершения фазы. Возвращает:
+-- done, shapeChanged.
 function LoggingContractor:advanceContractorPruningState(state, allowMutation)
     if state.shape == nil
         or state.shape == 0
@@ -901,17 +972,40 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
 
     if state.pendingDetached ~= nil then
         local pending = state.pendingDetached
+        pending.shapeIndex = pending.shapeIndex or 1
 
-        if #pending.shapes > 0 and not allowMutation then
-            return false, false
-        end
+        while pending.shapeIndex <= #pending.shapes do
+            local detachedShape = pending.shapes[pending.shapeIndex]
 
-        local changed = false
-        for _, detachedShape in ipairs(pending.shapes) do
-            if entityExists(detachedShape) then
-                changed =
-                    self:scanContractorProcessingDetachedAttachments(detachedShape)
-                    or changed
+            if detachedShape == nil or not entityExists(detachedShape) then
+                pending.shapeIndex = pending.shapeIndex + 1
+                pending.attachmentState = nil
+            else
+                if pending.attachmentState == nil then
+                    pending.attachmentState =
+                        self:createContractorDetachedAttachmentState(
+                            detachedShape
+                        )
+                end
+
+                if not pending.attachmentState.done and not allowMutation then
+                    return false, false
+                end
+
+                local done, changed =
+                    self:advanceContractorDetachedAttachmentState(
+                        pending.attachmentState
+                    )
+
+                if changed then
+                    -- После каждого реально изменившего attachments куска
+                    -- отдаём управление сетевой синхронизации split-shape.
+                    return false, true
+                end
+
+                if not done then
+                    return false, false
+                end
 
                 self:separateContractorBranch(
                     detachedShape,
@@ -932,14 +1026,13 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
                     angularY,
                     angularZ
                 )
+
+                pending.shapeIndex = pending.shapeIndex + 1
+                pending.attachmentState = nil
             end
         end
 
         state.pendingDetached = nil
-
-        if changed then
-            return false, true
-        end
     end
 
     if state.phase == "ATTACHMENTS" then
@@ -949,6 +1042,7 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         )
 
         if attachments <= 0 then
+            state.attachmentCleanup = nil
             return true, false
         end
 
@@ -956,11 +1050,18 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
             return false, false
         end
 
-        local changed = self:cleanContractorMainTrunkAttachments(state)
-        return true, changed
+        local done, changed =
+            self:advanceContractorMainTrunkAttachments(state)
+
+        if changed then
+            return false, true
+        end
+
+        return done, false
     end
 
     local step = LoggingContractor.PROCESSING_SCAN_STEP
+    local processedSections = 0
 
     while state.shape ~= nil
         and state.shape ~= 0
@@ -977,6 +1078,12 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
             state.phase = "ATTACHMENTS"
             return self:advanceContractorPruningState(state, allowMutation)
         end
+
+        if processedSections
+            >= LoggingContractor.PROCESSING_BRANCH_SECTIONS_PER_UPDATE then
+            return false, false
+        end
+        processedSections = processedSections + 1
 
         local sample = self:sampleContractorProcessingSection(
             state.shape,
@@ -1039,13 +1146,19 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
                     state.branchFoundInInitialWindow = true
                 end
 
+                -- Без доступного сетевого mutation-slot дорогое пробирование
+                -- продольного реза всё равно не может завершиться splitShape.
+                if not allowMutation then
+                    return false, false
+                end
+
                 local changed, detached =
                     self:cutContractorProcessingBranchOnce(
                         state,
                         sample,
                         baseline,
                         candidate,
-                        allowMutation
+                        true
                     )
 
                 if changed then
