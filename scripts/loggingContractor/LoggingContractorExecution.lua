@@ -25,6 +25,171 @@ LoggingContractor.START_EDGE_BAND = 20
 LoggingContractor.START_ACCESS_RADIUS = 12
 LoggingContractor.START_DENSITY_TOLERANCE = 2
 
+-- Временный профилировщик подрядчика. Он собирает только агрегированные
+-- длительности и счётчики, а в лог пишет сводку раз в 10 реальных секунд.
+LoggingContractor.PERF_DEBUG_ENABLED = true
+LoggingContractor.PERF_DEBUG_INTERVAL_MS = 10000
+
+local function getContractorPerfTimeMs()
+    return getTimeSec() * 1000
+end
+
+-- Возвращает окно накопления временной статистики, создавая его при первом вызове.
+function LoggingContractor:getContractorPerfStats()
+    if not LoggingContractor.PERF_DEBUG_ENABLED then
+        return nil
+    end
+
+    if self.contractorPerfStats == nil then
+        self.contractorPerfStats = {
+            startedAtMs = getContractorPerfTimeMs(),
+            metrics = {},
+            counters = {}
+        }
+    end
+
+    return self.contractorPerfStats
+end
+
+-- Добавляет длительность операции в агрегированную статистику профилировщика.
+function LoggingContractor:recordContractorPerfMetric(name, elapsedMs, items)
+    local stats = self:getContractorPerfStats()
+    if stats == nil then
+        return
+    end
+
+    local metric = stats.metrics[name]
+    if metric == nil then
+        metric = {
+            calls = 0,
+            totalMs = 0,
+            maxMs = 0,
+            items = 0
+        }
+        stats.metrics[name] = metric
+    end
+
+    metric.calls = metric.calls + 1
+    metric.totalMs = metric.totalMs + elapsedMs
+    metric.maxMs = math.max(metric.maxMs, elapsedMs)
+    metric.items = metric.items + (items or 0)
+end
+
+-- Увеличивает простой диагностический счётчик без записи отдельной строки в лог.
+function LoggingContractor:addContractorPerfCounter(name, value)
+    local stats = self:getContractorPerfStats()
+    if stats == nil then
+        return
+    end
+
+    stats.counters[name] = (stats.counters[name] or 0) + (value or 1)
+end
+
+local function formatContractorPerfMetric(name, metric)
+    if metric == nil or metric.calls <= 0 then
+        return string.format("%s=n/a", name)
+    end
+
+    return string.format(
+        "%s calls=%d total=%.2fms avg=%.3fms max=%.2fms items=%d",
+        name,
+        metric.calls,
+        metric.totalMs,
+        metric.totalMs / metric.calls,
+        metric.maxMs,
+        metric.items or 0
+    )
+end
+
+-- Печатает накопленную статистику ограниченной частотой и начинает новое окно.
+function LoggingContractor:logContractorPerfStatsIfDue()
+    local stats = self:getContractorPerfStats()
+    if stats == nil then
+        return
+    end
+
+    local nowMs = getContractorPerfTimeMs()
+    local windowMs = nowMs - stats.startedAtMs
+    if windowMs < LoggingContractor.PERF_DEBUG_INTERVAL_MS then
+        return
+    end
+
+    local activeJobs = 0
+    for _, job in pairs(self.activeJobs or {}) do
+        if job.isActive then
+            activeJobs = activeJobs + 1
+        end
+    end
+
+    Logging.info(
+        "[LoggingContractorPerf] window=%.1fs jobs=%d | %s | %s | %s",
+        windowMs / 1000,
+        activeJobs,
+        formatContractorPerfMetric("frameDt", stats.metrics.frameDt),
+        formatContractorPerfMetric("update", stats.metrics.update),
+        formatContractorPerfMetric("processing", stats.metrics.processing)
+    )
+
+    Logging.info(
+        "[LoggingContractorPerf] %s | %s | %s | %s | %s | mutations=%d completed=%d requeued=%d started=%d",
+        formatContractorPerfMetric("refreshTargets", stats.metrics.refreshTargets),
+        formatContractorPerfMetric("batch", stats.metrics.batch),
+        formatContractorPerfMetric("selectTarget", stats.metrics.selectTarget),
+        formatContractorPerfMetric("splitShape", stats.metrics.splitShape),
+        formatContractorPerfMetric("dirtyArea", stats.metrics.dirtyArea),
+        stats.counters.shapeMutations or 0,
+        stats.counters.treesCompleted or 0,
+        stats.counters.treesRequeued or 0,
+        stats.counters.treesStarted or 0
+    )
+
+    local phaseNames = {
+        "INITIAL_CUT",
+        "REMOVE_STUMP",
+        "PRUNE_INIT",
+        "PRUNE",
+        "BUCK_INIT",
+        "BUCK"
+    }
+    local phaseParts = {}
+    for _, phaseName in ipairs(phaseNames) do
+        local metric = stats.metrics["phase_" .. phaseName]
+        if metric ~= nil and metric.calls > 0 then
+            table.insert(
+                phaseParts,
+                formatContractorPerfMetric(phaseName, metric)
+            )
+        end
+    end
+
+    if #phaseParts > 0 then
+        Logging.info(
+            "[LoggingContractorPerf] phases | %s",
+            table.concat(phaseParts, " | ")
+        )
+    end
+
+    for _, job in pairs(self.activeJobs or {}) do
+        if job.isActive then
+            Logging.info(
+                "[LoggingContractorPerf] job=%d pending=%d processing=%d remaining=%d timer=%.0fms/%dms",
+                job.jobId,
+                #(job.targetNodes or {}),
+                #(job.processingTrees or {}),
+                job.remainingTrees or 0,
+                job.processTimerMs or 0,
+                LoggingContractor.PROCESS_INTERVAL_MS
+            )
+        end
+    end
+
+    self.contractorPerfStats = {
+        startedAtMs = nowMs,
+        metrics = {},
+        counters = {}
+    }
+end
+
 
 -- Возвращает имя split type дерева через штатный SplitShapeManager.
 function LoggingContractor:getContractorSplitTypeName(shape)
@@ -40,6 +205,9 @@ end
 
 -- Помечает область дерева изменённой для collision map и AI.
 function LoggingContractor:markContractorTreeAreaDirty(x, z)
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
     local radius = LoggingContractor.TREE_DIRTY_RADIUS
 
     if g_densityMapHeightManager ~= nil then
@@ -58,6 +226,13 @@ function LoggingContractor:markContractorTreeAreaDirty(x, z)
             x + radius,
             z - radius,
             z + radius
+        )
+    end
+
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "dirtyArea",
+            getContractorPerfTimeMs() - perfStartMs
         )
     end
 end
@@ -483,7 +658,20 @@ end
 -- серверным числом на момент оплаты, а targetNodes определяет именно те деревья,
 -- которые подрядчик имеет право обрабатывать в рамках этого договора.
 function LoggingContractor:initializeJobTargets(job)
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
+
     job.targetNodes = self:collectContractTargets(job.farmlandId, job.onlyMarkedTrees)
+
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "initialTargetScan",
+            getContractorPerfTimeMs() - perfStartMs,
+            #job.targetNodes
+        )
+    end
+
     job.processingTrees = {}
     job.remainingTrees = #job.targetNodes
     job.processTimerMs = 0
@@ -504,6 +692,10 @@ function LoggingContractor:initializeJobTargets(job)
 end
 
 function LoggingContractor:refreshJobTargets(job)
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
+    local sourceCount = #(job.targetNodes or {})
     local validTargets = {}
 
     for _, node in ipairs(job.targetNodes or {}) do
@@ -515,6 +707,14 @@ function LoggingContractor:refreshJobTargets(job)
     job.targetNodes = validTargets
     job.processingTrees = job.processingTrees or {}
     job.remainingTrees = #validTargets + #job.processingTrees
+
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "refreshTargets",
+            getContractorPerfTimeMs() - perfStartMs,
+            sourceCount
+        )
+    end
 
     return validTargets
 end
@@ -580,6 +780,10 @@ function LoggingContractor:splitContractorShape(shape, centerX, centerY, centerZ
         return {}
     end
 
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
+
     normalX, normalY, normalZ = MathUtil.vector3Normalize(normalX, normalY, normalZ)
     upX, upY, upZ = MathUtil.vector3Normalize(upX, upY, upZ)
 
@@ -622,6 +826,14 @@ function LoggingContractor:splitContractorShape(shape, centerX, centerY, centerZ
         g_treePlantManager:removingSplitShape(shape)
     elseif entityExists(shape) then
         g_currentMission:addKnownSplitShape(shape)
+    end
+
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "splitShape",
+            getContractorPerfTimeMs() - perfStartMs,
+            #operation.parts
+        )
     end
 
     return operation.parts
@@ -1035,6 +1247,9 @@ end
 -- Выполняет один рабочий такт договора: один раз актуализирует очередь целей,
 -- затем запускает до equipmentCount деревьев без повторного полного обхода участка.
 function LoggingContractor:processJobBatch(job)
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
     job.processingTrees = job.processingTrees or {}
 
     -- Полная проверка targetNodes нужна при выборе новой партии: здесь исключаются
@@ -1044,6 +1259,12 @@ function LoggingContractor:processJobBatch(job)
         math.max(job.equipmentCount - #job.processingTrees, 0)
 
     if availableSlots <= 0 then
+        if perfStartMs ~= nil then
+            self:recordContractorPerfMetric(
+                "batch",
+                getContractorPerfTimeMs() - perfStartMs
+            )
+        end
         return
     end
 
@@ -1054,7 +1275,19 @@ function LoggingContractor:processJobBatch(job)
             break
         end
 
+        local selectStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+            and getContractorPerfTimeMs()
+            or nil
         local shape = self:selectNextContractTarget(job, targets)
+
+        if selectStartMs ~= nil then
+            self:recordContractorPerfMetric(
+                "selectTarget",
+                getContractorPerfTimeMs() - selectStartMs,
+                #targets
+            )
+        end
+
         if shape == nil or not entityExists(shape) then
             break
         end
@@ -1069,6 +1302,15 @@ function LoggingContractor:processJobBatch(job)
         self:removePendingContractTarget(job, shape)
         table.insert(job.processingTrees, state)
         started = started + 1
+        self:addContractorPerfCounter("treesStarted", 1)
+    end
+
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "batch",
+            getContractorPerfTimeMs() - perfStartMs,
+            started
+        )
     end
 
     if job.remainingTrees == 0 then
@@ -1088,6 +1330,9 @@ function LoggingContractor:updateContractorProcessingTrees(job)
         return
     end
 
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
     local index = 1
     local progressChanged = false
 
@@ -1096,6 +1341,10 @@ function LoggingContractor:updateContractorProcessingTrees(job)
 
         if self:getCanAdvanceContractorTreeState(state) then
             local canMutate = self:canPerformContractorShapeMutation()
+            local phaseName = state.phase or "UNKNOWN"
+            local phaseStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+                and getContractorPerfTimeMs()
+                or nil
             local done, changed, success =
                 self:advanceContractorTreeProcess(
                     job,
@@ -1103,7 +1352,15 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                     canMutate
                 )
 
+            if phaseStartMs ~= nil then
+                self:recordContractorPerfMetric(
+                    "phase_" .. phaseName,
+                    getContractorPerfTimeMs() - phaseStartMs
+                )
+            end
+
             if changed then
+                self:addContractorPerfCounter("shapeMutations", 1)
                 self:markContractorShapeMutation(state)
             end
 
@@ -1115,6 +1372,7 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                 if success then
                     job.contractorCutTrees =
                         (job.contractorCutTrees or 0) + 1
+                    self:addContractorPerfCounter("treesCompleted", 1)
                 elseif not state.hadMutation
                     and self:isStandingContractTarget(
                         state.sourceShape,
@@ -1123,6 +1381,7 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                     -- Если обработка не изменила дерево и оно по-прежнему стоит,
                     -- возвращаем его в очередь без изменения remainingTrees.
                     table.insert(job.targetNodes, state.sourceShape)
+                    self:addContractorPerfCounter("treesRequeued", 1)
                     resolved = false
                 end
 
@@ -1142,6 +1401,14 @@ function LoggingContractor:updateContractorProcessingTrees(job)
         end
     end
 
+    if perfStartMs ~= nil then
+        self:recordContractorPerfMetric(
+            "processing",
+            getContractorPerfTimeMs() - perfStartMs,
+            #job.processingTrees
+        )
+    end
+
     if job.remainingTrees == 0 then
         self:finishJob(job)
     elseif progressChanged then
@@ -1155,6 +1422,9 @@ function LoggingContractor:update(dt)
         return
     end
 
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs()
+        or nil
     local hasActiveJob = self:hasAnyActiveJob()
 
     if hasActiveJob then
@@ -1210,6 +1480,17 @@ function LoggingContractor:update(dt)
                 end
             end
         end
+    end
+
+    if perfStartMs ~= nil and hasActiveJob then
+        self:recordContractorPerfMetric("frameDt", dt)
+        self:recordContractorPerfMetric(
+            "update",
+            getContractorPerfTimeMs() - perfStartMs
+        )
+        self:logContractorPerfStatsIfDue()
+    elseif not hasActiveJob then
+        self.contractorPerfStats = nil
     end
 end
 
