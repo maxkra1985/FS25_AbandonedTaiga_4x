@@ -169,6 +169,21 @@ function LoggingContractor:logContractorPerfStatsIfDue()
         )
     end
 
+    if stats.metrics.attachmentFallback ~= nil
+        or (stats.counters.fallbackStarts or 0) > 0 then
+        Logging.info(
+            "[LoggingContractorPerf] fallback | %s | starts=%d extraPasses=%d completed=%d unresolved=%d",
+            formatContractorPerfMetric(
+                "attachmentFallback",
+                stats.metrics.attachmentFallback
+            ),
+            stats.counters.fallbackStarts or 0,
+            stats.counters.fallbackExtraPasses or 0,
+            stats.counters.fallbackCompleted or 0,
+            stats.counters.fallbackUnresolved or 0
+        )
+    end
+
     for _, job in pairs(self.activeJobs or {}) do
         if job.isActive then
             Logging.info(

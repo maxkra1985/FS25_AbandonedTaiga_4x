@@ -171,6 +171,23 @@ LoggingContractor.PROCESSING_FULL_CIRCLE_DIRECTIONS = 12
 LoggingContractor.PROCESSING_ATTACHMENT_SECTIONS_PER_UPDATE = 1
 LoggingContractor.PROCESSING_DETACHED_SECTIONS_PER_UPDATE = 1
 
+-- Fallback основан на рабочем принципе Tree Trimmer: после точной очистки
+-- большая плоскость проходит по сетке вокруг всего split-shape. Полный проход
+-- нарезан на небольшие порции, чтобы ручной алгоритм не выполнялся за один кадр.
+LoggingContractor.PROCESSING_FALLBACK_STEP = 0.10
+LoggingContractor.PROCESSING_FALLBACK_MAX_PASSES = 12
+LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS = 14.0
+LoggingContractor.PROCESSING_FALLBACK_PLANE_WIDTH = 64.0
+LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH = 64.0
+LoggingContractor.PROCESSING_FALLBACK_TIP_OVERSHOOT = 3.0
+LoggingContractor.PROCESSING_FALLBACK_POSITIONS_PER_UPDATE = 12
+LoggingContractor.PROCESSING_FALLBACK_OFFSETS = {
+    0,
+    7, -7,
+    14, -14,
+    21, -21
+}
+
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
@@ -683,6 +700,236 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     return math.max(attachmentsBefore - attachmentsAfter, 0)
 end
 
+-- Возвращает систему осей, совпадающую с механикой Tree Trimmer:
+-- стоящее дерево сканируется вдоль локальной Y, динамический split-shape —
+-- вдоль локальной X; вторая поперечная ось всегда локальная -Z.
+function LoggingContractor:getContractorFallbackTrimAxes(shape)
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        return nil
+    end
+
+    local isStandingTree = getRigidBodyType(shape) == RigidBodyType.STATIC
+    local axisX, axisY, axisZ
+    local upX, upY, upZ
+    local sideX, sideY, sideZ
+
+    if isStandingTree then
+        axisX, axisY, axisZ = localDirectionToWorld(shape, 0, 1, 0)
+        upX, upY, upZ = localDirectionToWorld(shape, 1, 0, 0)
+    else
+        axisX, axisY, axisZ = localDirectionToWorld(shape, 1, 0, 0)
+        upX, upY, upZ = localDirectionToWorld(shape, 0, 1, 0)
+    end
+
+    sideX, sideY, sideZ = localDirectionToWorld(shape, 0, 0, -1)
+    axisX, axisY, axisZ = MathUtil.vector3Normalize(axisX, axisY, axisZ)
+    upX, upY, upZ = MathUtil.vector3Normalize(upX, upY, upZ)
+    sideX, sideY, sideZ = MathUtil.vector3Normalize(sideX, sideY, sideZ)
+
+    return axisX, axisY, axisZ,
+        upX, upY, upZ,
+        sideX, sideY, sideZ
+end
+
+
+-- Создаёт состояние большого fallback-прохода. В отличие от основной очистки
+-- он не пытается точно попасть в поверхность ствола, а последовательно
+-- проверяет широкую поперечную сетку вокруг всего дерева.
+function LoggingContractor:createContractorFallbackTrimState(shape)
+    local state = {
+        shape = shape,
+        passIndex = 1,
+        stepIndex = 0,
+        upOffsetIndex = 1,
+        sideOffsetIndex = 1,
+        removedThisPass = false,
+        done = false
+    }
+
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        state.done = true
+        return state
+    end
+
+    local attachments = select(5, self:getContractorSplitShapeStats(shape))
+    if attachments <= 0 then
+        state.done = true
+        return state
+    end
+
+    self:addContractorPerfCounter("fallbackStarts", 1)
+    return state
+end
+
+
+-- Продвигает Tree-Trimmer-подобный fallback ограниченным числом позиций сетки.
+-- Каждая позиция выполняет две ориентации большой плоскости. После первого
+-- реального изменения управление сразу возвращается сетевой синхронизации.
+function LoggingContractor:advanceContractorFallbackTrimState(state)
+    if state == nil or state.done then
+        return true, false
+    end
+
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getTimeSec() * 1000
+        or nil
+    local removeCalls = 0
+
+    local function finish(done, changed)
+        if perfStartMs ~= nil then
+            self:recordContractorPerfMetric(
+                "attachmentFallback",
+                getTimeSec() * 1000 - perfStartMs,
+                removeCalls
+            )
+        end
+        return done, changed
+    end
+
+    local shape = state.shape
+    if shape == nil or shape == 0 or not entityExists(shape) then
+        state.done = true
+        return finish(true, false)
+    end
+
+    local _, _, _, _, attachments =
+        self:getContractorSplitShapeStats(shape)
+    if attachments <= 0 then
+        state.done = true
+        self:addContractorPerfCounter("fallbackCompleted", 1)
+        return finish(true, false)
+    end
+
+    local sizeX, sizeY, sizeZ = self:getContractorSplitShapeStats(shape)
+    local length = math.max(sizeX or 0, sizeY or 0, sizeZ or 0)
+    if length <= 0.01 then
+        state.done = true
+        self:addContractorPerfCounter("fallbackUnresolved", 1)
+        return finish(true, false)
+    end
+
+    local axisX, axisY, axisZ,
+        upX, upY, upZ,
+        sideX, sideY, sideZ =
+        self:getContractorFallbackTrimAxes(shape)
+
+    if axisX == nil then
+        state.done = true
+        self:addContractorPerfCounter("fallbackUnresolved", 1)
+        return finish(true, false)
+    end
+
+    local centerX, centerY, centerZ = getWorldTranslation(shape)
+    local overshoot = LoggingContractor.PROCESSING_FALLBACK_TIP_OVERSHOOT
+    local halfSpan = length * 0.5 + overshoot
+    local startX = centerX - axisX * halfSpan
+    local startY = centerY - axisY * halfSpan
+    local startZ = centerZ - axisZ * halfSpan
+    local spanLength = halfSpan * 2
+    local steps = math.max(
+        1,
+        math.ceil(
+            spanLength / LoggingContractor.PROCESSING_FALLBACK_STEP
+        )
+    )
+    local offsets = LoggingContractor.PROCESSING_FALLBACK_OFFSETS
+    local processedPositions = 0
+
+    while processedPositions
+        < LoggingContractor.PROCESSING_FALLBACK_POSITIONS_PER_UPDATE do
+        if state.stepIndex > steps then
+            local remaining = select(
+                5,
+                self:getContractorSplitShapeStats(shape)
+            )
+
+            if remaining <= 0 then
+                state.done = true
+                self:addContractorPerfCounter("fallbackCompleted", 1)
+                return finish(true, false)
+            end
+
+            if state.removedThisPass
+                and state.passIndex
+                    < LoggingContractor.PROCESSING_FALLBACK_MAX_PASSES then
+                state.passIndex = state.passIndex + 1
+                state.stepIndex = 0
+                state.upOffsetIndex = 1
+                state.sideOffsetIndex = 1
+                state.removedThisPass = false
+                self:addContractorPerfCounter("fallbackExtraPasses", 1)
+            else
+                state.done = true
+                self:addContractorPerfCounter("fallbackUnresolved", 1)
+                return finish(true, false)
+            end
+        else
+            local t = state.stepIndex / steps
+            local baseX = startX + axisX * spanLength * t
+            local baseY = startY + axisY * spanLength * t
+            local baseZ = startZ + axisZ * spanLength * t
+            local upOffset = offsets[state.upOffsetIndex]
+            local sideOffset = offsets[state.sideOffsetIndex]
+            local posX =
+                baseX + upX * upOffset + sideX * sideOffset
+            local posY =
+                baseY + upY * upOffset + sideY * sideOffset
+            local posZ =
+                baseZ + upZ * upOffset + sideZ * sideOffset
+
+            local removedA = removeSplitShapeAttachments(
+                shape,
+                posX, posY, posZ,
+                axisX, axisY, axisZ,
+                upX, upY, upZ,
+                LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                LoggingContractor.PROCESSING_FALLBACK_PLANE_WIDTH,
+                LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
+            )
+            removeCalls = removeCalls + 1
+
+            if not entityExists(shape) then
+                state.done = true
+                return finish(true, removedA == true)
+            end
+
+            local removedB = removeSplitShapeAttachments(
+                shape,
+                posX, posY, posZ,
+                axisX, axisY, axisZ,
+                sideX, sideY, sideZ,
+                LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                LoggingContractor.PROCESSING_FALLBACK_PLANE_WIDTH,
+                LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
+            )
+            removeCalls = removeCalls + 1
+
+            local changed = removedA == true or removedB == true
+            state.removedThisPass =
+                state.removedThisPass or changed
+
+            state.sideOffsetIndex = state.sideOffsetIndex + 1
+            if state.sideOffsetIndex > #offsets then
+                state.sideOffsetIndex = 1
+                state.upOffsetIndex = state.upOffsetIndex + 1
+
+                if state.upOffsetIndex > #offsets then
+                    state.upOffsetIndex = 1
+                    state.stepIndex = state.stepIndex + 1
+                end
+            end
+
+            processedPositions = processedPositions + 1
+
+            if changed then
+                return finish(false, true)
+            end
+        end
+    end
+
+    return finish(false, false)
+end
+
 -- Создаёт состояние поэтапной очистки уже отделённой крупной ветви.
 -- Два исходных прохода и шаг 0.05 м сохраняются без изменений.
 function LoggingContractor:createContractorDetachedAttachmentState(shape)
@@ -724,9 +971,11 @@ function LoggingContractor:createContractorDetachedAttachmentState(shape)
     state.baseX = centerX - dirX * length * 0.5
     state.baseY = centerY - dirY * length * 0.5
     state.baseZ = centerZ - dirZ * length * 0.5
+    state.phase = "FAST"
     state.passIndex = 1
     state.distance = LoggingContractor.PROCESSING_DETACHED_SCAN_STEP
     state.stepIndex = 0
+    state.fallbackState = nil
 
     return state
 end
@@ -745,6 +994,18 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
         return true, false
     end
 
+    if state.phase == "FALLBACK" then
+        local done, changed =
+            self:advanceContractorFallbackTrimState(state.fallbackState)
+
+        if done then
+            state.done = true
+            state.phase = "DONE"
+        end
+
+        return done, changed
+    end
+
     local step = LoggingContractor.PROCESSING_DETACHED_SCAN_STEP
     local processedSections = 0
     local changed = false
@@ -758,8 +1019,27 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
         end
 
         if state.passIndex > 2 then
-            state.done = true
-            return true, changed
+            state.phase = "FALLBACK"
+            state.fallbackState =
+                self:createContractorFallbackTrimState(shape)
+
+            if state.fallbackState.done then
+                state.done = true
+                state.phase = "DONE"
+                return true, changed
+            end
+
+            local done, fallbackChanged =
+                self:advanceContractorFallbackTrimState(
+                    state.fallbackState
+                )
+
+            if done then
+                state.done = true
+                state.phase = "DONE"
+            end
+
+            return done, changed or fallbackChanged
         end
 
         -- Отделённая ветвь динамическая и между кадрами может двигаться.
@@ -780,8 +1060,27 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
             state.passIndex = state.passIndex + 1
 
             if state.passIndex > 2 then
-                state.done = true
-                return true, changed
+                state.phase = "FALLBACK"
+                state.fallbackState =
+                    self:createContractorFallbackTrimState(shape)
+
+                if state.fallbackState.done then
+                    state.done = true
+                    state.phase = "DONE"
+                    return true, changed
+                end
+
+                local done, fallbackChanged =
+                    self:advanceContractorFallbackTrimState(
+                        state.fallbackState
+                    )
+
+                if done then
+                    state.done = true
+                    state.phase = "DONE"
+                end
+
+                return done, changed or fallbackChanged
             end
 
             state.distance = state.passIndex == 1 and step or step * 0.5
@@ -902,12 +1201,32 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
         end
 
         state.attachmentCleanup = {
+            phase = "FAST",
             distance = LoggingContractor.PROCESSING_SCAN_STEP,
-            attachmentStep = 0
+            attachmentStep = 0,
+            fallbackState = nil
         }
     end
 
     local cleanup = state.attachmentCleanup
+
+    if cleanup.phase == "DONE" then
+        return true, false
+    end
+
+    if cleanup.phase == "FALLBACK" then
+        local done, changed =
+            self:advanceContractorFallbackTrimState(
+                cleanup.fallbackState
+            )
+
+        if done then
+            cleanup.phase = "DONE"
+        end
+
+        return done, changed
+    end
+
     local step = LoggingContractor.PROCESSING_SCAN_STEP
     local processedSections = 0
     local changed = false
@@ -930,10 +1249,43 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         if centerX == nil
             or currentLength == nil
-            or currentLength <= 0
-            or cleanup.distance > currentLength + 0.001 then
-            state.attachmentCleanup = nil
+            or currentLength <= 0 then
+            cleanup.phase = "DONE"
             return true, changed
+        end
+
+        if cleanup.distance > currentLength + 0.001 then
+            local remaining = select(
+                5,
+                self:getContractorSplitShapeStats(state.shape)
+            )
+
+            if remaining <= 0 then
+                cleanup.phase = "DONE"
+                return true, changed
+            end
+
+            cleanup.phase = "FALLBACK"
+            cleanup.fallbackState =
+                self:createContractorFallbackTrimState(
+                    state.shape
+                )
+
+            if cleanup.fallbackState.done then
+                cleanup.phase = "DONE"
+                return true, changed
+            end
+
+            local done, fallbackChanged =
+                self:advanceContractorFallbackTrimState(
+                    cleanup.fallbackState
+                )
+
+            if done then
+                cleanup.phase = "DONE"
+            end
+
+            return done, changed or fallbackChanged
         end
 
         cleanup.attachmentStep = cleanup.attachmentStep + 1
@@ -986,7 +1338,7 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         if not entityExists(state.shape)
             or select(5, self:getContractorSplitShapeStats(state.shape)) <= 0 then
-            state.attachmentCleanup = nil
+            cleanup.phase = "DONE"
             return true, changed
         end
     end
@@ -1077,7 +1429,9 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         )
 
         if attachments <= 0 then
-            state.attachmentCleanup = nil
+            if state.attachmentCleanup ~= nil then
+                state.attachmentCleanup.phase = "DONE"
+            end
             return true, false
         end
 
