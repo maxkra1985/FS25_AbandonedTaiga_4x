@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<GUI onOpen="onOpen" onClose="onClose" onCreate="onCreate">
+    <GuiElement profile="newLayer"/>
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
+    <GuiElement profile="transferDialogBg" id="dialogElement">
+        <ThreePartBitmap profile="fs25_dialogBgMiddleSmall"/>
+        <ThreePartBitmap profile="fs25_dialogBgTopSmall"/>
+        <ThreePartBitmap profile="fs25_dialogBgBottom"/>
+        <GuiElement profile="transferContent">
+            <Text profile="transferTitle" text="ПЕРЕДАЧА СО СКЛАДА"/>
+            <Text profile="transferInfo" id="messageText" text="Выберите материал для передачи."/>
+            <GuiElement profile="transferRow" position="0px -115px">
+                <Text profile="transferRowLabel" id="rowLabel1" text=""/>
+                <Button profile="transferRowButton" id="rowButton1" text="В производство" onClick="onClickTransfer1"/>
+                <Text profile="transferRowStatus" id="rowStatus1" text="Не помещается"/>
+            </GuiElement>
+            <GuiElement profile="transferRow" position="0px -200px">
+                <Text profile="transferRowLabel" id="rowLabel2" text=""/>
+                <Button profile="transferRowButton" id="rowButton2" text="В производство" onClick="onClickTransfer2"/>
+                <Text profile="transferRowStatus" id="rowStatus2" text="Не помещается"/>
+            </GuiElement>
+            <GuiElement profile="transferRow" position="0px -285px">
+                <Text profile="transferRowLabel" id="rowLabel3" text=""/>
+                <Button profile="transferRowButton" id="rowButton3" text="В производство" onClick="onClickTransfer3"/>
+                <Text profile="transferRowStatus" id="rowStatus3" text="Не помещается"/>
+            </GuiElement>
+            <GuiElement profile="transferRow" position="0px -370px">
+                <Text profile="transferRowLabel" id="rowLabel4" text=""/>
+                <Button profile="transferRowButton" id="rowButton4" text="В производство" onClick="onClickTransfer4"/>
+                <Text profile="transferRowStatus" id="rowStatus4" text="Не помещается"/>
+            </GuiElement>
+            <GuiElement profile="transferRow" position="0px -455px">
+                <Text profile="transferRowLabel" id="rowLabel5" text=""/>
+                <Button profile="transferRowButton" id="rowButton5" text="В производство" onClick="onClickTransfer5"/>
+                <Text profile="transferRowStatus" id="rowStatus5" text="Не помещается"/>
+            </GuiElement>
+            <GuiElement profile="transferRow" position="0px -540px">
+                <Text profile="transferRowLabel" id="rowLabel6" text=""/>
+                <Button profile="transferRowButton" id="rowButton6" text="В производство" onClick="onClickTransfer6"/>
+                <Text profile="transferRowStatus" id="rowStatus6" text="Не помещается"/>
+            </GuiElement>
+            <Text profile="transferPage" id="pageText"/>
+        </GuiElement>
+        <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
+            <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack"/>
+            <Bitmap profile="fs25_dialogButtonBoxSeparator"/>
+            <Button profile="buttonActivate" text="НАЗАД" id="prevButton" onClick="onClickPrev"/>
+            <Bitmap profile="fs25_dialogButtonBoxSeparator"/>
+            <Button profile="buttonActivate" text="ДАЛЕЕ" id="nextButton" onClick="onClickNext"/>
+        </BoxLayout>
+    </GuiElement>
+    <GUIProfiles>
+        <Profile name="transferDialogBg" extends="fs25_dialogBg">
+            <size value="1030px 850px"/>
+        </Profile>
+        <Profile name="transferContent" extends="baseReference" with="anchorTopCenter">
+            <size value="975px 740px"/>
+            <position value="0px -15px"/>
+        </Profile>
+        <Profile name="transferTitle" extends="fs25_dialogTitle" with="anchorTopCenter">
+            <size value="850px 36px"/>
+            <position value="0px -20px"/>
+        </Profile>
+        <Profile name="transferInfo" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="850px 36px"/>
+            <position value="0px -65px"/>
+            <textSize value="18px"/>
+        </Profile>
+        <Profile name="transferRow" extends="baseReference" with="anchorTopCenter">
+            <size value="925px 72px"/>
+        </Profile>
+        <Profile name="transferRowLabel" extends="fs25_textDefault" with="anchorTopLeft">
+            <size value="650px 60px"/>
+            <position value="0px 0px"/>
+            <textSize value="19px"/>
+            <textAlignment value="left"/>
+        </Profile>
+        <Profile name="transferRowButton" extends="buttonActivate" with="anchorTopLeft">
+            <size value="230px 52px"/>
+            <position value="680px 0px"/>
+        </Profile>
+        <Profile name="transferRowStatus" extends="fs25_textDefault" with="anchorTopLeft">
+            <size value="225px 55px"/>
+            <position value="680px 0px"/>
+            <textSize value="19px"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="transferPage" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="420px 32px"/>
+            <position value="0px -645px"/>
+            <textSize value="18px"/>
+            <textAlignment value="center"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>
