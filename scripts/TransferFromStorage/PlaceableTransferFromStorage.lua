@@ -91,7 +91,13 @@ function PlaceableTransferFromStorage:getCapacity(fillType, target)
         if self.spec_husbandryStraw == nil or fillType ~= FillType.STRAW then
             return 0
         end
-        return self:getHusbandryFreeCapacity(fillType)
+        -- Солома физически хранится в Storage самого коровника.
+        local storage = self.spec_husbandry ~= nil
+            and self.spec_husbandry.storage or nil
+        if storage == nil or not storage:getIsFillTypeSupported(fillType) then
+            return 0
+        end
+        return storage:getFreeCapacity(fillType)
     end
     return 0
 end
@@ -181,31 +187,43 @@ function PlaceableTransferFromStorage:execute(connection, isBale, fillType, amou
         return false, "Не помещается."
     end
 
-    -- Сначала подтверждаем зачисление всего содержимого. Только затем
-    -- удаляем виртуальный объект из списка и из статистики фермы.
+    -- Успешной считается только полная передача содержимого.
+    -- До удаления источника можно вернуть получателю прежнее значение.
     local inserted = 0
+    local targetStorage = nil
+    local previous = nil
     if route.target == "productionStorage" then
-        local targetStorage = self.spec_productionPoint.productionPoint.storage
-        local previous = targetStorage:getFillLevel(fillType)
+        targetStorage = self.spec_productionPoint.productionPoint.storage
+        previous = targetStorage:getFillLevel(fillType)
         targetStorage:setFillLevel(previous + storedAmount, fillType)
         inserted = targetStorage:getFillLevel(fillType) - previous
-        if targetStorage.isServer and targetStorage.storageDirtyFlag ~= nil then
-            targetStorage:raiseDirtyFlags(targetStorage.storageDirtyFlag)
-        end
     elseif route.target == "husbandryFood" then
         inserted = self:addFood(farm.farmId, storedAmount, fillType, nil, nil, nil)
     elseif route.target == "husbandryStraw" then
-        inserted = self:addHusbandryFillLevelFromTool(
-            farm.farmId, storedAmount, fillType, nil, ToolType.UNDEFINED, nil
-        )
+        targetStorage = self.spec_husbandry.storage
+        previous = targetStorage:getFillLevel(fillType)
+        targetStorage:setFillLevel(previous + storedAmount, fillType)
+        inserted = targetStorage:getFillLevel(fillType) - previous
     end
 
-    if math.abs(inserted - storedAmount) >= 0.1 then
+    if math.abs(inserted - storedAmount) >= PlaceableTransferFromStorage.EPSILON then
+        -- Если получатель принял не весь объект, откатываем зачисление.
+        -- Исходный виртуальный объект остаётся в складском списке.
+        if targetStorage ~= nil and previous ~= nil then
+            targetStorage:setFillLevel(previous, fillType)
+        elseif route.target == "husbandryFood" and inserted > 0 then
+            self:removeFood(inserted, fillType)
+        end
         Logging.warning(
-            "[TransferFromStorage] Transfer mismatch: %s requested %.2f accepted %.2f; source preserved",
+            "[TransferFromStorage] Transfer mismatch: %s requested %.2f accepted %.2f; rolled back",
             tostring(fillType), storedAmount, inserted
         )
-        return false, "Получатель не принял полный объём. Объект сохранён."
+        return false, "Получатель не принял полный объём. Передача отменена."
+    end
+
+    if targetStorage ~= nil and targetStorage.isServer
+        and targetStorage.storageDirtyFlag ~= nil then
+        targetStorage:raiseDirtyFlags(targetStorage.storageDirtyFlag)
     end
 
     table.remove(spec.storedObjects, selectedIndex)

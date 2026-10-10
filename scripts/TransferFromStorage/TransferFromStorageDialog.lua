@@ -22,6 +22,10 @@ end
 -- Однократно подключает XML интерфейса на клиенте.
 function TransferFromStorageDialog.register()
     if TransferFromStorageDialog.INSTANCE ~= nil then return true end
+    if TransferFromStorageDialog.baseDirectory == nil and g_modNameToDirectory ~= nil then
+        TransferFromStorageDialog.baseDirectory =
+            g_modNameToDirectory["FS25_AbandonedTaiga_4x"]
+    end
     if g_gui == nil or TransferFromStorageDialog.baseDirectory == nil then
         Logging.warning("[TransferFromStorage] GUI directory unavailable")
         return false
