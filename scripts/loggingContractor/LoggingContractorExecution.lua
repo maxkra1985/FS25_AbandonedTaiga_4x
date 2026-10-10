@@ -1156,19 +1156,20 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
     end
 
     if state.phase == "BUCK" then
-        local done, changed =
-            self:advanceContractorBuckingState(
-                state.bucking,
-                allowMutation
-            )
+        local done, changed, success =
+            self:advanceContractorBuckingState(state.bucking, allowMutation)
 
         if changed then
             state.hadMutation = true
+            -- После любого изменения формы ждём сетевой tick, в том числе
+            -- при неудачной раскряжёвке с неоднозначным результатом.
             return false, true, false
         end
 
         if done then
-            return true, false, true
+            state.shape = state.bucking.shape
+            state.failureReason = state.bucking.failureReason
+            return true, false, success == true
         end
 
         return false, false, false
@@ -1254,6 +1255,13 @@ function LoggingContractor:finishJob(job)
         job.plannedTrees,
         job.contractorCutTrees
     )
+
+    if (job.failedTreeCount or 0) > 0 then
+        Logging.warning(
+            "[LoggingContractor] Contract finished with %d unfinished tree(s): job=%d; wood left in world",
+            job.failedTreeCount, job.jobId
+        )
+    end
 
     self:broadcastJobProgress(job)
 end
@@ -1390,14 +1398,27 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                     self:addContractorPerfCounter("treesCompleted", 1)
                 elseif not state.hadMutation
                     and self:isStandingContractTarget(
-                        state.sourceShape,
-                        job.farmlandId
+                        state.sourceShape, job.farmlandId
                     ) then
-                    -- Если обработка не изменила дерево и оно по-прежнему стоит,
-                    -- возвращаем его в очередь без изменения remainingTrees.
+                    -- Неизменённую стоящую цель можно безопасно повторить.
                     table.insert(job.targetNodes, state.sourceShape)
                     self:addContractorPerfCounter("treesRequeued", 1)
                     resolved = false
+                elseif state.hadMutation then
+                    -- Незавершённое дерево не идёт в счётчик успешной работы;
+                    -- ссылка на оставшийся ствол сохраняется до конца сессии.
+                    job.failedTreeCount = (job.failedTreeCount or 0) + 1
+                    if state.shape ~= nil and entityExists(state.shape) then
+                        table.insert(job.failedTreeShapes, state.shape)
+                    end
+                    Logging.warning(
+                        "[LoggingContractor] Tree unfinished: job=%d source=%s trunk=%s phase=%s reason=%s position=(%.2f, %.2f)",
+                        job.jobId, tostring(state.sourceShape),
+                        tostring(state.shape), tostring(state.phase),
+                        tostring(state.failureReason or "processing did not complete"),
+                        state.treeX or 0, state.treeZ or 0
+                    )
+                    self:addContractorPerfCounter("treesFailed", 1)
                 end
 
                 if resolved then

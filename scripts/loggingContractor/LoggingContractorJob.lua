@@ -25,6 +25,9 @@ function LoggingContractorJob.new(data, customMt)
     self.plannedTrees = data.plannedTrees
     self.onlyMarkedTrees = data.onlyMarkedTrees == true
     self.contractorCutTrees = data.contractorCutTrees or 0
+    -- Отдельно учитываем незавершённые попытки, не включая их в успехи.
+    self.failedTreeCount = data.failedTreeCount or 0
+    self.failedTreeShapes = {}
     self.remainingTrees = data.remainingTrees or data.plannedTrees
     self.equipmentCount = data.equipmentCount
     self.logLength = data.logLength

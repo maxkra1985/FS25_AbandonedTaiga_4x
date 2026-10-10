@@ -305,119 +305,161 @@ function LoggingContractor:applyContractorFall(shape, angularX, angularY, angula
 end
 
 
+-- Режем строго на заданной длине; при отказе splitShape расширяем
+-- только поперечную плоскость. Лимит исключает бесконечные повторы.
+local BUCK_PLANE_SIZES = {LoggingContractor.SPLIT_PLANE_SIZE, 8, 16}
+
+-- Пересчитывает актуальные начало, ось и длину динамического ствола.
+-- После падения и обрезки ветвей координаты первичного спила устаревают.
+function LoggingContractor:getContractorBuckingGeometry(shape, preferredX, preferredY, preferredZ)
+    local centerX, centerY, centerZ,
+        dirX, dirY, dirZ,
+        upX, upY, upZ = self:getContractorShapeMainAxis(shape)
+    if centerX == nil then
+        return nil
+    end
+
+    -- Направление главной оси OBB не определено по знаку.
+    if dirX * preferredX + dirY * preferredY + dirZ * preferredZ < 0 then
+        dirX, dirY, dirZ = -dirX, -dirY, -dirZ
+    end
+
+    local below, above = getSplitShapePlaneExtents(
+        shape, centerX, centerY, centerZ, dirX, dirY, dirZ
+    )
+    if below == nil or above == nil
+        or below + above <= LoggingContractor.MIN_LOG_REMAINDER then
+        return nil
+    end
+
+    return centerX - dirX * below,
+        centerY - dirY * below,
+        centerZ - dirZ * below,
+        dirX, dirY, dirZ, upX, upY, upZ, below + above
+end
+
 -- Создаёт состояние поэтапной раскряжёвки подготовленного ствола.
 function LoggingContractor:createContractorBuckingState(
-    shape,
-    baseX,
-    baseY,
-    baseZ,
-    dirX,
-    dirY,
-    dirZ,
-    upX,
-    upY,
-    upZ,
-    trunkLength,
-    logLength
+    shape, baseX, baseY, baseZ, dirX, dirY, dirZ,
+    upX, upY, upZ, trunkLength, logLength
 )
     local angularX, angularY, angularZ =
         self:getContractorFallAngularVelocity(upX, upY, upZ)
-
     return {
         shape = shape,
-        currentX = baseX,
-        currentY = baseY,
-        currentZ = baseZ,
-        dirX = dirX,
-        dirY = dirY,
-        dirZ = dirZ,
-        upX = upX,
-        upY = upY,
-        upZ = upZ,
+        currentX = baseX, currentY = baseY, currentZ = baseZ,
+        dirX = dirX, dirY = dirY, dirZ = dirZ,
+        upX = upX, upY = upY, upZ = upZ,
         remainingLength = trunkLength,
         logLength = logLength,
-        angularX = angularX,
-        angularY = angularY,
-        angularZ = angularZ
+        angularX = angularX, angularY = angularY, angularZ = angularZ,
+        cutAttempts = 0, failed = false, failureReason = nil
     }
 end
 
-
--- Выполняет не больше одного splitShape раскряжёвки. Возвращает done, changed.
+-- Выполняет не более одного splitShape за вызов.
+-- Возвращает done, changed, success. Ошибка распила НЕ означает успех.
 function LoggingContractor:advanceContractorBuckingState(state, allowMutation)
-    if state.shape == nil
-        or state.shape == 0
-        or not entityExists(state.shape) then
-        return true, false
+    if state.failed then
+        return true, false, false
     end
 
-    if state.remainingLength
-        <= state.logLength + LoggingContractor.MIN_LOG_REMAINDER then
-        self:applyContractorFall(
-            state.shape,
-            state.angularX,
-            state.angularY,
-            state.angularZ
-        )
-        return true, false
+    if state.shape == nil or state.shape == 0 or not entityExists(state.shape) then
+        state.failed = true
+        state.failureReason = "trunk shape no longer exists"
+        return true, false, false
     end
 
+    -- Ждём доступного сетевого слота до тяжёлых проверок геометрии.
     if not allowMutation then
-        return false, false
+        return false, false, false
     end
 
-    local cutX = state.currentX + state.dirX * state.logLength
-    local cutY = state.currentY + state.dirY * state.logLength
-    local cutZ = state.currentZ + state.dirZ * state.logLength
+    local baseX, baseY, baseZ,
+        dirX, dirY, dirZ, upX, upY, upZ, remainingLength =
+        self:getContractorBuckingGeometry(
+            state.shape, state.dirX, state.dirY, state.dirZ
+        )
+    if baseX == nil then
+        state.failed = true
+        state.failureReason = "unable to measure current trunk geometry"
+        return true, false, false
+    end
 
-    local parts = self:splitContractorShape(
-        state.shape,
-        cutX,
-        cutY,
-        cutZ,
-        state.dirX,
-        state.dirY,
-        state.dirZ,
-        state.upX,
-        state.upY,
-        state.upZ,
-        false
+    state.currentX, state.currentY, state.currentZ = baseX, baseY, baseZ
+    state.dirX, state.dirY, state.dirZ = dirX, dirY, dirZ
+    state.upX, state.upY, state.upZ = upX, upY, upZ
+    state.remainingLength = remainingLength
+
+    if remainingLength <= state.logLength + LoggingContractor.MIN_LOG_REMAINDER then
+        self:applyContractorFall(
+            state.shape, state.angularX, state.angularY, state.angularZ
+        )
+        return true, false, true
+    end
+
+    -- Каждая неуспешная попытка получает новую плоскость на следующем update.
+    -- Продольная позиция остаётся точно равной указанной длине.
+    local attemptIndex = math.min(state.cutAttempts + 1, #BUCK_PLANE_SIZES)
+    local planeSize = BUCK_PLANE_SIZES[attemptIndex]
+    local cutX = baseX + dirX * state.logLength
+    local cutY = baseY + dirY * state.logLength
+    local cutZ = baseZ + dirZ * state.logLength
+    local oldShape = state.shape
+    local parts = self:splitContractorShapeSized(
+        oldShape, cutX, cutY, cutZ, dirX, dirY, dirZ,
+        upX, upY, upZ, planeSize, planeSize
     )
     local logPart, remainderPart = self:getSplitPartsBySide(parts)
-
-    if logPart == nil
-        or logPart.shape == nil
-        or remainderPart == nil
-        or remainderPart.shape == nil then
-        Logging.warning(
-            "[LoggingContractor] Unable to split trunk at %.2f m; remaining part kept whole",
-            state.logLength
+    if #parts == 2 and logPart ~= nil and remainderPart ~= nil
+        and logPart.shape ~= nil and remainderPart.shape ~= nil
+        and entityExists(logPart.shape) and entityExists(remainderPart.shape) then
+        self:applyContractorFall(
+            logPart.shape, state.angularX, state.angularY, state.angularZ
         )
-
-        if state.shape ~= nil and entityExists(state.shape) then
-            self:applyContractorFall(
-                state.shape,
-                state.angularX,
-                state.angularY,
-                state.angularZ
-            )
-        end
-
-        return true, #parts > 0
+        state.shape = remainderPart.shape
+        state.cutAttempts = 0
+        state.currentX, state.currentY, state.currentZ = cutX, cutY, cutZ
+        state.remainingLength = math.max(remainingLength - state.logLength, 0)
+        return false, true, false
     end
 
-    self:applyContractorFall(
-        logPart.shape,
-        state.angularX,
-        state.angularY,
-        state.angularZ
+    if #parts > 0 then
+        -- Форма уже изменена. Не повторяем разрез и не теряем новые части.
+        local mainPart = self:selectContractorMainStemPart(
+            parts, cutX, cutY, cutZ, dirX, dirY, dirZ
+        )
+        if mainPart ~= nil and mainPart.shape ~= nil
+            and entityExists(mainPart.shape) then
+            state.shape = mainPart.shape
+        end
+        state.failed = true
+        state.failureReason = string.format(
+            "ambiguous split at %.2f m: %d parts", state.logLength, #parts
+        )
+        Logging.warning(
+            "[LoggingContractor] Bucking ambiguous: shape=%s length=%.3f target=%.2f plane=%.1f parts=%d",
+            tostring(oldShape), remainingLength, state.logLength, planeSize, #parts
+        )
+        return true, true, false
+    end
+
+    state.cutAttempts = attemptIndex
+    Logging.warning(
+        "[LoggingContractor] Bucking attempt %d/%d failed: shape=%s length=%.3f target=%.2f plane=%.1f parts=0",
+        attemptIndex, #BUCK_PLANE_SIZES, tostring(oldShape),
+        remainingLength, state.logLength, planeSize
     )
+    if attemptIndex >= #BUCK_PLANE_SIZES then
+        state.failed = true
+        state.failureReason = string.format(
+            "splitShape returned no parts after %d attempts", attemptIndex
+        )
+        self:applyContractorFall(
+            oldShape, state.angularX, state.angularY, state.angularZ
+        )
+        return true, false, false
+    end
 
-    state.shape = remainderPart.shape
-    state.currentX = cutX
-    state.currentY = cutY
-    state.currentZ = cutZ
-    state.remainingLength = state.remainingLength - state.logLength
-
-    return false, true
+    return false, false, false
 end

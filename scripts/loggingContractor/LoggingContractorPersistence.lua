@@ -97,9 +97,9 @@ function LoggingContractor:readPersistentTargetList(xmlFile, baseKey)
 end
 
 
--- Собирает отдельно ожидающие цели и processing-деревья, которые ещё не
--- изменили split-shape. Изменённые processing-деревья сохраняются счётчиком:
--- их физическое состояние уже входит в штатный savegame split-shapes.
+-- Собирает ожидающие и ещё не изменённые деревья. Текущие динамические
+-- части уже записывает штатный savegame split-shapes. Такие незавершённые
+-- обработки сохраняются счётчиком, но не считаются успешной рубкой.
 function LoggingContractor:collectPersistentJobState(job)
     local pending = {}
     local processing = {}
@@ -206,6 +206,7 @@ function LoggingContractor:saveToSavegame(directory)
             key .. "#contractorCutTrees",
             job.contractorCutTrees or 0
         )
+        setXMLInt(xmlFile, key .. "#failedTreeCount", job.failedTreeCount or 0)
         setXMLInt(
             xmlFile,
             key .. "#savedRemainingTrees",
@@ -399,11 +400,14 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
             getXMLInt(xmlFile, key .. "#mutatedProcessingCount") or 0,
             0
         )
-    local contractorCutTrees =
-        math.max(getXMLInt(xmlFile, key .. "#contractorCutTrees") or 0, 0)
+    -- Не превращаем частично обработанный до сохранения ствол в успех.
+    local contractorCutTrees = math.min(
+        math.max(getXMLInt(xmlFile, key .. "#contractorCutTrees") or 0, 0),
+        plannedTrees
+    )
+    local failedTreeCount =
+        math.max(getXMLInt(xmlFile, key .. "#failedTreeCount") or 0, 0)
         + mutatedProcessingCount
-
-    contractorCutTrees = math.min(contractorCutTrees, plannedTrees)
 
     local job = LoggingContractorJob.new({
         jobId = jobId,
@@ -413,6 +417,7 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         onlyMarkedTrees =
             getXMLBool(xmlFile, key .. "#onlyMarkedTrees") == true,
         contractorCutTrees = contractorCutTrees,
+        failedTreeCount = failedTreeCount,
         remainingTrees = #pendingNodes + #processingNodes,
         equipmentCount = equipmentCount,
         logLength = logLength,
@@ -452,6 +457,12 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
 
     job.remainingTrees = #job.targetNodes + #job.processingTrees
     job.progressBroadcastPending = true
+    if mutatedProcessingCount > 0 then
+        Logging.warning(
+            "[LoggingContractor] Restored job=%d with %d unfinished tree(s): wood preserved; not counted as cut",
+            job.jobId, mutatedProcessingCount
+        )
+    end
 
     Logging.info(
         "[LoggingContractor] Restored contract: job=%d farm=%d farmland=%d pending=%d processing=%d completedInProgress=%d missing=%d timer=%.0fms",
