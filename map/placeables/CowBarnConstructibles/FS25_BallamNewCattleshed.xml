@@ -89,6 +89,9 @@
 		<triggerMarker node="markerStraw"			adjustToGround="true" filename="markerIcons/markerIconStrawUnload.i3d" />
 		<triggerMarker node="markerAnimals"			adjustToGround="true" filename="markerIcons/markerIconCowTrade.i3d" />
 		<triggerMarker node="markerLiquidManure"	adjustToGround="true" filename="markerIcons/markerIconLiquidManure.i3d" />
+		<triggerMarker node="baleUnloadLinkNode"				adjustToGround="false"	filename="markerIcons/markerIconBaleStorage.i3d"/>
+		<triggerMarker node="storagePlayerTriggerMarker"		adjustToGround="false"	filename="$data/shared/assets/marker/markerIconWrench.i3d"/>
+		<triggerMarker node="transferFromStorageTriggerMarker"	adjustToGround="false"	filename="markerIcons/markerIconBaleToProduction.i3d"/>
 		<triggerMarker node="ConstructibleUnloadTriggerMarker"	adjustToGround="true" filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 
@@ -169,6 +172,25 @@
 			<strawPlane node="strawPlane" minY="-0.415" maxY="-0.382" colorChange="false" />
 		</straw>
 	</husbandry>
+
+	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="false" maxLength="8.5" maxWidth="6" maxHeight="4" fillTypes="DRYGRASS_WINDROW STRAW SILAGE" >
+		<playerTrigger node="storagePlayerTrigger" />
+		<objectTrigger node="objectTrigger" />
+		<transferFromStorage playerTrigger="transferFromStorageTrigger">
+		</transferFromStorage>
+		<spawnAreas>
+			<spawnArea startNode="spawnAreaStart01" endNode="spawnAreaEnd01"/>
+		</spawnAreas>
+		<storageAreas>
+			<storageArea startNode="storageAreaStart01" endNode="storageAreaEnd01"/>
+			<storageArea startNode="storageAreaStart02" endNode="storageAreaEnd02"/>
+			<storageArea startNode="storageAreaStart03" endNode="storageAreaEnd03"/>
+			<storageArea startNode="storageAreaStart04" endNode="storageAreaEnd04"/>
+			<storageArea startNode="storageAreaStart05" endNode="storageAreaEnd05"/>
+			<storageArea startNode="storageAreaStart06" endNode="storageAreaEnd06"/>
+			<storageArea startNode="storageAreaStart07" endNode="storageAreaEnd07"/>
+		</storageAreas>
+	</objectStorage>
 
 	<colorable>
 	</colorable>
@@ -749,5 +771,29 @@
 		<i3dMapping id="destroy_02_trash_03"	node="0>8|7" />
 		<i3dMapping id="destroy_02_trash_04"	node="0>8|8" />
 		<i3dMapping id="destroy_02_truck"		node="0>8|9" />
+
+		<!-- СКЛАД -->
+		<i3dMapping id="spawnAreaStart01"	node="0>0|19|0|0" />
+		<i3dMapping id="spawnAreaEnd01"		node="0>0|19|0|0|0" />
+		<i3dMapping id="storageAreaStart01"	node="0>0|19|0|1" />
+		<i3dMapping id="storageAreaEnd01"	node="0>0|19|0|1|0" />
+		<i3dMapping id="storageAreaStart02"	node="0>0|19|0|2" />
+		<i3dMapping id="storageAreaEnd02"	node="0>0|19|0|2|0" />
+		<i3dMapping id="storageAreaStart03"	node="0>0|19|0|3" />
+		<i3dMapping id="storageAreaEnd03"	node="0>0|19|0|3|0" />
+		<i3dMapping id="storageAreaStart04"	node="0>0|19|0|4" />
+		<i3dMapping id="storageAreaEnd04"	node="0>0|19|0|4|0" />
+		<i3dMapping id="storageAreaStart05"	node="0>0|19|0|5" />
+		<i3dMapping id="storageAreaEnd05"	node="0>0|19|0|5|0" />
+		<i3dMapping id="storageAreaStart06"	node="0>0|19|0|6" />
+		<i3dMapping id="storageAreaEnd06"	node="0>0|19|0|6|0" />
+		<i3dMapping id="storageAreaStart07"	node="0>0|19|0|7" />
+		<i3dMapping id="storageAreaEnd07"	node="0>0|19|0|7|0" />
+		<i3dMapping id="objectTrigger"		node="0>0|19|1" />
+		<i3dMapping id="storagePlayerTrigger" node="0>0|19|2" />
+		<i3dMapping id="storagePlayerTriggerMarker" node="0>0|19|2|0"/>
+		<i3dMapping id="transferFromStorageTrigger" node="0>0|19|3" />
+		<i3dMapping id="transferFromStorageTriggerMarker" node="0>0|19|3|0"/>
+
 	</i3dMappings>
 </placeable>
