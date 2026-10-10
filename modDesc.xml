@@ -46,6 +46,8 @@
 		<sourceFile filename="scripts/ProductionOptionalBoost.lua" />
 		<sourceFile filename="scripts/ProductionActiveVisuals.lua" />
 		<sourceFile filename="scripts/ObjectStorageAreaFillTypeFilter.lua" />
+		<sourceFile filename="scripts/TransferFromStorage/TransferFromStorageEvent.lua" />
+		<sourceFile filename="scripts/TransferFromStorage/TransferFromStorageDialog.lua" />
 	</extraSourceFiles>
 
 	<specializations>
@@ -78,6 +80,7 @@
 		<specialization name="extendedProductionPoint" 	className="PlaceableExtendedProductionPoint" filename="scripts/PlaceableExtendedProductionPoint.lua"/>
 		<specialization name="greenhouseSeasonal" className="PlaceableGreenhouseSeasonal" filename="scripts/PlaceableGreenhouseSeasonal.lua"/>
 		<specialization name="productionWarehouseSupply" className="PlaceableProductionWarehouseSupply" filename="scripts/PlaceableProductionWarehouseSupply.lua"/>
+		<specialization name="transferFromStorage" className="PlaceableTransferFromStorage" filename="scripts/TransferFromStorage/PlaceableTransferFromStorage.lua"/>
 	</placeableSpecializations>
 
 	<placeableTypes>
@@ -105,6 +108,7 @@
 			  filename="$dataS/scripts/placeables/Placeable.lua">
 			<specialization name="objectStorage"/>
 			<specialization name="productionWarehouseSupply"/>
+			<specialization name="transferFromStorage"/>
 		</type>
 
 		<type name="constructibleCowHusbandryBarnMilk"
@@ -119,6 +123,7 @@
 			<specialization name="husbandryMilk"/>
 			<specialization name="husbandryLiquidManure"/>
 			<specialization name="objectStorage"/>
+			<specialization name="transferFromStorage"/>
 		</type>
 
 		<type name="constructibleSmallSawmill"

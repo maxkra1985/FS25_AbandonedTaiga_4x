@@ -170,6 +170,8 @@
 		<playerTrigger node="storagePlayerTrigger" />
 		<objectTrigger node="objectTrigger" />
 		<transferFromStorage playerTrigger="transferFromStorageTrigger">
+			<destination fillType="SUGAR" target="productionStorage" actionText="В производство"/>
+			<destination fillType="SALT" target="productionStorage" actionText="В производство"/>
 		</transferFromStorage>
 		<spawnAreas>
 			<spawnArea startNode="spawnAreaStart01" endNode="spawnAreaEnd01"/>

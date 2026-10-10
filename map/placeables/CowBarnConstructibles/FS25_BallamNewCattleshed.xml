@@ -173,10 +173,14 @@
 		</straw>
 	</husbandry>
 
-	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="false" maxLength="8.5" maxWidth="6" maxHeight="4" fillTypes="DRYGRASS_WINDROW STRAW SILAGE" >
+	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="false" maxLength="8.5" maxWidth="6" maxHeight="4" fillTypes="DRYGRASS_WINDROW GRASS_WINDROW STRAW SILAGE" >
 		<playerTrigger node="storagePlayerTrigger" />
 		<objectTrigger node="objectTrigger" />
 		<transferFromStorage playerTrigger="transferFromStorageTrigger">
+			<destination fillType="DRYGRASS_WINDROW" target="husbandryFood" actionText="В кормушку"/>
+			<destination fillType="GRASS_WINDROW" target="husbandryFood" actionText="В кормушку"/>
+			<destination fillType="SILAGE" target="husbandryFood" actionText="В кормушку"/>
+			<destination fillType="STRAW" target="husbandryStraw" actionText="На подстилку"/>
 		</transferFromStorage>
 		<spawnAreas>
 			<spawnArea startNode="spawnAreaStart01" endNode="spawnAreaEnd01"/>
