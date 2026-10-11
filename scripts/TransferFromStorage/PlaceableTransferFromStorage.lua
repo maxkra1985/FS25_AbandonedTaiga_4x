@@ -327,10 +327,16 @@ function PlaceableTransferFromStorage:onPlayerTrigger(triggerId, otherId, onEnte
     if spec == nil or spec.activatable == nil then return end
 
     if onEnter then
+        -- Логируем условия активации один раз при входе: это позволяет
+        -- отличить отсутствие события физического триггера от запрета доступа.
+        local isAvailable = self:transferFromStorageIsAvailable()
+        local canAccess = g_currentMission.accessHandler:canPlayerAccess(self)
+        local isInVehicle = g_localPlayer:getIsInVehicle()
         Logging.info(
-            "[TransferFromStorage] Player entered trigger=%s file=%s available=%s",
+            "[TransferFromStorage] Player entered trigger=%s file=%s available=%s canAccess=%s inVehicle=%s ownerFarm=%s",
             tostring(triggerId), tostring(self.configFileName),
-            tostring(self:transferFromStorageIsAvailable())
+            tostring(isAvailable), tostring(canAccess),
+            tostring(isInVehicle), tostring(self:getOwnerFarmId())
         )
         g_currentMission.activatableObjectsSystem:addActivatable(spec.activatable)
     elseif onLeave then

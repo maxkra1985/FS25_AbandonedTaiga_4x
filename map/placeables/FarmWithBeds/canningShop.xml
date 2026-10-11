@@ -75,7 +75,7 @@
 		<triggerMarker node="unloadTriggerMarkerWater"			adjustToGround="true"	filename="$data/shared/assets/marker/markerIconWater.i3d" />
 		<triggerMarker node="playerTriggerMarker"				adjustToGround="false"	filename="$data/shared/assets/marker/markerIconWrench.i3d"/>
 		<triggerMarker node="storagePlayerTrigger"				adjustToGround="false"	filename="$data/shared/assets/marker/markerIconWrench.i3d"/>
-		<triggerMarker node="transferFromStorageTrigger"		adjustToGround="false"	filename="markerIcons/markerIconPalletToProduction.i3d"/>
+		<triggerMarker node="transferFromStorageTriggerMarker"	adjustToGround="false"	filename="markerIcons/markerIconPalletToProduction.i3d"/>
 	</triggerMarkers>
 
 	<productionPoint>
