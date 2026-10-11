@@ -60,6 +60,17 @@ function TransferFromStorageDialog:refresh()
     local maxPage = math.max(1, math.ceil(#self.rows / TransferFromStorageDialog.PAGE_SIZE))
     self.page = math.min(self.page, maxPage)
     self.pageText:setText(string.format("Страница %d / %d", self.page, maxPage))
+
+    -- Скрываем перелистывание целиком, когда все материалы умещаются
+    -- на одной странице. На остальных страницах используем мышь/фокус,
+    -- без привязки одного MENU_ACTIVATE сразу к нескольким кнопкам.
+    local hasMultiplePages = maxPage > 1
+    self.pageText:setVisible(hasMultiplePages)
+    self.prevButton:setVisible(hasMultiplePages)
+    self.nextButton:setVisible(hasMultiplePages)
+    self.prevSeparator:setVisible(hasMultiplePages)
+    self.nextSeparator:setVisible(hasMultiplePages)
+
     for i = 1, TransferFromStorageDialog.PAGE_SIZE do
         local row = self.rows[(self.page - 1) * TransferFromStorageDialog.PAGE_SIZE + i]
         local label = self["rowLabel" .. i]

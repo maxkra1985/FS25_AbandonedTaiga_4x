@@ -43,10 +43,10 @@
         </GuiElement>
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
             <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack"/>
-            <Bitmap profile="fs25_dialogButtonBoxSeparator"/>
-            <Button profile="buttonActivate" text="НАЗАД" id="prevButton" onClick="onClickPrev"/>
-            <Bitmap profile="fs25_dialogButtonBoxSeparator"/>
-            <Button profile="buttonActivate" text="ДАЛЕЕ" id="nextButton" onClick="onClickNext"/>
+            <Bitmap profile="fs25_dialogButtonBoxSeparator" id="prevSeparator"/>
+            <Button profile="fs25_wideButton" text="НАЗАД" id="prevButton" onClick="onClickPrev"/>
+            <Bitmap profile="fs25_dialogButtonBoxSeparator" id="nextSeparator"/>
+            <Button profile="fs25_wideButton" text="ДАЛЕЕ" id="nextButton" onClick="onClickNext"/>
         </BoxLayout>
     </GuiElement>
     <GUIProfiles>
@@ -75,7 +75,7 @@
             <textSize value="19px"/>
             <textAlignment value="left"/>
         </Profile>
-        <Profile name="transferRowButton" extends="buttonActivate" with="anchorTopLeft">
+        <Profile name="transferRowButton" extends="fs25_wideButton" with="anchorTopLeft">
             <size value="230px 52px"/>
             <position value="680px 0px"/>
         </Profile>
