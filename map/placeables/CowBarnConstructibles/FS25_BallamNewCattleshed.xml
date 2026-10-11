@@ -794,6 +794,7 @@
 		<i3dMapping id="storageAreaStart07"	node="0>0|19|0|7" />
 		<i3dMapping id="storageAreaEnd07"	node="0>0|19|0|7|0" />
 		<i3dMapping id="objectTrigger"		node="0>0|19|1" />
+		<i3dMapping id="baleUnloadLinkNode" node="0>0|19|1|0"/>
 		<i3dMapping id="storagePlayerTrigger" node="0>0|19|2" />
 		<i3dMapping id="storagePlayerTriggerMarker" node="0>0|19|2|0"/>
 		<i3dMapping id="transferFromStorageTrigger" node="0>0|19|3" />

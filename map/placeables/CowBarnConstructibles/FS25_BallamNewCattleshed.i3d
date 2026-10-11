@@ -847,7 +847,9 @@
               <TransformGroup name="storageAreaEnd07" translation="10.6063 2.38419e-07 19.0423" nodeId="400"/>
             </TransformGroup>
           </TransformGroup>
-          <Shape name="storageTrigger" translation="1.18535 2.30309 -46.8008" shapeId="16" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x50000" nodeId="401" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="26"/>
+          <Shape name="storageTrigger" translation="1.18535 2.30309 -46.8008" shapeId="16" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x50000" nodeId="401" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="26">
+            <TransformGroup name="baleUnloadLinkNode" nodeId="1609"/>
+          </Shape>
           <Shape name="storagePlayerTrigger" translation="5.32477 0.16608 -52.7722" shapeId="17" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x110000" nodeId="402" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="26">
             <TransformGroup name="playerTriggerMarker" nodeId="403"/>
           </Shape>
