@@ -169,7 +169,7 @@
 	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="true" maxLength="8.5" maxWidth="6" maxHeight="3.5" fillTypes="SUGAR salt TOMATO CUCUMBER WHITECABBAGE STRAWBERRY strawberryJam barrel_tomatoes barrel_cucumbers barrel_cabbage" >
 		<playerTrigger node="storagePlayerTrigger" />
 		<objectTrigger node="objectTrigger" />
-		<transferFromStorage playerTrigger="transferFromStorageTrigger" debugTrigger="true">
+		<transferFromStorage playerTrigger="transferFromStorageTrigger">
 			<destination fillType="SUGAR" target="productionStorage" actionText="В производство"/>
 			<destination fillType="salt" target="productionStorage" actionText="В производство"/>
 			<destination fillType="TOMATO" target="productionStorage" actionText="В производство"/>
