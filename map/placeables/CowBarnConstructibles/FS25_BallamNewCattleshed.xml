@@ -173,7 +173,7 @@
 		</straw>
 	</husbandry>
 
-	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="false" maxLength="8.5" maxWidth="6" maxHeight="4" fillTypes="DRYGRASS_WINDROW GRASS_WINDROW STRAW SILAGE" >
+	<objectStorage isExtension="true" supportsExtension="false" supportsBales="true" supportsPallets="false" maxLength="8.5" maxWidth="6" maxHeight="5" fillTypes="DRYGRASS_WINDROW GRASS_WINDROW STRAW SILAGE" >
 		<playerTrigger node="storagePlayerTrigger" />
 		<objectTrigger node="objectTrigger" />
 		<transferFromStorage playerTrigger="transferFromStorageTrigger">
