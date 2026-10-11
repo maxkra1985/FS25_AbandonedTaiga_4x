@@ -172,6 +172,10 @@
 		<transferFromStorage playerTrigger="transferFromStorageTrigger">
 			<destination fillType="SUGAR" target="productionStorage" actionText="В производство"/>
 			<destination fillType="salt" target="productionStorage" actionText="В производство"/>
+			<destination fillType="TOMATO" target="productionStorage" actionText="В производство"/>
+			<destination fillType="CUCUMBER" target="productionStorage" actionText="В производство"/>
+			<destination fillType="WHITECABBAGE" target="productionStorage" actionText="В производство"/>
+			<destination fillType="STRAWBERRY" target="productionStorage" actionText="В производство"/>
 		</transferFromStorage>
 		<spawnAreas>
 			<spawnArea startNode="spawnAreaStart01" endNode="spawnAreaEnd01"/>
