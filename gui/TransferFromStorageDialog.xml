@@ -44,9 +44,9 @@
         <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
             <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack"/>
             <Bitmap profile="fs25_dialogButtonBoxSeparator" id="prevSeparator"/>
-            <Button profile="fs25_wideButton" text="НАЗАД" id="prevButton" onClick="onClickPrev"/>
+            <Button profile="transferPageButton" text="НАЗАД" id="prevButton" onClick="onClickPrev"/>
             <Bitmap profile="fs25_dialogButtonBoxSeparator" id="nextSeparator"/>
-            <Button profile="fs25_wideButton" text="ДАЛЕЕ" id="nextButton" onClick="onClickNext"/>
+            <Button profile="transferPageButton" text="ДАЛЕЕ" id="nextButton" onClick="onClickNext"/>
         </BoxLayout>
     </GuiElement>
     <GUIProfiles>
@@ -75,9 +75,28 @@
             <textSize value="19px"/>
             <textAlignment value="left"/>
         </Profile>
-        <Profile name="transferRowButton" extends="fs25_wideButton" with="anchorTopLeft">
+        <!-- Видимая прямоугольная кнопка без inputAction/MENU_ACTIVATE.
+             Графическое состояние задаётся цветом фона и подсветкой. -->
+        <Profile name="transferClickableButton" extends="fs25_wideButton">
+            <fitToContent value="false"/>
+            <imageSliceId value="gui.colorPreset"/>
+            <imageColor value="$preset_fs25_colorMainHighlight"/>
+            <imageFocusedColor value="$preset_fs25_colorMainLight"/>
+            <imageHighlightedColor value="$preset_fs25_colorMainLight"/>
+            <imageSelectedColor value="$preset_fs25_colorMainLight"/>
+            <imageDisabledColor value="$preset_fs25_colorMainHighlight_40"/>
+            <textColor value="$preset_fs25_colorMainDark"/>
+            <textFocusedColor value="$preset_fs25_colorMainDark"/>
+            <textHighlightedColor value="$preset_fs25_colorMainDark"/>
+            <textSelectedColor value="$preset_fs25_colorMainDark"/>
+            <textDisabledColor value="$preset_fs25_colorMainDark"/>
+        </Profile>
+        <Profile name="transferRowButton" extends="transferClickableButton" with="anchorTopLeft">
             <size value="230px 52px"/>
             <position value="680px 0px"/>
+        </Profile>
+        <Profile name="transferPageButton" extends="transferClickableButton">
+            <size value="165px 32px"/>
         </Profile>
         <Profile name="transferRowStatus" extends="fs25_textDefault" with="anchorTopLeft">
             <size value="225px 55px"/>
