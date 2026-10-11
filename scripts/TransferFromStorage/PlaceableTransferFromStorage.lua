@@ -3,6 +3,18 @@
 PlaceableTransferFromStorage = {}
 PlaceableTransferFromStorage.EPSILON = 0.001
 
+-- Полное имя таблицы пользовательской специализации; одинаково для карты и дополнения.
+PlaceableTransferFromStorage.SPEC_NAME = string.format("%s.transferFromStorage", g_currentModName)
+PlaceableTransferFromStorage.SPEC_TABLE = string.format("spec_%s", PlaceableTransferFromStorage.SPEC_NAME)
+PlaceableTransferFromStorage.VERSION = "0.1.1.0"
+
+Logging.info(
+    "[TransferFromStorage] SCRIPT LOADED: version=%s mod=%s specTable=%s",
+    PlaceableTransferFromStorage.VERSION,
+    tostring(g_currentModName),
+    PlaceableTransferFromStorage.SPEC_TABLE
+)
+
 -- Для специализации обязателен виртуальный склад.
 function PlaceableTransferFromStorage.prerequisitesPresent(specializations)
     return SpecializationUtil.hasSpecialization(PlaceableObjectStorage, specializations)
@@ -10,6 +22,7 @@ end
 
 -- Регистрирует собственные XML-настройки внутри objectStorage.
 function PlaceableTransferFromStorage.registerXMLPaths(schema, basePath)
+    schema:setXMLSpecializationType("TransferFromStorage")
     local path = basePath .. ".objectStorage.transferFromStorage"
     schema:register(XMLValueType.NODE_INDEX, path .. "#playerTrigger",
         "Триггер ручной передачи со склада")
@@ -19,6 +32,7 @@ function PlaceableTransferFromStorage.registerXMLPaths(schema, basePath)
         "Приёмник: productionStorage, husbandryFood, husbandryStraw")
     schema:register(XMLValueType.STRING, path .. ".destination(?)#actionText",
         "Надпись на кнопке")
+    schema:setXMLSpecializationType()
 end
 
 -- Регистрирует точки взаимодействия движка и методы сервера.
@@ -68,8 +82,8 @@ function PlaceableTransferFromStorage:isAvailable()
             return false
         end
     end
-    return self.spec_transferFromStorage ~= nil
-        and self.spec_transferFromStorage.triggerNode ~= nil
+    return self[PlaceableTransferFromStorage.SPEC_TABLE] ~= nil
+        and self[PlaceableTransferFromStorage.SPEC_TABLE].triggerNode ~= nil
         and self.spec_objectStorage ~= nil
 end
 
@@ -106,7 +120,7 @@ end
 -- Группы с разными размерами и объёмами остаются отдельными строками.
 function PlaceableTransferFromStorage:getEntries()
     local entries = {}
-    local spec = self.spec_transferFromStorage
+    local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
     local storageSpec = self.spec_objectStorage
     if spec == nil or storageSpec == nil then return entries end
     for _, group in ipairs(storageSpec.objectInfos or {}) do
@@ -160,7 +174,7 @@ function PlaceableTransferFromStorage:execute(connection, isBale, fillType, amou
         return false, "Склад занят другой операцией."
     end
 
-    local route = self.spec_transferFromStorage.routes[fillType]
+    local route = self[PlaceableTransferFromStorage.SPEC_TABLE].routes[fillType]
     if route == nil or amount == nil or amount <= 0 then
         return false, "Материал не разрешён для передачи."
     end
@@ -243,11 +257,27 @@ end
 
 -- Создаёт триггер и загружает маршруты материалов из XML объекта.
 function PlaceableTransferFromStorage:onLoad(savegame)
-    local spec = self.spec_transferFromStorage
-    local xmlKey = "placeable.objectStorage.transferFromStorage"
+    local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
+    if spec == nil then
+        Logging.warning(
+            "[TransferFromStorage] onLoad FAILED: specTable=%s file=%s",
+            PlaceableTransferFromStorage.SPEC_TABLE,
+            tostring(self.configFileName)
+        )
+        return
+    end
+
     spec.routes = {}
+    spec.triggerNode = nil
+    -- Один и тот же тип Placeable может использоваться без секции передачи.
+    local xmlKey = "placeable.objectStorage.transferFromStorage"
+    if not self.xmlFile:hasProperty(xmlKey) then
+        return
+    end
+
     spec.triggerNode = self.xmlFile:getValue(xmlKey .. "#playerTrigger",
         nil, self.components, self.i3dMappings)
+    local routeCount = 0
     self.xmlFile:iterate(xmlKey .. ".destination", function(_, key)
         local name = self.xmlFile:getValue(key .. "#fillType")
         local target = self.xmlFile:getValue(key .. "#target")
@@ -256,6 +286,7 @@ function PlaceableTransferFromStorage:onLoad(savegame)
         if fillType ~= nil and (target == "productionStorage"
             or target == "husbandryFood" or target == "husbandryStraw") then
             spec.routes[fillType] = {target = target, actionText = actionText}
+            routeCount = routeCount + 1
         else
             Logging.xmlWarning(self.xmlFile,
                 "TransferFromStorage: invalid destination fillType='%s' target='%s'",
@@ -265,14 +296,24 @@ function PlaceableTransferFromStorage:onLoad(savegame)
     spec.activatable = TransferFromStorageActivatable.new(self)
     if spec.triggerNode ~= nil then
         addTrigger(spec.triggerNode, "onTransferFromStoragePlayerTrigger", self)
+        Logging.info(
+            "[TransferFromStorage] onLoad OK: file=%s trigger=%s routes=%d isServer=%s",
+            tostring(self.configFileName), tostring(spec.triggerNode),
+            routeCount, tostring(self.isServer)
+        )
     else
         Logging.xmlWarning(self.xmlFile, "TransferFromStorage trigger not found")
+        Logging.warning(
+            "[TransferFromStorage] onLoad FAILED: trigger=nil routes=%d file=%s",
+            routeCount, tostring(self.configFileName)
+        )
     end
 end
 
 -- Отключает действие и освобождает триггер при удалении постройки.
 function PlaceableTransferFromStorage:onDelete()
-    local spec = self.spec_transferFromStorage
+    local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
+    if spec == nil then return end
     if spec.activatable ~= nil and g_currentMission.activatableObjectsSystem ~= nil then
         g_currentMission.activatableObjectsSystem:removeActivatable(spec.activatable)
     end
@@ -282,11 +323,22 @@ end
 -- Реагирует только на вход локального игрока в trigger Shape.
 function PlaceableTransferFromStorage:onPlayerTrigger(triggerId, otherId, onEnter, onLeave, onStay)
     if g_localPlayer == nil or otherId ~= g_localPlayer.rootNode then return end
-    local act = self.spec_transferFromStorage.activatable
+    local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
+    if spec == nil or spec.activatable == nil then return end
+
     if onEnter then
-        g_currentMission.activatableObjectsSystem:addActivatable(act)
+        Logging.info(
+            "[TransferFromStorage] Player entered trigger=%s file=%s available=%s",
+            tostring(triggerId), tostring(self.configFileName),
+            tostring(self:transferFromStorageIsAvailable())
+        )
+        g_currentMission.activatableObjectsSystem:addActivatable(spec.activatable)
     elseif onLeave then
-        g_currentMission.activatableObjectsSystem:removeActivatable(act)
+        Logging.info(
+            "[TransferFromStorage] Player left trigger=%s file=%s",
+            tostring(triggerId), tostring(self.configFileName)
+        )
+        g_currentMission.activatableObjectsSystem:removeActivatable(spec.activatable)
     end
 end
 

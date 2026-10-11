@@ -1507,7 +1507,7 @@
         <Shape name="storagePlayerTrigger" translation="-7.35461 -0.900002 33.2996" shapeId="154" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x110000" nodeId="1333" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="30">
           <TransformGroup name="playerTriggerMarker" nodeId="1334"/>
         </Shape>
-        <Shape name="transferFromStorageTrigger" translation="-2.17914 0.0934185 26.4503" shapeId="154" static="true" collision="false" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x110000" nodeId="1349" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="30">
+        <Shape name="transferFromStorageTrigger" translation="-2.17914 0.0934185 26.4503" shapeId="154" static="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x110000" nodeId="1349" castsShadows="true" receiveShadows="true" nonRenderable="true" materialIds="30">
           <TransformGroup name="transferFromStorageTriggerMarker" nodeId="1350"/>
         </Shape>
       </TransformGroup>
