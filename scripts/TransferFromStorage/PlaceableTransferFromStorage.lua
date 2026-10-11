@@ -6,7 +6,7 @@ PlaceableTransferFromStorage.EPSILON = 0.001
 -- Полное имя таблицы пользовательской специализации; одинаково для карты и дополнения.
 PlaceableTransferFromStorage.SPEC_NAME = string.format("%s.transferFromStorage", g_currentModName)
 PlaceableTransferFromStorage.SPEC_TABLE = string.format("spec_%s", PlaceableTransferFromStorage.SPEC_NAME)
-PlaceableTransferFromStorage.VERSION = "0.1.1.0"
+PlaceableTransferFromStorage.VERSION = "0.1.2.0"
 
 Logging.info(
     "[TransferFromStorage] SCRIPT LOADED: version=%s mod=%s specTable=%s",
@@ -26,6 +26,8 @@ function PlaceableTransferFromStorage.registerXMLPaths(schema, basePath)
     local path = basePath .. ".objectStorage.transferFromStorage"
     schema:register(XMLValueType.NODE_INDEX, path .. "#playerTrigger",
         "Триггер ручной передачи со склада")
+    schema:register(XMLValueType.BOOL, path .. "#debugTrigger",
+        "Диагностика физического взаимодействия с триггером", false)
     schema:register(XMLValueType.STRING, path .. ".destination(?)#fillType",
         "Тип содержимого тюка или поддона")
     schema:register(XMLValueType.STRING, path .. ".destination(?)#target",
@@ -53,6 +55,7 @@ end
 function PlaceableTransferFromStorage.registerEventListeners(placeableType)
     SpecializationUtil.registerEventListener(placeableType, "onLoad", PlaceableTransferFromStorage)
     SpecializationUtil.registerEventListener(placeableType, "onDelete", PlaceableTransferFromStorage)
+    SpecializationUtil.registerEventListener(placeableType, "onUpdate", PlaceableTransferFromStorage)
 end
 
 -- Возвращает содержимое виртуального тюка или поддона.
@@ -269,6 +272,11 @@ function PlaceableTransferFromStorage:onLoad(savegame)
 
     spec.routes = {}
     spec.triggerNode = nil
+    spec.debugTrigger = false
+    spec.debugElapsed = 0
+    spec.debugNear = false
+    spec.debugRawEvents = 0
+    spec.debugStaySeen = false
     -- Один и тот же тип Placeable может использоваться без секции передачи.
     local xmlKey = "placeable.objectStorage.transferFromStorage"
     if not self.xmlFile:hasProperty(xmlKey) then
@@ -277,6 +285,7 @@ function PlaceableTransferFromStorage:onLoad(savegame)
 
     spec.triggerNode = self.xmlFile:getValue(xmlKey .. "#playerTrigger",
         nil, self.components, self.i3dMappings)
+    spec.debugTrigger = self.xmlFile:getValue(xmlKey .. "#debugTrigger", false)
     local routeCount = 0
     self.xmlFile:iterate(xmlKey .. ".destination", function(_, key)
         local name = self.xmlFile:getValue(key .. "#fillType")
@@ -297,9 +306,9 @@ function PlaceableTransferFromStorage:onLoad(savegame)
     if spec.triggerNode ~= nil then
         addTrigger(spec.triggerNode, "onTransferFromStoragePlayerTrigger", self)
         Logging.info(
-            "[TransferFromStorage] onLoad OK: file=%s trigger=%s routes=%d isServer=%s",
+            "[TransferFromStorage] onLoad OK: file=%s trigger=%s routes=%d isServer=%s debug=%s",
             tostring(self.configFileName), tostring(spec.triggerNode),
-            routeCount, tostring(self.isServer)
+            routeCount, tostring(self.isServer), tostring(spec.debugTrigger)
         )
     else
         Logging.xmlWarning(self.xmlFile, "TransferFromStorage trigger not found")
@@ -320,12 +329,73 @@ function PlaceableTransferFromStorage:onDelete()
     if spec.triggerNode ~= nil then removeTrigger(spec.triggerNode) end
 end
 
--- Реагирует только на вход локального игрока в trigger Shape.
+-- Записывает близость игрока к узлу, даже когда физика не вызывает
+-- onEnter. Только для объектов с debugTrigger=true, с редким интервалом.
+function PlaceableTransferFromStorage:onUpdate(dt)
+    local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
+    if spec == nil or not spec.debugTrigger
+        or spec.triggerNode == nil or not entityExists(spec.triggerNode)
+        or g_localPlayer == nil or g_localPlayer.rootNode == nil then
+        return
+    end
+
+    spec.debugElapsed = (spec.debugElapsed or 0) + dt
+    if spec.debugElapsed < 2000 then return end
+    spec.debugElapsed = 0
+
+    local px, py, pz = getWorldTranslation(g_localPlayer.rootNode)
+    local tx, ty, tz = getWorldTranslation(spec.triggerNode)
+    local dx, dy, dz = px - tx, py - ty, pz - tz
+    local horizontalDistance = math.sqrt(dx * dx + dz * dz)
+    local near = horizontalDistance < 7 and math.abs(dy) < 5
+
+    -- При приближении показываем относительную позицию, при удалении
+    -- подтверждаем выход из области диагностики.
+    if near then
+        Logging.info(
+            "[TransferFromStorageDebug] NEAR file=%s trigger=%s horizontal=%.2fm delta=(%.2f, %.2f, %.2f) playerRoot=%s rawEvents=%d",
+            tostring(self.configFileName), tostring(spec.triggerNode),
+            horizontalDistance, dx, dy, dz,
+            tostring(g_localPlayer.rootNode), spec.debugRawEvents or 0
+        )
+    elseif spec.debugNear then
+        Logging.info(
+            "[TransferFromStorageDebug] FAR file=%s trigger=%s horizontal=%.2fm",
+            tostring(self.configFileName), tostring(spec.triggerNode),
+            horizontalDistance
+        )
+    end
+    spec.debugNear = near
+end
+
+
+-- При срабатывании физики сначала регистрирует необработанное событие,
+-- затем применяет штатный фильтр rootNode локального игрока.
 function PlaceableTransferFromStorage:onPlayerTrigger(triggerId, otherId, onEnter, onLeave, onStay)
-    if g_localPlayer == nil or otherId ~= g_localPlayer.rootNode then return end
     local spec = self[PlaceableTransferFromStorage.SPEC_TABLE]
     if spec == nil or spec.activatable == nil then return end
 
+    if spec.debugTrigger then
+        if (onEnter or onLeave) and (spec.debugRawEvents or 0) < 30 then
+            spec.debugRawEvents = (spec.debugRawEvents or 0) + 1
+            Logging.info(
+                "[TransferFromStorageDebug] RAW trigger=%s otherId=%s playerRoot=%s enter=%s leave=%s matchesPlayer=%s",
+                tostring(triggerId), tostring(otherId),
+                tostring(g_localPlayer ~= nil and g_localPlayer.rootNode or nil),
+                tostring(onEnter), tostring(onLeave),
+                tostring(g_localPlayer ~= nil and otherId == g_localPlayer.rootNode)
+            )
+        elseif onStay and not spec.debugStaySeen
+            and g_localPlayer ~= nil and otherId == g_localPlayer.rootNode then
+            spec.debugStaySeen = true
+            Logging.info(
+                "[TransferFromStorageDebug] RAW STAY player in trigger=%s without new enter",
+                tostring(triggerId)
+            )
+        end
+    end
+
+    if g_localPlayer == nil or otherId ~= g_localPlayer.rootNode then return end
     if onEnter then
         -- Логируем условия активации один раз при входе: это позволяет
         -- отличить отсутствие события физического триггера от запрета доступа.
