@@ -365,10 +365,19 @@ function TransferFromStorageActivatable:run()
     TransferFromStorageDialog.show(self.placeable)
 end
 
--- Использует расстояние до исходного триггера для приоритета действий.
+-- Возвращает расстояние до триггера для выбора приоритетного действия.
+-- Использует полное имя пользовательской специализации GIANTS; при удалении
+-- постройки или отсутствии узла действие перестаёт участвовать в выборе.
 function TransferFromStorageActivatable:getDistance(x, y, z)
-    local node = self.placeable.spec_transferFromStorage.triggerNode
-    if node == nil then return math.huge end
+    local placeable = self.placeable
+    local spec = placeable ~= nil
+        and placeable[PlaceableTransferFromStorage.SPEC_TABLE] or nil
+    local node = spec ~= nil and spec.triggerNode or nil
+
+    if node == nil or not entityExists(node) then
+        return math.huge
+    end
+
     local tx, ty, tz = getWorldTranslation(node)
     return MathUtil.vector3Length(x - tx, y - ty, z - tz)
 end
