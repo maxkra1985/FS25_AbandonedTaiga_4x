@@ -89,9 +89,9 @@
 		<triggerMarker node="markerStraw"			adjustToGround="true" filename="markerIcons/markerIconStrawUnload.i3d" />
 		<triggerMarker node="markerAnimals"			adjustToGround="true" filename="markerIcons/markerIconCowTrade.i3d" />
 		<triggerMarker node="markerLiquidManure"	adjustToGround="true" filename="markerIcons/markerIconLiquidManure.i3d" />
-		<triggerMarker node="baleUnloadLinkNode"				adjustToGround="false"	filename="markerIcons/markerIconBaleStorage.i3d"/>
+		<triggerMarker node="baleUnloadLinkNode"				adjustToGround="true"	filename="markerIcons/markerIconBaleStorage.i3d"/>
 		<triggerMarker node="storagePlayerTriggerMarker"		adjustToGround="false"	filename="$data/shared/assets/marker/markerIconWrench.i3d"/>
-		<triggerMarker node="transferFromStorageTriggerMarker"	adjustToGround="false"	filename="markerIcons/markerIconBaleToProduction.i3d"/>
+		<triggerMarker node="transferFromStorageTriggerMarker"	adjustToGround="true"	filename="markerIcons/markerIconBaleToProduction.i3d"/>
 		<triggerMarker node="ConstructibleUnloadTriggerMarker"	adjustToGround="true" filename="markerIcons/markerIconStroyka.i3d" />
 	</triggerMarkers>
 
