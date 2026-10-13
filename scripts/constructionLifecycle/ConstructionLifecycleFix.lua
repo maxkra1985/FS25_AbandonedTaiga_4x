@@ -18,7 +18,7 @@
 TaigaConstructionLifecycleFix = TaigaConstructionLifecycleFix or {}
 local Fix = TaigaConstructionLifecycleFix
 
-Fix.VERSION = "1.0.1"
+Fix.VERSION = "1.0.2"
 Fix.LOG_PREFIX = "[TaigaConstructionLifecycleFix]"
 
 Fix.SYNC_INTERVAL_MS = 1000
@@ -139,6 +139,7 @@ end
 -- Во время строительства специализация будущего объекта вызывает только superFunc,
 -- не добавляя собственных строк. Для ProductionPoint + ObjectStorage дополнительно
 -- подавляется штатный плоский ProductionPoint HUD и один раз вставляется наш grouped HUD.
+-- У завершённого Husbandry + ObjectStorage подавляется только плоский HUD склада.
 local function installFutureFacilityInfoGuard(classTable, className)
     if classTable == nil
         or classTable.updateInfo == nil
@@ -157,6 +158,12 @@ local function installFutureFacilityInfoGuard(classTable, className)
         end
 
         if infoHUD.shouldSuppressFutureFacilityInfo(placeable) then
+            return superFunc(placeable, infoTable)
+        end
+
+        if isObjectStorageClass and infoHUD.useFinishedHusbandryStorageInfo(placeable) then
+            -- Штатные строки животных формирует superFunc, а склад отдельной секцией
+            -- после них добавляет ConstructionInfoHUD в InfoTrigger.onDraw.
             return superFunc(placeable, infoTable)
         end
 

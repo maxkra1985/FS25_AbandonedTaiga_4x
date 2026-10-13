@@ -11,7 +11,7 @@
 TaigaConstructionInfoHUD = TaigaConstructionInfoHUD or {}
 local HUD = TaigaConstructionInfoHUD
 
-HUD.VERSION = "1.0.4"
+HUD.VERSION = "1.0.5"
 HUD.LOG_PREFIX = "[TaigaConstructionInfoHUD]"
 
 HUD.L10N_PRODUCTION = "taiga_cl_infoProduction"
@@ -378,6 +378,21 @@ function HUD.useFinishedCompositeInfo(placeable)
         and HUD.isProductionObjectStorageComposite(placeable)
 end
 
+-- Проверяет готовый строившийся животноводческий объект со встроенным ObjectStorage.
+-- Для обычных животноводческих комплексов других модов штатный HUD не меняется.
+function HUD.useFinishedHusbandryStorageInfo(placeable)
+    if placeable == nil
+        or placeable.spec_husbandry == nil
+        or placeable.spec_objectStorage == nil
+        or placeable.spec_constructible == nil
+        or HUD.isProductionPlaceable(placeable) then
+        return false
+    end
+
+    local lifecycle = getLifecycle()
+    return lifecycle ~= nil and lifecycle.isFinished(placeable)
+end
+
 -- Во время строительства любая будущая специализация должна пропустить собственные строки HUD.
 function HUD.shouldSuppressFutureFacilityInfo(placeable)
     local lifecycle = getLifecycle()
@@ -627,6 +642,18 @@ function HUD.addFinishedCompositeInfo(placeable, infoTable)
     return true
 end
 
+-- Добавляет секцию виртуального склада после штатных показателей животных.
+-- Информация о поголовье, корме и продуктах животноводства собирается отдельно
+-- через обычный placeable:updateInfo() без подмены алгоритмов GIANTS.
+function HUD.addFinishedHusbandryStorageInfo(placeable, infoTable)
+    if type(infoTable) ~= "table" or not HUD.useFinishedHusbandryStorageInfo(placeable) then
+        return false
+    end
+
+    addObjectStorageInfo(placeable, infoTable)
+    return true
+end
+
 -- Подменяет штатный ProductionPoint:updateInfo() для производств без ObjectStorage.
 -- Составные ProductionPoint + ObjectStorage по-прежнему собираются координатором
 -- одним блоком, поэтому здесь они намеренно пропускаются во избежание дублирования.
@@ -871,8 +898,9 @@ end
 -- Устанавливает окончательный InfoTrigger-hook после загрузки остальных модов.
 -- Для строящихся объектов и готовых производств HUD собирается здесь напрямую,
 -- поэтому поздние замены ProductionPoint/ConstructibleState.updateInfo не могут
--- подмешать альтернативные строки. Для всех остальных placeable сохраняется
--- исходная цепочка игры и сторонних модов.
+-- подмешать альтернативные строки. У готового коровника штатные строки животных
+-- сохраняются, а его ObjectStorage выделяется в отдельный раздел.
+-- Для остальных placeable сохраняется исходная цепочка игры и сторонних модов.
 function HUD.installAuthoritativeInfoTriggerHook()
     if PlaceableInfoTrigger == nil or PlaceableInfoTrigger.onDraw == nil then
         return false
@@ -888,8 +916,11 @@ function HUD.installAuthoritativeInfoTriggerHook()
     local wrappedOnDraw = function(placeable, ...)
         local showConstruction = HUD.shouldSuppressFutureFacilityInfo(placeable)
         local showProduction = not showConstruction and HUD.useFinishedProductionInfo(placeable)
+        local showHusbandryStorage = not showConstruction
+            and not showProduction
+            and HUD.useFinishedHusbandryStorageInfo(placeable)
 
-        if not showConstruction and not showProduction then
+        if not showConstruction and not showProduction and not showHusbandryStorage then
             return originalOnDraw(placeable, ...)
         end
 
@@ -902,6 +933,11 @@ function HUD.installAuthoritativeInfoTriggerHook()
 
         if showConstruction then
             HUD.addConstructionInfo(placeable, spec.info)
+        elseif showHusbandryStorage then
+            -- Стандартная цепочка формирует только параметры животноводства:
+            -- PlaceableObjectStorage.updateInfo пропускается guard'ом координатора.
+            placeable:updateInfo(spec.info)
+            HUD.addFinishedHusbandryStorageInfo(placeable, spec.info)
         elseif HUD.useFinishedCompositeInfo(placeable) then
             HUD.addFinishedCompositeInfo(placeable, spec.info)
         else
