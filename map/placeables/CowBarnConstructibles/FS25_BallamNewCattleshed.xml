@@ -121,9 +121,9 @@
 	<husbandry saveId="Animals_COW" hasStatistics="true">
 		<storage node="storage" fillTypes="LIQUIDMANURE MILK BUFFALOMILK STRAW MANURE" isExtension="false">
 			<capacity fillType="LIQUIDMANURE" capacity="800000" />
-			<capacity fillType="MILK" capacity="89250" />
-			<capacity fillType="BUFFALOMILK" capacity="89250" />
-			<capacity fillType="STRAW" capacity="60000" />
+			<capacity fillType="MILK" capacity="150000" />
+			<capacity fillType="BUFFALOMILK" capacity="150000" />
+			<capacity fillType="STRAW" capacity="100000" />
 			<capacity fillType="MANURE" capacity="0" />
 		</storage>
 
@@ -143,7 +143,7 @@
 			<loadingTrigger node="loadingTrigger" />
 		</animals>
 
-		<food capacity="80000" >
+		<food capacity="350000" >
 			<foodPlaces>
 				<foodPlace node="foodPlace1" />
 				<foodPlace node="foodPlace2" />
