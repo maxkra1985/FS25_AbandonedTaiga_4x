@@ -188,6 +188,87 @@ LoggingContractor.PROCESSING_FALLBACK_OFFSETS = {
     21, -21
 }
 
+-- Экспериментальный профиль взрослой spruce2: центры 72 групп
+-- LOD0AttachmentsShape из map/trees/spruce/spruceVar2_stage03.i3d.shapes.
+-- Все значения в локальных координатах исходной I3D, Y вдоль ствола.
+-- Это приоритетные точки обработки, не гарантированные места удаления.
+local CONTRACTOR_SPRUCE2_STAGE03_POINTS = {
+    {0.27, 35.23, -0.3},
+    {-0.36, 35.06, -0.53},
+    {-0.89, 24.08, -0.42},
+    {0.84, 32.84, -0.15},
+    {0.31, 33.77, -0.83},
+    {-0.01, 27.25, -0.8},
+    {-0.56, 27.65, 1.05},
+    {-0.93, 27.05, -0.14},
+    {1.37, 25.04, -0.11},
+    {0.42, 28.85, 1.13},
+    {0.46, 29.48, -0.47},
+    {-0.41, 30.6, -0.91},
+    {-0.4, 30.97, 0.81},
+    {0.89, 31.17, -0.18},
+    {-0.79, 31.42, -0.37},
+    {-0.03, 32.32, -0.99},
+    {0.47, 31.8, 0.79},
+    {-0.65, 32.41, 0.34},
+    {-0.64, 33.23, -0.43},
+    {0.19, 33.01, 0.81},
+    {-0.56, 34.34, 0.05},
+    {0.33, 34.54, 0.23},
+    {-0.17, 35.08, 0.32},
+    {0.29, 26.01, 1.33},
+    {0.9, 23.3, 0.57},
+    {0.22, 22.71, -0.87},
+    {-0.02, 20.78, 1.39},
+    {-0.56, 24.57, 1.17},
+    {1.39, 19.22, 0.13},
+    {-0.9, 18.97, -1.47},
+    {-0.9, 18.19, 1.06},
+    {0.29, 13.22, 1.7},
+    {1.34, 17.17, -0.29},
+    {-0.93, 19.29, 0.11},
+    {-1.3, 15.95, -0.05},
+    {0.29, 15.44, -1.07},
+    {1.09, 14.93, 0.49},
+    {-0.16, 15.88, 0.96},
+    {0.85, 19.98, -1.18},
+    {0.86, 11.96, -1.03},
+    {-1.2, 12.91, -1.09},
+    {1.51, 10.6, 0.07},
+    {-1.27, 11.76, -0.51},
+    {-0.82, 13.52, 0.59},
+    {0.17, 8.83, 1.37},
+    {-1.14, 7.89, -0.86},
+    {-0.02, 9.32, -1.79},
+    {0.94, 7.24, -1.02},
+    {0.82, 10.97, 1.56},
+    {-0.56, 6.77, 1.44},
+    {0.84, 28.8, -0.24},
+    {-1.62, 28.74, -0.53},
+    {-1.25, 6.05, -0.27},
+    {1.28, 6.16, 0.25},
+    {1.06, 16.74, 0.21},
+    {-0.48, 17.51, -0.65},
+    {-0.2, 4.85, -0.89},
+    {0.51, 4.56, 1.13},
+    {-0.97, 3.71, 0.98},
+    {1.47, 3.76, -0.17},
+    {-0.55, 3.02, -1.13},
+    {0.63, 3.4, -0.91},
+    {0.3, 3.06, 0.68},
+    {0.78, 5.36, 1.01},
+    {0.2, 35.45, 0.07},
+    {0, 33.5, 0.57},
+    {-0.37, 34, 0.44},
+    {-0.82, 21.77, 0.6},
+    {-1.09, 28.66, 0.69},
+    {-1.51, 13.61, 0.72},
+    {0.8, 13.9, -0.74},
+    {-0.24, 14.5, 1.77}
+}
+
+LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.35
+
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
@@ -1336,6 +1417,108 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
+-- Обрабатывает одну группу attachments из профильной I3D-модели.
+-- Запомненный после спила локальный базис сохраняет корректную ориентацию
+-- точек при падении и движении динамического ствола.
+-- Возвращает done, changed: done означает окончание всей очистки ствола.
+function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
+    local shape = state.shape
+    if shape == nil or not entityExists(shape) then
+        cleanup.phase = "DONE"
+        return true, false
+    end
+
+    local before = select(5, self:getContractorSplitShapeStats(shape))
+    if before <= 0 then
+        cleanup.phase = "DONE"
+        self:addContractorPerfCounter("profileComplete", 1)
+        return true, false
+    end
+
+    local point = CONTRACTOR_SPRUCE2_STAGE03_POINTS[cleanup.profileIndex]
+    if point == nil then
+        -- Эксперимент не должен ухудшать качество очистки: все оставшиеся
+        -- attachments обрабатываются штатным полным проходом и fallback.
+        cleanup.phase = "FAST"
+        cleanup.distance = LoggingContractor.PROCESSING_SCAN_STEP
+        cleanup.attachmentStep = 0
+        self:addContractorPerfCounter("profileToFullScan", 1)
+        return false, false
+    end
+
+    local f = state.attachmentProfileFrame
+    if f == nil then
+        cleanup.phase = "FAST"
+        self:addContractorPerfCounter("profileMissingFrame", 1)
+        return false, false
+    end
+
+    -- Центр плоскости располагается у поверхности ствола напротив ветви.
+    -- Направления рассчитываются в исходных осях I3D, перенесённых в
+    -- локальную систему split-shape, а не по текущему мировому углу падения.
+    local px, py, pz = point[1], point[2], point[3]
+    local radius = math.sqrt(px * px + pz * pz)
+    if radius < 0.01 then
+        cleanup.profileIndex = cleanup.profileIndex + 1
+        return false, false
+    end
+
+    local rx, rz = px / radius, pz / radius
+    local ox, oy, oz = f.origin[1], f.origin[2], f.origin[3]
+    local bx, by, bz = f.axisX[1], f.axisX[2], f.axisX[3]
+    local tx, ty, tz = f.axisY[1], f.axisY[2], f.axisY[3]
+    local sx, sy, sz = f.axisZ[1], f.axisZ[2], f.axisZ[3]
+    local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
+    local lx = ox + bx * rx * distance + tx * py + sx * rz * distance
+    local ly = oy + by * rx * distance + ty * py + sy * rz * distance
+    local lz = oz + bz * rx * distance + tz * py + sz * rz * distance
+
+    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
+    local radialX, radialY, radialZ = localDirectionToWorld(
+        shape, bx * rx + sx * rz, by * rx + sy * rz, bz * rx + sz * rz
+    )
+    local axisX, axisY, axisZ = localDirectionToWorld(shape, tx, ty, tz)
+    radialX, radialY, radialZ = MathUtil.vector3Normalize(
+        radialX, radialY, radialZ
+    )
+    axisX, axisY, axisZ = MathUtil.vector3Normalize(axisX, axisY, axisZ)
+
+    -- Та же native-операция, что и в обычной очистке, но одна плоскость
+    -- в известном направлении вместо полного перебора 12 направлений.
+    removeSplitShapeAttachments(
+        shape,
+        wx, wy, wz,
+        -radialX, -radialY, -radialZ,
+        axisX, axisY, axisZ,
+        LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
+        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
+        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
+    )
+
+    cleanup.profileIndex = cleanup.profileIndex + 1
+    self:addContractorPerfCounter("profileCalls", 1)
+
+    if not entityExists(shape) then
+        cleanup.phase = "DONE"
+        return true, true
+    end
+
+    local after = select(5, self:getContractorSplitShapeStats(shape))
+    local removed = math.max(before - after, 0)
+    if removed > 0 then
+        self:addContractorPerfCounter("profileAttachmentsRemoved", removed)
+    end
+
+    if after <= 0 then
+        cleanup.phase = "DONE"
+        self:addContractorPerfCounter("profileComplete", 1)
+        return true, removed > 0
+    end
+
+    return false, removed > 0
+end
+
+
 -- Продвигает очистку attachments основного ствола порциями.
 -- Шаг 0.10 м и полный круг для ели не меняются; между update сохраняются
 -- текущая позиция и номер сечения.
@@ -1356,12 +1539,18 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             return true, false
         end
 
+        local useProfile = state.attachmentProfileName == "spruce2_stage03"
+            and state.attachmentProfileFrame ~= nil
         state.attachmentCleanup = {
-            phase = "FAST",
+            phase = useProfile and "PROFILE" or "FAST",
+            profileIndex = 1,
             distance = LoggingContractor.PROCESSING_SCAN_STEP,
             attachmentStep = 0,
             fallbackState = nil
         }
+        if useProfile then
+            self:addContractorPerfCounter("profileStarts", 1)
+        end
         if state.attachmentTypeStats ~= nil then
             state.attachmentTypeStats.mainScans =
                 state.attachmentTypeStats.mainScans + 1
@@ -1372,6 +1561,10 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
     if cleanup.phase == "DONE" then
         return true, false
+    end
+
+    if cleanup.phase == "PROFILE" then
+        return self:advanceContractorProfileAttachments(state, cleanup)
     end
 
     if cleanup.phase == "FALLBACK" then

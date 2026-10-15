@@ -327,6 +327,23 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
         )
     end
 
+    if (stats.counters.profileSpruceCandidates or 0) > 0
+        or (stats.counters.profileStarts or 0) > 0
+        or (stats.counters.profileCalls or 0) > 0
+        or (stats.counters.profileComplete or 0) > 0 then
+        Logging.info(
+            "[LoggingContractorPerf] spruce2_stage03 profile | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d",
+            stats.counters.profileSpruceCandidates or 0,
+            stats.counters.profileSpruceMatched or 0,
+            stats.counters.profileStarts or 0,
+            stats.counters.profileCalls or 0,
+            stats.counters.profileAttachmentsRemoved or 0,
+            stats.counters.profileComplete or 0,
+            stats.counters.profileToFullScan or 0,
+            stats.counters.profileMissingFrame or 0
+        )
+    end
+
     if stats.metrics.attachmentFallback ~= nil
         or (stats.counters.fallbackStarts or 0) > 0 then
         Logging.info(
@@ -377,6 +394,54 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
         metrics = {},
         counters = {}
     }
+end
+
+
+-- Типы деревьев с прямым древесным стволом. У таких деревьев крупные
+-- видимые ветви относятся к attachments и не требуют splitShape ветвей.
+-- Таблица охватывает разновидности сосны из FS25 SplitShapeManager.
+local CONTRACTOR_STRAIGHT_TRUNK_TYPES = {
+    SPRUCE = true,
+    BEECH = true,
+    ASPEN = true,
+    PINE = true,
+    STONEPINE = true,
+    LODGEPOLEPINE = true,
+    PONDEROSAPINE = true,
+    PINUSTABULIFORMIS = true,
+    PINUSSYLVESTRIS = true,
+    DEADWOOD = true,
+    RAVAGED = true
+}
+
+-- Проверяет, нужно ли выполнять геометрический поиск крупных ветвей.
+function LoggingContractor:getContractorNeedsBranchSearch(splitTypeName)
+    return CONTRACTOR_STRAIGHT_TRUNK_TYPES[splitTypeName or ""] ~= true
+end
+
+
+-- Определяет экспериментальный профиль непосредственно по имени исходной
+-- I3D-модели, не смешивая две разновидности ели с общим splitType SPRUCE.
+-- Результат фиксируется до спила, пока доступна исходная трансформация.
+function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
+    if splitTypeName ~= "SPRUCE" or shape == nil or not entityExists(shape) then
+        return nil
+    end
+
+    -- У экземпляра карты между shape и именованной группой модели могут
+    -- присутствовать дополнительные transform-group: проверяем лишь родителей.
+    local parent = getParent(shape)
+    for _ = 1, 4 do
+        if parent == nil or parent == 0 or not entityExists(parent) then
+            break
+        end
+        if getName(parent) == "spruceVar02_stage03" then
+            return "spruce2_stage03"
+        end
+        parent = getParent(parent)
+    end
+
+    return nil
 end
 
 
@@ -1068,11 +1133,37 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
     end
 
     local treeX, treeY, treeZ = getWorldTranslation(shape)
+    local splitTypeName = self:getContractorSplitTypeName(shape)
+    local profileName = self:getContractorTreeModelProfile(shape, splitTypeName)
+    if splitTypeName == "SPRUCE" then
+        self:addContractorPerfCounter("profileSpruceCandidates", 1)
+        if profileName ~= nil then
+            self:addContractorPerfCounter("profileSpruceMatched", 1)
+        end
+    end
+    local profileSourceFrame = nil
+
+    if profileName ~= nil then
+        -- Запоминаем исходный базис I3D до разделения: динамический shape
+        -- после спила может получить другую локальную систему координат.
+        local x0, y0, z0 = localToWorld(shape, 0, 0, 0)
+        local xx, xy, xz = localDirectionToWorld(shape, 1, 0, 0)
+        local yx, yy, yz = localDirectionToWorld(shape, 0, 1, 0)
+        local zx, zy, zz = localDirectionToWorld(shape, 0, 0, 1)
+        profileSourceFrame = {
+            origin = {x0, y0, z0},
+            axisX = {xx, xy, xz},
+            axisY = {yx, yy, yz},
+            axisZ = {zx, zy, zz}
+        }
+    end
 
     return {
         sourceShape = shape,
         shape = shape,
-        splitTypeName = self:getContractorSplitTypeName(shape),
+        splitTypeName = splitTypeName,
+        profileName = profileName,
+        profileSourceFrame = profileSourceFrame,
         treeX = treeX,
         treeY = treeY,
         treeZ = treeZ,
@@ -1207,6 +1298,28 @@ function LoggingContractor:performContractorInitialCut(job, state, allowMutation
         trunkShape = dynamicAbovePart.shape
     end
 
+    -- Преобразуем исходный базис модели в локальную систему только что
+    -- отделённого ствола. Далее профильные точки следуют за его поворотом
+    -- и движением без использования уже удалённого исходного shape.
+    if state.profileSourceFrame ~= nil then
+        local sourceFrame = state.profileSourceFrame
+        local o = sourceFrame.origin
+        local a = sourceFrame.axisX
+        local b = sourceFrame.axisY
+        local d = sourceFrame.axisZ
+        local ox, oy, oz = worldToLocal(trunkShape, o[1], o[2], o[3])
+        local xx, xy, xz = worldDirectionToLocal(trunkShape, a[1], a[2], a[3])
+        local yx, yy, yz = worldDirectionToLocal(trunkShape, b[1], b[2], b[3])
+        local zx, zy, zz = worldDirectionToLocal(trunkShape, d[1], d[2], d[3])
+        state.profileLocalFrame = {
+            origin = {ox, oy, oz},
+            axisX = {xx, xy, xz},
+            axisY = {yx, yy, yz},
+            axisZ = {zx, zy, zz}
+        }
+        state.profileSourceFrame = nil
+    end
+
     state.shape = trunkShape
     state.cutX = cutX
     state.cutY = cutY
@@ -1304,9 +1417,13 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
                 job.jobId, state.splitTypeName
             )
 
-        if job.pruneLargeBranches == false then
-            -- Не отделяем крупные ветви. Используем существующий проход удаления
-            -- attachments, а затем штатную раскряжёвку подготовленного ствола.
+        state.pruning.attachmentProfileName = state.profileName
+        state.pruning.attachmentProfileFrame = state.profileLocalFrame
+
+        if job.pruneLargeBranches == false
+            or not self:getContractorNeedsBranchSearch(state.splitTypeName) then
+            -- Для прямоствольных пород не выполняем дорогой поиск и отделение
+            -- древесных ветвей. Основная и резервная очистка листвы сохраняются.
             state.pruning.phase = "ATTACHMENTS"
         end
 
