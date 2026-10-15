@@ -267,6 +267,67 @@ local CONTRACTOR_SPRUCE2_STAGE03_POINTS = {
     {-0.24, 14.5, 1.77}
 }
 
+-- Второй тестовый профиль: 49 групп LOD0AttachmentsShape из
+-- spruceVar2_stage02.i3d.shapes (локальные координаты, ось Y вдоль ствола).
+local CONTRACTOR_SPRUCE2_STAGE02_POINTS = {
+    {0.27, 21.5, -0.3},
+        {-0.26, 21.33, -0.63},
+        {0.87, 19.22, -0.27},
+        {0.5, 20.13, -0.77},
+        {0.38, 13.64, -1.05},
+        {-0.38, 13.92, 1.12},
+        {-1.11, 13.48, -0.46},
+        {0.56, 15.11, 1.04},
+        {0, 15.74, -0.6},
+        {0.04, 17.02, -1.15},
+        {-0.9, 17.39, 0.52},
+        {0.96, 17.5, 0.04},
+        {-0.52, 17.91, -0.94},
+        {0.23, 18.68, -1},
+        {0.67, 18.02, 0.54},
+        {-0.36, 18.73, 0.61},
+        {-0.67, 19.48, -0.27},
+        {-0.28, 19.42, 0.85},
+        {-0.58, 20.58, -0.22},
+        {0.39, 20.8, 0.2},
+        {0.16, 21.31, 0.4},
+        {0.74, 12.38, 0.97},
+        {1.61, 10.91, -0.25},
+        {-0.2, 9.47, -1.26},
+        {-1.56, 10.49, 0.76},
+        {1.27, 8.02, -0.47},
+        {-1.29, 9.22, 0.47},
+        {0.61, 10.98, 0.63},
+        {1.33, 6.45, -0.51},
+        {-1.31, 5.38, 0.26},
+        {-0.66, 4.72, -1.12},
+        {1.09, 8.06, -0.11},
+        {0.79, 4.1, 1.11},
+        {1, 15.25, 0.16},
+        {-1.13, 3.65, 0.5},
+        {1.17, 3.65, -0.45},
+        {0.15, 2.46, 0.28},
+        {0.62, 3.02, -1.59},
+        {-1.2, 2.23, 0.05},
+        {1.01, 2.77, 0.33},
+        {0.47, 21.66, -0.21},
+        {-0.07, 19.78, 0.57},
+        {-0.11, 20.24, 0.52},
+        {0.31, 10.73, 1},
+        {-0.31, 11.31, -0.82},
+        {-1.01, 7.83, -0.24},
+        {-1.09, 15.29, -0.44},
+        {-0.58, 5.65, 1.19},
+        {-1.11, 6.39, -1.53}
+}
+
+-- Сопоставляет конкретную I3D-модель с адресными точками её attachments.
+-- Остальные ели продолжают использовать обычный FAST и FALLBACK.
+local CONTRACTOR_SPRUCE_PROFILE_POINTS = {
+    spruce2_stage02 = CONTRACTOR_SPRUCE2_STAGE02_POINTS,
+    spruce2_stage03 = CONTRACTOR_SPRUCE2_STAGE03_POINTS
+}
+
 LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.35
 
 
@@ -1417,6 +1478,30 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
+-- Выводит фактический результат основной очистки по конкретной I3D-модели.
+-- Для двух опытных моделей отмечает остаток и отключённый fallback.
+-- Остальные модели фиксируются отдельно, чтобы при следующем тесте можно
+-- было определить худшую по остаткам без предположений о размерах кроны.
+function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, remaining, reason)
+    if state.attachmentProfileName == nil or cleanup.profileReported then
+        return
+    end
+
+    cleanup.profileReported = true
+    Logging.info(
+        "[LoggingContractorProfile] model=%s shape=%s mode=%s initial=%d afterProfile=%s afterFast=%d fallback=%s reason=%s",
+        state.attachmentProfileName,
+        tostring(state.shape),
+        cleanup.profileEnabled and "ADDRESS_FAST" or "FAST",
+        cleanup.initialAttachments or 0,
+        tostring(cleanup.profileRemaining or "n/a"),
+        remaining,
+        cleanup.profileEnabled and "DISABLED_TEST" or "ENABLED",
+        reason or "scanEnd"
+    )
+end
+
+
 -- Обрабатывает одну группу attachments из профильной I3D-модели.
 -- Запомненный после спила локальный базис сохраняет корректную ориентацию
 -- точек при падении и движении динамического ствола.
@@ -1431,14 +1516,20 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     local before = select(5, self:getContractorSplitShapeStats(shape))
     if before <= 0 then
         cleanup.phase = "DONE"
+        cleanup.profileRemaining = 0
+        self:logContractorModelAttachmentScan(
+            state, cleanup, 0, "profileComplete"
+        )
         self:addContractorPerfCounter("profileComplete", 1)
         return true, false
     end
 
-    local point = CONTRACTOR_SPRUCE2_STAGE03_POINTS[cleanup.profileIndex]
+    local points = CONTRACTOR_SPRUCE_PROFILE_POINTS[state.attachmentProfileName]
+    local point = points ~= nil and points[cleanup.profileIndex] or nil
     if point == nil then
-        -- Эксперимент не должен ухудшать качество очистки: все оставшиеся
-        -- attachments обрабатываются штатным полным проходом и fallback.
+        -- Адресный проход исчерпан. Сначала выполняется штатный FAST;
+        -- FALLBACK для двух опытных моделей отключён только на время теста.
+        cleanup.profileRemaining = before
         cleanup.phase = "FAST"
         cleanup.distance = LoggingContractor.PROCESSING_SCAN_STEP
         cleanup.attachmentStep = 0
@@ -1511,6 +1602,10 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
 
     if after <= 0 then
         cleanup.phase = "DONE"
+        cleanup.profileRemaining = 0
+        self:logContractorModelAttachmentScan(
+            state, cleanup, 0, "profileComplete"
+        )
         self:addContractorPerfCounter("profileComplete", 1)
         return true, removed > 0
     end
@@ -1539,10 +1634,13 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             return true, false
         end
 
-        local useProfile = state.attachmentProfileName == "spruce2_stage03"
+        local useProfile =
+            CONTRACTOR_SPRUCE_PROFILE_POINTS[state.attachmentProfileName] ~= nil
             and state.attachmentProfileFrame ~= nil
         state.attachmentCleanup = {
             phase = useProfile and "PROFILE" or "FAST",
+            profileEnabled = useProfile,
+            initialAttachments = attachments,
             profileIndex = 1,
             distance = LoggingContractor.PROCESSING_SCAN_STEP,
             attachmentStep = 0,
@@ -1603,6 +1701,11 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
         if centerX == nil
             or currentLength == nil
             or currentLength <= 0 then
+            self:logContractorModelAttachmentScan(
+                state, cleanup,
+                select(5, self:getContractorSplitShapeStats(state.shape)),
+                "axisUnavailable"
+            )
             cleanup.phase = "DONE"
             return true, changed
         end
@@ -1613,7 +1716,23 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
                 self:getContractorSplitShapeStats(state.shape)
             )
 
+            self:logContractorModelAttachmentScan(
+                state, cleanup, remaining, "fastEnd"
+            )
+
             if remaining <= 0 then
+                cleanup.phase = "DONE"
+                return true, changed
+            end
+
+            if cleanup.profileEnabled then
+                -- ВРЕМЕННЫЙ ТЕСТ: для профилированных елей не запускаем
+                -- FALLBACK даже при остатке листвы. Позволяет осмотреть
+                -- неочищенные attachments после адресного прохода и FAST.
+                self:addContractorPerfCounter("profileSkippedFallback", 1)
+                self:addContractorPerfCounter(
+                    "profileRemainingAfterFast", remaining
+                )
                 cleanup.phase = "DONE"
                 return true, changed
             end
@@ -1708,6 +1827,9 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         if not entityExists(state.shape)
             or select(5, self:getContractorSplitShapeStats(state.shape)) <= 0 then
+            self:logContractorModelAttachmentScan(
+                state, cleanup, 0, "fastComplete"
+            )
             cleanup.phase = "DONE"
             return true, changed
         end

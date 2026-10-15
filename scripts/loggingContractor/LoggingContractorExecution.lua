@@ -332,7 +332,7 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
         or (stats.counters.profileCalls or 0) > 0
         or (stats.counters.profileComplete or 0) > 0 then
         Logging.info(
-            "[LoggingContractorPerf] spruce2_stage03 profile | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d",
+            "[LoggingContractorPerf] spruce address profiles | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d skipFallback=%d remainingAfterFast=%d",
             stats.counters.profileSpruceCandidates or 0,
             stats.counters.profileSpruceMatched or 0,
             stats.counters.profileStarts or 0,
@@ -340,7 +340,9 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
             stats.counters.profileAttachmentsRemoved or 0,
             stats.counters.profileComplete or 0,
             stats.counters.profileToFullScan or 0,
-            stats.counters.profileMissingFrame or 0
+            stats.counters.profileMissingFrame or 0,
+            stats.counters.profileSkippedFallback or 0,
+            stats.counters.profileRemainingAfterFast or 0
         )
     end
 
@@ -420,9 +422,19 @@ function LoggingContractor:getContractorNeedsBranchSearch(splitTypeName)
 end
 
 
--- Определяет экспериментальный профиль непосредственно по имени исходной
--- I3D-модели, не смешивая две разновидности ели с общим splitType SPRUCE.
--- Результат фиксируется до спила, пока доступна исходная трансформация.
+-- Имена локальных моделей из map/trees/spruce/*.i3d. Сохраняем модель
+-- отдельно от общего splitType SPRUCE для диагностики остатка после FAST.
+local CONTRACTOR_SPRUCE_TREE_MODELS = {
+    spruceVar01_stage01 = "spruce1_stage01",
+    spruceVar01_stage02 = "spruce1_stage02",
+    spruceVar01_stage03 = "spruce1_stage03",
+    spruceVar02_stage01 = "spruce2_stage01",
+    spruceVar02_stage02 = "spruce2_stage02",
+    spruceVar02_stage03 = "spruce2_stage03"
+}
+
+-- Возвращает название конкретной исходной I3D-модели по её родительской
+-- transform-group. Различает все шесть елей, хотя их splitType одинаков.
 function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
     if splitTypeName ~= "SPRUCE" or shape == nil or not entityExists(shape) then
         return nil
@@ -435,8 +447,9 @@ function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
         if parent == nil or parent == 0 or not entityExists(parent) then
             break
         end
-        if getName(parent) == "spruceVar02_stage03" then
-            return "spruce2_stage03"
+        local name = CONTRACTOR_SPRUCE_TREE_MODELS[getName(parent)]
+        if name ~= nil then
+            return name
         end
         parent = getParent(parent)
     end
@@ -1135,15 +1148,19 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
     local treeX, treeY, treeZ = getWorldTranslation(shape)
     local splitTypeName = self:getContractorSplitTypeName(shape)
     local profileName = self:getContractorTreeModelProfile(shape, splitTypeName)
+    local useAddressProfile =
+        profileName == "spruce2_stage02"
+        or profileName == "spruce2_stage03"
+
     if splitTypeName == "SPRUCE" then
         self:addContractorPerfCounter("profileSpruceCandidates", 1)
-        if profileName ~= nil then
+        if useAddressProfile then
             self:addContractorPerfCounter("profileSpruceMatched", 1)
         end
     end
     local profileSourceFrame = nil
 
-    if profileName ~= nil then
+    if useAddressProfile then
         -- Запоминаем исходный базис I3D до разделения: динамический shape
         -- после спила может получить другую локальную систему координат.
         local x0, y0, z0 = localToWorld(shape, 0, 0, 0)
