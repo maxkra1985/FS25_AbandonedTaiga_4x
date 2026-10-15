@@ -603,6 +603,13 @@ local CONTRACTOR_SPRUCE_PROFILE_POINTS = {
 
 LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.20
 
+-- ВРЕМЕННАЯ диагностика: после полного адресного прохода проверяем
+-- только сохранённые точки с removed=0. Два кольца, -5/+5 см, шаг 30°.
+-- Один вызов removeSplitShapeAttachments на одно игровое обновление.
+LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED = true
+LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS = {-0.05, 0.05}
+LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP = 30
+
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
@@ -1761,7 +1768,7 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
 
     cleanup.profileReported = true
     Logging.info(
-        "[LoggingContractorProfile] model=%s shape=%s mode=%s calibration=%s initial=%d afterProfile=%s remaining=%d fallback=%s reason=%s",
+        "[LoggingContractorProfile] model=%s shape=%s mode=%s calibration=%s initial=%d afterProfile=%s remaining=%d fallback=%s debugCandidates=%d debugCalls=%d debugHits=%d debugRemoved=%d reason=%s",
         state.attachmentProfileName,
         tostring(state.shape),
         cleanup.profileEnabled and "ADDRESS_ONLY" or "FAST",
@@ -1775,8 +1782,168 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
         tostring(cleanup.profileRemaining or "n/a"),
         remaining,
         cleanup.profileEnabled and "DISABLED_TEST" or "ENABLED",
+        cleanup.profileDebugPoints ~= nil and #cleanup.profileDebugPoints or 0,
+        cleanup.profileDebugCalls or 0,
+        cleanup.profileDebugHits or 0,
+        cleanup.profileDebugRemoved or 0,
         reason or "scanEnd"
     )
+end
+
+
+-- Заканчивает диагностические кольца и сохраняет два независимых
+-- результата: остаток после основных точек и остаток после эксперимента.
+-- Никаких дополнительных проходов после этого не запускается.
+function LoggingContractor:finishContractorProfileDebug(state, cleanup, remaining, reason)
+    local shape = state.shape
+    local candidates = cleanup.profileDebugPoints or {}
+    Logging.info(
+        "[LoggingContractorProfileDebugEnd] model=%s shape=%s primaryRemaining=%d finalRemaining=%d candidates=%d calls=%d hits=%d removed=%d reason=%s",
+        state.attachmentProfileName, tostring(shape),
+        cleanup.profileRemaining or remaining,
+        remaining, #candidates,
+        cleanup.profileDebugCalls or 0,
+        cleanup.profileDebugHits or 0,
+        cleanup.profileDebugRemoved or 0,
+        reason
+    )
+
+    cleanup.phase = "DONE"
+    if remaining > 0 then
+        self:addContractorPerfCounter("profileSkippedFallback", 1)
+        self:addContractorPerfCounter("profileRemainingAfterFast", remaining)
+    else
+        self:addContractorPerfCounter("profileComplete", 1)
+    end
+    self:logContractorModelAttachmentScan(
+        state, cleanup, remaining, reason
+    )
+    return true, false
+end
+
+
+-- Выполняет ОДИН диагностический вызов на сохранённой неудачной точке.
+-- Два кольца по 12 азимутов обрабатываются после ВСЕХ основных точек.
+-- Положение плоскости и её нормаль вращаются вместе вокруг исходной
+-- оси модели, затем переводятся в текущий динамический split-shape.
+-- Возвращает done, changed для штатного пошагового обработчика PRUNE.
+function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
+    local shape = state.shape
+    if shape == nil or not entityExists(shape) then
+        cleanup.phase = "DONE"
+        return true, false
+    end
+
+    local before = select(5, self:getContractorSplitShapeStats(shape))
+    if before <= 0 then
+        return self:finishContractorProfileDebug(
+            state, cleanup, 0, "debugComplete"
+        )
+    end
+
+    local frame = state.attachmentProfileFrame
+    if frame == nil then
+        return self:finishContractorProfileDebug(
+            state, cleanup, before, "debugMissingFrame"
+        )
+    end
+
+    local candidates = cleanup.profileDebugPoints or {}
+    local item = candidates[cleanup.profileDebugIndex]
+    if item == nil then
+        return self:finishContractorProfileDebug(
+            state, cleanup, before, "debugExhausted"
+        )
+    end
+
+    local heights = LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS
+    local step = LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP
+    local angle = (cleanup.profileDebugAngle - 1) * step
+    local offsetY = heights[cleanup.profileDebugHeight]
+    local rad = math.rad(angle)
+    local cosine, sine = math.cos(rad), math.sin(rad)
+    local rx = item.rx * cosine - item.rz * sine
+    local rz = item.rx * sine + item.rz * cosine
+    local testHeight = item.py + offsetY
+    local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
+
+    local ox, oy, oz = frame.origin[1], frame.origin[2], frame.origin[3]
+    local bx, by, bz = frame.axisX[1], frame.axisX[2], frame.axisX[3]
+    local tx, ty, tz = frame.axisY[1], frame.axisY[2], frame.axisY[3]
+    local sx, sy, sz = frame.axisZ[1], frame.axisZ[2], frame.axisZ[3]
+    local lx = ox + bx * rx * distance + tx * testHeight + sx * rz * distance
+    local ly = oy + by * rx * distance + ty * testHeight + sy * rz * distance
+    local lz = oz + bz * rx * distance + tz * testHeight + sz * rz * distance
+    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
+    local nx, ny, nz = localDirectionToWorld(
+        shape, bx * rx + sx * rz, by * rx + sy * rz, bz * rx + sz * rz
+    )
+    local ax, ay, az = localDirectionToWorld(shape, tx, ty, tz)
+    nx, ny, nz = MathUtil.vector3Normalize(nx, ny, nz)
+    ax, ay, az = MathUtil.vector3Normalize(ax, ay, az)
+
+    -- Используем те же размеры плоскости, что и в основном профиле:
+    -- эксперимент изменяет только высоту и азимут точки приложения.
+    local nativeResult = removeSplitShapeAttachments(
+        shape, wx, wy, wz,
+        -nx, -ny, -nz,
+        ax, ay, az,
+        LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
+        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
+        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
+    )
+    cleanup.profileDebugCalls = cleanup.profileDebugCalls + 1
+    self:addContractorPerfCounter("profileDebugCalls", 1)
+
+    if not entityExists(shape) then
+        cleanup.phase = "DONE"
+        return true, true
+    end
+
+    local after = select(5, self:getContractorSplitShapeStats(shape))
+    local removed = math.max(before - after, 0)
+    if removed > 0 then
+        cleanup.profileDebugHits = cleanup.profileDebugHits + 1
+        cleanup.profileDebugRemoved = cleanup.profileDebugRemoved + removed
+        self:addContractorPerfCounter("profileDebugHits", 1)
+        self:addContractorPerfCounter("profileDebugRemoved", removed)
+
+        -- Успех может относиться к соседнему attachment; фиксируем
+        -- только факт и точные параметры сработавшей плоскости.
+        Logging.info(
+            "[LoggingContractorProfileDebugHit] model=%s shape=%s group=%d primary=(%.3f,%.4f,%.4f) offsetY=%+.3f angle=%d testHeight=%.3f testDir=(%.4f,%.4f) localPlane=(%.3f,%.3f,%.3f) worldPlane=(%.3f,%.3f,%.3f) worldNormal=(%.4f,%.4f,%.4f) worldAxis=(%.4f,%.4f,%.4f) native=%s before=%d after=%d removed=%d",
+            state.attachmentProfileName, tostring(shape), item.groupIndex,
+            item.py, item.rx, item.rz, offsetY, angle,
+            testHeight, rx, rz,
+            lx, ly, lz, wx, wy, wz,
+            -nx, -ny, -nz, ax, ay, az,
+            tostring(nativeResult), before, after, removed
+        )
+    end
+
+    -- Переходим к следующей комбинации, НЕ запуская новый вызов
+    -- в этом кадре. Каждый кандидат получает до 24 отдельных проб.
+    cleanup.profileDebugAngle = cleanup.profileDebugAngle + 1
+    if cleanup.profileDebugAngle > math.floor(360 / step) then
+        cleanup.profileDebugAngle = 1
+        cleanup.profileDebugHeight = cleanup.profileDebugHeight + 1
+    end
+
+    if cleanup.profileDebugHeight > #heights then
+        cleanup.profileDebugIndex = cleanup.profileDebugIndex + 1
+        cleanup.profileDebugHeight = 1
+        cleanup.profileDebugAngle = 1
+    end
+
+    if after <= 0 then
+        cleanup.phase = "DONE"
+        self:finishContractorProfileDebug(
+            state, cleanup, 0, "debugComplete"
+        )
+        return true, removed > 0
+    end
+
+    return false, removed > 0
 end
 
 
@@ -1805,15 +1972,38 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     local points = CONTRACTOR_SPRUCE_PROFILE_POINTS[state.attachmentProfileName]
     local point = points ~= nil and points[cleanup.profileIndex] or nil
     if point == nil then
-        -- Тестируем ТОЛЬКО адресные вызовы: не запускаем ни FAST, ни
-        -- FALLBACK. Остатки сохраняются для визуальной проверки.
+        -- ВСЕ основные точки уже отработали. Сохраняем остаток до
+        -- каких-либо отладочных удалений и только затем запускаем
+        -- кольца для точек, которые ранее дали removed=0.
         cleanup.profileRemaining = before
-        self:addContractorPerfCounter("profileSkippedFallback", 1)
-        self:addContractorPerfCounter("profileRemainingAfterFast", before)
+        local candidates = cleanup.profileDebugPoints or {}
+        Logging.info(
+            "[LoggingContractorProfilePrimaryEnd] model=%s shape=%s initial=%d remaining=%d failedPoints=%d debugEnabled=%s",
+            state.attachmentProfileName, tostring(shape),
+            cleanup.initialAttachments or 0,
+            before, #candidates,
+            tostring(LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED)
+        )
+
+        if LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED
+            and before > 0
+            and #candidates > 0 then
+            cleanup.phase = "PROFILE_DEBUG"
+            cleanup.profileDebugIndex = 1
+            cleanup.profileDebugHeight = 1
+            cleanup.profileDebugAngle = 1
+            self:addContractorPerfCounter("profileDebugStarts", 1)
+            return false, false
+        end
+
+        cleanup.phase = "DONE"
+        if before > 0 then
+            self:addContractorPerfCounter("profileSkippedFallback", 1)
+            self:addContractorPerfCounter("profileRemainingAfterFast", before)
+        end
         self:logContractorModelAttachmentScan(
             state, cleanup, before, "addressPointsExhausted"
         )
-        cleanup.phase = "DONE"
         return true, false
     end
 
@@ -1925,6 +2115,17 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         before, after, removed
     )
 
+    -- Запоминаем ВСЕ безрезультатные исходные точки, но пока не
+    -- запускаем диагностику: соседние точки ещё не проверены.
+    if removed == 0
+        and LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED then
+        local candidates = cleanup.profileDebugPoints
+        candidates[#candidates + 1] = {
+            groupIndex = cleanup.profileIndex - 1,
+            py = py, rx = rx, rz = rz
+        }
+    end
+
     if after <= 0 then
         cleanup.phase = "DONE"
         cleanup.profileRemaining = 0
@@ -1966,6 +2167,10 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             profileEnabled = useProfile,
             initialAttachments = attachments,
             profileIndex = 1,
+            profileDebugPoints = useProfile and {} or nil,
+            profileDebugCalls = 0,
+            profileDebugHits = 0,
+            profileDebugRemoved = 0,
             distance = LoggingContractor.PROCESSING_SCAN_STEP,
             attachmentStep = 0,
             fallbackState = nil
@@ -1987,6 +2192,10 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
     if cleanup.phase == "PROFILE" then
         return self:advanceContractorProfileAttachments(state, cleanup)
+    end
+
+    if cleanup.phase == "PROFILE_DEBUG" then
+        return self:advanceContractorProfileDebug(state, cleanup)
     end
 
     if cleanup.phase == "FALLBACK" then

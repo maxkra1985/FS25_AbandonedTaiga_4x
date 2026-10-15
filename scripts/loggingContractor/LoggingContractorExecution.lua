@@ -332,7 +332,7 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
         or (stats.counters.profileCalls or 0) > 0
         or (stats.counters.profileComplete or 0) > 0 then
         Logging.info(
-            "[LoggingContractorPerf] spruce address profiles | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d skipFallback=%d remainingAfterFast=%d",
+            "[LoggingContractorPerf] spruce address profiles | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d skipFallback=%d remainingAfterFast=%d debugStarts=%d debugCalls=%d debugHits=%d debugRemoved=%d",
             stats.counters.profileSpruceCandidates or 0,
             stats.counters.profileSpruceMatched or 0,
             stats.counters.profileStarts or 0,
@@ -342,7 +342,11 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
             stats.counters.profileToFullScan or 0,
             stats.counters.profileMissingFrame or 0,
             stats.counters.profileSkippedFallback or 0,
-            stats.counters.profileRemainingAfterFast or 0
+            stats.counters.profileRemainingAfterFast or 0,
+            stats.counters.profileDebugStarts or 0,
+            stats.counters.profileDebugCalls or 0,
+            stats.counters.profileDebugHits or 0,
+            stats.counters.profileDebugRemoved or 0
         )
     end
 
