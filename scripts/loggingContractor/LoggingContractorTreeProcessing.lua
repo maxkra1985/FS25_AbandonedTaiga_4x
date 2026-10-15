@@ -1478,10 +1478,9 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
--- Выводит фактический результат основной очистки по конкретной I3D-модели.
--- Для двух опытных моделей отмечает остаток и отключённый fallback.
--- Остальные модели фиксируются отдельно, чтобы при следующем тесте можно
--- было определить худшую по остаткам без предположений о размерах кроны.
+-- Выводит остаток attachments по конкретной I3D-модели.
+-- У двух опытных елей замер выполняется после исключительно адресного
+-- прохода; остальные модели проходят штатные FAST и FALLBACK.
 function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, remaining, reason)
     if state.attachmentProfileName == nil or cleanup.profileReported then
         return
@@ -1489,10 +1488,10 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
 
     cleanup.profileReported = true
     Logging.info(
-        "[LoggingContractorProfile] model=%s shape=%s mode=%s initial=%d afterProfile=%s afterFast=%d fallback=%s reason=%s",
+        "[LoggingContractorProfile] model=%s shape=%s mode=%s initial=%d afterProfile=%s remaining=%d fallback=%s reason=%s",
         state.attachmentProfileName,
         tostring(state.shape),
-        cleanup.profileEnabled and "ADDRESS_FAST" or "FAST",
+        cleanup.profileEnabled and "ADDRESS_ONLY" or "FAST",
         cleanup.initialAttachments or 0,
         tostring(cleanup.profileRemaining or "n/a"),
         remaining,
@@ -1527,21 +1526,31 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     local points = CONTRACTOR_SPRUCE_PROFILE_POINTS[state.attachmentProfileName]
     local point = points ~= nil and points[cleanup.profileIndex] or nil
     if point == nil then
-        -- Адресный проход исчерпан. Сначала выполняется штатный FAST;
-        -- FALLBACK для двух опытных моделей отключён только на время теста.
+        -- Тестируем ТОЛЬКО адресные вызовы: не запускаем ни FAST, ни
+        -- FALLBACK. Остатки сохраняются для визуальной проверки.
         cleanup.profileRemaining = before
-        cleanup.phase = "FAST"
-        cleanup.distance = LoggingContractor.PROCESSING_SCAN_STEP
-        cleanup.attachmentStep = 0
-        self:addContractorPerfCounter("profileToFullScan", 1)
-        return false, false
+        self:addContractorPerfCounter("profileSkippedFallback", 1)
+        self:addContractorPerfCounter("profileRemainingAfterFast", before)
+        self:logContractorModelAttachmentScan(
+            state, cleanup, before, "addressPointsExhausted"
+        )
+        cleanup.phase = "DONE"
+        return true, false
     end
 
     local f = state.attachmentProfileFrame
     if f == nil then
-        cleanup.phase = "FAST"
+        -- При отсутствии преобразования I3D не маскируем ошибку
+        -- штатной очисткой: для тестового профиля оставляем листву.
+        cleanup.profileRemaining = before
         self:addContractorPerfCounter("profileMissingFrame", 1)
-        return false, false
+        self:addContractorPerfCounter("profileSkippedFallback", 1)
+        self:addContractorPerfCounter("profileRemainingAfterFast", before)
+        self:logContractorModelAttachmentScan(
+            state, cleanup, before, "missingFrame"
+        )
+        cleanup.phase = "DONE"
+        return true, false
     end
 
     -- Центр плоскости располагается у поверхности ствола напротив ветви.
@@ -1615,8 +1624,8 @@ end
 
 
 -- Продвигает очистку attachments основного ствола порциями.
--- Шаг 0.10 м и полный круг для ели не меняются; между update сохраняются
--- текущая позиция и номер сечения.
+-- Для двух профилированных елей используются только адресные точки I3D.
+-- Для остальных деревьев сохраняются FAST (шаг 0,10 м) и FALLBACK.
 function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     if state.shape == nil
         or state.shape == 0
@@ -1636,7 +1645,6 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         local useProfile =
             CONTRACTOR_SPRUCE_PROFILE_POINTS[state.attachmentProfileName] ~= nil
-            and state.attachmentProfileFrame ~= nil
         state.attachmentCleanup = {
             phase = useProfile and "PROFILE" or "FAST",
             profileEnabled = useProfile,
@@ -1721,18 +1729,6 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             )
 
             if remaining <= 0 then
-                cleanup.phase = "DONE"
-                return true, changed
-            end
-
-            if cleanup.profileEnabled then
-                -- ВРЕМЕННЫЙ ТЕСТ: для профилированных елей не запускаем
-                -- FALLBACK даже при остатке листвы. Позволяет осмотреть
-                -- неочищенные attachments после адресного прохода и FAST.
-                self:addContractorPerfCounter("profileSkippedFallback", 1)
-                self:addContractorPerfCounter(
-                    "profileRemainingAfterFast", remaining
-                )
                 cleanup.phase = "DONE"
                 return true, changed
             end
