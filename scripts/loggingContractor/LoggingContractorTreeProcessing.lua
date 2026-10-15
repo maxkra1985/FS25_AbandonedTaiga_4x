@@ -2363,20 +2363,10 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
     local testHeight = item.py + offsetY
     local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
 
-    local ox, oy, oz = frame.origin[1], frame.origin[2], frame.origin[3]
-    local bx, by, bz = frame.axisX[1], frame.axisX[2], frame.axisX[3]
-    local tx, ty, tz = frame.axisY[1], frame.axisY[2], frame.axisY[3]
-    local sx, sy, sz = frame.axisZ[1], frame.axisZ[2], frame.axisZ[3]
-    local lx = ox + bx * rx * distance + tx * testHeight + sx * rz * distance
-    local ly = oy + by * rx * distance + ty * testHeight + sy * rz * distance
-    local lz = oz + bz * rx * distance + tz * testHeight + sz * rz * distance
-    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
-    local nx, ny, nz = localDirectionToWorld(
-        shape, bx * rx + sx * rz, by * rx + sy * rz, bz * rx + sz * rz
-    )
-    local ax, ay, az = localDirectionToWorld(shape, tx, ty, tz)
-    nx, ny, nz = MathUtil.vector3Normalize(nx, ny, nz)
-    ax, ay, az = MathUtil.vector3Normalize(ax, ay, az)
+    local lx, ly, lz, wx, wy, wz, nx, ny, nz, ax, ay, az =
+        self:getContractorProfileCurrentPoint(
+            shape, frame, rx, rz, testHeight, distance
+        )
 
     -- Используем те же размеры плоскости, что и в основном профиле:
     -- эксперимент изменяет только высоту и азимут точки приложения.
@@ -2446,6 +2436,41 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
     end
 
     return false, removed > 0
+end
+
+
+-- Пересчитывает адресную точку в мировые координаты относительно
+-- ТЕКУЩЕГО положения динамического ствола. Исходные координаты модели
+-- остаются привязанными к стволу через сохранённый локальный базис.
+-- Возвращает локальную точку, мировую точку, нормаль и ось плоскости.
+function LoggingContractor:getContractorProfileCurrentPoint(
+    shape, frame, rx, rz, height, distance
+)
+    local o = frame.origin
+    local x = frame.axisX
+    local y = frame.axisY
+    local z = frame.axisZ
+
+    local lx = o[1] + x[1] * rx * distance + y[1] * height + z[1] * rz * distance
+    local ly = o[2] + x[2] * rx * distance + y[2] * height + z[2] * rz * distance
+    local lz = o[3] + x[3] * rx * distance + y[3] * height + z[3] * rz * distance
+
+    -- В отличие от фиксированных мировых координат, преобразование каждый
+    -- раз учитывает как перенос ствола, так и его текущий поворот.
+    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
+    local nx, ny, nz = localDirectionToWorld(
+        shape,
+        x[1] * rx + z[1] * rz,
+        x[2] * rx + z[2] * rz,
+        x[3] * rx + z[3] * rz
+    )
+    local ax, ay, az = localDirectionToWorld(
+        shape, y[1], y[2], y[3]
+    )
+    nx, ny, nz = MathUtil.vector3Normalize(nx, ny, nz)
+    ax, ay, az = MathUtil.vector3Normalize(ax, ay, az)
+
+    return lx, ly, lz, wx, wy, wz, nx, ny, nz, ax, ay, az
 end
 
 
@@ -2535,24 +2560,12 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     end
 
     local rx, rz = px / radius, pz / radius
-    local ox, oy, oz = f.origin[1], f.origin[2], f.origin[3]
-    local bx, by, bz = f.axisX[1], f.axisX[2], f.axisX[3]
-    local tx, ty, tz = f.axisY[1], f.axisY[2], f.axisY[3]
-    local sx, sy, sz = f.axisZ[1], f.axisZ[2], f.axisZ[3]
     local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
-    local lx = ox + bx * rx * distance + tx * py + sx * rz * distance
-    local ly = oy + by * rx * distance + ty * py + sy * rz * distance
-    local lz = oz + bz * rx * distance + tz * py + sz * rz * distance
-
-    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
-    local radialX, radialY, radialZ = localDirectionToWorld(
-        shape, bx * rx + sx * rz, by * rx + sy * rz, bz * rx + sz * rz
-    )
-    local axisX, axisY, axisZ = localDirectionToWorld(shape, tx, ty, tz)
-    radialX, radialY, radialZ = MathUtil.vector3Normalize(
-        radialX, radialY, radialZ
-    )
-    axisX, axisY, axisZ = MathUtil.vector3Normalize(axisX, axisY, axisZ)
+    local lx, ly, lz, wx, wy, wz,
+        radialX, radialY, radialZ, axisX, axisY, axisZ =
+        self:getContractorProfileCurrentPoint(
+            shape, f, rx, rz, py, distance
+        )
 
     -- Та же native-операция, что и в обычной очистке, но одна плоскость
     -- в известном направлении вместо полного перебора 12 направлений.

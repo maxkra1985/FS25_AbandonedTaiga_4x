@@ -1194,6 +1194,9 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
         splitTypeName = splitTypeName,
         profileName = profileName,
         profileSourceFrame = profileSourceFrame,
+        profileSourceOrigin = profileSourceFrame ~= nil
+            and {profileSourceFrame.origin[1], profileSourceFrame.origin[2], profileSourceFrame.origin[3]}
+            or nil,
         treeX = treeX,
         treeY = treeY,
         treeZ = treeZ,
@@ -1350,6 +1353,26 @@ function LoggingContractor:performContractorInitialCut(job, state, allowMutation
         state.profileSourceFrame = nil
     end
 
+    -- Зафиксируем положение отделённого ствола сразу после splitShape.
+    -- После удаления пня сравним его с текущим положением и проверим
+    -- смещение исходного модельного базиса в мировых координатах.
+    if state.profileLocalFrame ~= nil then
+        local frame = state.profileLocalFrame
+        local px, py, pz = localToWorld(
+            trunkShape, frame.origin[1], frame.origin[2], frame.origin[3]
+        )
+        local sx, sy, sz = getWorldTranslation(trunkShape)
+        state.profileSplitOrigin = {px, py, pz}
+        state.profileSplitTranslation = {sx, sy, sz}
+        Logging.info(
+            "[LoggingContractorFrame] phase=AFTER_SPLIT model=%s shape=%s sourceOrigin=(%.3f,%.3f,%.3f) trunkTranslation=(%.3f,%.3f,%.3f) modelOrigin=(%.3f,%.3f,%.3f)",
+            tostring(state.profileName), tostring(trunkShape),
+            state.profileSourceOrigin[1], state.profileSourceOrigin[2],
+            state.profileSourceOrigin[3],
+            sx, sy, sz, px, py, pz
+        )
+    end
+
     state.shape = trunkShape
     state.cutX = cutX
     state.cutY = cutY
@@ -1412,6 +1435,33 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
 
                 self:removeContractorStump(stumpShape)
                 state.hadMutation = true
+
+                -- Контроль смещения динамического ствола после удаления пня.
+                -- Профиль остаётся в локальной системе ствола и поэтому
+                -- пересчитывается относительно его фактической трансформации.
+                if state.profileLocalFrame ~= nil
+                    and state.shape ~= nil
+                    and entityExists(state.shape) then
+                    local frame = state.profileLocalFrame
+                    local px, py, pz = localToWorld(
+                        state.shape,
+                        frame.origin[1], frame.origin[2], frame.origin[3]
+                    )
+                    local tx, ty, tz = getWorldTranslation(state.shape)
+                    local previous = state.profileSplitOrigin
+                    local oldTranslation = state.profileSplitTranslation
+                    if previous ~= nil and oldTranslation ~= nil then
+                        Logging.info(
+                            "[LoggingContractorFrame] phase=AFTER_STUMP model=%s shape=%s trunkTranslation=(%.3f,%.3f,%.3f) modelOrigin=(%.3f,%.3f,%.3f) originDelta=(%+.3f,%+.3f,%+.3f) translationDelta=(%+.3f,%+.3f,%+.3f)",
+                            tostring(state.profileName), tostring(state.shape),
+                            tx, ty, tz, px, py, pz,
+                            px - previous[1], py - previous[2], pz - previous[3],
+                            tx - oldTranslation[1],
+                            ty - oldTranslation[2],
+                            tz - oldTranslation[3]
+                        )
+                    end
+                end
 
                 if #state.stumpShapes == 0 then
                     state.phase = "PRUNE_INIT"
