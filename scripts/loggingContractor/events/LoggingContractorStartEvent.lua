@@ -3,7 +3,7 @@
 
     Клиентский запрос серверу на заключение договора на лесоповал.
 
-    Клиент передаёт только выбранный участок, количество техники и длину распила.
+    Клиент передаёт участок, количество техники, длину распила и режим обрезки.
     Ферму отправителя, принадлежность участка, количество деревьев, стоимость и
     баланс сервер определяет и проверяет самостоятельно.
 ]]
@@ -21,12 +21,13 @@ end
 
 -- Создаёт клиентский запрос с параметрами, которые пользователь действительно
 -- выбирает в интерфейсе. Расчётные значения намеренно не передаются.
-function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees)
+function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
     local self = LoggingContractorStartEvent.emptyNew()
     self.farmlandId = farmlandId
     self.equipmentCount = equipmentCount
     self.logLength = logLength
     self.onlyMarkedTrees = onlyMarkedTrees == true
+    self.pruneLargeBranches = pruneLargeBranches ~= false
 
     return self
 end
@@ -38,6 +39,7 @@ function LoggingContractorStartEvent:writeStream(streamId, connection)
     streamWriteUInt32(streamId, self.equipmentCount)
     streamWriteUInt8(streamId, self.logLength)
     streamWriteBool(streamId, self.onlyMarkedTrees)
+    streamWriteBool(streamId, self.pruneLargeBranches)
 end
 
 
@@ -47,6 +49,7 @@ function LoggingContractorStartEvent:readStream(streamId, connection)
     self.equipmentCount = streamReadUInt32(streamId)
     self.logLength = streamReadUInt8(streamId)
     self.onlyMarkedTrees = streamReadBool(streamId)
+    self.pruneLargeBranches = streamReadBool(streamId)
     self:run(connection)
 end
 
@@ -68,7 +71,8 @@ function LoggingContractorStartEvent:run(connection)
             self.farmlandId,
             self.equipmentCount,
             self.logLength,
-            self.onlyMarkedTrees
+            self.onlyMarkedTrees,
+            self.pruneLargeBranches
         )
     end
 
@@ -78,7 +82,7 @@ end
 
 -- Отправляет запрос текущему серверу. Метод используется GUI и одинаково
 -- работает для обычного клиента и локального клиента хоста.
-function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength, onlyMarkedTrees)
+function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
     if g_client == nil then
         return false
     end
@@ -88,6 +92,6 @@ function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLe
         return false
     end
 
-    connection:sendEvent(LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees))
+    connection:sendEvent(LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches))
     return true
 end

@@ -406,7 +406,7 @@ end
 -- Выполняет серверную часть заключения договора: определяет ферму отправителя,
 -- проверяет право manageContracts, участок и деревья, заново рассчитывает цену,
 -- проверяет баланс, списывает средства и создаёт LoggingContractorJob.
-function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees)
+function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
     if not self.mission:getIsServer() then
         return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
     end
@@ -433,6 +433,8 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     end
 
     onlyMarkedTrees = onlyMarkedTrees == true
+    -- Отсутствующий параметр у прежних вызовов не меняет старое поведение.
+    pruneLargeBranches = pruneLargeBranches ~= false
 
     local scan, errorCode = self:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
     if scan == nil then
@@ -465,6 +467,7 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
         farmlandId = farmlandId,
         plannedTrees = scan.totalCount,
         onlyMarkedTrees = onlyMarkedTrees,
+        pruneLargeBranches = pruneLargeBranches,
         equipmentCount = equipmentCount,
         logLength = logLength,
         workHours = estimate.workHours,
@@ -487,12 +490,13 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     self.nextJobId = self.nextJobId + 1
 
     Logging.info(
-        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d onlyMarked=%s equipment=%d logLength=%d cost=%d",
+        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d cost=%d",
         job.jobId,
         job.farmId,
         job.farmlandId,
         job.plannedTrees,
         tostring(job.onlyMarkedTrees),
+        tostring(job.pruneLargeBranches),
         job.equipmentCount,
         job.logLength,
         job.totalCost
@@ -512,6 +516,7 @@ function LoggingContractor:onStartContractResult(event)
             farmlandId = event.farmlandId,
             plannedTrees = event.plannedTrees,
             onlyMarkedTrees = event.onlyMarkedTrees,
+            pruneLargeBranches = event.pruneLargeBranches,
             equipmentCount = event.equipmentCount,
             logLength = event.logLength,
             workHours = event.workHours,

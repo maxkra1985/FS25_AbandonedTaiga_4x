@@ -36,6 +36,7 @@ function LoggingContractorDialog.new(target, customMt)
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
     self.onlyMarkedTrees = false
+    self.pruneLargeBranches = true
     self.startRequestPending = false
 
     return self
@@ -140,9 +141,12 @@ function LoggingContractorDialog:setData(contractor, farmlands)
     self.maxEquipmentCount = 0
     self.startRequestPending = false
     self.onlyMarkedTrees = false
+    self.pruneLargeBranches = true
 
     self.onlyMarkedOption:setTexts({"Нет", "Да"})
     self.onlyMarkedOption:setState(1)
+    self.pruneLargeBranchesOption:setTexts({"Нет", "Да"})
+    self.pruneLargeBranchesOption:setState(2)
 
     local logLengthTexts = {}
     for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
@@ -412,6 +416,7 @@ function LoggingContractorDialog:createContractDraft()
         farmlandId = self.currentFarmland.id,
         plannedTrees = scan.totalCount,
         onlyMarkedTrees = self.onlyMarkedTrees,
+        pruneLargeBranches = self.pruneLargeBranches,
         equipmentCount = self.currentEquipmentCount,
         logLength = self.currentLogLength,
         workHours = estimate.workHours,
@@ -438,6 +443,14 @@ function LoggingContractorDialog:onClickOnlyMarkedTrees(state)
     self.onlyMarkedTrees = state == 2
     self.currentContractDraft = nil
     self:refreshCurrentFarmlandScan()
+end
+
+
+-- Сохраняет настройку обработки крупных ветвей для нового договора.
+-- На расчёт стоимости и количество выбранных деревьев этот переключатель не влияет.
+function LoggingContractorDialog:onClickPruneLargeBranches(state)
+    self.pruneLargeBranches = state == 2
+    self.currentContractDraft = nil
 end
 
 
@@ -484,11 +497,12 @@ function LoggingContractorDialog:onClickStartContract()
     self:updateStartContractButton()
 
     Logging.info(
-        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d onlyMarked=%s equipment=%d logLength=%d previewCost=%d",
+        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d previewCost=%d",
         draft.farmId,
         draft.farmlandId,
         draft.plannedTrees,
         tostring(draft.onlyMarkedTrees),
+        tostring(draft.pruneLargeBranches),
         draft.equipmentCount,
         draft.logLength,
         draft.totalCost
@@ -498,7 +512,8 @@ function LoggingContractorDialog:onClickStartContract()
         draft.farmlandId,
         draft.equipmentCount,
         draft.logLength,
-        draft.onlyMarkedTrees
+        draft.onlyMarkedTrees,
+        draft.pruneLargeBranches
     ) then
         self.startRequestPending = false
         self:updateStartContractButton()
@@ -544,6 +559,7 @@ function LoggingContractorDialog.onStartContractResult(event)
                 .. "Участок: %d\n"
                 .. "Запланировано к спилу: %d\n"
                 .. "Только помеченные деревья: %s\n"
+                .. "Обрезать крупные ветви: %s\n"
                 .. "Техника: %d\n"
                 .. "Длина брёвен: %d м\n"
                 .. "Расчётное время: %s ч\n"
@@ -551,6 +567,7 @@ function LoggingContractorDialog.onStartContractResult(event)
             event.farmlandId,
             event.plannedTrees,
             event.onlyMarkedTrees and "Да" or "Нет",
+            event.pruneLargeBranches and "Да" or "Нет",
             event.equipmentCount,
             event.logLength,
             workHoursText,
@@ -594,6 +611,7 @@ function LoggingContractorDialog:onClose()
     self.maxEquipmentCount = 0
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
     self.onlyMarkedTrees = false
+    self.pruneLargeBranches = true
     self.startRequestPending = false
 
     LoggingContractorDialog:superClass().onClose(self)

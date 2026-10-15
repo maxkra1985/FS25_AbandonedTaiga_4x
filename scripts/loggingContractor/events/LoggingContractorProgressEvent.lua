@@ -25,6 +25,7 @@ function LoggingContractorProgressEvent.new(job)
     self.farmlandId = job.farmlandId
     self.plannedTrees = job.plannedTrees
     self.onlyMarkedTrees = job.onlyMarkedTrees == true
+    self.pruneLargeBranches = job.pruneLargeBranches ~= false
     self.contractorCutTrees = job.contractorCutTrees or 0
     self.remainingTrees = job.remainingTrees or job.plannedTrees
     self.equipmentCount = job.equipmentCount
@@ -42,6 +43,7 @@ function LoggingContractorProgressEvent:writeStream(streamId, connection)
     streamWriteUIntN(streamId, self.farmlandId, g_farmlandManager.numberOfBits)
     streamWriteUInt32(streamId, self.plannedTrees)
     streamWriteBool(streamId, self.onlyMarkedTrees)
+    streamWriteBool(streamId, self.pruneLargeBranches)
     streamWriteUInt32(streamId, self.contractorCutTrees)
     streamWriteUInt32(streamId, self.remainingTrees)
     streamWriteUInt32(streamId, self.equipmentCount)
@@ -57,6 +59,7 @@ function LoggingContractorProgressEvent:readStream(streamId, connection)
     self.farmlandId = streamReadUIntN(streamId, g_farmlandManager.numberOfBits)
     self.plannedTrees = streamReadUInt32(streamId)
     self.onlyMarkedTrees = streamReadBool(streamId)
+    self.pruneLargeBranches = streamReadBool(streamId)
     self.contractorCutTrees = streamReadUInt32(streamId)
     self.remainingTrees = streamReadUInt32(streamId)
     self.equipmentCount = streamReadUInt32(streamId)

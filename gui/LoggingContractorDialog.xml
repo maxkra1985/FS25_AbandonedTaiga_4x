@@ -24,14 +24,25 @@
             <Text profile="loggingContractorTreeCount" id="treeCountText"/>
             <Text profile="loggingContractorSpecies" id="speciesText"/>
 
-            <Text profile="loggingContractorSettingLabel" text="Только помеченные деревья" position="0px -445px"/>
-            <MultiTextOption profile="loggingContractorSettingOption"
+            <!-- Отбор деревьев и обрезка крупных ветвей располагаются в одной строке. -->
+            <Text profile="loggingContractorHalfSettingLabel" text="Только помеченные деревья" position="-150px -445px"/>
+            <MultiTextOption profile="loggingContractorHalfSettingOption"
                              id="onlyMarkedOption"
-                             position="0px -475px"
+                             position="-150px -475px"
                              onClick="onClickOnlyMarkedTrees">
                 <Text profile="loggingContractorTooltip"
                       name="ignore"
                       text="При включении подрядчик пересчитает участок и будет работать только с деревьями, отмеченными штатным маркером."/>
+            </MultiTextOption>
+
+            <Text profile="loggingContractorHalfSettingLabel" text="Обрезать крупные ветви" position="150px -445px"/>
+            <MultiTextOption profile="loggingContractorHalfSettingOption"
+                             id="pruneLargeBranchesOption"
+                             position="150px -475px"
+                             onClick="onClickPruneLargeBranches">
+                <Text profile="loggingContractorTooltip"
+                      name="ignore"
+                      text="Нет: отделение крупных ветвей выключено, удаляются только attachments. Да: прежний полный алгоритм."/>
             </MultiTextOption>
 
             <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -535px"/>
@@ -127,6 +138,15 @@
 
         <Profile name="loggingContractorSettingOption" extends="fs25_multiTextOption" with="anchorTopCenter">
             <size value="570px 48px"/>
+        </Profile>
+
+        <Profile name="loggingContractorHalfSettingLabel" extends="loggingContractorSettingLabel">
+            <size value="275px 28px"/>
+            <textSize value="17px"/>
+        </Profile>
+
+        <Profile name="loggingContractorHalfSettingOption" extends="loggingContractorSettingOption">
+            <size value="275px 48px"/>
         </Profile>
 
         <Profile name="loggingContractorEquipmentHint" extends="fs25_dialogText" with="anchorTopCenter">

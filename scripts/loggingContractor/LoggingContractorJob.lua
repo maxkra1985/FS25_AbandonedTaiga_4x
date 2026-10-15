@@ -24,6 +24,7 @@ function LoggingContractorJob.new(data, customMt)
     self.farmlandId = data.farmlandId
     self.plannedTrees = data.plannedTrees
     self.onlyMarkedTrees = data.onlyMarkedTrees == true
+    self.pruneLargeBranches = data.pruneLargeBranches ~= false
     self.contractorCutTrees = data.contractorCutTrees or 0
     -- Отдельно учитываем незавершённые попытки, не включая их в успехи.
     self.failedTreeCount = data.failedTreeCount or 0
@@ -53,6 +54,7 @@ function LoggingContractorJob:getNetworkData()
         farmlandId = self.farmlandId,
         plannedTrees = self.plannedTrees,
         onlyMarkedTrees = self.onlyMarkedTrees,
+        pruneLargeBranches = self.pruneLargeBranches,
         contractorCutTrees = self.contractorCutTrees,
         remainingTrees = self.remainingTrees,
         equipmentCount = self.equipmentCount,

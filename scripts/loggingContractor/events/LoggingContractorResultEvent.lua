@@ -43,6 +43,7 @@ function LoggingContractorResultEvent.new(state, data)
         self.farmlandId = data.farmlandId
         self.plannedTrees = data.plannedTrees
         self.onlyMarkedTrees = data.onlyMarkedTrees == true
+        self.pruneLargeBranches = data.pruneLargeBranches ~= false
         self.equipmentCount = data.equipmentCount
         self.logLength = data.logLength
         self.workHours = data.workHours
@@ -70,6 +71,7 @@ function LoggingContractorResultEvent:writeStream(streamId, connection)
     streamWriteUIntN(streamId, self.farmlandId, g_farmlandManager.numberOfBits)
     streamWriteUInt32(streamId, self.plannedTrees)
     streamWriteBool(streamId, self.onlyMarkedTrees)
+    streamWriteBool(streamId, self.pruneLargeBranches)
     streamWriteUInt32(streamId, self.equipmentCount)
     streamWriteUInt8(streamId, self.logLength)
     streamWriteFloat32(streamId, self.workHours)
@@ -91,6 +93,7 @@ function LoggingContractorResultEvent:readStream(streamId, connection)
         self.farmlandId = streamReadUIntN(streamId, g_farmlandManager.numberOfBits)
         self.plannedTrees = streamReadUInt32(streamId)
         self.onlyMarkedTrees = streamReadBool(streamId)
+        self.pruneLargeBranches = streamReadBool(streamId)
         self.equipmentCount = streamReadUInt32(streamId)
         self.logLength = streamReadUInt8(streamId)
         self.workHours = streamReadFloat32(streamId)

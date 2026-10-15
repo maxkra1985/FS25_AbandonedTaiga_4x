@@ -201,6 +201,7 @@ function LoggingContractor:saveToSavegame(directory)
         setXMLInt(xmlFile, key .. "#farmlandId", job.farmlandId)
         setXMLInt(xmlFile, key .. "#plannedTrees", job.plannedTrees)
         setXMLBool(xmlFile, key .. "#onlyMarkedTrees", job.onlyMarkedTrees == true)
+        setXMLBool(xmlFile, key .. "#pruneLargeBranches", job.pruneLargeBranches ~= false)
         setXMLInt(
             xmlFile,
             key .. "#contractorCutTrees",
@@ -418,6 +419,9 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         plannedTrees = plannedTrees,
         onlyMarkedTrees =
             getXMLBool(xmlFile, key .. "#onlyMarkedTrees") == true,
+        -- В старых сохранениях настройка отсутствует: используется полная обрезка.
+        pruneLargeBranches =
+            getXMLBool(xmlFile, key .. "#pruneLargeBranches") ~= false,
         contractorCutTrees = contractorCutTrees,
         failedTreeCount = failedTreeCount,
         remainingTrees = #pendingNodes + #processingNodes,

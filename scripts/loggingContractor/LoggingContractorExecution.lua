@@ -1122,6 +1122,13 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
             state.upZ,
             state.trunkLength
         )
+
+        if job.pruneLargeBranches == false then
+            -- Не отделяем крупные ветви. Используем существующий проход удаления
+            -- attachments, а затем штатную раскряжёвку подготовленного ствола.
+            state.pruning.phase = "ATTACHMENTS"
+        end
+
         state.phase = "PRUNE"
         return false, false, false
     end
@@ -1215,6 +1222,7 @@ function LoggingContractor:applyClientJobProgress(data)
             farmlandId = data.farmlandId,
             plannedTrees = data.plannedTrees,
             onlyMarkedTrees = data.onlyMarkedTrees,
+            pruneLargeBranches = data.pruneLargeBranches,
             contractorCutTrees = data.contractorCutTrees,
             remainingTrees = data.remainingTrees,
             equipmentCount = data.equipmentCount,
@@ -1232,6 +1240,7 @@ function LoggingContractor:applyClientJobProgress(data)
         job.farmlandId = data.farmlandId
         job.plannedTrees = data.plannedTrees
         job.onlyMarkedTrees = data.onlyMarkedTrees == true
+        job.pruneLargeBranches = data.pruneLargeBranches ~= false
         job.contractorCutTrees = data.contractorCutTrees
         job.remainingTrees = data.remainingTrees
         job.equipmentCount = data.equipmentCount
@@ -1654,8 +1663,8 @@ end
 
 -- Расширяет заключение договора и сразу фиксирует исходный набор целей. Само
 -- списание средств и все проверки остаются в существующем startContract.
-function LoggingContractor:startContractWithExecution(superFunc, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees)
-    local state, data = superFunc(self, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees)
+function LoggingContractor:startContractWithExecution(superFunc, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
+    local state, data = superFunc(self, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
 
     if state == LoggingContractorResultEvent.STATE_SUCCESS and data ~= nil then
         local job = self.activeJobs[data.jobId]
