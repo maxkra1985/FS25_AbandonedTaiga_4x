@@ -438,10 +438,86 @@ local CONTRACTOR_SPRUCE1_STAGE03_POINTS = {
     {0.317, 27.951, -0.948}
 }
 
--- Сопоставляет три опытные модели с их адресными контрольными точками.
--- Для остальных елей сохраняются стандартные FAST и FALLBACK.
+-- Профили двух ранних стадий ели, извлечённые из собственных I3D.shapes карты.
+-- Для каждой группы вычислен один корневой кластер ближайших к оси вершин.
+-- Локальная высота и направление X/Z задают адресную плоскость очистки.
+-- spruceVar1_stage01: 37 групп LOD0AttachmentsShape, 10260 вершин.
+local CONTRACTOR_SPRUCE1_STAGE01_POINTS = {
+    {1, 11.505, -0.031},
+    {-0.064, 10.863, -0.998},
+    {-0.742, 3.93, -0.67},
+    {0.911, 9.576, 0.413},
+    {0.971, 10.037, -0.239},
+    {-0.072, 5.427, -0.997},
+    {0.871, 5.768, -0.491},
+    {-0.655, 5.64, 0.755},
+    {-0.999, 5.146, -0.045},
+    {0.866, 5.313, 0.501},
+    {0.232, 6.373, 0.973},
+    {-0.96, 6.64, 0.28},
+    {0.431, 6.518, -0.903},
+    {0.955, 6.769, 0.295},
+    {-0.51, 7.127, -0.86},
+    {0.91, 7.569, -0.415},
+    {-0.473, 7.356, 0.881},
+    {-0.936, 7.436, -0.351},
+    {0.195, 8.114, -0.981},
+    {0.519, 7.908, 0.855},
+    {-0.571, 8.438, 0.821},
+    {0.999, 8.601, -0.053},
+    {-0.9, 8.815, -0.435},
+    {0.386, 9.154, -0.922},
+    {0.288, 9.063, 0.958},
+    {-0.949, 9.33, 0.315},
+    {-0.433, 9.653, -0.901},
+    {-0.283, 9.857, 0.959},
+    {-0.902, 10.129, -0.431},
+    {0.127, 10.266, 0.992},
+    {-0.999, 10.863, -0.04},
+    {0.018, 4.381, 1},
+    {0.239, 3.452, 0.971},
+    {0.996, 3.97, 0.086},
+    {0.42, 4.254, -0.907},
+    {-0.91, 3.135, 0.414},
+    {0.114, 11.504, -0.993}
+}
+
+-- spruceVar2_stage01: 22 группы LOD0AttachmentsShape, 3384 вершины.
+-- У группы 20 радиальное направление по выбранному кластеру менее
+-- определённо; её результат отдельно проверим в игровом логе.
+local CONTRACTOR_SPRUCE2_STAGE01_POINTS = {
+    {0.943, 5.313, -0.333},
+    {-0.399, 5.235, -0.917},
+    {0.984, 4.566, -0.179},
+    {0.593, 4.869, -0.806},
+    {-0.743, 2.692, 0.67},
+    {0.962, 2.868, 0.271},
+    {-0.978, 3.113, -0.21},
+    {0.34, 3.406, -0.941},
+    {0.659, 3.374, 0.752},
+    {-0.171, 3.79, 0.985},
+    {-0.989, 4.619, -0.15},
+    {-0.584, 4.117, 0.811},
+    {-0.995, 4.508, 0.104},
+    {0.784, 4.602, 0.621},
+    {0.435, 5.331, 0.9},
+    {0.965, 5.266, -0.261},
+    {-0.102, 4.73, 0.995},
+    {-0.43, 5.056, 0.903},
+    {-0.343, 5.189, -0.939},
+    {-0.993, 5.161, 0.114},
+    {0.155, 1.378, -0.988},
+    {-0.984, 3.638, 0.18}
+}
+
+-- Сопоставляет I3D-модели с геометрическими координатами их attachments.
+-- spruce1_stage02 временно остаётся на FAST/FALLBACK: бинарный файл
+-- этой стадии превышает ограничение чтения через GitHub-коннектор.
+-- Использовать координаты иной модели нельзя: расположение ветвей другое.
 local CONTRACTOR_SPRUCE_PROFILE_POINTS = {
+    spruce1_stage01 = CONTRACTOR_SPRUCE1_STAGE01_POINTS,
     spruce1_stage03 = CONTRACTOR_SPRUCE1_STAGE03_POINTS,
+    spruce2_stage01 = CONTRACTOR_SPRUCE2_STAGE01_POINTS,
     spruce2_stage02 = CONTRACTOR_SPRUCE2_STAGE02_POINTS,
     spruce2_stage03 = CONTRACTOR_SPRUCE2_STAGE03_POINTS
 }
@@ -1597,7 +1673,7 @@ end
 
 
 -- Выводит остаток attachments по конкретной I3D-модели.
--- У трёх опытных елей замер выполняется после исключительно адресного
+-- У пяти профилированных моделей ели замер идёт после адресного
 -- прохода; остальные модели проходят штатные FAST и FALLBACK.
 function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, remaining, reason)
     if state.attachmentProfileName == nil or cleanup.profileReported then
@@ -1610,8 +1686,11 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
         state.attachmentProfileName,
         tostring(state.shape),
         cleanup.profileEnabled and "ADDRESS_ONLY" or "FAST",
-        state.attachmentProfileName == "spruce1_stage03"
-            and "ROOT_LOCAL_CLUSTER" or "ORIGINAL",
+        (
+            state.attachmentProfileName == "spruce1_stage01"
+            or state.attachmentProfileName == "spruce1_stage03"
+            or state.attachmentProfileName == "spruce2_stage01"
+        ) and "ROOT_LOCAL_CLUSTER" or "ORIGINAL",
         cleanup.initialAttachments or 0,
         tostring(cleanup.profileRemaining or "n/a"),
         remaining,
@@ -1781,7 +1860,7 @@ end
 
 
 -- Продвигает очистку attachments основного ствола порциями.
--- Для трёх профилированных елей используются только адресные точки I3D.
+-- Для пяти профилированных моделей ели используются только адресные точки.
 -- Для остальных деревьев сохраняются FAST (шаг 0,10 м) и FALLBACK.
 function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     if state.shape == nil
