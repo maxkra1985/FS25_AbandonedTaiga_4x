@@ -1963,6 +1963,9 @@ function LoggingContractor:draw()
         return
     end
 
+    -- Отладочная геометрия не зависит от видимости HUD контракта.
+    self:drawContractorProfileVisual()
+
     local farmId = self.mission:getFarmId()
     if farmId == nil then
         return
