@@ -705,6 +705,16 @@ function LoggingContractor:initializeJobTargets(job)
     for _, node in ipairs(job.targetNodes) do
         job.markerStates[node] = self:isContractTargetMarked(node)
     end
+
+    -- Выбираем исходную опорную точку единожды при заключении договора,
+    -- чтобы первая партия не повторяла тяжёлый поиск доступного края участка.
+    -- Существующая маркировка уже учтена; новая по-прежнему перенесёт маршрут.
+    local initialNode = self:selectNextContractTarget(job, job.targetNodes)
+    if initialNode ~= nil and entityExists(initialNode) then
+        local x, _, z = getWorldTranslation(initialNode)
+        job.routeAnchorX = x
+        job.routeAnchorZ = z
+    end
 end
 
 function LoggingContractor:refreshJobTargets(job)
