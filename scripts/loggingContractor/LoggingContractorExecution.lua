@@ -85,6 +85,154 @@ function LoggingContractor:addContractorPerfCounter(name, value)
     stats.counters[name] = (stats.counters[name] or 0) + (value or 1)
 end
 
+-- Возвращает накопленную за договор статистику очистки по породе.
+-- Сводка хранится только в памяти и выводится при завершении договора.
+function LoggingContractor:getContractorAttachmentTypeDiagnostics(jobId, treeTypeName)
+    if not LoggingContractor.PERF_DEBUG_ENABLED or jobId == nil then
+        return nil
+    end
+
+    self.contractorAttachmentDiagnostics = self.contractorAttachmentDiagnostics or {}
+    local byJob = self.contractorAttachmentDiagnostics[jobId]
+    if byJob == nil then
+        byJob = {}
+        self.contractorAttachmentDiagnostics[jobId] = byJob
+    end
+
+    treeTypeName = treeTypeName or "UNKNOWN"
+    local profile = byJob[treeTypeName]
+    if profile == nil then
+        profile = {
+            mainScans = 0,
+            firstMain = 0,
+            firstFromButt = {},
+            firstFromTip = {},
+            mainDirections = {},
+            detachedDirections = {},
+            fallbackStarts = 0,
+            fallbackOrientations = {
+                A = {calls = 0, reported = 0},
+                B = {calls = 0, reported = 0}
+            },
+            fallbackOffsets = {},
+            fallbackVerifiedPositions = 0,
+            fallbackReportedWithoutReduction = 0
+        }
+        byJob[treeTypeName] = profile
+    end
+
+    return profile
+end
+
+
+-- Учитывает первый подтверждённый съём листвы с основного ствола.
+-- При обратном обходе результат отделён от статистики движения от комля.
+function LoggingContractor:recordContractorFirstAttachmentRemoval(profile, stepIndex, distance, fromButt)
+    if profile == nil then
+        return
+    end
+
+    profile.firstMain = profile.firstMain + 1
+    local steps = fromButt and profile.firstFromButt or profile.firstFromTip
+    steps[stepIndex] = (steps[stepIndex] or 0) + 1
+end
+
+
+-- Выводит распределение первых результативных шагов и направлений по породам.
+-- Резервная сетка учитывается отдельно: её плоскости слишком велики,
+-- чтобы по точке вызова судить о расположении нижней границы листвы.
+function LoggingContractor:logContractorAttachmentDiagnostics(jobId)
+    local byJob = self.contractorAttachmentDiagnostics
+        and self.contractorAttachmentDiagnostics[jobId] or nil
+    if byJob == nil then
+        return
+    end
+
+    local function pairsString(map, numericKeys)
+        local keys = {}
+        for key in pairs(map) do
+            table.insert(keys, key)
+        end
+        table.sort(keys, function(x, y)
+            if numericKeys then
+                return x < y
+            end
+            return tostring(x) < tostring(y)
+        end)
+
+        local values = {}
+        for _, key in ipairs(keys) do
+            table.insert(values, string.format("%s:%d", tostring(key), map[key]))
+        end
+        return #values > 0 and table.concat(values, ",") or "none"
+    end
+
+    local types = {}
+    for name in pairs(byJob) do
+        table.insert(types, name)
+    end
+    table.sort(types)
+
+    for _, treeType in ipairs(types) do
+        local p = byJob[treeType]
+        local forward = 0
+        for _, count in pairs(p.firstFromButt) do
+            forward = forward + count
+        end
+
+        Logging.info(
+            "[LoggingContractorPerf] attachments job=%d type=%s scanned=%d firstMain=%d fromButt=%d fromTip=%d fallbackStarts=%d",
+            jobId, treeType, p.mainScans, p.firstMain, forward,
+            p.firstMain - forward, p.fallbackStarts
+        )
+        Logging.info(
+            "[LoggingContractorPerf] attachments firstSteps job=%d type=%s step=0.10m fromButt={%s} fromTip={%s}",
+            jobId, treeType,
+            pairsString(p.firstFromButt, true),
+            pairsString(p.firstFromTip, true)
+        )
+
+        local angles = {}
+        for angle, value in pairs(p.mainDirections) do
+            table.insert(angles, string.format(
+                "%s=%d/%d",
+                tostring(angle), value.removed, value.calls
+            ))
+        end
+        table.sort(angles)
+        Logging.info(
+            "[LoggingContractorPerf] attachments angles job=%d type=%s trunkRemoved/calls {%s}",
+            jobId, treeType, #angles > 0 and table.concat(angles, ",") or "none"
+        )
+
+        local detachedAngles = {}
+        for angle, value in pairs(p.detachedDirections) do
+            table.insert(detachedAngles, string.format(
+                "%s=%d/%d", tostring(angle), value.removed, value.calls
+            ))
+        end
+        table.sort(detachedAngles)
+        if #detachedAngles > 0 then
+            Logging.info(
+                "[LoggingContractorPerf] attachments angles job=%d type=%s detachedRemoved/calls {%s}",
+                jobId, treeType, table.concat(detachedAngles, ",")
+            )
+        end
+
+        local o = p.fallbackOrientations
+        Logging.info(
+            "[LoggingContractorPerf] attachments fallback job=%d type=%s A=%d/%d B=%d/%d verifiedPositions=%d reportedNoReduction=%d verifiedOffsets={%s}",
+            jobId, treeType, o.A.reported, o.A.calls,
+            o.B.reported, o.B.calls, p.fallbackVerifiedPositions,
+            p.fallbackReportedWithoutReduction,
+            pairsString(p.fallbackOffsets, false)
+        )
+    end
+
+    self.contractorAttachmentDiagnostics[jobId] = nil
+end
+
+
 local function formatContractorPerfMetric(name, metric)
     if metric == nil or metric.calls <= 0 then
         return string.format("%s=n/a", name)
@@ -1139,6 +1287,13 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
             state.trunkLength
         )
 
+        -- Породу берём с исходного дерева, а не с динамических обломков.
+        -- Один профиль используется основной очисткой и резервным поиском.
+        state.pruning.attachmentTypeStats =
+            self:getContractorAttachmentTypeDiagnostics(
+                job.jobId, state.splitTypeName
+            )
+
         if job.pruneLargeBranches == false then
             -- Не отделяем крупные ветви. Используем существующий проход удаления
             -- attachments, а затем штатную раскряжёвку подготовленного ствола.
@@ -1299,6 +1454,7 @@ function LoggingContractor:finishJob(job)
         )
     end
 
+    self:logContractorAttachmentDiagnostics(job.jobId)
     self:broadcastJobProgress(job)
 end
 

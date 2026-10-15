@@ -602,7 +602,9 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     upZ,
     distance,
     rotationAngle,
-    fullCircle
+    fullCircle,
+    attachmentTypeStats,
+    detachedShape
 )
     if shape == nil or shape == 0 or not entityExists(shape) then
         return 0
@@ -653,6 +655,22 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
         probeSize
     )
 
+    -- Фиксируем реальное уменьшение числа attachments по ориентации.
+    -- Дополнительное чтение геометрии требуется только в режиме диагностики
+    -- для исходной осевой плоскости; после радиальных вызовов оно уже есть.
+    local previousAttachments = attachmentsBefore
+    if attachmentTypeStats ~= nil and entityExists(shape) then
+        local remaining = select(5, self:getContractorSplitShapeStats(shape))
+        local counts = detachedShape
+            and attachmentTypeStats.detachedDirections
+            or attachmentTypeStats.mainDirections
+        local entry = counts.AXIS or {calls = 0, removed = 0}
+        entry.calls = entry.calls + 1
+        entry.removed = entry.removed + math.max(previousAttachments - remaining, 0)
+        counts.AXIS = entry
+        previousAttachments = remaining
+    end
+
     if not entityExists(shape) then
         return attachmentsBefore
     end
@@ -691,7 +709,24 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
             return attachmentsBefore
         end
 
-        if select(5, self:getContractorSplitShapeStats(shape)) <= 0 then
+        local remaining = select(5, self:getContractorSplitShapeStats(shape))
+        if attachmentTypeStats ~= nil then
+            -- Угол относительно текущей поперечной оси, кратно 30 градусам.
+            local angleKey = tostring(
+                math.floor((rotationAngle + index * angleStep) % 360 + 0.5)
+            )
+            local counts = detachedShape
+            and attachmentTypeStats.detachedDirections
+            or attachmentTypeStats.mainDirections
+            local entry = counts[angleKey] or {calls = 0, removed = 0}
+            entry.calls = entry.calls + 1
+            entry.removed = entry.removed
+                + math.max(previousAttachments - remaining, 0)
+            counts[angleKey] = entry
+            previousAttachments = remaining
+        end
+
+        if remaining <= 0 then
             break
         end
     end
@@ -735,9 +770,10 @@ end
 -- Создаёт состояние большого fallback-прохода. В отличие от основной очистки
 -- он не пытается точно попасть в поверхность ствола, а последовательно
 -- проверяет широкую поперечную сетку вокруг всего дерева.
-function LoggingContractor:createContractorFallbackTrimState(shape)
+function LoggingContractor:createContractorFallbackTrimState(shape, attachmentTypeStats)
     local state = {
         shape = shape,
+        attachmentTypeStats = attachmentTypeStats,
         passIndex = 1,
         stepIndex = 0,
         upOffsetIndex = 1,
@@ -761,6 +797,10 @@ function LoggingContractor:createContractorFallbackTrimState(shape)
     -- Снимок перед полным проходом нужен для проверки фактического
     -- уменьшения количества attachments, а не только флага от движка.
     state.passStartAttachments = attachments
+    if attachmentTypeStats ~= nil then
+        attachmentTypeStats.fallbackStarts =
+            attachmentTypeStats.fallbackStarts + 1
+    end
     self:addContractorPerfCounter("fallbackStarts", 1)
     return state
 end
@@ -936,6 +976,13 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
             )
             removeCalls = removeCalls + 1
+            if state.attachmentTypeStats ~= nil then
+                local a = state.attachmentTypeStats.fallbackOrientations.A
+                a.calls = a.calls + 1
+                if removedA == true then
+                    a.reported = a.reported + 1
+                end
+            end
             if perfStartMs ~= nil then
                 if removedA == true then
                     returnedTrue = returnedTrue + 1
@@ -964,6 +1011,13 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
             )
             removeCalls = removeCalls + 1
+            if state.attachmentTypeStats ~= nil then
+                local b = state.attachmentTypeStats.fallbackOrientations.B
+                b.calls = b.calls + 1
+                if removedB == true then
+                    b.reported = b.reported + 1
+                end
+            end
             if perfStartMs ~= nil then
                 if removedB == true then
                     returnedTrue = returnedTrue + 1
@@ -977,6 +1031,28 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
             local changed = removedA == true or removedB == true
             if changed then
                 positionsChanged = positionsChanged + 1
+
+                if state.attachmentTypeStats ~= nil then
+                    local p = state.attachmentTypeStats
+                    local after = select(
+                        5, self:getContractorSplitShapeStats(shape)
+                    )
+                    if after < attachments then
+                        p.fallbackVerifiedPositions =
+                            p.fallbackVerifiedPositions + 1
+
+                        -- Смещения относятся к позиции пробной плоскости;
+                        -- записываем только проверенное уменьшение attachments.
+                        local offsetKey = string.format(
+                            "%d/%d", upOffset, sideOffset
+                        )
+                        p.fallbackOffsets[offsetKey] =
+                            (p.fallbackOffsets[offsetKey] or 0) + 1
+                    else
+                        p.fallbackReportedWithoutReduction =
+                            p.fallbackReportedWithoutReduction + 1
+                    end
+                end
             end
             state.removedThisPass =
                 state.removedThisPass or changed
@@ -1005,9 +1081,10 @@ end
 
 -- Создаёт состояние поэтапной очистки уже отделённой крупной ветви.
 -- Два исходных прохода и шаг 0.05 м сохраняются без изменений.
-function LoggingContractor:createContractorDetachedAttachmentState(shape)
+function LoggingContractor:createContractorDetachedAttachmentState(shape, attachmentTypeStats)
     local state = {
         shape = shape,
+        attachmentTypeStats = attachmentTypeStats,
         done = false
     }
 
@@ -1094,7 +1171,9 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
         if state.passIndex > 2 then
             state.phase = "FALLBACK"
             state.fallbackState =
-                self:createContractorFallbackTrimState(shape)
+                self:createContractorFallbackTrimState(
+                    shape, state.attachmentTypeStats
+                )
 
             if state.fallbackState.done then
                 state.done = true
@@ -1135,7 +1214,9 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
             if state.passIndex > 2 then
                 state.phase = "FALLBACK"
                 state.fallbackState =
-                    self:createContractorFallbackTrimState(shape)
+                    self:createContractorFallbackTrimState(
+                    shape, state.attachmentTypeStats
+                )
 
                 if state.fallbackState.done then
                     state.done = true
@@ -1199,6 +1280,8 @@ function LoggingContractor:advanceContractorDetachedAttachmentState(state)
                 upZ,
                 state.distance,
                 rotationAngle,
+                true,
+                state.attachmentTypeStats,
                 true
             )
 
@@ -1279,6 +1362,10 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             attachmentStep = 0,
             fallbackState = nil
         }
+        if state.attachmentTypeStats ~= nil then
+            state.attachmentTypeStats.mainScans =
+                state.attachmentTypeStats.mainScans + 1
+        end
     end
 
     local cleanup = state.attachmentCleanup
@@ -1341,7 +1428,7 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             cleanup.phase = "FALLBACK"
             cleanup.fallbackState =
                 self:createContractorFallbackTrimState(
-                    state.shape
+                    state.shape, state.attachmentTypeStats
                 )
 
             if cleanup.fallbackState.done then
@@ -1402,8 +1489,25 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             upZ,
             cleanup.distance,
             attachmentAngle,
-            state.fullCircleAttachments
+            state.fullCircleAttachments,
+            state.attachmentTypeStats,
+            false
         )
+
+        if removed > 0 and not state.firstAttachmentRemovalRecorded then
+            state.firstAttachmentRemovalRecorded = true
+            -- OBB может дать ось от верхушки к комлю. Отдельно отмечаем,
+            -- начат ли обход от комля; шаг в обратном направлении не доказывает,
+            -- что нижняя часть ствола уже проверена и чистая.
+            local fromButt = dirX * state.axisX
+                + dirY * state.axisY + dirZ * state.axisZ >= 0
+            self:recordContractorFirstAttachmentRemoval(
+                state.attachmentTypeStats,
+                cleanup.attachmentStep,
+                cleanup.distance,
+                fromButt
+            )
+        end
 
         changed = changed or removed > 0
         cleanup.distance = cleanup.distance + step
@@ -1444,7 +1548,7 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
                 if pending.attachmentState == nil then
                     pending.attachmentState =
                         self:createContractorDetachedAttachmentState(
-                            detachedShape
+                            detachedShape, state.attachmentTypeStats
                         )
                 end
 
