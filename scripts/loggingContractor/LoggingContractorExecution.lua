@@ -102,7 +102,7 @@ local function formatContractorPerfMetric(name, metric)
 end
 
 -- Печатает накопленную статистику ограниченной частотой и начинает новое окно.
-function LoggingContractor:logContractorPerfStatsIfDue()
+function LoggingContractor:logContractorPerfStatsIfDue(force)
     local stats = self:getContractorPerfStats()
     if stats == nil then
         return
@@ -110,7 +110,7 @@ function LoggingContractor:logContractorPerfStatsIfDue()
 
     local nowMs = getContractorPerfTimeMs()
     local windowMs = nowMs - stats.startedAtMs
-    if windowMs < LoggingContractor.PERF_DEBUG_INTERVAL_MS then
+    if windowMs < LoggingContractor.PERF_DEBUG_INTERVAL_MS and not force then
         return
     end
 
@@ -181,6 +181,22 @@ function LoggingContractor:logContractorPerfStatsIfDue()
             stats.counters.fallbackExtraPasses or 0,
             stats.counters.fallbackCompleted or 0,
             stats.counters.fallbackUnresolved or 0
+        )
+
+        -- Результат native-функции и реальное уменьшение числа attachments
+        -- считаем раздельно. Это позволяет обнаружить дорогие проходы,
+        -- которые возвращают успех, но не очищают дерево.
+        Logging.info(
+            "[LoggingContractorPerf] fallback detail | calls true=%d false=%d other=%d positions=%d changed=%d | passes=%d netRemoved=%d noReduction=%d reportedWithoutReduction=%d",
+            stats.counters.fallbackCallsTrue or 0,
+            stats.counters.fallbackCallsFalse or 0,
+            stats.counters.fallbackCallsOther or 0,
+            stats.counters.fallbackPositions or 0,
+            stats.counters.fallbackPositionsChanged or 0,
+            stats.counters.fallbackPassesChecked or 0,
+            stats.counters.fallbackAttachmentsNetReduction or 0,
+            stats.counters.fallbackPassesNoReduction or 0,
+            stats.counters.fallbackPassesReportedButNoReduction or 0
         )
     end
 
@@ -1607,7 +1623,9 @@ function LoggingContractor:update(dt)
             "update",
             getContractorPerfTimeMs() - perfStartMs
         )
-        self:logContractorPerfStatsIfDue()
+        -- После последнего завершённого договора выводим неполное окно
+        -- перед сбросом профилировщика: иначе его последние секунды теряются.
+        self:logContractorPerfStatsIfDue(not self:hasAnyActiveJob())
     elseif not hasActiveJob then
         self.contractorPerfStats = nil
     end

@@ -743,6 +743,7 @@ function LoggingContractor:createContractorFallbackTrimState(shape)
         upOffsetIndex = 1,
         sideOffsetIndex = 1,
         removedThisPass = false,
+        passStartAttachments = nil,
         done = false
     }
 
@@ -757,6 +758,9 @@ function LoggingContractor:createContractorFallbackTrimState(shape)
         return state
     end
 
+    -- Снимок перед полным проходом нужен для проверки фактического
+    -- уменьшения количества attachments, а не только флага от движка.
+    state.passStartAttachments = attachments
     self:addContractorPerfCounter("fallbackStarts", 1)
     return state
 end
@@ -774,7 +778,15 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
         and getTimeSec() * 1000
         or nil
     local removeCalls = 0
+    local returnedTrue = 0
+    local returnedFalse = 0
+    local returnedOther = 0
+    local positionsChecked = 0
+    local positionsChanged = 0
 
+    -- Фиксирует статистику одной порции работы без дополнительного опроса
+    -- геометрии на каждом вызове движка. Показатель returnedTrue означает
+    -- только ответ native-функции; фактический результат проверяется в конце прохода.
     local function finish(done, changed)
         if perfStartMs ~= nil then
             self:recordContractorPerfMetric(
@@ -782,6 +794,21 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 getTimeSec() * 1000 - perfStartMs,
                 removeCalls
             )
+
+            local stats = self:getContractorPerfStats()
+            if stats ~= nil then
+                local counters = stats.counters
+                counters.fallbackCallsTrue =
+                    (counters.fallbackCallsTrue or 0) + returnedTrue
+                counters.fallbackCallsFalse =
+                    (counters.fallbackCallsFalse or 0) + returnedFalse
+                counters.fallbackCallsOther =
+                    (counters.fallbackCallsOther or 0) + returnedOther
+                counters.fallbackPositions =
+                    (counters.fallbackPositions or 0) + positionsChecked
+                counters.fallbackPositionsChanged =
+                    (counters.fallbackPositionsChanged or 0) + positionsChanged
+            end
         end
         return done, changed
     end
@@ -843,6 +870,26 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 self:getContractorSplitShapeStats(shape)
             )
 
+            -- Сравниваем количество attachments до и после ПОЛНОГО
+            -- прохода. Один положительный return native-функции сам по
+            -- себе ещё не подтверждает уменьшение количества.
+            if perfStartMs ~= nil then
+                local before = state.passStartAttachments or remaining
+                local reduction = math.max(before - remaining, 0)
+                self:addContractorPerfCounter("fallbackPassesChecked", 1)
+                self:addContractorPerfCounter(
+                    "fallbackAttachmentsNetReduction", reduction
+                )
+                if reduction == 0 then
+                    self:addContractorPerfCounter("fallbackPassesNoReduction", 1)
+                    if state.removedThisPass then
+                        self:addContractorPerfCounter(
+                            "fallbackPassesReportedButNoReduction", 1
+                        )
+                    end
+                end
+            end
+
             if remaining <= 0 then
                 state.done = true
                 self:addContractorPerfCounter("fallbackCompleted", 1)
@@ -857,6 +904,7 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 state.upOffsetIndex = 1
                 state.sideOffsetIndex = 1
                 state.removedThisPass = false
+                state.passStartAttachments = remaining
                 self:addContractorPerfCounter("fallbackExtraPasses", 1)
             else
                 state.done = true
@@ -877,6 +925,7 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
             local posZ =
                 baseZ + upZ * upOffset + sideZ * sideOffset
 
+            positionsChecked = positionsChecked + 1
             local removedA = removeSplitShapeAttachments(
                 shape,
                 posX, posY, posZ,
@@ -887,9 +936,21 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
             )
             removeCalls = removeCalls + 1
+            if perfStartMs ~= nil then
+                if removedA == true then
+                    returnedTrue = returnedTrue + 1
+                elseif removedA == false then
+                    returnedFalse = returnedFalse + 1
+                else
+                    returnedOther = returnedOther + 1
+                end
+            end
 
             if not entityExists(shape) then
                 state.done = true
+                if removedA == true then
+                    positionsChanged = positionsChanged + 1
+                end
                 return finish(true, removedA == true)
             end
 
@@ -903,8 +964,20 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH
             )
             removeCalls = removeCalls + 1
+            if perfStartMs ~= nil then
+                if removedB == true then
+                    returnedTrue = returnedTrue + 1
+                elseif removedB == false then
+                    returnedFalse = returnedFalse + 1
+                else
+                    returnedOther = returnedOther + 1
+                end
+            end
 
             local changed = removedA == true or removedB == true
+            if changed then
+                positionsChanged = positionsChanged + 1
+            end
             state.removedThisPass =
                 state.removedThisPass or changed
 
