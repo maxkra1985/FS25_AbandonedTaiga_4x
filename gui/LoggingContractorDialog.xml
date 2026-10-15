@@ -42,7 +42,7 @@
                              onClick="onClickPruneLargeBranches">
                 <Text profile="loggingContractorTooltip"
                       name="ignore"
-                      text="Нет: отделение крупных ветвей выключено, удаляются только attachments. Да: прежний полный алгоритм."/>
+                      text="Нет: удаление только листвы, без обрезки крупных веток. Да: удаление листвы и обрезка крупных веток."/>
             </MultiTextOption>
 
             <Text profile="loggingContractorSettingLabel" text="Количество техники" position="0px -535px"/>
