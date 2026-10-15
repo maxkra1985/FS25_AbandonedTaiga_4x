@@ -328,13 +328,16 @@ function LoggingContractor:logContractorPerfStatsIfDue(force)
     end
 
     if (stats.counters.profileSpruceCandidates or 0) > 0
+        or (stats.counters.profilePineCandidates or 0) > 0
         or (stats.counters.profileStarts or 0) > 0
         or (stats.counters.profileCalls or 0) > 0
         or (stats.counters.profileComplete or 0) > 0 then
         Logging.info(
-            "[LoggingContractorPerf] spruce address profiles | spruceCandidates=%d matched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d skipFallback=%d remainingAfterFast=%d debugStarts=%d debugCalls=%d debugHits=%d debugRemoved=%d",
+            "[LoggingContractorPerf] tree address profiles | spruceCandidates=%d spruceMatched=%d pineCandidates=%d pineMatched=%d starts=%d calls=%d removed=%d complete=%d fullScan=%d missingFrame=%d skipFallback=%d remainingAfterFast=%d debugStarts=%d debugCalls=%d debugHits=%d debugRemoved=%d",
             stats.counters.profileSpruceCandidates or 0,
             stats.counters.profileSpruceMatched or 0,
+            stats.counters.profilePineCandidates or 0,
+            stats.counters.profilePineMatched or 0,
             stats.counters.profileStarts or 0,
             stats.counters.profileCalls or 0,
             stats.counters.profileAttachmentsRemoved or 0,
@@ -426,21 +429,27 @@ function LoggingContractor:getContractorNeedsBranchSearch(splitTypeName)
 end
 
 
--- Имена локальных моделей из map/trees/spruce/*.i3d. Сохраняем модель
--- отдельно от общего splitType SPRUCE для диагностики остатка после FAST.
-local CONTRACTOR_SPRUCE_TREE_MODELS = {
+-- Сопоставляет имена I3D-групп конкретным адресным профилям.
+-- Один splitType может включать несколько геометрически разных моделей.
+local CONTRACTOR_ADDRESS_TREE_MODELS = {
     spruceVar01_stage01 = "spruce1_stage01",
     spruceVar01_stage02 = "spruce1_stage02",
     spruceVar01_stage03 = "spruce1_stage03",
     spruceVar02_stage01 = "spruce2_stage01",
     spruceVar02_stage02 = "spruce2_stage02",
-    spruceVar02_stage03 = "spruce2_stage03"
+    spruceVar02_stage03 = "spruce2_stage03",
+    lodgepolePine_stage01 = "lodgepolePine_stage01",
+    lodgepolePine_stage02 = "lodgepolePine_stage02",
+    lodgepolePine_stage02Var2 = "lodgepolePine_stage02Var2",
+    lodgepolePine_stage03 = "lodgepolePine_stage03",
+    lodgepolePine_stage03Var2 = "lodgepolePine_stage03Var2"
 }
 
 -- Возвращает название конкретной исходной I3D-модели по её родительской
 -- transform-group. Различает все шесть елей, хотя их splitType одинаков.
 function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
-    if splitTypeName ~= "SPRUCE" or shape == nil or not entityExists(shape) then
+    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE")
+        or shape == nil or not entityExists(shape) then
         return nil
     end
 
@@ -451,7 +460,7 @@ function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
         if parent == nil or parent == 0 or not entityExists(parent) then
             break
         end
-        local name = CONTRACTOR_SPRUCE_TREE_MODELS[getName(parent)]
+        local name = CONTRACTOR_ADDRESS_TREE_MODELS[getName(parent)]
         if name ~= nil then
             return name
         end
@@ -1152,18 +1161,14 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
     local treeX, treeY, treeZ = getWorldTranslation(shape)
     local splitTypeName = self:getContractorSplitTypeName(shape)
     local profileName = self:getContractorTreeModelProfile(shape, splitTypeName)
-    local useAddressProfile =
-        profileName == "spruce1_stage01"
-        or profileName == "spruce1_stage02"
-        or profileName == "spruce1_stage03"
-        or profileName == "spruce2_stage01"
-        or profileName == "spruce2_stage02"
-        or profileName == "spruce2_stage03"
+    -- Профиль включается только при точном совпадении имени I3D-группы.
+    local useAddressProfile = profileName ~= nil
 
-    if splitTypeName == "SPRUCE" then
-        self:addContractorPerfCounter("profileSpruceCandidates", 1)
+    if splitTypeName == "SPRUCE" or splitTypeName == "LODGEPOLEPINE" then
+        local prefix = splitTypeName == "SPRUCE" and "profileSpruce" or "profilePine"
+        self:addContractorPerfCounter(prefix .. "Candidates", 1)
         if useAddressProfile then
-            self:addContractorPerfCounter("profileSpruceMatched", 1)
+            self:addContractorPerfCounter(prefix .. "Matched", 1)
         end
     end
     local profileSourceFrame = nil
