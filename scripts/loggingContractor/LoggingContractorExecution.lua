@@ -138,15 +138,23 @@ function LoggingContractor:recordContractorFirstAttachmentRemoval(profile, stepI
 end
 
 
--- Выводит распределение первых результативных шагов и направлений по породам.
--- Резервная сетка учитывается отдельно: её плоскости слишком велики,
--- чтобы по точке вызова судить о расположении нижней границы листвы.
-function LoggingContractor:logContractorAttachmentDiagnostics(jobId)
+-- Выводит накопленную статистику очистки по породам для договора.
+-- Промежуточный снимок не сбрасывает данные, итоговый освобождает память.
+-- Резервная сетка учитывается отдельно: её широкие плоскости не позволяют
+-- определить точную высоту первой листвы по точке вызова.
+function LoggingContractor:logContractorAttachmentDiagnostics(jobId, keepStats, processedInSession)
     local byJob = self.contractorAttachmentDiagnostics
         and self.contractorAttachmentDiagnostics[jobId] or nil
     if byJob == nil then
         return
     end
+
+    Logging.info(
+        "[LoggingContractorPerf] attachments snapshot job=%d kind=%s processedInSession=%d",
+        jobId,
+        keepStats and "INTERIM" or "FINAL",
+        processedInSession or 0
+    )
 
     local function pairsString(map, numericKeys)
         local keys = {}
@@ -229,7 +237,9 @@ function LoggingContractor:logContractorAttachmentDiagnostics(jobId)
         )
     end
 
-    self.contractorAttachmentDiagnostics[jobId] = nil
+    if not keepStats then
+        self.contractorAttachmentDiagnostics[jobId] = nil
+    end
 end
 
 
@@ -1454,7 +1464,9 @@ function LoggingContractor:finishJob(job)
         )
     end
 
-    self:logContractorAttachmentDiagnostics(job.jobId)
+    self:logContractorAttachmentDiagnostics(
+        job.jobId, false, job.attachmentDiagnosticsProcessedTrees or 0
+    )
     self:broadcastJobProgress(job)
 end
 
@@ -1674,6 +1686,23 @@ function LoggingContractor:updateContractorProcessingTrees(job)
                         (job.remainingTrees or 1) - 1,
                         0
                     )
+                end
+
+                -- Периодически сохраняем в log.txt снимок статистики по
+                -- породам, не дожидаясь завершения большого договора.
+                -- Считаем только реально обработанные подрядчиком деревья:
+                -- удачные и с изменённой геометрией, но не повторные попытки.
+                if LoggingContractor.PERF_DEBUG_ENABLED
+                    and (success or state.hadMutation) then
+                    local processed =
+                        (job.attachmentDiagnosticsProcessedTrees or 0) + 1
+                    job.attachmentDiagnosticsProcessedTrees = processed
+
+                    if processed % 25 == 0 then
+                        self:logContractorAttachmentDiagnostics(
+                            job.jobId, true, processed
+                        )
+                    end
                 end
 
                 progressChanged = true
