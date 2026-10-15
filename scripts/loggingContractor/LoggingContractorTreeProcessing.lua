@@ -8,7 +8,7 @@
     продолжается до конца ствола. Крупные ветви отделяются продольными резами
     с повторными попытками 0/-30/+30 градусов и сдвигом вдоль оси на 0.10 м.
 
-    Attachments удаляются штатным removeSplitShapeAttachments. Для обычных
+    Attachments удаляются штатным findAndRemoveSplitShapeAttachments. Для обычных
     деревьев используется лёгкий четырёхсторонний радиальный проход. Для SPRUCE
     и для отделённых крупных ветвей на каждом сечении выполняется полный круг
     из 12 уникальных радиальных направлений через 30 градусов.
@@ -606,7 +606,7 @@ LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.20
 -- ВРЕМЕННАЯ диагностика: после ПОЛНОГО адресного прохода проверяем
 -- точки с removed=0 на четырёх высотах (-5/+5/-10/+10 см).
 -- На каждой высоте круг с шагом 15 градусов (максимум 96 проб).
--- Один вызов removeSplitShapeAttachments на одно игровое обновление.
+-- Один вызов findAndRemoveSplitShapeAttachments на одно игровое обновление.
 LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED = true
 LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS = {-0.05, 0.05, -0.10, 0.10}
 LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP = 15
@@ -1068,8 +1068,7 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     local centerZ = axisPointZ + upZ * centerUp + sideZ * centerSide
     local outset = LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET
 
-    removeSplitShapeAttachments(
-        shape,
+    findAndRemoveSplitShapeAttachments(
         centerX, centerY, centerZ,
         axisX, axisY, axisZ,
         upX, upY, upZ,
@@ -1116,8 +1115,7 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
 
         local radius = math.abs(cosAngle) * halfUp + math.abs(sinAngle) * halfSide
 
-        removeSplitShapeAttachments(
-            shape,
+        findAndRemoveSplitShapeAttachments(
             centerX + radialX * (radius + outset),
             centerY + radialY * (radius + outset),
             centerZ + radialZ * (radius + outset),
@@ -1389,8 +1387,7 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 baseZ + upZ * upOffset + sideZ * sideOffset
 
             positionsChecked = positionsChecked + 1
-            local removedA = removeSplitShapeAttachments(
-                shape,
+            local removedA = findAndRemoveSplitShapeAttachments(
                 posX, posY, posZ,
                 axisX, axisY, axisZ,
                 upX, upY, upZ,
@@ -1424,8 +1421,7 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 return finish(true, removedA == true)
             end
 
-            local removedB = removeSplitShapeAttachments(
-                shape,
+            local removedB = findAndRemoveSplitShapeAttachments(
                 posX, posY, posZ,
                 axisX, axisY, axisZ,
                 sideX, sideY, sideZ,
@@ -2115,8 +2111,8 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
 
     -- Используем те же размеры плоскости, что и в основном профиле:
     -- эксперимент изменяет только высоту и азимут точки приложения.
-    local nativeResult = removeSplitShapeAttachments(
-        shape, wx, wy, wz,
+    local nativeResult = findAndRemoveSplitShapeAttachments(
+        wx, wy, wz,
         -nx, -ny, -nz,
         ax, ay, az,
         LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
@@ -2291,8 +2287,7 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
 
     -- Та же native-операция, что и в обычной очистке, но одна плоскость
     -- в известном направлении вместо полного перебора 12 направлений.
-    local didDelimb = removeSplitShapeAttachments(
-        shape,
+    local didDelimb = findAndRemoveSplitShapeAttachments(
         wx, wy, wz,
         -radialX, -radialY, -radialZ,
         axisX, axisY, axisZ,
@@ -2468,7 +2463,7 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         -- Основной ствол после первичного спила динамический. При растянутой
         -- на несколько кадров очистке используем его текущую мировую ось,
-        -- чтобы точки removeSplitShapeAttachments следовали за движением ствола.
+        -- чтобы точки findAndRemoveSplitShapeAttachments следовали за движением ствола.
         local centerX, centerY, centerZ,
             dirX, dirY, dirZ,
             upX, upY, upZ,
