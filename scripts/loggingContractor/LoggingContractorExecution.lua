@@ -689,6 +689,7 @@ function LoggingContractor:initializeJobTargets(job)
 
     job.processingTrees = {}
     job.remainingTrees = #job.targetNodes
+    job.pendingStartCount = 0
     job.processTimerMs = 0
     job.routeAnchorX = nil
     job.routeAnchorZ = nil
@@ -1267,79 +1268,135 @@ function LoggingContractor:finishJob(job)
 end
 
 
--- Выполняет один рабочий такт договора: один раз актуализирует очередь целей,
--- затем запускает до equipmentCount деревьев без повторного полного обхода участка.
-function LoggingContractor:processJobBatch(job)
-    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
-        and getContractorPerfTimeMs()
-        or nil
-    job.processingTrees = job.processingTrees or {}
-
-    -- Полная проверка targetNodes нужна при выборе новой партии: здесь исключаются
-    -- деревья, которые игрок успел спилить самостоятельно между рабочими тактами.
-    local targets = self:refreshJobTargets(job)
-    local availableSlots =
-        math.max(job.equipmentCount - #job.processingTrees, 0)
-
-    if availableSlots <= 0 then
-        if perfStartMs ~= nil then
-            self:recordContractorPerfMetric(
-                "batch",
-                getContractorPerfTimeMs() - perfStartMs
-            )
-        end
+-- Начисляет право начать деревья за рабочие двухминутные такты.
+-- Количество оплаченной техники определяет число новых целей за такт,
+-- но не увеличивает число одновременно обрабатываемых split-shape.
+function LoggingContractor:processJobBatch(job, batchCount)
+    batchCount = math.max(math.floor(batchCount or 1), 0)
+    if batchCount == 0 then
         return
     end
 
+    job.pendingStartCount = math.min(
+        (job.pendingStartCount or 0) + batchCount * job.equipmentCount,
+        #(job.targetNodes or {})
+    )
+end
+
+-- Заполняет общие десять слотов из оплаченных очередей всех активных договоров.
+-- Договоры чередуются по jobId, чтобы один большой подряд не занимал все слоты
+-- постоянно. Новые деревья запускаются только здесь, после обработки текущих.
+function LoggingContractor:fillContractorProcessingSlots()
+    local jobs = {}
+    local running = 0
+
+    for _, job in pairs(self.activeJobs or {}) do
+        if job.isActive then
+            running = running + #(job.processingTrees or {})
+            if (job.pendingStartCount or 0) > 0
+                and #(job.targetNodes or {}) > 0 then
+                table.insert(jobs, job)
+            end
+        end
+    end
+
+    local freeSlots = math.max(
+        LoggingContractor.MAX_CONCURRENT_TREES - running,
+        0
+    )
+    if freeSlots == 0 or #jobs == 0 then
+        return
+    end
+
+    table.sort(jobs, function(a, b)
+        return a.jobId < b.jobId
+    end)
+
+    local index = 1
+    local previousJobId = self.lastContractorScheduledJobId or 0
+    for i, job in ipairs(jobs) do
+        if job.jobId > previousJobId then
+            index = i
+            break
+        end
+    end
+
+    local refreshed = {}
+    local startedJobs = {}
+    local stalled = 0
     local started = 0
+    local perfStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+        and getContractorPerfTimeMs() or nil
 
-    while started < availableSlots and job.isActive do
-        if #targets == 0 then
-            break
+    -- После неудачного полного обхода прекращаем попытки до следующего update.
+    while freeSlots > 0 and stalled < #jobs do
+        local job = jobs[index]
+        local didStart = false
+        local allowedForJob = math.min(
+            job.equipmentCount,
+            LoggingContractor.MAX_CONCURRENT_TREES
+        )
+
+        if job.isActive
+            and (job.pendingStartCount or 0) > 0
+            and #(job.processingTrees or {}) < allowedForJob then
+            if not refreshed[job] then
+                -- Проверяем ожидающие деревья один раз на договор за update.
+                self:refreshJobTargets(job)
+                job.pendingStartCount = math.min(
+                    job.pendingStartCount,
+                    #job.targetNodes
+                )
+                refreshed[job] = true
+            end
+
+            if job.pendingStartCount > 0 and #job.targetNodes > 0 then
+                local selectStartMs = LoggingContractor.PERF_DEBUG_ENABLED
+                    and getContractorPerfTimeMs() or nil
+                local shape = self:selectNextContractTarget(
+                    job, job.targetNodes
+                )
+                if selectStartMs ~= nil then
+                    self:recordContractorPerfMetric(
+                        "selectTarget",
+                        getContractorPerfTimeMs() - selectStartMs,
+                        #job.targetNodes
+                    )
+                end
+
+                if shape ~= nil and entityExists(shape) then
+                    local state = self:createContractorTreeProcess(job, shape)
+                    if state ~= nil then
+                        self:removePendingContractTarget(job, shape)
+                        table.insert(job.processingTrees, state)
+                        job.pendingStartCount = job.pendingStartCount - 1
+                        startedJobs[job] = true
+                        self.lastContractorScheduledJobId = job.jobId
+                        self:addContractorPerfCounter("treesStarted", 1)
+                        freeSlots = freeSlots - 1
+                        started = started + 1
+                        didStart = true
+                    end
+                end
+            end
         end
 
-        local selectStartMs = LoggingContractor.PERF_DEBUG_ENABLED
-            and getContractorPerfTimeMs()
-            or nil
-        local shape = self:selectNextContractTarget(job, targets)
-
-        if selectStartMs ~= nil then
-            self:recordContractorPerfMetric(
-                "selectTarget",
-                getContractorPerfTimeMs() - selectStartMs,
-                #targets
-            )
-        end
-
-        if shape == nil or not entityExists(shape) then
-            break
-        end
-
-        local state = self:createContractorTreeProcess(job, shape)
-        if state == nil then
-            break
-        end
-
-        -- removePendingContractTarget изменяет ту же таблицу, которую вернул
-        -- refreshJobTargets, поэтому повторное сканирование очереди здесь не требуется.
-        self:removePendingContractTarget(job, shape)
-        table.insert(job.processingTrees, state)
-        started = started + 1
-        self:addContractorPerfCounter("treesStarted", 1)
+        stalled = didStart and 0 or stalled + 1
+        index = index % #jobs + 1
     end
 
     if perfStartMs ~= nil then
         self:recordContractorPerfMetric(
-            "batch",
-            getContractorPerfTimeMs() - perfStartMs,
-            started
+            "batch", getContractorPerfTimeMs() - perfStartMs, started
         )
     end
 
-    if job.remainingTrees == 0 then
-        self:finishJob(job)
-    elseif started > 0 then
-        self:broadcastJobProgress(job)
+    for job in pairs(refreshed) do
+        if job.remainingTrees == 0 then
+            self:finishJob(job)
+        elseif startedJobs[job] then
+            self:broadcastJobProgress(job)
+        end
     end
 end
 
@@ -1490,8 +1547,8 @@ function LoggingContractor:update(dt)
             end
 
             -- С 21:00 до 08:00 замораживаются и уже начатые деревья.
-            -- Между партиями не вызываем обработчик вообще: до следующего
-            -- двухминутного такта у договора нет split-shape работы.
+            -- В рабочее время обрабатываем активные деревья, а освободившиеся
+            -- слоты ниже заполняем из очередей уже начисленных рабочих тактов.
             if isWorkingTime
                 and job.processingTrees ~= nil
                 and #job.processingTrees > 0 then
@@ -1513,15 +1570,16 @@ function LoggingContractor:update(dt)
                         job.processTimerMs
                         - batchCount * LoggingContractor.PROCESS_INTERVAL_MS
 
-                    for _ = 1, batchCount do
-                        if not job.isActive then
-                            break
-                        end
-                        self:processJobBatch(job)
-                    end
+                    self:processJobBatch(job, batchCount)
                 end
             end
         end
+    end
+
+    if isWorkingTime and hasActiveJob then
+        -- Пополняем слоты после завершения деревьев и начисления рабочих тактов.
+        -- Это также исключает обход новых целей в середине цикла обработки.
+        self:fillContractorProcessingSlots()
     end
 
     if perfStartMs ~= nil and hasActiveJob then

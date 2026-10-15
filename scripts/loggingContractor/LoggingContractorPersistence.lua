@@ -213,6 +213,8 @@ function LoggingContractor:saveToSavegame(directory)
             job.remainingTrees or 0
         )
         setXMLInt(xmlFile, key .. "#equipmentCount", job.equipmentCount)
+        -- Сохраняем право на уже оплаченные, но ещё не запущенные деревья.
+        setXMLInt(xmlFile, key .. "#pendingStartCount", job.pendingStartCount or 0)
         setXMLInt(xmlFile, key .. "#logLength", job.logLength)
         setXMLFloat(xmlFile, key .. "#workHours", job.workHours or 0)
         setXMLInt(xmlFile, key .. "#billableHours", job.billableHours or 0)
@@ -434,6 +436,9 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
     job.targetNodes = pendingNodes
     job.processingTrees = {}
     job.markerStates = {}
+    job.pendingStartCount = math.max(
+        getXMLInt(xmlFile, key .. "#pendingStartCount") or 0, 0
+    )
     job.processTimerMs =
         math.max(getXMLFloat(xmlFile, key .. "#processTimerMs") or 0, 0)
     job.routeAnchorX = getXMLFloat(xmlFile, key .. "#routeAnchorX")
@@ -443,18 +448,34 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         job.markerStates[node] = self:isContractTargetMarked(node)
     end
 
-    -- Processing-деревья без физических изменений безопасно начинают свой
-    -- внутренний state-machine заново с INITIAL_CUT, не ожидая нового 2-минутного такта.
+    -- Старые сохранения могли содержать сотни одновременных processingTrees.
+    -- Перезапускаем только свободные общие слоты, остальные возвращаем в
+    -- оплаченную очередь без повторного ожидания двухминутного рабочего такта.
+    local availableSlots = LoggingContractor.MAX_CONCURRENT_TREES
+    for _, activeJob in pairs(self.activeJobs or {}) do
+        availableSlots = availableSlots - #(activeJob.processingTrees or {})
+    end
+    availableSlots = math.max(availableSlots, 0)
+    local deferredCount = 0
+
     for _, node in ipairs(processingNodes) do
-        local state = self:createContractorTreeProcess(job, node)
-        if state ~= nil then
-            table.insert(job.processingTrees, state)
+        if #job.processingTrees >= availableSlots then
+            table.insert(job.targetNodes, node)
+            deferredCount = deferredCount + 1
         else
-            job.remainingTrees = math.max(job.remainingTrees - 1, 0)
-            missingProcessing = missingProcessing + 1
+            local state = self:createContractorTreeProcess(job, node)
+            if state ~= nil then
+                table.insert(job.processingTrees, state)
+            else
+                missingProcessing = missingProcessing + 1
+            end
         end
     end
 
+    job.pendingStartCount = math.min(
+        job.pendingStartCount + deferredCount,
+        #job.targetNodes
+    )
     job.remainingTrees = #job.targetNodes + #job.processingTrees
     job.progressBroadcastPending = true
     if mutatedProcessingCount > 0 then

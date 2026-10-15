@@ -197,7 +197,11 @@ end
 -- Заполняет MultiTextOption доступными количествами техники и выбирает
 -- указанное значение. При отсутствии деревьев селектор блокируется на нуле.
 function LoggingContractorDialog:setEquipmentOptions(maxEquipmentCount, selectedEquipmentCount)
-    self.maxEquipmentCount = math.max(math.floor(maxEquipmentCount or 0), 0)
+    self.maxEquipmentCount = math.clamp(
+        math.floor(maxEquipmentCount or 0),
+        0,
+        LoggingContractor.MAX_EQUIPMENT_COUNT
+    )
 
     if self.maxEquipmentCount <= 0 then
         self.currentEquipmentCount = 0
@@ -368,7 +372,11 @@ function LoggingContractorDialog:createContractDraft()
         return nil, "invalidEquipment"
     end
 
-    equipmentCount = math.min(equipmentCount, scan.totalCount)
+    equipmentCount = math.min(
+        equipmentCount,
+        scan.totalCount,
+        LoggingContractor.MAX_EQUIPMENT_COUNT
+    )
 
     local logLengthIsValid = false
     for _, length in ipairs(LoggingContractorDialog.LOG_LENGTHS) do
@@ -387,7 +395,8 @@ function LoggingContractorDialog:createContractDraft()
     local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
     self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
 
-    if self.maxEquipmentCount ~= scan.totalCount or self.currentEquipmentCount ~= equipmentCount then
+    if self.maxEquipmentCount ~= math.min(scan.totalCount, LoggingContractor.MAX_EQUIPMENT_COUNT)
+        or self.currentEquipmentCount ~= equipmentCount then
         self:setEquipmentOptions(scan.totalCount, equipmentCount)
     else
         self:updateEstimate()

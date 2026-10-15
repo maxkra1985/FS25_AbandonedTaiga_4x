@@ -18,6 +18,8 @@ LoggingContractor = {}
 local LoggingContractor_mt = Class(LoggingContractor)
 
 LoggingContractor.TREES_PER_EQUIPMENT = 100
+LoggingContractor.MAX_EQUIPMENT_COUNT = 50 -- Максимум техники в новом договоре.
+LoggingContractor.MAX_CONCURRENT_TREES = 10 -- Общий предел обработки для всех подрядчиков.
 LoggingContractor.MINUTES_PER_TREE = 2
 LoggingContractor.EQUIPMENT_RENT_COST = 24000
 LoggingContractor.EQUIPMENT_WORK_COST_PER_HOUR = 1000
@@ -270,7 +272,11 @@ function LoggingContractor:getRecommendedEquipmentCount(treeCount)
         return 0
     end
 
-    return math.ceil(treeCount / LoggingContractor.TREES_PER_EQUIPMENT)
+    return math.min(
+        math.ceil(treeCount / LoggingContractor.TREES_PER_EQUIPMENT),
+        LoggingContractor.MAX_EQUIPMENT_COUNT,
+        treeCount
+    )
 end
 
 
@@ -294,7 +300,11 @@ function LoggingContractor:calculateEstimate(treeCount, equipmentCount)
         equipmentCount = self:getRecommendedEquipmentCount(treeCount)
     end
 
-    equipmentCount = math.max(math.floor(equipmentCount), 1)
+    equipmentCount = math.clamp(
+        math.floor(equipmentCount),
+        1,
+        math.min(treeCount, LoggingContractor.MAX_EQUIPMENT_COUNT)
+    )
 
     local workMinutes = (treeCount * LoggingContractor.MINUTES_PER_TREE) / equipmentCount
     local workHours = workMinutes / 60
@@ -412,7 +422,9 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     end
 
     equipmentCount = math.floor(equipmentCount or 0)
-    if equipmentCount <= 0 then
+    if equipmentCount <= 0
+        or equipmentCount > LoggingContractor.MAX_EQUIPMENT_COUNT then
+        -- Сервер не доверяет клиентскому ограничению выпадающего списка.
         return LoggingContractorResultEvent.STATE_INVALID_EQUIPMENT
     end
 
