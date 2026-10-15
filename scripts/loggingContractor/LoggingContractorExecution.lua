@@ -1149,7 +1149,8 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
     local splitTypeName = self:getContractorSplitTypeName(shape)
     local profileName = self:getContractorTreeModelProfile(shape, splitTypeName)
     local useAddressProfile =
-        profileName == "spruce2_stage02"
+        profileName == "spruce1_stage03"
+        or profileName == "spruce2_stage02"
         or profileName == "spruce2_stage03"
 
     if splitTypeName == "SPRUCE" then
