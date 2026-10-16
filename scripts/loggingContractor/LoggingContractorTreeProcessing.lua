@@ -881,6 +881,10 @@ LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED = true
 LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS = {-0.05, 0.05, -0.10, 0.10}
 LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP = 15
 
+-- Паузы нужны для видеозаписи: после основного прохода и между
+-- диагностическими группами. Время задаётся в миллисекундах.
+LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS = 2000
+
 
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
@@ -2033,16 +2037,6 @@ LoggingContractor.PROFILE_VISUAL_MAX_TREES = 24
 LoggingContractor.PROFILE_VISUAL_MAX_DISTANCE = 35
 LoggingContractor.PROFILE_VISUAL_LABEL_DISTANCE = 12
 
--- Эти шесть групп уже были изменены по экспериментальным срабатываниям.
--- Синий цвет отмечает изменённую точку только при removed > 0.
-LoggingContractor.PROFILE_VISUAL_CALIBRATED = {
-    spruce1_stage01 = {[36] = true},
-    spruce1_stage02 = {[6] = true, [7] = true},
-    spruce2_stage01 = {[21] = true},
-    spruce2_stage03 = {[42] = true, [63] = true}
-}
-
-
 -- Сохраняет ТОЧНУЮ локальную плоскость основного/отладочного вызова.
 -- Пока split-shape существует, маркер следует за его движением; после
 -- удаления shape используется последний сохранённый мировой снимок.
@@ -2053,7 +2047,8 @@ function LoggingContractor:recordContractorProfileVisualPoint(
 )
     if not LoggingContractor.PROFILE_VISUAL_ENABLED
         or not self.mission:getIsClient()
-        or state.attachmentProfileFrame == nil then
+        or state.attachmentProfileFrame == nil
+        or (category == "PRIMARY" and removed ~= 0) then
         return
     end
 
@@ -2094,15 +2089,10 @@ function LoggingContractor:recordContractorProfileVisualPoint(
     local bx, by, bz = localToWorld(shape, cx, cy, cz)
     local ex, ey, ez = localToWorld(shape, tipX, tipY, tipZ)
 
-    local corrected =
-        LoggingContractor.PROFILE_VISUAL_CALIBRATED[state.attachmentProfileName]
-    corrected = corrected ~= nil and corrected[groupIndex] == true
-
     local marker = {
         groupIndex = groupIndex,
         category = category,
         removed = removed,
-        corrected = corrected,
         lx = lx, ly = ly, lz = lz,
         cx = cx, cy = cy, cz = cz,
         tipX = tipX, tipY = tipY, tipZ = tipZ,
@@ -2114,10 +2104,10 @@ function LoggingContractor:recordContractorProfileVisualPoint(
 end
 
 
--- Рисует ближайший к камере ранее обработанный адресный профиль.
--- Зелёный: основная точка с removed>0; жёлтый: removed=0;
--- красный: успешная диагностическая плоскость; синий: исправленная
--- ранее основная точка. Все координаты взяты из вызовов движка.
+-- Рисует ближайший к камере адресный профиль прямо во время очистки.
+-- Красным показаны только основные точки с removed=0, синим — каждая
+-- новая диагностическая проба независимо от результата удаления.
+-- Все координаты взяты из фактических вызовов движка.
 function LoggingContractor:drawContractorProfileVisual()
     if not LoggingContractor.PROFILE_VISUAL_ENABLED
         or not self.mission:getIsServer() then
@@ -2183,17 +2173,11 @@ function LoggingContractor:drawContractorProfileVisual()
                 )
         end
 
-        local r, g, b = 0.15, 1, 0.2
-        local prefix = ""
+        local r, g, b = 1, 0.15, 0.15
+        local prefix = "!"
         if marker.category == "DEBUG" then
-            r, g, b = 1, 0.15, 0.15
+            r, g, b = 0.15, 0.5, 1
             prefix = "D"
-        elseif marker.removed == 0 then
-            r, g, b = 1, 0.85, 0.05
-            prefix = "!"
-        elseif marker.corrected then
-            r, g, b = 0.2, 0.65, 1
-            prefix = "C"
         end
 
         -- Луч направлен от оси ствола через плоскость наружу. Точка
@@ -2219,13 +2203,7 @@ function LoggingContractor:drawContractorProfileVisual()
 
         local dx, dy, dz = x - camX, y - camY, z - camZ
         local d2 = dx * dx + dy * dy + dz * dz
-        if d2 < labelDistance2
-            and (
-                marker.removed == 0
-                or marker.category == "DEBUG"
-                or marker.corrected
-                or d2 < 16
-            ) then
+        if d2 < labelDistance2 then
             Utils.renderTextAtWorldPosition(
                 marker.endX, marker.endY + 0.10, marker.endZ,
                 string.format("%s%d", prefix, marker.groupIndex),
@@ -2250,7 +2228,7 @@ function LoggingContractor:drawContractorProfileVisual()
     )
     renderText(
         0.02, 0.32, getCorrectTextSize(0.012),
-        "Green=removed  Yellow=0  Red=debug  Blue=calibrated"
+        "Red=primary removed=0  Blue=debug probe"
     )
 end
 
@@ -2401,17 +2379,19 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
 
     local after = select(5, self:getContractorSplitShapeStats(shape))
     local removed = math.max(before - after, 0)
+
+    -- Показываем каждую диагностическую плоскость сразу после вызова,
+    -- включая пробы без удаления attachments.
+    self:recordContractorProfileVisualPoint(
+        state, "DEBUG", item.groupIndex,
+        lx, ly, lz, rx, rz, testHeight, removed
+    )
+
     if removed > 0 then
         cleanup.profileDebugHits = cleanup.profileDebugHits + 1
         cleanup.profileDebugRemoved = cleanup.profileDebugRemoved + removed
         self:addContractorPerfCounter("profileDebugHits", 1)
         self:addContractorPerfCounter("profileDebugRemoved", removed)
-
-        -- Сохраняем плоскость только успешной дополнительной пробы.
-        self:recordContractorProfileVisualPoint(
-            state, "DEBUG", item.groupIndex,
-            lx, ly, lz, rx, rz, testHeight, removed
-        )
 
         -- Успех может относиться к соседнему attachment; фиксируем
         -- только факт и точные параметры сработавшей плоскости.
@@ -2438,6 +2418,13 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
         cleanup.profileDebugIndex = cleanup.profileDebugIndex + 1
         cleanup.profileDebugHeight = 1
         cleanup.profileDebugAngle = 1
+
+        -- Группа закончена: оставляем её синие маркеры на экране
+        -- на две секунды до начала следующей группы.
+        if after > 0 then
+            cleanup.profileDebugPauseUntil =
+                g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
+        end
     end
 
     if after <= 0 then
@@ -2533,6 +2520,8 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
             and before > 0
             and #candidates > 0 then
             cleanup.phase = "PROFILE_DEBUG"
+            cleanup.profileDebugPauseUntil =
+                g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
             cleanup.profileDebugIndex = 1
             cleanup.profileDebugHeight = 1
             cleanup.profileDebugAngle = 1
@@ -2653,8 +2642,8 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         before, after, removed
     )
 
-    -- Визуализируем именно координаты реально выполненного native-вызова,
-    -- сохраняя номер группы и результат. Очистку это не изменяет.
+    -- Немедленно показываем красным только вызовы с removed=0.
+    -- Успешные основные точки не загромождают видеозапись.
     self:recordContractorProfileVisualPoint(
         state, "PRIMARY", cleanup.profileIndex - 1,
         lx, ly, lz, rx, rz, py, removed
@@ -2744,6 +2733,12 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     end
 
     if cleanup.phase == "PROFILE_DEBUG" then
+        -- Ожидание не блокирует кадры игры и текущую отрисовку.
+        if cleanup.profileDebugPauseUntil ~= nil
+            and g_time < cleanup.profileDebugPauseUntil then
+            return false, false
+        end
+        cleanup.profileDebugPauseUntil = nil
         return self:advanceContractorProfileDebug(state, cleanup)
     end
 
