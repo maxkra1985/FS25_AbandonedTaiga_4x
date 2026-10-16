@@ -1304,13 +1304,14 @@ local CONTRACTOR_TREE_PROFILE_POINTS = {
 
 LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.20
 
--- ВРЕМЕННАЯ диагностика: после ПОЛНОГО адресного прохода проверяем
--- точки с removed=0 на четырёх высотах (-5/+5/-10/+10 см).
--- На каждой высоте круг с шагом 15 градусов (максимум 96 проб).
--- Один вызов findAndRemoveSplitShapeAttachments на одно игровое обновление.
-LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED = true
-LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS = {-0.05, 0.05, -0.10, 0.10}
-LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP = 15
+-- Диагностическая спираль включается только после адресного, FAST и
+-- FALLBACK этапов, если на стволе остаются attachments.
+-- Каждый игровой шаг: +2 см вдоль ствола, +15 градусов вокруг оси.
+-- Каждый следующий полный проход сдвигает начальный угол на 20 градусов.
+LoggingContractor.PROCESSING_SPIRAL_STEP = 0.02
+LoggingContractor.PROCESSING_SPIRAL_ANGLE_STEP = 15
+LoggingContractor.PROCESSING_SPIRAL_PASS_SHIFT = 20
+LoggingContractor.PROCESSING_SPIRAL_MAX_PASSES = 5
 
 -- Паузы нужны для видеозаписи: после основного прохода и между
 -- диагностическими группами. Время задаётся в миллисекундах.
@@ -1716,6 +1717,51 @@ function LoggingContractor:cutContractorProcessingBranchOnce(
     return false, false
 end
 
+-- Записывает только подтверждённое уменьшение attachments для пополнения
+-- адресных карт. В лог попадают мировая плоскость и точные координаты
+-- этой же плоскости в исходном базисе I3D, а также обе её оси и размеры.
+function LoggingContractor:logContractorLearnedAttachmentPoint(
+    state, method, before, after,
+    wx, wy, wz, nx, ny, nz, ax, ay, az,
+    thickness, width, depth, passIndex, angle
+)
+    if state == nil or state.attachmentProfileName == nil
+        or before <= after or state.attachmentProfileFrame == nil
+        or state.shape == nil or not entityExists(state.shape) then
+        return
+    end
+
+    local frame = state.attachmentProfileFrame
+    local lx, ly, lz = worldToLocal(state.shape, wx, wy, wz)
+    local dx = lx - frame.origin[1]
+    local dy = ly - frame.origin[2]
+    local dz = lz - frame.origin[3]
+    local mx = dx * frame.axisX[1] + dy * frame.axisX[2] + dz * frame.axisX[3]
+    local my = dx * frame.axisY[1] + dy * frame.axisY[2] + dz * frame.axisY[3]
+    local mz = dx * frame.axisZ[1] + dy * frame.axisZ[2] + dz * frame.axisZ[3]
+
+    local lnx, lny, lnz = worldDirectionToLocal(state.shape, nx, ny, nz)
+    local lax, lay, laz = worldDirectionToLocal(state.shape, ax, ay, az)
+    local function modelDirection(x, y, z)
+        return
+            x * frame.axisX[1] + y * frame.axisX[2] + z * frame.axisX[3],
+            x * frame.axisY[1] + y * frame.axisY[2] + z * frame.axisY[3],
+            x * frame.axisZ[1] + y * frame.axisZ[2] + z * frame.axisZ[3]
+    end
+    local mnx, mny, mnz = modelDirection(lnx, lny, lnz)
+    local max, may, maz = modelDirection(lax, lay, laz)
+
+    Logging.info(
+        "[LoggingContractorLearnedPoint] model=%s shape=%s method=%s pass=%d angle=%.2f before=%d after=%d removed=%d modelPlane=(%.4f,%.4f,%.4f) modelNormal=(%.5f,%.5f,%.5f) modelAxis=(%.5f,%.5f,%.5f) worldPlane=(%.3f,%.3f,%.3f) worldNormal=(%.5f,%.5f,%.5f) worldAxis=(%.5f,%.5f,%.5f) dimensions=(%.3f,%.3f,%.3f)",
+        state.attachmentProfileName, tostring(state.shape), method,
+        passIndex or 0, angle or 0, before, after, before - after,
+        mx, my, mz, mnx, mny, mnz, max, may, maz,
+        wx, wy, wz, nx, ny, nz, ax, ay, az,
+        thickness, width, depth
+    )
+end
+
+
 function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     shape,
     sample,
@@ -1732,7 +1778,8 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     rotationAngle,
     fullCircle,
     attachmentTypeStats,
-    detachedShape
+    detachedShape,
+    profileState
 )
     if shape == nil or shape == 0 or not entityExists(shape) then
         return 0
@@ -1786,21 +1833,31 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
     -- Дополнительное чтение геометрии требуется только в режиме диагностики
     -- для исходной осевой плоскости; после радиальных вызовов оно уже есть.
     local previousAttachments = attachmentsBefore
-    if attachmentTypeStats ~= nil and entityExists(shape) then
-        local remaining = select(5, self:getContractorSplitShapeStats(shape))
+    if not entityExists(shape) then
+        return attachmentsBefore
+    end
+
+    local axisRemaining = select(5, self:getContractorSplitShapeStats(shape))
+    if axisRemaining < previousAttachments then
+        self:logContractorLearnedAttachmentPoint(
+            profileState, "FAST_AXIS", previousAttachments, axisRemaining,
+            centerX, centerY, centerZ,
+            axisX, axisY, axisZ, upX, upY, upZ,
+            LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
+            probeSize, probeSize
+        )
+    end
+    if attachmentTypeStats ~= nil then
         local counts = detachedShape
             and attachmentTypeStats.detachedDirections
             or attachmentTypeStats.mainDirections
         local entry = counts.AXIS or {calls = 0, removed = 0}
         entry.calls = entry.calls + 1
-        entry.removed = entry.removed + math.max(previousAttachments - remaining, 0)
+        entry.removed = entry.removed
+            + math.max(previousAttachments - axisRemaining, 0)
         counts.AXIS = entry
-        previousAttachments = remaining
     end
-
-    if not entityExists(shape) then
-        return attachmentsBefore
-    end
+    previousAttachments = axisRemaining
 
     local directionCount = fullCircle
         and LoggingContractor.PROCESSING_FULL_CIRCLE_DIRECTIONS
@@ -1820,15 +1877,15 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
 
         local radius = math.abs(cosAngle) * halfUp + math.abs(sinAngle) * halfSide
 
+        local probeX = centerX + radialX * (radius + outset)
+        local probeY = centerY + radialY * (radius + outset)
+        local probeZ = centerZ + radialZ * (radius + outset)
         findAndRemoveSplitShapeAttachments(
-            centerX + radialX * (radius + outset),
-            centerY + radialY * (radius + outset),
-            centerZ + radialZ * (radius + outset),
+            probeX, probeY, probeZ,
             -radialX, -radialY, -radialZ,
             axisX, axisY, axisZ,
             LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
-            probeSize,
-            probeSize
+            probeSize, probeSize
         )
 
         if not entityExists(shape) then
@@ -1836,6 +1893,15 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
         end
 
         local remaining = select(5, self:getContractorSplitShapeStats(shape))
+        if remaining < previousAttachments then
+            self:logContractorLearnedAttachmentPoint(
+                profileState, "FAST_RADIAL", previousAttachments, remaining,
+                probeX, probeY, probeZ,
+                -radialX, -radialY, -radialZ, axisX, axisY, axisZ,
+                LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
+                probeSize, probeSize, 1, rotationAngle + index * angleStep
+            )
+        end
         if attachmentTypeStats ~= nil then
             -- Угол относительно текущей поперечной оси, кратно 30 градусам.
             local angleKey = tostring(
@@ -1849,8 +1915,8 @@ function LoggingContractor:removeContractorProcessingAttachmentsAtStep(
             entry.removed = entry.removed
                 + math.max(previousAttachments - remaining, 0)
             counts[angleKey] = entry
-            previousAttachments = remaining
         end
+        previousAttachments = remaining
 
         if remaining <= 0 then
             break
@@ -2126,6 +2192,20 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 return finish(true, removedA == true)
             end
 
+            local afterA = attachments
+            if removedA == true then
+                afterA = select(5, self:getContractorSplitShapeStats(shape))
+                self:logContractorLearnedAttachmentPoint(
+                    state.profileState, "FALLBACK_A", attachments, afterA,
+                    posX, posY, posZ,
+                    axisX, axisY, axisZ, upX, upY, upZ,
+                    LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                    LoggingContractor.PROCESSING_FALLBACK_PLANE_WIDTH,
+                    LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH,
+                    state.passIndex
+                )
+            end
+
             local removedB = findAndRemoveSplitShapeAttachments(
                 posX, posY, posZ,
                 axisX, axisY, axisZ,
@@ -2150,6 +2230,19 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 else
                     returnedOther = returnedOther + 1
                 end
+            end
+
+            if removedB == true and entityExists(shape) then
+                local afterB = select(5, self:getContractorSplitShapeStats(shape))
+                self:logContractorLearnedAttachmentPoint(
+                    state.profileState, "FALLBACK_B", afterA, afterB,
+                    posX, posY, posZ,
+                    axisX, axisY, axisZ, sideX, sideY, sideZ,
+                    LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                    LoggingContractor.PROCESSING_FALLBACK_PLANE_WIDTH,
+                    LoggingContractor.PROCESSING_FALLBACK_PLANE_DEPTH,
+                    state.passIndex
+                )
             end
 
             local changed = removedA == true or removedB == true
@@ -2674,10 +2767,10 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
 
     cleanup.profileReported = true
     Logging.info(
-        "[LoggingContractorProfile] model=%s shape=%s mode=%s calibration=%s initial=%d afterProfile=%s remaining=%d fallback=%s debugCandidates=%d debugCalls=%d debugHits=%d debugRemoved=%d reason=%s",
+        "[LoggingContractorProfile] model=%s shape=%s mode=%s calibration=%s initial=%d afterProfile=%s afterFast=%s afterFallback=%s remaining=%d spiralPasses=%d spiralCalls=%d spiralHits=%d spiralRemoved=%d reason=%s",
         state.attachmentProfileName,
         tostring(state.shape),
-        cleanup.profileEnabled and "ADDRESS_ONLY" or "FAST",
+        cleanup.profileEnabled and "ADDRESS_FAST_FALLBACK_SPIRAL" or "FAST_FALLBACK_SPIRAL",
         (
             CONTRACTOR_TREE_PROFILE_POINTS[state.attachmentProfileName] ~= nil
             and CONTRACTOR_TREE_PROFILE_POINTS[state.attachmentProfileName][1] ~= nil
@@ -2690,54 +2783,23 @@ function LoggingContractor:logContractorModelAttachmentScan(state, cleanup, rema
         ) and "ROOT_LOCAL_CLUSTER" or "ORIGINAL",
         cleanup.initialAttachments or 0,
         tostring(cleanup.profileRemaining or "n/a"),
+        tostring(cleanup.afterFast or "n/a"),
+        tostring(cleanup.afterFallback or "n/a"),
         remaining,
-        cleanup.profileEnabled and "DISABLED_TEST" or "ENABLED",
-        cleanup.profileDebugPoints ~= nil and #cleanup.profileDebugPoints or 0,
-        cleanup.profileDebugCalls or 0,
-        cleanup.profileDebugHits or 0,
-        cleanup.profileDebugRemoved or 0,
+        cleanup.spiralPass or 0,
+        cleanup.spiralCalls or 0,
+        cleanup.spiralHits or 0,
+        cleanup.spiralRemoved or 0,
         reason or "scanEnd"
     )
 end
 
 
--- Заканчивает диагностические кольца и сохраняет два независимых
--- результата: остаток после основных точек и остаток после эксперимента.
--- Никаких дополнительных проходов после этого не запускается.
-function LoggingContractor:finishContractorProfileDebug(state, cleanup, remaining, reason)
-    local shape = state.shape
-    local candidates = cleanup.profileDebugPoints or {}
-    Logging.info(
-        "[LoggingContractorProfileDebugEnd] model=%s shape=%s primaryRemaining=%d finalRemaining=%d candidates=%d calls=%d hits=%d removed=%d reason=%s",
-        state.attachmentProfileName, tostring(shape),
-        cleanup.profileRemaining or remaining,
-        remaining, #candidates,
-        cleanup.profileDebugCalls or 0,
-        cleanup.profileDebugHits or 0,
-        cleanup.profileDebugRemoved or 0,
-        reason
-    )
-
-    cleanup.phase = "DONE"
-    if remaining > 0 then
-        self:addContractorPerfCounter("profileSkippedFallback", 1)
-        self:addContractorPerfCounter("profileRemainingAfterFast", remaining)
-    else
-        self:addContractorPerfCounter("profileComplete", 1)
-    end
-    self:logContractorModelAttachmentScan(
-        state, cleanup, remaining, reason
-    )
-    return true, false
-end
-
-
--- Выполняет ОДИН диагностический вызов на сохранённой неудачной точке.
--- Четыре кольца по 24 азимута обрабатываются после ВСЕХ основных точек.
--- Положение плоскости и её нормаль вращаются вместе вокруг исходной
--- оси модели, затем переводятся в текущий динамический split-shape.
--- Возвращает done, changed для штатного пошагового обработчика PRUNE.
-function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
+-- Выполняет одну точку диагностической спирали снизу вверх.
+-- Направление исходного ствола определяется его I3D-базисом, поэтому
+-- перестановка концов OBB не меняет направление обхода.
+-- Каждый проход начинается с угла, увеличенного на 20 градусов.
+function LoggingContractor:advanceContractorSpiralDiagnostics(state, cleanup)
     local shape = state.shape
     if shape == nil or not entityExists(shape) then
         cleanup.phase = "DONE"
@@ -2746,65 +2808,103 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
 
     local before = select(5, self:getContractorSplitShapeStats(shape))
     if before <= 0 then
-        return self:finishContractorProfileDebug(
-            state, cleanup, 0, "debugComplete"
-        )
+        return self:finishContractorSpiralDiagnostics(state, cleanup, 0, "complete")
     end
 
     local frame = state.attachmentProfileFrame
-    if frame == nil then
-        return self:finishContractorProfileDebug(
-            state, cleanup, before, "debugMissingFrame"
-        )
+    local centerX, centerY, centerZ, axisX, axisY, axisZ,
+        upX, upY, upZ, length = self:getContractorShapeMainAxis(shape)
+    if centerX == nil or length == nil or length <= 0 or frame == nil then
+        return self:finishContractorSpiralDiagnostics(state, cleanup, before, "missingAxis")
     end
 
-    local candidates = cleanup.profileDebugPoints or {}
-    local item = candidates[cleanup.profileDebugIndex]
-    if item == nil then
-        return self:finishContractorProfileDebug(
-            state, cleanup, before, "debugExhausted"
-        )
+    local modelUpX, modelUpY, modelUpZ = localDirectionToWorld(
+        shape, frame.axisY[1], frame.axisY[2], frame.axisY[3]
+    )
+    if axisX * modelUpX + axisY * modelUpY + axisZ * modelUpZ < 0 then
+        axisX, axisY, axisZ = -axisX, -axisY, -axisZ
     end
 
-    local heights = LoggingContractor.PROCESSING_PROFILE_DEBUG_HEIGHTS
-    local step = LoggingContractor.PROCESSING_PROFILE_DEBUG_ANGLE_STEP
-    local angle = (cleanup.profileDebugAngle - 1) * step
-    local offsetY = heights[cleanup.profileDebugHeight]
-    local rad = math.rad(angle)
-    local cosine, sine = math.cos(rad), math.sin(rad)
-    local rx = item.rx * cosine - item.rz * sine
-    local rz = item.rx * sine + item.rz * cosine
-    local testHeight = item.py + offsetY
-    local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
-
-    -- Дополнительные плоскости поворачиваем вокруг центра сечения,
-    -- сохраняя расстояние до коры исходной ветви.
-    local testX, testZ = nil, nil
-    if item.surfaceX ~= nil then
-        local dx = item.surfaceX - item.centerX
-        local dz = item.surfaceZ - item.centerZ
-        local radius = math.sqrt(dx * dx + dz * dz)
-        testX = item.centerX + rx * radius
-        testZ = item.centerZ + rz * radius
+    local step = LoggingContractor.PROCESSING_SPIRAL_STEP
+    local steps = math.max(1, math.ceil(length / step))
+    if cleanup.spiralStep > steps then
+        Logging.info(
+            "[LoggingContractorSpiralPass] model=%s shape=%s pass=%d calls=%d hits=%d removed=%d remaining=%d",
+            state.attachmentProfileName, tostring(shape), cleanup.spiralPass,
+            cleanup.spiralPassCalls or 0, cleanup.spiralPassHits or 0,
+            cleanup.spiralPassRemoved or 0, before
+        )
+        if cleanup.spiralPass >= LoggingContractor.PROCESSING_SPIRAL_MAX_PASSES then
+            return self:finishContractorSpiralDiagnostics(
+                state, cleanup, before, "maxPasses"
+            )
+        end
+        cleanup.spiralPass = cleanup.spiralPass + 1
+        cleanup.spiralStep = 0
+        cleanup.spiralPassCalls = 0
+        cleanup.spiralPassHits = 0
+        cleanup.spiralPassRemoved = 0
+        cleanup.spiralPauseUntil =
+            g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
+        return false, false
     end
 
-    local lx, ly, lz, wx, wy, wz, nx, ny, nz, ax, ay, az =
-        self:getContractorProfileCurrentPoint(
-            shape, frame, rx, rz, testHeight, distance, testX, testZ
-        )
+    local baseX = centerX - axisX * length * 0.5
+    local baseY = centerY - axisY * length * 0.5
+    local baseZ = centerZ - axisZ * length * 0.5
+    local distance = math.min(cleanup.spiralStep * step, length)
+    local sample = self:sampleContractorProcessingSection(
+        shape, baseX, baseY, baseZ,
+        axisX, axisY, axisZ, upX, upY, upZ, distance
+    )
+    local sideX, sideY, sideZ = MathUtil.crossProduct(
+        axisX, axisY, axisZ, upX, upY, upZ
+    )
+    sideX, sideY, sideZ = MathUtil.vector3Normalize(sideX, sideY, sideZ)
+    if sample == nil then
+        cleanup.spiralStep = cleanup.spiralStep + 1
+        return false, false
+    end
 
-    -- Используем те же размеры плоскости, что и в основном профиле:
-    -- эксперимент изменяет только высоту и азимут точки приложения.
-    local nativeResult = findAndRemoveSplitShapeAttachments(
-        wx, wy, wz,
-        -nx, -ny, -nz,
-        ax, ay, az,
-        LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
-        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
+    local degrees = (
+        cleanup.spiralStep * LoggingContractor.PROCESSING_SPIRAL_ANGLE_STEP
+        + (cleanup.spiralPass - 1) * LoggingContractor.PROCESSING_SPIRAL_PASS_SHIFT
+    ) % 360
+    local angle = math.rad(degrees)
+    local ca, sa = math.cos(angle), math.sin(angle)
+    local rx = upX * ca + sideX * sa
+    local ry = upY * ca + sideY * sa
+    local rz = upZ * ca + sideZ * sa
+    rx, ry, rz = MathUtil.vector3Normalize(rx, ry, rz)
+
+    local halfUp = math.max((sample.widthUp or 0) * 0.5, 0.01)
+    local halfSide = math.max((sample.widthSide or 0) * 0.5, 0.01)
+    local radius = math.abs(ca) * halfUp + math.abs(sa) * halfSide
+    local localDiameter = math.max(halfUp * 2, halfSide * 2)
+    local width = math.clamp(
+        localDiameter * LoggingContractor.PROCESSING_ATTACHMENT_SIZE_FACTOR,
+        LoggingContractor.PROCESSING_ATTACHMENT_MIN_SIZE,
         LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
     )
-    cleanup.profileDebugCalls = cleanup.profileDebugCalls + 1
-    self:addContractorPerfCounter("profileDebugCalls", 1)
+
+    local worldX = baseX + axisX * distance
+        + upX * (sample.centerUp or 0) + sideX * (sample.centerSide or 0)
+        + rx * (radius + LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET)
+    local worldY = baseY + axisY * distance
+        + upY * (sample.centerUp or 0) + sideY * (sample.centerSide or 0)
+        + ry * (radius + LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET)
+    local worldZ = baseZ + axisZ * distance
+        + upZ * (sample.centerUp or 0) + sideZ * (sample.centerSide or 0)
+        + rz * (radius + LoggingContractor.PROCESSING_ATTACHMENT_RADIAL_OUTSET)
+
+    findAndRemoveSplitShapeAttachments(
+        worldX, worldY, worldZ,
+        -rx, -ry, -rz, axisX, axisY, axisZ,
+        LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS, width, width
+    )
+    cleanup.spiralCalls = (cleanup.spiralCalls or 0) + 1
+    cleanup.spiralPassCalls = (cleanup.spiralPassCalls or 0) + 1
+    cleanup.spiralStep = cleanup.spiralStep + 1
 
     if not entityExists(shape) then
         cleanup.phase = "DONE"
@@ -2813,63 +2913,58 @@ function LoggingContractor:advanceContractorProfileDebug(state, cleanup)
 
     local after = select(5, self:getContractorSplitShapeStats(shape))
     local removed = math.max(before - after, 0)
+    if removed > 0 then
+        cleanup.spiralHits = (cleanup.spiralHits or 0) + 1
+        cleanup.spiralPassHits = (cleanup.spiralPassHits or 0) + 1
+        cleanup.spiralRemoved = (cleanup.spiralRemoved or 0) + removed
+        cleanup.spiralPassRemoved = (cleanup.spiralPassRemoved or 0) + removed
+        self:logContractorLearnedAttachmentPoint(
+            state, "SPIRAL", before, after,
+            worldX, worldY, worldZ,
+            -rx, -ry, -rz, axisX, axisY, axisZ,
+            LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS, width, width,
+            cleanup.spiralPass, degrees
+        )
+    end
 
-    -- Показываем каждую диагностическую плоскость сразу после вызова,
-    -- включая пробы без удаления attachments.
+    -- Отображаем каждую новую диагностическую плоскость синим.
+    local lx, ly, lz = worldToLocal(shape, worldX, worldY, worldZ)
+    local vx, vy, vz = worldDirectionToLocal(shape, rx, ry, rz)
+    local fx, fy, fz = lx - frame.origin[1], ly - frame.origin[2], lz - frame.origin[3]
+    local height = fx * frame.axisY[1] + fy * frame.axisY[2] + fz * frame.axisY[3]
+    local modelRx = vx * frame.axisX[1] + vy * frame.axisX[2] + vz * frame.axisX[3]
+    local modelRz = vx * frame.axisZ[1] + vy * frame.axisZ[2] + vz * frame.axisZ[3]
     self:recordContractorProfileVisualPoint(
-        state, "DEBUG", item.groupIndex,
-        lx, ly, lz, rx, rz, testHeight, removed
+        state, "DEBUG", cleanup.spiralStep - 1,
+        lx, ly, lz, modelRx, modelRz, height, removed
     )
 
-    if removed > 0 then
-        cleanup.profileDebugHits = cleanup.profileDebugHits + 1
-        cleanup.profileDebugRemoved = cleanup.profileDebugRemoved + removed
-        self:addContractorPerfCounter("profileDebugHits", 1)
-        self:addContractorPerfCounter("profileDebugRemoved", removed)
-
-        -- Успех может относиться к соседнему attachment; фиксируем
-        -- только факт и точные параметры сработавшей плоскости.
-        Logging.info(
-            "[LoggingContractorProfileDebugHit] model=%s shape=%s group=%d primary=(%.3f,%.4f,%.4f) offsetY=%+.3f angle=%d testHeight=%.3f testDir=(%.4f,%.4f) localPlane=(%.3f,%.3f,%.3f) worldPlane=(%.3f,%.3f,%.3f) worldNormal=(%.4f,%.4f,%.4f) worldAxis=(%.4f,%.4f,%.4f) native=%s before=%d after=%d removed=%d",
-            state.attachmentProfileName, tostring(shape), item.groupIndex,
-            item.py, item.rx, item.rz, offsetY, angle,
-            testHeight, rx, rz,
-            lx, ly, lz, wx, wy, wz,
-            -nx, -ny, -nz, ax, ay, az,
-            tostring(nativeResult), before, after, removed
-        )
-    end
-
-    -- Переходим к следующей комбинации, НЕ запуская новый вызов
-    -- в этом кадре. Каждый кандидат получает до 96 отдельных проб.
-    cleanup.profileDebugAngle = cleanup.profileDebugAngle + 1
-    if cleanup.profileDebugAngle > math.floor(360 / step) then
-        cleanup.profileDebugAngle = 1
-        cleanup.profileDebugHeight = cleanup.profileDebugHeight + 1
-    end
-
-    if cleanup.profileDebugHeight > #heights then
-        cleanup.profileDebugIndex = cleanup.profileDebugIndex + 1
-        cleanup.profileDebugHeight = 1
-        cleanup.profileDebugAngle = 1
-
-        -- Группа закончена: оставляем её синие маркеры на экране
-        -- на две секунды до начала следующей группы.
-        if after > 0 then
-            cleanup.profileDebugPauseUntil =
-                g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
-        end
-    end
-
     if after <= 0 then
-        cleanup.phase = "DONE"
-        self:finishContractorProfileDebug(
-            state, cleanup, 0, "debugComplete"
-        )
-        return true, removed > 0
+        return self:finishContractorSpiralDiagnostics(state, cleanup, 0, "complete")
     end
-
     return false, removed > 0
+end
+
+
+-- Завершает диагностическую спираль и фиксирует окончательный остаток.
+function LoggingContractor:finishContractorSpiralDiagnostics(
+    state, cleanup, remaining, reason
+)
+    Logging.info(
+        "[LoggingContractorSpiralEnd] model=%s shape=%s passes=%d calls=%d hits=%d removed=%d remaining=%d reason=%s",
+        state.attachmentProfileName, tostring(state.shape),
+        cleanup.spiralPass or 0, cleanup.spiralCalls or 0,
+        cleanup.spiralHits or 0, cleanup.spiralRemoved or 0,
+        remaining, reason
+    )
+    cleanup.phase = "DONE"
+    if remaining > 0 then
+        self:addContractorPerfCounter("profileRemainingAfterFast", remaining)
+    else
+        self:addContractorPerfCounter("profileComplete", 1)
+    end
+    self:logContractorModelAttachmentScan(state, cleanup, remaining, reason)
+    return true, false
 end
 
 
@@ -2937,56 +3032,27 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     local points = CONTRACTOR_TREE_PROFILE_POINTS[state.attachmentProfileName]
     local point = points ~= nil and points[cleanup.profileIndex] or nil
     if point == nil then
-        -- ВСЕ основные точки уже отработали. Сохраняем остаток до
-        -- каких-либо отладочных удалений и только затем запускаем
-        -- кольца для точек, которые ранее дали removed=0.
+        -- После полной адресной карты остаток переходит в FAST,
+        -- независимо от числа уже удалённых ветвей.
         cleanup.profileRemaining = before
-        local candidates = cleanup.profileDebugPoints or {}
         Logging.info(
-            "[LoggingContractorProfilePrimaryEnd] model=%s shape=%s initial=%d remaining=%d failedPoints=%d debugEnabled=%s",
+            "[LoggingContractorProfilePrimaryEnd] model=%s shape=%s initial=%d remaining=%d next=FAST",
             state.attachmentProfileName, tostring(shape),
-            cleanup.initialAttachments or 0,
-            before, #candidates,
-            tostring(LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED)
+            cleanup.initialAttachments or 0, before
         )
-
-        if LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED
-            and before > 0
-            and #candidates > 0 then
-            cleanup.phase = "PROFILE_DEBUG"
-            cleanup.profileDebugPauseUntil =
-                g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
-            cleanup.profileDebugIndex = 1
-            cleanup.profileDebugHeight = 1
-            cleanup.profileDebugAngle = 1
-            self:addContractorPerfCounter("profileDebugStarts", 1)
-            return false, false
-        end
-
-        cleanup.phase = "DONE"
-        if before > 0 then
-            self:addContractorPerfCounter("profileSkippedFallback", 1)
-            self:addContractorPerfCounter("profileRemainingAfterFast", before)
-        end
-        self:logContractorModelAttachmentScan(
-            state, cleanup, before, "addressPointsExhausted"
-        )
-        return true, false
+        cleanup.phase = "FAST"
+        cleanup.distance = LoggingContractor.PROCESSING_SCAN_STEP
+        cleanup.attachmentStep = 0
+        return false, false
     end
 
     local f = state.attachmentProfileFrame
     if f == nil then
-        -- При отсутствии преобразования I3D не маскируем ошибку
-        -- штатной очисткой: для тестового профиля оставляем листву.
+        -- Если I3D-базис недоступен, переходим к общей очистке.
         cleanup.profileRemaining = before
         self:addContractorPerfCounter("profileMissingFrame", 1)
-        self:addContractorPerfCounter("profileSkippedFallback", 1)
-        self:addContractorPerfCounter("profileRemainingAfterFast", before)
-        self:logContractorModelAttachmentScan(
-            state, cleanup, before, "missingFrame"
-        )
-        cleanup.phase = "DONE"
-        return true, false
+        cleanup.phase = "FAST"
+        return false, false
     end
 
     -- Центр плоскости располагается у поверхности ствола напротив ветви.
@@ -3083,21 +3149,6 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         lx, ly, lz, rx, rz, py, removed
     )
 
-    -- Запоминаем ВСЕ безрезультатные исходные точки, но пока не
-    -- запускаем диагностику: соседние точки ещё не проверены.
-    if removed == 0
-        and LoggingContractor.PROCESSING_PROFILE_DEBUG_ENABLED then
-        local candidates = cleanup.profileDebugPoints
-        candidates[#candidates + 1] = {
-            groupIndex = cleanup.profileIndex - 1,
-            py = py, rx = rx, rz = rz,
-            surfaceX = calibrated and px or nil,
-            surfaceZ = calibrated and pz or nil,
-            centerX = calibrated and point[6] or nil,
-            centerZ = calibrated and point[7] or nil
-        }
-    end
-
     if after <= 0 then
         cleanup.phase = "DONE"
         cleanup.profileRemaining = 0
@@ -3112,9 +3163,41 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
 end
 
 
+-- Переключает обработку с FALLBACK на спиральную диагностику,
+-- если на основном стволе остались attachments.
+function LoggingContractor:beginContractorSpiralDiagnostics(state, cleanup, remaining)
+    cleanup.afterFallback = remaining
+    if remaining <= 0 then
+        cleanup.phase = "DONE"
+        self:logContractorModelAttachmentScan(
+            state, cleanup, 0, "fallbackComplete"
+        )
+        return true, false
+    end
+
+    cleanup.phase = "SPIRAL"
+    cleanup.spiralPass = 1
+    cleanup.spiralStep = 0
+    cleanup.spiralPassCalls = 0
+    cleanup.spiralPassHits = 0
+    cleanup.spiralPassRemoved = 0
+    cleanup.spiralPauseUntil =
+        g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
+    Logging.info(
+        "[LoggingContractorSpiralStart] model=%s shape=%s remaining=%d step=%.3f angleStep=%d passShift=%d maxPasses=%d",
+        tostring(state.attachmentProfileName), tostring(state.shape),
+        remaining, LoggingContractor.PROCESSING_SPIRAL_STEP,
+        LoggingContractor.PROCESSING_SPIRAL_ANGLE_STEP,
+        LoggingContractor.PROCESSING_SPIRAL_PASS_SHIFT,
+        LoggingContractor.PROCESSING_SPIRAL_MAX_PASSES
+    )
+    return false, false
+end
+
+
 -- Продвигает очистку attachments основного ствола порциями.
--- Для всех шести моделей ели используются только адресные точки.
--- Для остальных деревьев сохраняются FAST (шаг 0,10 м) и FALLBACK.
+-- Последовательно выполняет адресные точки, FAST и FALLBACK.
+-- Если остаются attachments, запускает до пяти спиральных проходов.
 function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     if state.shape == nil
         or state.shape == 0
@@ -3139,10 +3222,11 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             profileEnabled = useProfile,
             initialAttachments = attachments,
             profileIndex = 1,
-            profileDebugPoints = useProfile and {} or nil,
-            profileDebugCalls = 0,
-            profileDebugHits = 0,
-            profileDebugRemoved = 0,
+            spiralPass = 0,
+            spiralStep = 0,
+            spiralCalls = 0,
+            spiralHits = 0,
+            spiralRemoved = 0,
             distance = LoggingContractor.PROCESSING_SCAN_STEP,
             attachmentStep = 0,
             fallbackState = nil
@@ -3166,27 +3250,29 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
         return self:advanceContractorProfileAttachments(state, cleanup)
     end
 
-    if cleanup.phase == "PROFILE_DEBUG" then
-        -- Ожидание не блокирует кадры игры и текущую отрисовку.
-        if cleanup.profileDebugPauseUntil ~= nil
-            and g_time < cleanup.profileDebugPauseUntil then
+    if cleanup.phase == "SPIRAL" then
+        -- Паузы между полными витками не блокируют отрисовку кадров.
+        if cleanup.spiralPauseUntil ~= nil
+            and g_time < cleanup.spiralPauseUntil then
             return false, false
         end
-        cleanup.profileDebugPauseUntil = nil
-        return self:advanceContractorProfileDebug(state, cleanup)
+        cleanup.spiralPauseUntil = nil
+        return self:advanceContractorSpiralDiagnostics(state, cleanup)
     end
 
     if cleanup.phase == "FALLBACK" then
         local done, changed =
-            self:advanceContractorFallbackTrimState(
-                cleanup.fallbackState
-            )
-
+            self:advanceContractorFallbackTrimState(cleanup.fallbackState)
         if done then
-            cleanup.phase = "DONE"
+            local remaining = entityExists(state.shape)
+                and select(5, self:getContractorSplitShapeStats(state.shape))
+                or 0
+            local finished = self:beginContractorSpiralDiagnostics(
+                state, cleanup, remaining
+            )
+            return finished, changed
         end
-
-        return done, changed
+        return false, changed
     end
 
     local step = LoggingContractor.PROCESSING_SCAN_STEP
@@ -3227,36 +3313,26 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
                 self:getContractorSplitShapeStats(state.shape)
             )
 
-            self:logContractorModelAttachmentScan(
-                state, cleanup, remaining, "fastEnd"
+            cleanup.afterFast = remaining
+            Logging.info(
+                "[LoggingContractorFastEnd] model=%s shape=%s remaining=%d",
+                tostring(state.attachmentProfileName),
+                tostring(state.shape), remaining
             )
-
             if remaining <= 0 then
                 cleanup.phase = "DONE"
+                self:logContractorModelAttachmentScan(
+                    state, cleanup, 0, "fastComplete"
+                )
                 return true, changed
             end
 
             cleanup.phase = "FALLBACK"
-            cleanup.fallbackState =
-                self:createContractorFallbackTrimState(
-                    state.shape, state.attachmentTypeStats
-                )
-
-            if cleanup.fallbackState.done then
-                cleanup.phase = "DONE"
-                return true, changed
-            end
-
-            local done, fallbackChanged =
-                self:advanceContractorFallbackTrimState(
-                    cleanup.fallbackState
-                )
-
-            if done then
-                cleanup.phase = "DONE"
-            end
-
-            return done, changed or fallbackChanged
+            cleanup.fallbackState = self:createContractorFallbackTrimState(
+                state.shape, state.attachmentTypeStats
+            )
+            cleanup.fallbackState.profileState = state
+            return false, changed
         end
 
         cleanup.attachmentStep = cleanup.attachmentStep + 1
@@ -3302,7 +3378,8 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
             attachmentAngle,
             state.fullCircleAttachments,
             state.attachmentTypeStats,
-            false
+            false,
+            state
         )
 
         if removed > 0 and not state.firstAttachmentRemovalRecorded then
@@ -3326,6 +3403,7 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
         if not entityExists(state.shape)
             or select(5, self:getContractorSplitShapeStats(state.shape)) <= 0 then
+            cleanup.afterFast = 0
             self:logContractorModelAttachmentScan(
                 state, cleanup, 0, "fastComplete"
             )
