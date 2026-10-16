@@ -1594,6 +1594,14 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
         state.pruning.attachmentProfileName = state.profileName
         state.pruning.attachmentProfileFrame = state.profileLocalFrame
 
+        -- Записанные бензопилой резы дуба выполняются только после удаления
+        -- листвы. Общий поиск ветвей для этой модели при этом не запускаем.
+        if state.profileName == "oak_stage05"
+            and job.pruneLargeBranches ~= false then
+            state.pruning.oakCutIndex = 1
+            state.pruning.phase = "ATTACHMENTS"
+        end
+
         if job.pruneLargeBranches == false
             or not self:getContractorNeedsBranchSearch(state.splitTypeName) then
             -- Для прямоствольных пород не выполняем дорогой поиск и отделение

@@ -155,6 +155,19 @@ LoggingContractor.PROCESSING_BRANCH_OUTSETS = {0.10, 0.05, 0.02, 0.00}
 LoggingContractor.PROCESSING_BRANCH_ANGLE_OFFSETS = {0, -30, 30}
 LoggingContractor.PROCESSING_BRANCH_ADVANCE_STEP = 0.10
 
+-- Семь ручных резов дуба oak_stage05 из журнала бензопилы 16.10.2026.
+-- Первый рез (валка дерева) сюда не входит. Плоскость, нормаль и вертикальная
+-- ось записаны в координатах исходной I3D-модели, размеры плоскости в метрах.
+local CONTRACTOR_OAK_STAGE05_CUTS = {
+    {0.30525, 5.96031, 0.76318, 0.954524, 0.208285, 0.213312, 0.203270, -0.978068, 0.045431, 2.5, 2.3},
+    {-0.74950, 7.21180, 1.13224, 0.836839, 0.208272, -0.506283, 0.178189, -0.978071, -0.107824, 2.5, 2.3},
+    {0.23631, 8.08351, 0.64043, 0.473439, 0.297364, -0.829114, 0.147443, -0.954764, -0.258237, 2.5, 2.3},
+    {-0.11491, 10.39589, 1.01797, -0.009077, -0.030961, -0.999479, 0.000241, -0.999520, 0.030960, 2.5, 2.3},
+    {-0.56206, 9.17333, -0.11581, -0.704506, 0.058482, -0.707284, -0.041288, -0.998288, -0.041419, 2.5, 2.3},
+    {-0.78011, 11.03765, 0.07270, -0.945213, -0.323372, 0.044751, 0.323009, -0.946272, -0.015299, 2.5, 2.3},
+    {-0.10855, 10.89879, 0.04591, -0.891861, 0.449642, -0.049045, -0.448964, -0.893209, -0.024696, 2.5, 2.3}
+}
+
 LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS = 0.70
 LoggingContractor.PROCESSING_ATTACHMENT_MIN_SIZE = 1.00
 LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE = 2.00
@@ -3348,6 +3361,141 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
+-- Переносит базис исходной модели со старого split-shape на выбранную часть.
+-- Сначала сохраняем его мировое положение: после splitShape старый узел удалён.
+function LoggingContractor:getContractorOakCutWorldFrame(shape, frame)
+    local o, x, y, z = frame.origin, frame.axisX, frame.axisY, frame.axisZ
+    local ox, oy, oz = localToWorld(shape, o[1], o[2], o[3])
+    local xx, xy, xz = localDirectionToWorld(shape, x[1], x[2], x[3])
+    local yx, yy, yz = localDirectionToWorld(shape, y[1], y[2], y[3])
+    local zx, zy, zz = localDirectionToWorld(shape, z[1], z[2], z[3])
+    return {
+        origin = {ox, oy, oz}, axisX = {xx, xy, xz},
+        axisY = {yx, yy, yz}, axisZ = {zx, zy, zz}
+    }
+end
+
+
+-- Восстанавливает исходный I3D-базис в локальных координатах новой части.
+function LoggingContractor:setContractorOakCutLocalFrame(state, shape, worldFrame)
+    local o, x, y, z = worldFrame.origin, worldFrame.axisX,
+        worldFrame.axisY, worldFrame.axisZ
+    local ox, oy, oz = worldToLocal(shape, o[1], o[2], o[3])
+    local xx, xy, xz = worldDirectionToLocal(shape, x[1], x[2], x[3])
+    local yx, yy, yz = worldDirectionToLocal(shape, y[1], y[2], y[3])
+    local zx, zy, zz = worldDirectionToLocal(shape, z[1], z[2], z[3])
+    state.attachmentProfileFrame = {
+        origin = {ox, oy, oz}, axisX = {xx, xy, xz},
+        axisY = {yx, yy, yz}, axisZ = {zx, zy, zz}
+    }
+end
+
+
+-- Преобразует записанную на дубе плоскость из I3D в текущие мировые
+-- координаты ствола. Работает и после его поворота или перемещения.
+function LoggingContractor:getContractorOakCutWorldGeometry(state, cut)
+    local frame = state.attachmentProfileFrame
+    if frame == nil then
+        return nil
+    end
+    local o, x, y, z = frame.origin, frame.axisX, frame.axisY, frame.axisZ
+    local function transform(vx, vy, vz)
+        return x[1] * vx + y[1] * vy + z[1] * vz,
+            x[2] * vx + y[2] * vy + z[2] * vz,
+            x[3] * vx + y[3] * vy + z[3] * vz
+    end
+    local px, py, pz = transform(cut[1], cut[2], cut[3])
+    local nx, ny, nz = transform(cut[4], cut[5], cut[6])
+    local ax, ay, az = transform(cut[7], cut[8], cut[9])
+    px, py, pz = localToWorld(state.shape,
+        o[1] + px, o[2] + py, o[3] + pz)
+    nx, ny, nz = localDirectionToWorld(state.shape, nx, ny, nz)
+    ax, ay, az = localDirectionToWorld(state.shape, ax, ay, az)
+    return px, py, pz, nx, ny, nz, ax, ay, az
+end
+
+
+-- Воспроизводит один записанный ручной рез дуба после очистки attachments.
+-- При отсутствии пересечения пропускает только этот рез, не разрушая ствол.
+-- После реального разреза сохраняет продолжение ствола и отдаёт управление
+-- сетевой синхронизации перед следующим резом.
+function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
+    local index = state.oakCutIndex or 1
+    if index > #CONTRACTOR_OAK_STAGE05_CUTS then
+        return true, false
+    end
+    if not allowMutation then
+        return false, false
+    end
+
+    local shape = state.shape
+    local cut = CONTRACTOR_OAK_STAGE05_CUTS[index]
+    local px, py, pz, nx, ny, nz, ax, ay, az =
+        self:getContractorOakCutWorldGeometry(state, cut)
+    if px == nil then
+        Logging.warning("[LoggingContractorOakCut] step=%d skipped=noModelFrame", index)
+        state.oakCutIndex = index + 1
+        return false, false
+    end
+
+    local probe = self:probeContractorLongitudinalCut(
+        shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11]
+    )
+    if probe == nil then
+        Logging.info("[LoggingContractorOakCut] step=%d shape=%s skipped=noIntersection",
+            index, tostring(shape))
+        state.oakCutIndex = index + 1
+        return false, false
+    end
+
+    local worldFrame = self:getContractorOakCutWorldFrame(
+        shape, state.attachmentProfileFrame
+    )
+    local parts = self:splitContractorShapeSized(
+        shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11]
+    )
+    state.oakCutIndex = index + 1
+    if #parts == 0 then
+        Logging.warning("[LoggingContractorOakCut] step=%d shape=%s skipped=splitEmpty",
+            index, tostring(shape))
+        return false, false
+    end
+
+    local mainPart, axisLength = self:selectContractorMainStemPart(
+        parts, state.baseX, state.baseY, state.baseZ,
+        state.axisX, state.axisY, state.axisZ
+    )
+    if mainPart == nil or not entityExists(mainPart.shape) then
+        Logging.warning("[LoggingContractorOakCut] step=%d shape=%s failed=noMainStem parts=%d",
+            index, tostring(shape), #parts)
+        -- Исходный shape уже заменён движком; не передаём удалённый узел
+        -- в раскряжёвку и фиксируем ошибку штатной проверкой существования.
+        state.shape = nil
+        return true, true
+    end
+
+    state.shape = mainPart.shape
+    state.length = axisLength > 0 and axisLength or state.length
+    self:setContractorOakCutLocalFrame(state, state.shape, worldFrame)
+
+    local detached = {}
+    for _, part in ipairs(parts) do
+        if part.shape ~= nil and part.shape ~= state.shape
+            and entityExists(part.shape) then
+            detached[#detached + 1] = part.shape
+        end
+    end
+    state.pendingDetached = {
+        shapes = detached, normalX = nx, normalY = ny, normalZ = nz
+    }
+    Logging.info(
+        "[LoggingContractorOakCut] step=%d source=%s trunk=%s parts=%d detached=%d",
+        index, tostring(shape), tostring(state.shape), #parts, #detached
+    )
+    return false, true
+end
+
+
 -- Выводит остаток attachments по конкретной I3D-модели.
 -- Для елей и lodgepolePine замер выполняется после адресного прохода;
 -- остальные модели используют штатный общий алгоритм.
@@ -4092,6 +4240,10 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         state.pendingDetached = nil
     end
 
+    if state.phase == "OAK_CUTS" then
+        return self:advanceContractorOakCuts(state, allowMutation)
+    end
+
     if state.phase == "ATTACHMENTS" then
         local attachments = select(
             5,
@@ -4101,6 +4253,10 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         if attachments <= 0 then
             if state.attachmentCleanup ~= nil then
                 state.attachmentCleanup.phase = "DONE"
+            end
+            if state.oakCutIndex ~= nil then
+                state.phase = "OAK_CUTS"
+                return false, false
             end
             return true, false
         end
@@ -4114,6 +4270,11 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
 
         if changed then
             return false, true
+        end
+
+        if done and state.oakCutIndex ~= nil then
+            state.phase = "OAK_CUTS"
+            return false, false
         end
 
         return done, false
