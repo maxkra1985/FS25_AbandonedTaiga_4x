@@ -4300,6 +4300,9 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     -- Пассивно ожидаем ручного удаления всех attachments дуба.
     -- На каждом update только проверяем счётчик, без native-вызовов поиска.
     if cleanup.phase == "WAIT_MANUAL" then
+        if LoggingContractorOakChainsawRecorder ~= nil then
+            LoggingContractorOakChainsawRecorder.logDiagnosticsIfDue()
+        end
         return false, false
     end
 

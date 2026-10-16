@@ -16,6 +16,41 @@ Recorder.sequence = 0
 Recorder.activeCut = nil
 Recorder.delimbSequence = 0
 Recorder.activeManualChainsaw = nil
+Recorder.diagnosticEnabled = false
+Recorder.lastDiagnosticsMs = nil
+Recorder.diagnostics = {
+    updates = 0, serverDelimbUpdates = 0,
+    nativeInContext = 0, nativeInContextHits = 0,
+    nativeOutsideHits = 0, matched = 0, unmatched = 0
+}
+
+
+-- Периодически выводит агрегированную статистику хуков, пока подрядчик
+-- ожидает ручной очистки дуба. Не создаёт строки на каждый игровой кадр.
+function Recorder.logDiagnosticsIfDue()
+    if not Recorder.diagnosticEnabled then
+        return
+    end
+    local now = getTimeSec() * 1000
+    if Recorder.lastDiagnosticsMs == nil then
+        Recorder.lastDiagnosticsMs = now
+        return
+    end
+    if now - Recorder.lastDiagnosticsMs < 10000 then
+        return
+    end
+    local d = Recorder.diagnostics
+    Logging.info(
+        "[LoggingContractorSawDiagnostics] updates=%d serverDelimbUpdates=%d nativeInContext=%d nativeInContextHits=%d nativeOutsideHits=%d matched=%d unmatched=%d",
+        d.updates, d.serverDelimbUpdates,
+        d.nativeInContext, d.nativeInContextHits,
+        d.nativeOutsideHits, d.matched, d.unmatched
+    )
+    for key in pairs(d) do
+        d[key] = 0
+    end
+    Recorder.lastDiagnosticsMs = now
+end
 
 
 -- Регистрирует ствол дуба, поваленный подрядчиком: для него штатный хук
@@ -32,6 +67,7 @@ function Recorder.trackContractorOak(shape, model, frame)
         axisY = {frame.axisY[1], frame.axisY[2], frame.axisY[3]},
         axisZ = {frame.axisZ[1], frame.axisZ[2], frame.axisZ[3]}
     }
+    Recorder.diagnosticEnabled = true
     return true
 end
 
@@ -206,16 +242,25 @@ function Recorder.removeAttachments(original, x, y, z,
     -- Размеры плоскости не используются как признак ручного вызова:
     -- одинаковые размеры возможны и в алгоритме подрядчика.
     if g_server == nil or Recorder.activeManualChainsaw == nil then
-        return original(x, y, z, nx, ny, nz, ax, ay, az,
+        local result = original(x, y, z, nx, ny, nz, ax, ay, az,
             thickness, width, depth)
+        if Recorder.diagnosticEnabled and result == true then
+            Recorder.diagnostics.nativeOutsideHits =
+                Recorder.diagnostics.nativeOutsideHits + 1
+        end
+        return result
     end
 
+    Recorder.diagnostics.nativeInContext =
+        Recorder.diagnostics.nativeInContext + 1
     local snapshot = Recorder.captureOakAttachments()
     local result = original(x, y, z, nx, ny, nz, ax, ay, az,
         thickness, width, depth)
     if result ~= true then
         return result
     end
+    Recorder.diagnostics.nativeInContextHits =
+        Recorder.diagnostics.nativeInContextHits + 1
 
     local matched = false
     for _, entry in ipairs(snapshot) do
@@ -223,6 +268,7 @@ function Recorder.removeAttachments(original, x, y, z,
             local after = select(5, getSplitShapeStats(entry.shape))
             if after ~= nil and after < entry.before then
                 matched = true
+                Recorder.diagnostics.matched = Recorder.diagnostics.matched + 1
                 local px, py, pz = Recorder.toModel(
                     entry.shape, entry.frame, x, y, z, false)
                 local mx, my, mz = Recorder.toModel(
@@ -241,6 +287,7 @@ function Recorder.removeAttachments(original, x, y, z,
         end
     end
     if not matched and #snapshot > 0 then
+        Recorder.diagnostics.unmatched = Recorder.diagnostics.unmatched + 1
         Logging.info(
             "[LoggingContractorSawDelimbUnmatched] worldPlane=(%.3f,%.3f,%.3f) trackedOakShapes=%d native=true",
             x, y, z, #snapshot
@@ -254,6 +301,15 @@ end
 -- В FS25 1.24 HandToolChainsaw.onUpdate вызывает native очистку напрямую;
 -- SpecializationUtil.raiseEvent обращается к обработчику через таблицу класса.
 function Recorder.updateManualChainsaw(original, tool, ...)
+    if Recorder.diagnosticEnabled then
+        Recorder.diagnostics.updates = Recorder.diagnostics.updates + 1
+        local spec = tool ~= nil and tool.spec_chainsaw or nil
+        if tool ~= nil and tool.isServer and spec ~= nil
+            and spec.currentCutState == ChainsawCutState.DELIMBING then
+            Recorder.diagnostics.serverDelimbUpdates =
+                Recorder.diagnostics.serverDelimbUpdates + 1
+        end
+    end
     local previous = Recorder.activeManualChainsaw
     Recorder.activeManualChainsaw = tool
     local result = original(tool, ...)
@@ -307,7 +363,10 @@ function Recorder.install()
         Recorder.trackCutResult(select(2, ...))
     end
     Recorder.installed = true
-    Logging.info("[LoggingContractorSaw] Перехват резов дуба/берёзы и ручной очистки дуба включён")
+    Logging.info(
+        "[LoggingContractorSaw] Перехват резов и ручной очистки включён updateHook=%s nativeHook=%s",
+        tostring(nativeChainsawUpdate ~= nil), tostring(nativeRemoveAttachments ~= nil)
+    )
 end
 
 
