@@ -4050,6 +4050,22 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     local points = CONTRACTOR_TREE_PROFILE_POINTS[state.attachmentProfileName]
     local point = points ~= nil and points[cleanup.profileIndex] or nil
     if point == nil then
+        -- Диагностика дуба: оставляем остаточные attachments для ручной очистки.
+        -- FAST, FALLBACK и спираль здесь намеренно не запускаются.
+        if state.attachmentProfileName ~= nil
+            and state.attachmentProfileName:match("^oak_stage0[1-5]$") then
+            cleanup.profileRemaining = before
+            cleanup.phase = "DONE"
+            Logging.info(
+                "[LoggingContractorOakManualTest] model=%s shape=%s initial=%d remaining=%d next=MANUAL",
+                state.attachmentProfileName, tostring(shape),
+                cleanup.initialAttachments or 0, before
+            )
+            self:logContractorModelAttachmentScan(
+                state, cleanup, before, "oakManualTest"
+            )
+            return true, false
+        end
         -- После полной адресной карты остаток переходит в FAST,
         -- независимо от числа уже удалённых ветвей.
         cleanup.profileRemaining = before
@@ -4066,6 +4082,16 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
 
     local f = state.attachmentProfileFrame
     if f == nil then
+        if state.attachmentProfileName ~= nil
+            and state.attachmentProfileName:match("^oak_stage0[1-5]$") then
+            cleanup.profileRemaining = before
+            cleanup.phase = "DONE"
+            Logging.warning(
+                "[LoggingContractorOakManualTest] model=%s shape=%s remaining=%d reason=missingFrame next=MANUAL",
+                state.attachmentProfileName, tostring(shape), before
+            )
+            return true, false
+        end
         -- Если I3D-базис недоступен, переходим к общей очистке.
         cleanup.profileRemaining = before
         self:addContractorPerfCounter("profileMissingFrame", 1)

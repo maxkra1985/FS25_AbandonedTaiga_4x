@@ -1,7 +1,8 @@
 --[[
     Диагностика ручных резов дуба и берёзы бензопилой.
 
-    Записывает только реальные вызовы ChainsawUtil.cutSplitShape на сервере.
+    Записывает реальные резы ChainsawUtil.cutSplitShape и успешные
+    удаления attachments бензопилой на сервере.
     Каждая плоскость сохраняется в исходных координатах I3D: при движении
     отделённых частей базис переносится на новые split-shape после реза.
     Этот модуль ничего не режет самостоятельно.
@@ -13,6 +14,7 @@ local Recorder = LoggingContractorOakChainsawRecorder
 Recorder.frames = {}
 Recorder.sequence = 0
 Recorder.activeCut = nil
+Recorder.delimbSequence = 0
 
 
 -- Находит исходную модель дуба или берёзы по родительским группам I3D.
@@ -157,6 +159,80 @@ function Recorder.cutSplitShape(original, shape, x, y, z,
 end
 
 
+-- Запоминает количество attachments у отслеживаемых частей дуба перед
+-- штатным вызовом очистки. Удалённые split-shape не учитываются.
+function Recorder.captureOakAttachments()
+    local snapshot = {}
+    for shape, frame in pairs(Recorder.frames) do
+        if frame.model:match("^oak_stage0[1-5]$")
+            and entityExists(shape) then
+            local count = select(5, getSplitShapeStats(shape))
+            if count ~= nil and count > 0 then
+                snapshot[#snapshot + 1] = {
+                    shape = shape, frame = frame, before = count
+                }
+            end
+        end
+    end
+    return snapshot
+end
+
+
+-- Логирует только успешную ручную очистку бензопилой. Модель определяется
+-- по реальному уменьшению attachments отслеживаемого split-shape, без
+-- угадывания ближайшего дерева по расстоянию.
+function Recorder.removeAttachments(original, x, y, z,
+    nx, ny, nz, ax, ay, az, thickness, width, depth)
+    -- В исходниках FS25 1.24 бензопила передаёт толщину 0.7 м;
+    -- широкие плоскости подрядчика не должны попадать в этот журнал.
+    if g_server == nil or thickness == nil
+        or math.abs(thickness - 0.7) > 0.0001
+        or width == nil or width > 2
+        or depth == nil or depth > 2 then
+        return original(x, y, z, nx, ny, nz, ax, ay, az,
+            thickness, width, depth)
+    end
+
+    local snapshot = Recorder.captureOakAttachments()
+    local result = original(x, y, z, nx, ny, nz, ax, ay, az,
+        thickness, width, depth)
+    if result ~= true then
+        return result
+    end
+
+    local matched = false
+    for _, entry in ipairs(snapshot) do
+        if entityExists(entry.shape) then
+            local after = select(5, getSplitShapeStats(entry.shape))
+            if after ~= nil and after < entry.before then
+                matched = true
+                local px, py, pz = Recorder.toModel(
+                    entry.shape, entry.frame, x, y, z, false)
+                local mx, my, mz = Recorder.toModel(
+                    entry.shape, entry.frame, nx, ny, nz, true)
+                local ux, uy, uz = Recorder.toModel(
+                    entry.shape, entry.frame, ax, ay, az, true)
+                Recorder.delimbSequence = Recorder.delimbSequence + 1
+                Logging.info(
+                    "[LoggingContractorSawDelimb] seq=%d model=%s shape=%s removed=%d before=%d after=%d modelPlane=(%.5f,%.5f,%.5f) modelNormal=(%.6f,%.6f,%.6f) modelAxis=(%.6f,%.6f,%.6f) worldPlane=(%.3f,%.3f,%.3f) dimensions=(%.3f,%.3f,%.3f)",
+                    Recorder.delimbSequence, entry.frame.model,
+                    tostring(entry.shape), entry.before - after,
+                    entry.before, after, px, py, pz, mx, my, mz,
+                    ux, uy, uz, x, y, z, thickness, width, depth
+                )
+            end
+        end
+    end
+    if not matched and #snapshot > 0 then
+        Logging.info(
+            "[LoggingContractorSawDelimbUnmatched] worldPlane=(%.3f,%.3f,%.3f) trackedOakShapes=%d native=true",
+            x, y, z, #snapshot
+        )
+    end
+    return result
+end
+
+
 -- Устанавливает перехватчики после загрузки штатного ChainsawUtil.
 function Recorder.install()
     if Recorder.installed then
@@ -170,11 +246,19 @@ function Recorder.install()
     end
 
     local nativeCut = ChainsawUtil.cutSplitShape
+    local nativeRemoveAttachments = findAndRemoveSplitShapeAttachments
     local nativeCallback = ChainsawUtil.cutSplitShapeCallback
     local nativeJointCallback = ChainsawUtil.cutSplitShapeCallbackCutJoint
 
     ChainsawUtil.cutSplitShape = function(...)
         return Recorder.cutSplitShape(nativeCut, ...)
+    end
+    if nativeRemoveAttachments ~= nil then
+        findAndRemoveSplitShapeAttachments = function(...)
+            return Recorder.removeAttachments(nativeRemoveAttachments, ...)
+        end
+    else
+        Logging.warning("[LoggingContractorSaw] native очистка attachments недоступна")
     end
     ChainsawUtil.cutSplitShapeCallback = function(...)
         nativeCallback(...)
@@ -185,7 +269,7 @@ function Recorder.install()
         Recorder.trackCutResult(select(2, ...))
     end
     Recorder.installed = true
-    Logging.info("[LoggingContractorSaw] Перехват ручных резов дуба и берёзы включён")
+    Logging.info("[LoggingContractorSaw] Перехват резов дуба/берёзы и очистки дуба включён")
 end
 
 
