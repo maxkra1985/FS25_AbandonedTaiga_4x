@@ -316,6 +316,11 @@ end
 -- только поперечную плоскость. Лимит исключает бесконечные повторы.
 local BUCK_PLANE_SIZES = {LoggingContractor.SPLIT_PLANE_SIZE, 8, 16}
 
+-- В тесте дубов остатки 0.154 и 0.711 м после реза на 12 м не сохранялись
+-- движком как отдельная часть. Разрешаем один оставшийся отрезок только
+-- после проверки его фактической длины; более длинные остатки не скрываем.
+local BUCK_DISCARDED_TIP_MAX = 0.75
+
 -- Пересчитывает актуальные начало, ось и длину динамического ствола.
 -- После падения и обрезки ветвей координаты первичного спила устаревают.
 function LoggingContractor:getContractorBuckingGeometry(shape, preferredX, preferredY, preferredZ)
@@ -429,6 +434,33 @@ function LoggingContractor:advanceContractorBuckingState(state, allowMutation)
         state.currentX, state.currentY, state.currentZ = cutX, cutY, cutZ
         state.remainingLength = math.max(remainingLength - state.logLength, 0)
         return false, true, false
+    end
+
+    -- splitShape может удалить очень короткий кончик и вернуть только
+    -- полноценное бревно. Это успешный последний рез, если фактическая
+    -- длина сохранившейся части близка к заказанной длине.
+    if #parts == 1 and parts[1].shape ~= nil
+        and entityExists(parts[1].shape)
+        and remainingLength - state.logLength <= BUCK_DISCARDED_TIP_MAX then
+        local _, _, _, _, _, _, _, _, _, survivingLength =
+            self:getContractorBuckingGeometry(
+                parts[1].shape, dirX, dirY, dirZ
+            )
+        if survivingLength ~= nil
+            and math.abs(survivingLength - state.logLength)
+                <= BUCK_DISCARDED_TIP_MAX then
+            state.shape = parts[1].shape
+            state.remainingLength = survivingLength
+            self:applyContractorFall(
+                state.shape, state.angularX, state.angularY, state.angularZ
+            )
+            Logging.info(
+                "[LoggingContractor] Bucking short tip removed: shape=%s originalLength=%.3f logLength=%.3f survivingLength=%.3f",
+                tostring(oldShape), remainingLength,
+                state.logLength, survivingLength
+            )
+            return true, true, true
+        end
     end
 
     if #parts > 0 then

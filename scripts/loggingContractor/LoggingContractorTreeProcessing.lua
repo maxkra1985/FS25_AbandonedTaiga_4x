@@ -168,6 +168,38 @@ local CONTRACTOR_OAK_STAGE05_CUTS = {
     {-0.10855, 10.89879, 0.04591, -0.891861, 0.449642, -0.049045, -0.448964, -0.893209, -0.024696, 2.5, 2.3}
 }
 
+-- Ручные резы дуба третьей стадии после валки (ствол лежал на земле).
+-- Координаты и направления относятся к исходной модели, а не к положению бревна.
+local CONTRACTOR_OAK_STAGE03_CUTS = {
+    {0.21288, 5.03242, 0.52028, 0.84124, -0.00132, 0.54065, 0.03240, -0.99808, -0.05285, 2.5, 2.3},
+    {1.53171, 4.78947, -0.19823, -0.35857, -0.02140, -0.93326, -0.90956, -0.21695, 0.35444, 2.5, 2.3},
+    {0.84491, 5.82532, 1.37679, 0.97760, -0.14919, -0.14846, -0.19405, -0.36577, -0.91025, 2.5, 2.3},
+    {1.50812, 3.60379, 0.12782, 0.47984, 0.08426, -0.87330, -0.86029, -0.15019, -0.48718, 2.5, 2.3},
+    {0.98522, 5.49440, 1.10121, 0.68652, -0.03364, -0.72633, -0.72133, -0.15719, -0.67451, 2.5, 2.3},
+    {0.78685, 5.01997, 1.33308, -0.81125, -0.03724, 0.58351, -0.57336, -0.14489, -0.80639, 2.5, 2.3},
+    {0.17941, 6.50951, -0.46677, -0.84481, 0.01242, -0.53493, 0.01148, -0.99908, -0.04134, 2.5, 2.3}
+}
+
+-- Девять ручных резов крупной берёзы после валки, включая верхние ветви.
+local CONTRACTOR_BETULA_ERMANII_STAGE04_CUTS = {
+    {1.36888, 2.81127, 1.07541, 0.82350, -0.08566, -0.56081, -0.53185, -0.46057, -0.71064, 2.5, 2.3},
+    {-0.09448, 4.10965, 0.33545, -0.81080, -0.12585, -0.57164, 0.47265, -0.71685, -0.51257, 2.5, 2.3},
+    {1.08510, 2.67194, 0.66527, 0.37501, -0.17657, -0.91005, -0.85362, -0.44862, -0.26472, 2.5, 2.3},
+    {0.08438, 4.43258, 0.89783, 0.96826, 0.11119, 0.22387, 0.24775, -0.54563, -0.80056, 2.5, 2.3},
+    {0.21506, 2.14439, 1.11783, 0.83240, -0.03446, -0.55310, -0.50268, -0.46709, -0.72742, 2.5, 2.3},
+    {-0.52139, 3.92271, 0.88632, 0.94132, -0.16291, 0.29560, 0.09320, -0.71629, -0.69155, 2.5, 2.3},
+    {0.77634, 4.65948, 0.82024, 0.78312, 0.00808, -0.62182, -0.60484, -0.22248, -0.76463, 2.5, 2.3},
+    {1.46713, 3.95761, -0.37814, 0.21095, 0.21476, -0.95361, -0.87083, -0.40185, -0.28314, 2.5, 2.3},
+    {-0.33179, 3.43332, 1.23195, -0.96376, 0.25055, -0.09156, 0.03141, -0.23427, -0.97167, 2.5, 2.3}
+}
+
+-- Сопоставляет модель с последовательностью резов, записанной вручную.
+local CONTRACTOR_RECORDED_BRANCH_CUTS = {
+    oak_stage03 = CONTRACTOR_OAK_STAGE03_CUTS,
+    oak_stage05 = CONTRACTOR_OAK_STAGE05_CUTS,
+    betulaErmanii_stage04 = CONTRACTOR_BETULA_ERMANII_STAGE04_CUTS
+}
+
 LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS = 0.70
 LoggingContractor.PROCESSING_ATTACHMENT_MIN_SIZE = 1.00
 LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE = 2.00
@@ -715,6 +747,9 @@ local CONTRACTOR_LODGEPOLE_PINE_STAGE02_POINTS = {
     {-0.1143, 9.5515, 0.1243, -0.7201, 0.6939, 0.0094, 0.0051},
     {-0.0852, 11.4210, -0.0893, -0.5636, -0.8260, 0.0029, 0.0399},
     {0.1637, 12.8853, 0.0036, 0.9587, -0.2843, 0.0191, 0.0465},
+    -- Две уникальные плоскости FAST, удалившие остаточные attachments.
+    {0.1812, 1.4982, 0.2939, "EXACT", -0.47056, 0.00291, -0.88236, 0.00260, 0.99999, 0.00191, 0.700, 1.000, 1.000},
+    {-0.3415, 1.9006, -0.2394, "EXACT", 0.84870, -0.00322, 0.52886, 0.00260, 0.99999, 0.00191, 0.700, 1.000, 1.000},
 }
 
 local CONTRACTOR_LODGEPOLE_PINE_STAGE02VAR2_POINTS = {
@@ -2111,7 +2146,9 @@ local CONTRACTOR_RAVAGED_BIG_POINTS = {
     {0.3615, 6.6013, -0.3865, 0.8889, -0.4581, 0.0921, -0.2477},
     {0.0733, 8.0708, -0.0259, -0.0941, 0.9956, 0.1020, -0.3299},
     {0.0934, 6.5252, -0.5534, 0.0193, -0.9998, 0.0875, -0.2444},
-    {0.2308, 8.4531, -0.0568, 0.4361, 0.8999, 0.1001, -0.3265}
+    {0.2308, 8.4531, -0.0568, 0.4361, 0.8999, 0.1001, -0.3265},
+    -- Повторённая на 10 стволах успешная FAST-плоскость.
+    {-0.2500, 3.6604, -0.6874, "EXACT", 0.49815, 0.02910, 0.86660, 0.01270, 0.99908, -0.04085, 0.700, 1.054, 1.054}
 }
 
 -- Адресные карты берёзы Эрмана: отдельная геометрия каждой стадии.
@@ -3494,7 +3531,7 @@ end
 
 -- Переносит базис исходной модели со старого split-shape на выбранную часть.
 -- Сначала сохраняем его мировое положение: после splitShape старый узел удалён.
-function LoggingContractor:getContractorOakCutWorldFrame(shape, frame)
+function LoggingContractor:getContractorRecordedCutWorldFrame(shape, frame)
     local o, x, y, z = frame.origin, frame.axisX, frame.axisY, frame.axisZ
     local ox, oy, oz = localToWorld(shape, o[1], o[2], o[3])
     local xx, xy, xz = localDirectionToWorld(shape, x[1], x[2], x[3])
@@ -3508,7 +3545,7 @@ end
 
 
 -- Восстанавливает исходный I3D-базис в локальных координатах новой части.
-function LoggingContractor:setContractorOakCutLocalFrame(state, shape, worldFrame)
+function LoggingContractor:setContractorRecordedCutLocalFrame(state, shape, worldFrame)
     local o, x, y, z = worldFrame.origin, worldFrame.axisX,
         worldFrame.axisY, worldFrame.axisZ
     local ox, oy, oz = worldToLocal(shape, o[1], o[2], o[3])
@@ -3522,9 +3559,9 @@ function LoggingContractor:setContractorOakCutLocalFrame(state, shape, worldFram
 end
 
 
--- Преобразует записанную на дубе плоскость из I3D в текущие мировые
+-- Преобразует записанную ручную плоскость из I3D в текущие мировые
 -- координаты ствола. Работает и после его поворота или перемещения.
-function LoggingContractor:getContractorOakCutWorldGeometry(state, cut)
+function LoggingContractor:getContractorRecordedCutWorldGeometry(state, cut)
     local frame = state.attachmentProfileFrame
     if frame == nil then
         return nil
@@ -3546,13 +3583,14 @@ function LoggingContractor:getContractorOakCutWorldGeometry(state, cut)
 end
 
 
--- Воспроизводит один записанный ручной рез дуба после очистки attachments.
+-- Воспроизводит один записанный ручной рез ветви после очистки attachments.
 -- При отсутствии пересечения пропускает только этот рез, не разрушая ствол.
 -- После реального разреза сохраняет продолжение ствола и отдаёт управление
 -- сетевой синхронизации перед следующим резом.
-function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
-    local index = state.oakCutIndex or 1
-    if index > #CONTRACTOR_OAK_STAGE05_CUTS then
+function LoggingContractor:advanceContractorRecordedCuts(state, allowMutation)
+    local cuts = CONTRACTOR_RECORDED_BRANCH_CUTS[state.attachmentProfileName]
+    local index = state.recordedCutIndex or 1
+    if cuts == nil or index > #cuts then
         return true, false
     end
     if not allowMutation then
@@ -3560,12 +3598,13 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
     end
 
     local shape = state.shape
-    local cut = CONTRACTOR_OAK_STAGE05_CUTS[index]
+    local cut = cuts[index]
     local px, py, pz, nx, ny, nz, ax, ay, az =
-        self:getContractorOakCutWorldGeometry(state, cut)
+        self:getContractorRecordedCutWorldGeometry(state, cut)
     if px == nil then
-        Logging.warning("[LoggingContractorOakCut] step=%d skipped=noModelFrame", index)
-        state.oakCutIndex = index + 1
+        Logging.warning("[LoggingContractorRecordedCut] model=%s step=%d skipped=noModelFrame",
+            tostring(state.attachmentProfileName), index)
+        state.recordedCutIndex = index + 1
         return false, false
     end
 
@@ -3575,22 +3614,22 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
         shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11]
     )
     if minY == nil then
-        Logging.info("[LoggingContractorOakCut] step=%d shape=%s skipped=noIntersection",
-            index, tostring(shape))
-        state.oakCutIndex = index + 1
+        Logging.info("[LoggingContractorRecordedCut] model=%s step=%d shape=%s skipped=noIntersection",
+            tostring(state.attachmentProfileName), index, tostring(shape))
+        state.recordedCutIndex = index + 1
         return false, false
     end
 
-    local worldFrame = self:getContractorOakCutWorldFrame(
+    local worldFrame = self:getContractorRecordedCutWorldFrame(
         shape, state.attachmentProfileFrame
     )
     local parts = self:splitContractorShapeSized(
         shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11], true
     )
-    state.oakCutIndex = index + 1
+    state.recordedCutIndex = index + 1
     if #parts == 0 then
-        Logging.warning("[LoggingContractorOakCut] step=%d shape=%s skipped=splitEmpty",
-            index, tostring(shape))
+        Logging.warning("[LoggingContractorRecordedCut] model=%s step=%d shape=%s skipped=splitEmpty",
+            tostring(state.attachmentProfileName), index, tostring(shape))
         return false, false
     end
 
@@ -3599,8 +3638,8 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
         state.axisX, state.axisY, state.axisZ
     )
     if mainPart == nil or not entityExists(mainPart.shape) then
-        Logging.warning("[LoggingContractorOakCut] step=%d shape=%s failed=noMainStem parts=%d",
-            index, tostring(shape), #parts)
+        Logging.warning("[LoggingContractorRecordedCut] model=%s step=%d shape=%s failed=noMainStem parts=%d",
+            tostring(state.attachmentProfileName), index, tostring(shape), #parts)
         -- Исходный shape уже заменён движком; не передаём удалённый узел
         -- в раскряжёвку и фиксируем ошибку штатной проверкой существования.
         state.shape = nil
@@ -3609,7 +3648,7 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
 
     state.shape = mainPart.shape
     state.length = axisLength > 0 and axisLength or state.length
-    self:setContractorOakCutLocalFrame(state, state.shape, worldFrame)
+    self:setContractorRecordedCutLocalFrame(state, state.shape, worldFrame)
 
     local detached = {}
     for _, part in ipairs(parts) do
@@ -3622,8 +3661,8 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
         shapes = detached, normalX = nx, normalY = ny, normalZ = nz
     }
     Logging.info(
-        "[LoggingContractorOakCut] step=%d source=%s trunk=%s parts=%d detached=%d",
-        index, tostring(shape), tostring(state.shape), #parts, #detached
+        "[LoggingContractorRecordedCut] model=%s step=%d source=%s trunk=%s parts=%d detached=%d",
+        tostring(state.attachmentProfileName), index, tostring(shape), tostring(state.shape), #parts, #detached
     )
     return false, true
 end
@@ -4373,8 +4412,8 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         state.pendingDetached = nil
     end
 
-    if state.phase == "OAK_CUTS" then
-        return self:advanceContractorOakCuts(state, allowMutation)
+    if state.phase == "RECORDED_CUTS" then
+        return self:advanceContractorRecordedCuts(state, allowMutation)
     end
 
     if state.phase == "ATTACHMENTS" then
@@ -4387,8 +4426,8 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
             if state.attachmentCleanup ~= nil then
                 state.attachmentCleanup.phase = "DONE"
             end
-            if state.oakCutIndex ~= nil then
-                state.phase = "OAK_CUTS"
+            if state.recordedCutIndex ~= nil then
+                state.phase = "RECORDED_CUTS"
                 return false, false
             end
             return true, false
@@ -4405,8 +4444,8 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
             return false, true
         end
 
-        if done and state.oakCutIndex ~= nil then
-            state.phase = "OAK_CUTS"
+        if done and state.recordedCutIndex ~= nil then
+            state.phase = "RECORDED_CUTS"
             return false, false
         end
 
