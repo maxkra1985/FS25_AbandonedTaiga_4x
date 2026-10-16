@@ -4069,7 +4069,7 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
             self:logContractorModelAttachmentScan(
                 state, cleanup, before, "oakManualTest"
             )
-            return true, false
+            return false, false
         end
         -- После полной адресной карты остаток переходит в FAST,
         -- независимо от числа уже удалённых ветвей.
@@ -4095,7 +4095,7 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
                 "[LoggingContractorOakManualTest] model=%s shape=%s remaining=%d reason=missingFrame next=WAIT_MANUAL",
                 state.attachmentProfileName, tostring(shape), before
             )
-            return true, false
+            return false, false
         end
         -- Если I3D-базис недоступен, переходим к общей очистке.
         cleanup.profileRemaining = before

@@ -201,12 +201,17 @@ end
 -- угадывания ближайшего дерева по расстоянию.
 function Recorder.removeAttachments(original, x, y, z,
     nx, ny, nz, ax, ay, az, thickness, width, depth)
-    -- В исходниках FS25 1.24 бензопила передаёт толщину 0.7 м;
-    -- широкие плоскости подрядчика не должны попадать в этот журнал.
+    -- В исходниках FS25 1.24 ручная бензопила использует толщину 0.7 м,
+    -- ширину maximumDelimbDiameter и глубину на 0.2 м меньше ширины.
+    -- Подрядчик тоже применяет толщину 0.7 м, поэтому одной её недостаточно.
+    local chainsawOffset = HandToolChainsaw ~= nil
+        and HandToolChainsaw.SPLIT_PLANE_OFFSET_Z or nil
     if g_server == nil or thickness == nil
         or math.abs(thickness - 0.7) > 0.0001
-        or width == nil or width > 2
-        or depth == nil or depth > 2 then
+        or chainsawOffset == nil
+        or width == nil or width > 1.5
+        or depth == nil
+        or math.abs(depth - width - chainsawOffset) > 0.0001 then
         return original(x, y, z, nx, ny, nz, ax, ay, az,
             thickness, width, depth)
     end
