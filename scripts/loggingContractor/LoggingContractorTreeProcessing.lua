@@ -233,6 +233,10 @@ LoggingContractor.PROCESSING_FALLBACK_OFFSETS = {
     21, -21
 }
 
+-- Диагностические размеры плоскостей дуба. Выполняются один раз на ствол
+-- перед широким FALLBACK, чтобы найти минимальную рабочую область.
+local CONTRACTOR_OAK_FALLBACK_NARROW_SIZES = {2, 4, 8, 16, 32}
+
 -- 72 группы spruceVar2_stage03: координаты поверхности коры
 -- пересчитаны по LOD0 и LOD0AttachmentsShape.
 -- Формат: X/Y/Z точки коры, направление ветви X/Z, центр сечения X/Z.
@@ -2967,6 +2971,7 @@ function LoggingContractor:createContractorFallbackTrimState(shape, attachmentTy
         stepIndex = 0,
         upOffsetIndex = 1,
         sideOffsetIndex = 1,
+        narrowProbeComplete = false,
         removedThisPass = false,
         passStartAttachments = nil,
         done = false
@@ -3153,6 +3158,73 @@ function LoggingContractor:advanceContractorFallbackTrimState(state)
                 baseY + upY * upOffset + sideY * sideOffset
             local posZ =
                 baseZ + upZ * upOffset + sideZ * sideOffset
+
+            -- У oak_stage05 широкие FALLBACK-плоскости удаляли последние
+            -- attachments, но не позволяли определить их местоположение.
+            -- Один раз проверяем вложенные меньшие плоскости в той же позиции.
+            -- Успех записываем в исходном I3D-базисе для новой адресной карты.
+            if not state.narrowProbeComplete
+                and state.profileState ~= nil
+                and state.profileState.attachmentProfileName == "oak_stage05" then
+                state.narrowProbeComplete = true
+                local probeCount = 0
+                local orientations = {
+                    {"A", upX, upY, upZ},
+                    {"B", sideX, sideY, sideZ}
+                }
+                for _, size in ipairs(CONTRACTOR_OAK_FALLBACK_NARROW_SIZES) do
+                    for _, orientation in ipairs(orientations) do
+                        local result = findAndRemoveSplitShapeAttachments(
+                            posX, posY, posZ,
+                            axisX, axisY, axisZ,
+                            orientation[2], orientation[3], orientation[4],
+                            LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                            size, size
+                        )
+                        probeCount = probeCount + 1
+                        removeCalls = removeCalls + 1
+                        if result == true then
+                            returnedTrue = returnedTrue + 1
+                        elseif result == false then
+                            returnedFalse = returnedFalse + 1
+                        else
+                            returnedOther = returnedOther + 1
+                        end
+
+                        if not entityExists(shape) then
+                            state.done = true
+                            return finish(true, true)
+                        end
+                        if result == true then
+                            local after = select(
+                                5, self:getContractorSplitShapeStats(shape)
+                            )
+                            if after < attachments then
+                                self:logContractorLearnedAttachmentPoint(
+                                    state.profileState,
+                                    "FALLBACK_NARROW_" .. orientation[1],
+                                    attachments, after,
+                                    posX, posY, posZ,
+                                    axisX, axisY, axisZ,
+                                    orientation[2], orientation[3], orientation[4],
+                                    LoggingContractor.PROCESSING_FALLBACK_SEARCH_RADIUS,
+                                    size, size, state.passIndex
+                                )
+                                Logging.info(
+                                    "[LoggingContractorFallbackNarrow] model=oak_stage05 probes=%d size=%.1f orientation=%s removed=%d",
+                                    probeCount, size, orientation[1], attachments - after
+                                )
+                                state.removedThisPass = true
+                                return finish(false, true)
+                            end
+                        end
+                    end
+                end
+                Logging.info(
+                    "[LoggingContractorFallbackNarrow] model=oak_stage05 probes=%d removed=0 next=FALLBACK",
+                    probeCount
+                )
+            end
 
             positionsChecked = positionsChecked + 1
             local removedA = findAndRemoveSplitShapeAttachments(
