@@ -15,6 +15,7 @@ Recorder.frames = {}
 Recorder.sequence = 0
 Recorder.activeCut = nil
 Recorder.delimbSequence = 0
+Recorder.activeManualChainsaw = nil
 
 
 -- Регистрирует ствол дуба, поваленный подрядчиком: для него штатный хук
@@ -201,17 +202,10 @@ end
 -- угадывания ближайшего дерева по расстоянию.
 function Recorder.removeAttachments(original, x, y, z,
     nx, ny, nz, ax, ay, az, thickness, width, depth)
-    -- В исходниках FS25 1.24 ручная бензопила использует толщину 0.7 м,
-    -- ширину maximumDelimbDiameter и глубину на 0.2 м меньше ширины.
-    -- Подрядчик тоже применяет толщину 0.7 м, поэтому одной её недостаточно.
-    local chainsawOffset = HandToolChainsaw ~= nil
-        and HandToolChainsaw.SPLIT_PLANE_OFFSET_Z or nil
-    if g_server == nil or thickness == nil
-        or math.abs(thickness - 0.7) > 0.0001
-        or chainsawOffset == nil
-        or width == nil or width > 1.5
-        or depth == nil
-        or math.abs(depth - width - chainsawOffset) > 0.0001 then
+    -- Вызывающий контекст задаёт перехват HandToolChainsaw.onUpdate.
+    -- Размеры плоскости не используются как признак ручного вызова:
+    -- одинаковые размеры возможны и в алгоритме подрядчика.
+    if g_server == nil or Recorder.activeManualChainsaw == nil then
         return original(x, y, z, nx, ny, nz, ax, ay, az,
             thickness, width, depth)
     end
@@ -256,6 +250,18 @@ function Recorder.removeAttachments(original, x, y, z,
 end
 
 
+-- Обозначает только время штатного обновления ручной бензопилы.
+-- В FS25 1.24 HandToolChainsaw.onUpdate вызывает native очистку напрямую;
+-- SpecializationUtil.raiseEvent обращается к обработчику через таблицу класса.
+function Recorder.updateManualChainsaw(original, tool, ...)
+    local previous = Recorder.activeManualChainsaw
+    Recorder.activeManualChainsaw = tool
+    local result = original(tool, ...)
+    Recorder.activeManualChainsaw = previous
+    return result
+end
+
+
 -- Устанавливает перехватчики после загрузки штатного ChainsawUtil.
 function Recorder.install()
     if Recorder.installed then
@@ -270,11 +276,20 @@ function Recorder.install()
 
     local nativeCut = ChainsawUtil.cutSplitShape
     local nativeRemoveAttachments = findAndRemoveSplitShapeAttachments
+    local nativeChainsawUpdate = HandToolChainsaw ~= nil
+        and HandToolChainsaw.onUpdate or nil
     local nativeCallback = ChainsawUtil.cutSplitShapeCallback
     local nativeJointCallback = ChainsawUtil.cutSplitShapeCallbackCutJoint
 
     ChainsawUtil.cutSplitShape = function(...)
         return Recorder.cutSplitShape(nativeCut, ...)
+    end
+    if nativeChainsawUpdate ~= nil then
+        HandToolChainsaw.onUpdate = function(tool, ...)
+            return Recorder.updateManualChainsaw(nativeChainsawUpdate, tool, ...)
+        end
+    else
+        Logging.warning("[LoggingContractorSaw] HandToolChainsaw.onUpdate недоступен")
     end
     if nativeRemoveAttachments ~= nil then
         findAndRemoveSplitShapeAttachments = function(...)
@@ -292,7 +307,7 @@ function Recorder.install()
         Recorder.trackCutResult(select(2, ...))
     end
     Recorder.installed = true
-    Logging.info("[LoggingContractorSaw] Перехват резов дуба/берёзы и очистки дуба включён")
+    Logging.info("[LoggingContractorSaw] Перехват резов дуба/берёзы и ручной очистки дуба включён")
 end
 
 
