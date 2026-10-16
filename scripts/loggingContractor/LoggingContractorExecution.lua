@@ -1791,7 +1791,7 @@ end
 
 -- Начисляет право начать деревья за рабочие двухминутные такты.
 -- Количество оплаченной техники определяет число новых целей за такт,
--- но не увеличивает число одновременно обрабатываемых split-shape.
+-- а фактический запуск ограничивается числом свободных машин договора.
 function LoggingContractor:processJobBatch(job, batchCount)
     batchCount = math.max(math.floor(batchCount or 1), 0)
     if batchCount == 0 then
@@ -1804,15 +1804,17 @@ function LoggingContractor:processJobBatch(job, batchCount)
     )
 end
 
--- Заполняет общие десять слотов из оплаченных очередей всех активных договоров.
--- Договоры чередуются по jobId, чтобы один большой подряд не занимал все слоты
--- постоянно. Новые деревья запускаются только здесь, после обработки текущих.
+-- Заполняет слоты по суммарному количеству оплаченной техники без общего
+-- искусственного предела. В каждом договоре одновременно обрабатывается
+-- не больше деревьев, чем единиц техники; договоры чередуются по jobId.
 function LoggingContractor:fillContractorProcessingSlots()
     local jobs = {}
     local running = 0
+    local totalEquipment = 0
 
     for _, job in pairs(self.activeJobs or {}) do
         if job.isActive then
+            totalEquipment = totalEquipment + job.equipmentCount
             running = running + #(job.processingTrees or {})
             if (job.pendingStartCount or 0) > 0
                 and #(job.targetNodes or {}) > 0 then
@@ -1822,7 +1824,7 @@ function LoggingContractor:fillContractorProcessingSlots()
     end
 
     local freeSlots = math.max(
-        LoggingContractor.MAX_CONCURRENT_TREES - running,
+        totalEquipment - running,
         0
     )
     if freeSlots == 0 or #jobs == 0 then
@@ -1853,10 +1855,7 @@ function LoggingContractor:fillContractorProcessingSlots()
     while freeSlots > 0 and stalled < #jobs do
         local job = jobs[index]
         local didStart = false
-        local allowedForJob = math.min(
-            job.equipmentCount,
-            LoggingContractor.MAX_CONCURRENT_TREES
-        )
+        local allowedForJob = job.equipmentCount
 
         if job.isActive
             and (job.pendingStartCount or 0) > 0

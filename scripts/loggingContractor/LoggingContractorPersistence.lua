@@ -452,14 +452,10 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         job.markerStates[node] = self:isContractTargetMarked(node)
     end
 
-    -- Старые сохранения могли содержать сотни одновременных processingTrees.
-    -- Перезапускаем только свободные общие слоты, остальные возвращаем в
-    -- оплаченную очередь без повторного ожидания двухминутного рабочего такта.
-    local availableSlots = LoggingContractor.MAX_CONCURRENT_TREES
-    for _, activeJob in pairs(self.activeJobs or {}) do
-        availableSlots = availableSlots - #(activeJob.processingTrees or {})
-    end
-    availableSlots = math.max(availableSlots, 0)
+    -- При восстановлении допускаем до equipmentCount одновременно
+    -- обрабатываемых деревьев именно этого договора. Остальные возвращаем
+    -- в оплаченную очередь без повторного ожидания рабочего такта.
+    local availableSlots = equipmentCount
     local deferredCount = 0
 
     for _, node in ipairs(processingNodes) do
