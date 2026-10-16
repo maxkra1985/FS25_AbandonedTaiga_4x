@@ -164,7 +164,8 @@ function LoggingContractor:splitContractorShapeSized(
     upY,
     upZ,
     sizeY,
-    sizeZ
+    sizeZ,
+    planeIsOrigin
 )
     if shape == nil or shape == 0 or not entityExists(shape) then
         return {}
@@ -182,9 +183,15 @@ function LoggingContractor:splitContractorShapeSized(
     end
     sideX, sideY, sideZ = MathUtil.vector3Normalize(sideX, sideY, sideZ)
 
-    local planeX = centerX - upX * sizeY * 0.5 - sideX * sizeZ * 0.5
-    local planeY = centerY - upY * sizeY * 0.5 - sideY * sizeZ * 0.5
-    local planeZ = centerZ - upZ * sizeY * 0.5 - sideZ * sizeZ * 0.5
+    -- Для обычных резов входная точка задаёт центр. Записанные резы
+    -- бензопилы используют начало плоскости: ChainsawUtil передаёт её
+    -- в splitShape без смещения на половину ширины и высоты.
+    local planeX, planeY, planeZ = centerX, centerY, centerZ
+    if not planeIsOrigin then
+        planeX = centerX - upX * sizeY * 0.5 - sideX * sizeZ * 0.5
+        planeY = centerY - upY * sizeY * 0.5 - sideY * sizeZ * 0.5
+        planeZ = centerZ - upZ * sizeY * 0.5 - sideZ * sizeZ * 0.5
+    end
 
     self.activeContractSplitOperation = {
         oldShape = shape,

@@ -3438,10 +3438,12 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
         return false, false
     end
 
-    local probe = self:probeContractorLongitudinalCut(
+    -- Бензопила передаёт исходную точку угла плоскости прямо в splitShape.
+    -- Проверяем пересечение с той же точкой, без смещения к центру.
+    local minY = testSplitShape(
         shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11]
     )
-    if probe == nil then
+    if minY == nil then
         Logging.info("[LoggingContractorOakCut] step=%d shape=%s skipped=noIntersection",
             index, tostring(shape))
         state.oakCutIndex = index + 1
@@ -3452,7 +3454,7 @@ function LoggingContractor:advanceContractorOakCuts(state, allowMutation)
         shape, state.attachmentProfileFrame
     )
     local parts = self:splitContractorShapeSized(
-        shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11]
+        shape, px, py, pz, nx, ny, nz, ax, ay, az, cut[10], cut[11], true
     )
     state.oakCutIndex = index + 1
     if #parts == 0 then
