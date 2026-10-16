@@ -1,5 +1,5 @@
 --[[
-    Диагностика ручных резов дуба бензопилой.
+    Диагностика ручных резов дуба и берёзы бензопилой.
 
     Записывает только реальные вызовы ChainsawUtil.cutSplitShape на сервере.
     Каждая плоскость сохраняется в исходных координатах I3D: при движении
@@ -15,15 +15,16 @@ Recorder.sequence = 0
 Recorder.activeCut = nil
 
 
--- Находит имя исходной модели стоящего дуба по группам I3D.
-function Recorder.findOakModel(shape)
+-- Находит исходную модель дуба или берёзы по родительским группам I3D.
+function Recorder.findTargetModel(shape)
     local node = getParent(shape)
     for _ = 1, 5 do
         if node == nil or node == 0 or not entityExists(node) then
             break
         end
         local name = getName(node)
-        if name ~= nil and name:match("^oak_stage0[1-5]$") then
+        if name ~= nil and (name:match("^oak_stage0[1-5]$")
+            or name:match("^betulaErmanii_stage0[1-4]$")) then
             return name
         end
         node = getParent(node)
@@ -109,7 +110,7 @@ function Recorder.cutSplitShape(original, shape, x, y, z,
 
     local frame = Recorder.frames[shape]
     if frame == nil then
-        local model = Recorder.findOakModel(shape)
+        local model = Recorder.findTargetModel(shape)
         if model ~= nil then
             local identity = {
                 origin = {0, 0, 0},
@@ -145,7 +146,7 @@ function Recorder.cutSplitShape(original, shape, x, y, z,
 
     Recorder.sequence = Recorder.sequence + 1
     Logging.info(
-        "[LoggingContractorOakSawCut] seq=%d model=%s shape=%s rigid=%s sourceSize=(%.3f,%.3f,%.3f) sourceAttachments=%d modelPlane=(%.5f,%.5f,%.5f) modelNormal=(%.6f,%.6f,%.6f) modelAxis=(%.6f,%.6f,%.6f) worldPlane=(%.3f,%.3f,%.3f) worldNormal=(%.5f,%.5f,%.5f) worldAxis=(%.5f,%.5f,%.5f) dimensions=(%.3f,%.3f) children=%d childShapes=%s",
+        "[LoggingContractorSawCut] seq=%d model=%s shape=%s rigid=%s sourceSize=(%.3f,%.3f,%.3f) sourceAttachments=%d modelPlane=(%.5f,%.5f,%.5f) modelNormal=(%.6f,%.6f,%.6f) modelAxis=(%.6f,%.6f,%.6f) worldPlane=(%.3f,%.3f,%.3f) worldNormal=(%.5f,%.5f,%.5f) worldAxis=(%.5f,%.5f,%.5f) dimensions=(%.3f,%.3f) children=%d childShapes=%s",
         Recorder.sequence, frame.model, tostring(shape), tostring(rigidType),
         sizeX or 0, sizeY or 0, sizeZ or 0, attachmentCount or 0,
         px, py, pz, mx, my, mz, ux, uy, uz,
@@ -164,7 +165,7 @@ function Recorder.install()
     if ChainsawUtil == nil or ChainsawUtil.cutSplitShape == nil
         or ChainsawUtil.cutSplitShapeCallback == nil
         or ChainsawUtil.cutSplitShapeCallbackCutJoint == nil then
-        Logging.warning("[LoggingContractorOakSaw] ChainsawUtil не загружен")
+        Logging.warning("[LoggingContractorSaw] ChainsawUtil не загружен")
         return
     end
 
@@ -184,7 +185,7 @@ function Recorder.install()
         Recorder.trackCutResult(select(2, ...))
     end
     Recorder.installed = true
-    Logging.info("[LoggingContractorOakSaw] Перехват ручных резов дуба включён")
+    Logging.info("[LoggingContractorSaw] Перехват ручных резов дуба и берёзы включён")
 end
 
 
