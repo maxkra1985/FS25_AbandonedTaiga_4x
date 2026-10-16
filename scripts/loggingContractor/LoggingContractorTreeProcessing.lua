@@ -4430,6 +4430,11 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
                 state.phase = "RECORDED_CUTS"
                 return false, false
             end
+            if state.branchesAfterAttachments and not state.branchSearchStarted then
+                state.branchSearchStarted = true
+                state.phase = "BRANCHES"
+                return false, false
+            end
             return true, false
         end
 
@@ -4446,6 +4451,13 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
 
         if done and state.recordedCutIndex ~= nil then
             state.phase = "RECORDED_CUTS"
+            return false, false
+        end
+
+        if done and state.branchesAfterAttachments
+            and not state.branchSearchStarted then
+            state.branchSearchStarted = true
+            state.phase = "BRANCHES"
             return false, false
         end
 

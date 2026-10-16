@@ -1610,6 +1610,16 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
             state.pruning.phase = "ATTACHMENTS"
         end
 
+        -- Для остальных стадий берёзы сначала выполняем адресную очистку
+        -- листвы, затем запускаем обычный поиск и отделение древесных ветвей.
+        -- У stage04 ветви уже обрабатываются записанными ручными резами.
+        if state.splitTypeName == "BETULAERMANII"
+            and job.pruneLargeBranches ~= false
+            and state.pruning.recordedCutIndex == nil then
+            state.pruning.branchesAfterAttachments = true
+            state.pruning.phase = "ATTACHMENTS"
+        end
+
         if job.pruneLargeBranches == false
             or not self:getContractorNeedsBranchSearch(state.splitTypeName) then
             -- Для прямоствольных пород не выполняем дорогой поиск и отделение
