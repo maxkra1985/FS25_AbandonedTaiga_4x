@@ -4055,11 +4055,16 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         if state.attachmentProfileName ~= nil
             and state.attachmentProfileName:match("^oak_stage0[1-5]$") then
             cleanup.profileRemaining = before
-            cleanup.phase = "DONE"
+            cleanup.phase = "WAIT_MANUAL"
+            local registered = LoggingContractorOakChainsawRecorder ~= nil
+                and LoggingContractorOakChainsawRecorder.trackContractorOak(
+                    shape, state.attachmentProfileName,
+                    state.attachmentProfileFrame
+                ) or false
             Logging.info(
-                "[LoggingContractorOakManualTest] model=%s shape=%s initial=%d remaining=%d next=MANUAL",
+                "[LoggingContractorOakManualTest] model=%s shape=%s initial=%d remaining=%d next=WAIT_MANUAL tracked=%s",
                 state.attachmentProfileName, tostring(shape),
-                cleanup.initialAttachments or 0, before
+                cleanup.initialAttachments or 0, before, tostring(registered)
             )
             self:logContractorModelAttachmentScan(
                 state, cleanup, before, "oakManualTest"
@@ -4085,9 +4090,9 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         if state.attachmentProfileName ~= nil
             and state.attachmentProfileName:match("^oak_stage0[1-5]$") then
             cleanup.profileRemaining = before
-            cleanup.phase = "DONE"
+            cleanup.phase = "WAIT_MANUAL"
             Logging.warning(
-                "[LoggingContractorOakManualTest] model=%s shape=%s remaining=%d reason=missingFrame next=MANUAL",
+                "[LoggingContractorOakManualTest] model=%s shape=%s remaining=%d reason=missingFrame next=WAIT_MANUAL",
                 state.attachmentProfileName, tostring(shape), before
             )
             return true, false
@@ -4290,6 +4295,12 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
 
     if cleanup.phase == "DONE" then
         return true, false
+    end
+
+    -- Пассивно ожидаем ручного удаления всех attachments дуба.
+    -- На каждом update только проверяем счётчик, без native-вызовов поиска.
+    if cleanup.phase == "WAIT_MANUAL" then
+        return false, false
     end
 
     if cleanup.phase == "PROFILE" then
@@ -4542,6 +4553,13 @@ function LoggingContractor:advanceContractorPruningState(state, allowMutation)
         )
 
         if attachments <= 0 then
+            if state.attachmentCleanup ~= nil
+                and state.attachmentCleanup.phase == "WAIT_MANUAL" then
+                Logging.info(
+                    "[LoggingContractorOakManualResume] model=%s shape=%s remaining=0 next=PRUNE",
+                    tostring(state.attachmentProfileName), tostring(state.shape)
+                )
+            end
             if state.attachmentCleanup ~= nil then
                 state.attachmentCleanup.phase = "DONE"
             end

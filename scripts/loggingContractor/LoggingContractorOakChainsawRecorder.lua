@@ -17,6 +17,24 @@ Recorder.activeCut = nil
 Recorder.delimbSequence = 0
 
 
+-- Регистрирует ствол дуба, поваленный подрядчиком: для него штатный хук
+-- ручного спила не вызывается, но исходный I3D-базис уже сохранён системой.
+function Recorder.trackContractorOak(shape, model, frame)
+    if shape == nil or not entityExists(shape) or frame == nil
+        or model == nil or not model:match("^oak_stage0[1-5]$") then
+        return false
+    end
+    Recorder.frames[shape] = {
+        model = model,
+        origin = {frame.origin[1], frame.origin[2], frame.origin[3]},
+        axisX = {frame.axisX[1], frame.axisX[2], frame.axisX[3]},
+        axisY = {frame.axisY[1], frame.axisY[2], frame.axisY[3]},
+        axisZ = {frame.axisZ[1], frame.axisZ[2], frame.axisZ[3]}
+    }
+    return true
+end
+
+
 -- Находит исходную модель дуба или берёзы по родительским группам I3D.
 function Recorder.findTargetModel(shape)
     local node = getParent(shape)
