@@ -444,6 +444,16 @@ local CONTRACTOR_ADDRESS_TREE_MODELS = {
     lodgepolePine_stage02Var2 = "lodgepolePine_stage02Var2",
     lodgepolePine_stage03 = "lodgepolePine_stage03",
     lodgepolePine_stage03Var2 = "lodgepolePine_stage03Var2",
+    pinusSylvestris_stage01 = "pinusSylvestris_stage01",
+    pinusSylvestris_stage02 = "pinusSylvestris_stage02",
+    pinusSylvestris_stage03 = "pinusSylvestris_stage03",
+    pinusSylvestris_stage04 = "pinusSylvestris_stage04",
+    pinusSylvestris_stage05 = "pinusSylvestris_stage05",
+    pinusTabuliformis_stage01 = "pinusTabuliformis_stage01",
+    pinusTabuliformis_stage02 = "pinusTabuliformis_stage02",
+    pinusTabuliformis_stage03 = "pinusTabuliformis_stage03",
+    pinusTabuliformis_stage04 = "pinusTabuliformis_stage04",
+    pinusTabuliformis_stage05 = "pinusTabuliformis_stage05",
     deadwood = "deadwood",
     beech_stage01 = "beech_stage01",
     beech_stage02 = "beech_stage02",
@@ -466,7 +476,7 @@ local CONTRACTOR_ADDRESS_TREE_MODELS = {
 -- Возвращает название конкретной исходной I3D-модели по её родительской
 -- transform-group. Различает варианты ели, сосны, сухостоя, бука и осины.
 function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
-    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "DEADWOOD" and splitTypeName ~= "BEECH" and splitTypeName ~= "ASPEN")
+    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "PINUSSYLVESTRIS" and splitTypeName ~= "PINUSTABULIFORMIS" and splitTypeName ~= "DEADWOOD" and splitTypeName ~= "BEECH" and splitTypeName ~= "ASPEN")
         or shape == nil or not entityExists(shape) then
         return nil
     end
