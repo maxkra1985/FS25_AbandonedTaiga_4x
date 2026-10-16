@@ -460,6 +460,7 @@ local CONTRACTOR_ADDRESS_TREE_MODELS = {
     oak_stage04 = "oak_stage04",
     oak_stage05 = "oak_stage05",
     deadwood = "deadwood",
+    treePineRavaged_big = "treePineRavaged_big",
     beech_stage01 = "beech_stage01",
     beech_stage02 = "beech_stage02",
     beech_stage02_var02 = "beech_stage02_var02",
@@ -481,7 +482,7 @@ local CONTRACTOR_ADDRESS_TREE_MODELS = {
 -- Возвращает название конкретной исходной I3D-модели по её родительской
 -- transform-group. Различает варианты ели, сосны, сухостоя, бука и осины.
 function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
-    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "PINUSSYLVESTRIS" and splitTypeName ~= "PINUSTABULIFORMIS" and splitTypeName ~= "OAK" and splitTypeName ~= "DEADWOOD" and splitTypeName ~= "BEECH" and splitTypeName ~= "ASPEN")
+    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "PINUSSYLVESTRIS" and splitTypeName ~= "PINUSTABULIFORMIS" and splitTypeName ~= "OAK" and splitTypeName ~= "DEADWOOD" and splitTypeName ~= "RAVAGED" and splitTypeName ~= "BEECH" and splitTypeName ~= "ASPEN")
         or shape == nil or not entityExists(shape) then
         return nil
     end
