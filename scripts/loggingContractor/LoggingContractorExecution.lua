@@ -1207,6 +1207,58 @@ function LoggingContractor:createContractorTreeProcess(job, shape)
 end
 
 
+-- Временно фиксирует основной ствол на время очистки attachments и ветвей.
+-- При изменении split-shape освобождает прежнюю часть и фиксирует новую.
+-- Отделённые ветви и брёвна в этот режим не переводятся.
+function LoggingContractor:freezeContractorPruningTrunk(state, shape)
+    if state.frozenShape ~= nil
+        and state.frozenShape ~= shape
+        and entityExists(state.frozenShape)
+        and getRigidBodyType(state.frozenShape) == RigidBodyType.KINEMATIC then
+        setRigidBodyType(state.frozenShape, RigidBodyType.DYNAMIC)
+    end
+
+    state.frozenShape = nil
+    if shape == nil or not entityExists(shape) then
+        return false
+    end
+
+    local rigidType = getRigidBodyType(shape)
+    if rigidType == RigidBodyType.DYNAMIC then
+        setRigidBodyType(shape, RigidBodyType.KINEMATIC)
+    elseif rigidType ~= RigidBodyType.KINEMATIC then
+        Logging.warning(
+            "[LoggingContractor] Cannot freeze trunk: shape=%s rigidType=%s",
+            tostring(shape), tostring(rigidType)
+        )
+        return false
+    end
+
+    if getRigidBodyType(shape) ~= RigidBodyType.KINEMATIC then
+        Logging.warning(
+            "[LoggingContractor] Trunk freeze failed: shape=%s",
+            tostring(shape)
+        )
+        return false
+    end
+
+    state.frozenShape = shape
+    return true
+end
+
+
+-- Возвращает основному стволу динамическую физику перед раскряжёвкой.
+function LoggingContractor:releaseContractorPruningTrunk(state)
+    local shape = state.frozenShape
+    state.frozenShape = nil
+
+    if shape ~= nil and entityExists(shape)
+        and getRigidBodyType(shape) == RigidBodyType.KINEMATIC then
+        setRigidBodyType(shape, RigidBodyType.DYNAMIC)
+    end
+end
+
+
 -- Выполняет первичный спил и сохраняет данные для следующих фаз.
 function LoggingContractor:performContractorInitialCut(job, state, allowMutation)
     local shape = state.shape
@@ -1403,10 +1455,15 @@ function LoggingContractor:performContractorInitialCut(job, state, allowMutation
         job.routeAnchorZ = treeZ
     end
 
-    state.phase =
-        #state.stumpShapes > 0
-        and "REMOVE_STUMP"
-        or "PRUNE_INIT"
+    -- Пень оставляем до окончания раскряжёвки, а основной ствол
+    -- удерживаем в KINEMATIC до завершения очистки.
+    local frozen = self:freezeContractorPruningTrunk(state, trunkShape)
+    Logging.info(
+        "[LoggingContractorPhysics] phase=AFTER_SPLIT model=%s shape=%s frozen=%s stumpCount=%d",
+        tostring(state.profileName or state.splitTypeName),
+        tostring(trunkShape), tostring(frozen), #state.stumpShapes
+    )
+    state.phase = "PRUNE_INIT"
 
     return false, true, false
 end
@@ -1464,15 +1521,19 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
                 end
 
                 if #state.stumpShapes == 0 then
-                    state.phase = "PRUNE_INIT"
+                    state.phase = "DONE"
                 end
 
                 return false, true, false
             end
         end
 
-        state.phase = "PRUNE_INIT"
+        state.phase = "DONE"
         return false, false, false
+    end
+
+    if state.phase == "DONE" then
+        return true, false, state.buckingSuccess == true
     end
 
     if state.phase == "PRUNE_INIT" then
@@ -1520,6 +1581,11 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
 
         if changed then
             state.hadMutation = true
+            -- После отделения крупной ветви основной split-shape может
+            -- смениться. Новую часть также фиксируем до конца очистки.
+            self:freezeContractorPruningTrunk(
+                state, state.pruning.shape
+            )
             return false, true, false
         end
 
@@ -1533,6 +1599,8 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
     end
 
     if state.phase == "BUCK_INIT" then
+        -- Пока создаём состояние раскряжёвки, основной ствол остаётся
+        -- неподвижным. Отпустим его непосредственно перед разрезом.
         state.bucking = self:createContractorBuckingState(
             state.shape,
             state.cutX,
@@ -1552,6 +1620,11 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
     end
 
     if state.phase == "BUCK" then
+        -- Разрешаем инерцию непосредственно перед первым рабочим шагом
+        -- раскряжёвки. Отделённые брёвна получают динамическую физику.
+        if state.frozenShape ~= nil and allowMutation then
+            self:releaseContractorPruningTrunk(state)
+        end
         local done, changed, success =
             self:advanceContractorBuckingState(state.bucking, allowMutation)
 
@@ -1565,7 +1638,14 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
         if done then
             state.shape = state.bucking.shape
             state.failureReason = state.bucking.failureReason
-            return true, false, success == true
+            state.buckingSuccess = success == true
+            -- Даже при неудачной раскряжёвке нельзя оставлять пень.
+            if #state.stumpShapes > 0 then
+                state.phase = "REMOVE_STUMP"
+                return false, false, false
+            end
+            state.phase = "DONE"
+            return true, false, state.buckingSuccess
         end
 
         return false, false, false
