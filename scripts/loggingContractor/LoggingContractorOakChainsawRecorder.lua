@@ -236,32 +236,8 @@ end
 -- Логирует только успешную ручную очистку бензопилой. Модель определяется
 -- по реальному уменьшению attachments отслеживаемого split-shape, без
 -- угадывания ближайшего дерева по расстоянию.
-function Recorder.removeAttachments(original, x, y, z,
-    nx, ny, nz, ax, ay, az, thickness, width, depth)
-    -- Вызывающий контекст задаёт перехват HandToolChainsaw.onUpdate.
-    -- Размеры плоскости не используются как признак ручного вызова:
-    -- одинаковые размеры возможны и в алгоритме подрядчика.
-    if g_server == nil or Recorder.activeManualChainsaw == nil then
-        local result = original(x, y, z, nx, ny, nz, ax, ay, az,
-            thickness, width, depth)
-        if Recorder.diagnosticEnabled and result == true then
-            Recorder.diagnostics.nativeOutsideHits =
-                Recorder.diagnostics.nativeOutsideHits + 1
-        end
-        return result
-    end
-
-    Recorder.diagnostics.nativeInContext =
-        Recorder.diagnostics.nativeInContext + 1
-    local snapshot = Recorder.captureOakAttachments()
-    local result = original(x, y, z, nx, ny, nz, ax, ay, az,
-        thickness, width, depth)
-    if result ~= true then
-        return result
-    end
-    Recorder.diagnostics.nativeInContextHits =
-        Recorder.diagnostics.nativeInContextHits + 1
-
+function Recorder.logManualAttachmentChanges(snapshot, x, y, z,
+    nx, ny, nz, ax, ay, az, thickness, width, depth, source)
     local matched = false
     for _, entry in ipairs(snapshot) do
         if entityExists(entry.shape) then
@@ -277,8 +253,8 @@ function Recorder.removeAttachments(original, x, y, z,
                     entry.shape, entry.frame, ax, ay, az, true)
                 Recorder.delimbSequence = Recorder.delimbSequence + 1
                 Logging.info(
-                    "[LoggingContractorSawDelimb] seq=%d model=%s shape=%s removed=%d before=%d after=%d modelPlane=(%.5f,%.5f,%.5f) modelNormal=(%.6f,%.6f,%.6f) modelAxis=(%.6f,%.6f,%.6f) worldPlane=(%.3f,%.3f,%.3f) dimensions=(%.3f,%.3f,%.3f)",
-                    Recorder.delimbSequence, entry.frame.model,
+                    "[LoggingContractorSawDelimb] seq=%d source=%s model=%s shape=%s removed=%d before=%d after=%d modelPlane=(%.5f,%.5f,%.5f) modelNormal=(%.6f,%.6f,%.6f) modelAxis=(%.6f,%.6f,%.6f) worldPlane=(%.3f,%.3f,%.3f) dimensions=(%.3f,%.3f,%.3f)",
+                    Recorder.delimbSequence, source, entry.frame.model,
                     tostring(entry.shape), entry.before - after,
                     entry.before, after, px, py, pz, mx, my, mz,
                     ux, uy, uz, x, y, z, thickness, width, depth
@@ -286,12 +262,41 @@ function Recorder.removeAttachments(original, x, y, z,
             end
         end
     end
-    if not matched and #snapshot > 0 then
+    if not matched and #snapshot > 0 and source == "NATIVE" then
         Recorder.diagnostics.unmatched = Recorder.diagnostics.unmatched + 1
         Logging.info(
             "[LoggingContractorSawDelimbUnmatched] worldPlane=(%.3f,%.3f,%.3f) trackedOakShapes=%d native=true",
             x, y, z, #snapshot
         )
+    end
+    return matched
+end
+
+
+-- Сохраняет совместимость прежнего native-хука, но для реальной бензопилы
+-- приоритетным источником служит измерение до/после onUpdate.
+function Recorder.removeAttachments(original, x, y, z,
+    nx, ny, nz, ax, ay, az, thickness, width, depth)
+    if g_server == nil or Recorder.activeManualChainsaw == nil then
+        local result = original(x, y, z, nx, ny, nz, ax, ay, az,
+            thickness, width, depth)
+        if Recorder.diagnosticEnabled and result == true then
+            Recorder.diagnostics.nativeOutsideHits =
+                Recorder.diagnostics.nativeOutsideHits + 1
+        end
+        return result
+    end
+
+    Recorder.diagnostics.nativeInContext =
+        Recorder.diagnostics.nativeInContext + 1
+    local snapshot = Recorder.captureOakAttachments()
+    local result = original(x, y, z, nx, ny, nz, ax, ay, az,
+        thickness, width, depth)
+    if result == true then
+        Recorder.diagnostics.nativeInContextHits =
+            Recorder.diagnostics.nativeInContextHits + 1
+        Recorder.logManualAttachmentChanges(snapshot, x, y, z,
+            nx, ny, nz, ax, ay, az, thickness, width, depth, "NATIVE")
     end
     return result
 end
@@ -301,19 +306,37 @@ end
 -- В FS25 1.24 HandToolChainsaw.onUpdate вызывает native очистку напрямую;
 -- SpecializationUtil.raiseEvent обращается к обработчику через таблицу класса.
 function Recorder.updateManualChainsaw(original, tool, ...)
+    local spec = tool ~= nil and tool.spec_chainsaw or nil
+    local serverDelimbing = g_server ~= nil and tool ~= nil
+        and tool.isServer and spec ~= nil
+        and spec.currentCutState == ChainsawCutState.DELIMBING
     if Recorder.diagnosticEnabled then
         Recorder.diagnostics.updates = Recorder.diagnostics.updates + 1
-        local spec = tool ~= nil and tool.spec_chainsaw or nil
-        if tool ~= nil and tool.isServer and spec ~= nil
-            and spec.currentCutState == ChainsawCutState.DELIMBING then
+        if serverDelimbing then
             Recorder.diagnostics.serverDelimbUpdates =
                 Recorder.diagnostics.serverDelimbUpdates + 1
         end
     end
+    -- Снимок до штатного обновления позволяет увидеть native-удаления,
+    -- даже если оригинальная Lua-функция использует другой global environment.
+    local snapshot = serverDelimbing and Recorder.diagnosticEnabled
+        and Recorder.captureOakAttachments() or nil
+    local matchedBefore = Recorder.diagnostics.matched
     local previous = Recorder.activeManualChainsaw
     Recorder.activeManualChainsaw = tool
     local result = original(tool, ...)
     Recorder.activeManualChainsaw = previous
+    if snapshot ~= nil and Recorder.diagnostics.matched == matchedBefore then
+        local width = spec.maximumDelimbDiameter
+        Recorder.logManualAttachmentChanges(
+            snapshot,
+            spec.lastDelimbPosX, spec.lastDelimbPosY, spec.lastDelimbPosZ,
+            spec.lastDelimbNormalX, spec.lastDelimbNormalY, spec.lastDelimbNormalZ,
+            spec.lastDelimbUpX, spec.lastDelimbUpY, spec.lastDelimbUpZ,
+            0.7, width, width + HandToolChainsaw.SPLIT_PLANE_OFFSET_Z,
+            "ON_UPDATE"
+        )
+    end
     return result
 end
 
