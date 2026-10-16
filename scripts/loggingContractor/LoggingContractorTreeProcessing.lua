@@ -1302,6 +1302,64 @@ local CONTRACTOR_TREE_PROFILE_POINTS = {
     aspen_stage06_var02 = CONTRACTOR_ASPEN_STAGE06_VAR02_POINTS
 }
 
+-- Точки, на которых FAST реально удалил attachments в тесте 16.10.2026.
+-- Формат EXACT: координаты плоскости I3D, нормаль, ось и размеры native-вызова.
+-- Повторные попадания на одинаковых координатах исключены.
+-- lodgepolePine_stage03: 4 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03, {-0.2189, 0.6001, -0.3066, "EXACT", 0.60029, -0.00265, 0.79978, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03, {0.4948, 7.5974, 0.2416, "EXACT", -0.91975, 0.00319, -0.39248, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03, {0.2684, 10.5987, -0.3162, "EXACT", -0.39249, 0.00022, 0.91976, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03, {-0.3467, 15.1004, -0.1180, "EXACT", 0.91975, -0.00319, 0.39248, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+
+-- beech_stage06_var02: 11 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {0.2929, 2.2989, -0.2566, "EXACT", -0.77448, -0.00295, 0.63259, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {0.2287, 3.4985, -0.2535, "EXACT", -0.77448, -0.00295, 0.63259, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.0182, 4.2993, 0.3330, "EXACT", -0.16056, -0.00552, -0.98701, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {0.1588, 5.8981, -0.2451, "EXACT", -0.77448, -0.00295, 0.63259, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.4387, 8.1948, -0.0144, "EXACT", 0.98700, 0.00659, -0.16060, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {0.0934, 8.2977, -0.2556, "EXACT", -0.77448, -0.00295, 0.63259, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.0568, 8.3964, -0.2958, "EXACT", -0.35445, 0.00148, 0.93508, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.2369, 10.1971, 0.1433, "EXACT", 0.35445, -0.00148, -0.93508, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.4368, 10.5948, -0.0442, "EXACT", 0.98700, 0.00659, -0.16060, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {0.0778, 11.6987, -0.0197, "EXACT", -0.93505, -0.00847, -0.35442, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.beech_stage06_var02, {-0.2252, 12.2971, 0.1241, "EXACT", 0.35445, -0.00148, -0.93508, -0.00739, 0.99996, -0.00439, 0.700, 1.000, 1.000})
+
+-- spruce2_stage02: 4 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage02, {0.0000, 13.2987, -0.2349, "EXACT", 0.00000, 0.00236, 1.00000, 0.00000, 1.00000, -0.00236, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage02, {0.1288, 14.2987, -0.2269, "EXACT", -0.50000, 0.00204, 0.86602, 0.00000, 1.00000, -0.00236, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage02, {0.2212, 14.4996, 0.1239, "EXACT", -0.86603, -0.00118, -0.50000, 0.00000, 1.00000, -0.00236, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage02, {0.0000, 16.5995, 0.1116, "EXACT", 0.00000, -0.00236, -1.00000, 0.00000, 1.00000, -0.00236, 0.700, 1.000, 1.000})
+
+-- spruce2_stage03: 12 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {-0.4528, 3.0998, 0.0039, "EXACT", 0.99987, -0.00001, 0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.026, 1.026})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.4323, 3.1998, 0.0195, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.023, 1.023})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.4341, 3.3998, 0.0222, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.017, 1.017})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.3734, 10.2998, 0.0071, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.1847, 19.1996, -0.2692, "EXACT", -0.51400, 0.00051, 0.85779, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.2456, 24.8998, 0.0106, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.1530, 25.0996, -0.2500, "EXACT", -0.51400, 0.00051, 0.85779, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.2262, 27.9997, -0.1296, "EXACT", -0.87403, 0.00030, 0.48587, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.2148, 28.1998, -0.0005, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.2093, 28.5998, -0.0005, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.1608, 32.7998, -0.0006, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce2_stage03, {0.1581, 32.9998, -0.0024, "EXACT", -0.99987, 0.00001, -0.01624, 0.00002, 1.00000, -0.00058, 0.700, 1.000, 1.000})
+
+-- spruce1_stage02: 1 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce1_stage02, {0.1990, 7.2003, 0.4512, "EXACT", -0.50000, -0.00125, -0.86602, 0.00000, 1.00000, -0.00144, 0.700, 1.000, 1.000})
+
+-- spruce1_stage01: 1 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.spruce1_stage01, {0.2010, 2.4994, -0.0032, "EXACT", -0.99998, 0.00004, 0.00678, 0.00001, 0.99998, -0.00562, 0.700, 1.000, 1.000})
+
+-- aspen_stage06_var02: 3 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.aspen_stage06_var02, {-0.2335, 6.9974, 0.2051, "EXACT", 0.96624, -0.00325, -0.25762, 0.00580, 0.99994, 0.00916, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.aspen_stage06_var02, {-0.1471, 7.6957, 0.3374, "EXACT", 0.70800, 0.00236, -0.70621, 0.00580, 0.99994, 0.00916, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.aspen_stage06_var02, {-0.2017, 8.7974, 0.1943, "EXACT", 0.96624, -0.00325, -0.25762, 0.00580, 0.99994, 0.00916, 0.700, 1.000, 1.000})
+
+-- lodgepolePine_stage03Var2: 3 подтверждённых точек.
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03Var2, {-0.2189, 0.6001, -0.3067, "EXACT", 0.60029, -0.00265, 0.79978, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03Var2, {-0.3547, 11.9001, 0.1411, "EXACT", 0.99277, -0.00287, -0.11998, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+table.insert(CONTRACTOR_TREE_PROFILE_POINTS.lodgepolePine_stage03Var2, {0.0231, 31.0995, -0.3035, "EXACT", 0.11997, -0.00141, 0.99278, 0.00302, 0.99999, 0.00105, 0.700, 1.000, 1.000})
+
 LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE = 0.20
 
 -- Диагностическая спираль включается только после адресного, FAST и
@@ -3007,6 +3065,34 @@ function LoggingContractor:getContractorProfileCurrentPoint(
 end
 
 
+-- Восстанавливает плоскость успешного FAST-вызова в текущем положении ствола.
+-- Все координаты и оба направления хранятся в исходном базисе модели I3D.
+function LoggingContractor:getContractorProfileExactPoint(shape, frame, point)
+    local o, x, y, z = frame.origin, frame.axisX, frame.axisY, frame.axisZ
+    local px, py, pz = point[1], point[2], point[3]
+    local lx = o[1] + x[1] * px + y[1] * py + z[1] * pz
+    local ly = o[2] + x[2] * px + y[2] * py + z[2] * pz
+    local lz = o[3] + x[3] * px + y[3] * py + z[3] * pz
+    local wx, wy, wz = localToWorld(shape, lx, ly, lz)
+
+    local nx, ny, nz = localDirectionToWorld(
+        shape,
+        x[1] * point[5] + y[1] * point[6] + z[1] * point[7],
+        x[2] * point[5] + y[2] * point[6] + z[2] * point[7],
+        x[3] * point[5] + y[3] * point[6] + z[3] * point[7]
+    )
+    local ax, ay, az = localDirectionToWorld(
+        shape,
+        x[1] * point[8] + y[1] * point[9] + z[1] * point[10],
+        x[2] * point[8] + y[2] * point[9] + z[2] * point[10],
+        x[3] * point[8] + y[3] * point[9] + z[3] * point[10]
+    )
+    nx, ny, nz = MathUtil.vector3Normalize(nx, ny, nz)
+    ax, ay, az = MathUtil.vector3Normalize(ax, ay, az)
+    return lx, ly, lz, wx, wy, wz, nx, ny, nz, ax, ay, az
+end
+
+
 -- Обрабатывает одну группу attachments из профильной I3D-модели.
 -- Запомненный после спила локальный базис сохраняет корректную ориентацию
 -- точек при падении и движении динамического ствола.
@@ -3059,34 +3145,47 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
     -- Направления рассчитываются в исходных осях I3D, перенесённых в
     -- локальную систему split-shape, а не по текущему мировому углу падения.
     local px, py, pz = point[1], point[2], point[3]
-    local calibrated = point[4] ~= nil
+    local exact = point[4] == "EXACT"
+    local calibrated = point[4] ~= nil and not exact
     local radius = math.sqrt(px * px + pz * pz)
-    if not calibrated and radius < 0.01 then
+    if not calibrated and not exact and radius < 0.01 then
         cleanup.profileIndex = cleanup.profileIndex + 1
         return false, false
     end
 
-    -- X/Y/Z задают поверхность коры, а следующие два значения —
-    -- направление конкретной ветви.
-    local rx = calibrated and point[4] or px / radius
-    local rz = calibrated and point[5] or pz / radius
+    -- Старые адреса задают поверхность коры и радиальное направление.
+    -- EXACT дополнительно хранит успешные нормаль, ось и размеры FAST.
+    local rx = exact and -point[5] or (calibrated and point[4] or px / radius)
+    local rz = exact and -point[7] or (calibrated and point[5] or pz / radius)
     local distance = LoggingContractor.PROCESSING_PROFILE_RADIAL_DISTANCE
-    local lx, ly, lz, wx, wy, wz,
-        radialX, radialY, radialZ, axisX, axisY, axisZ =
-        self:getContractorProfileCurrentPoint(
-            shape, f, rx, rz, py, distance,
-            calibrated and px or nil, calibrated and pz or nil
-        )
+    local lx, ly, lz, wx, wy, wz
+    local radialX, radialY, radialZ, axisX, axisY, axisZ
+    if exact then
+        local nx, ny, nz
+        lx, ly, lz, wx, wy, wz, nx, ny, nz, axisX, axisY, axisZ =
+            self:getContractorProfileExactPoint(shape, f, point)
+        radialX, radialY, radialZ = -nx, -ny, -nz
+    else
+        lx, ly, lz, wx, wy, wz,
+            radialX, radialY, radialZ, axisX, axisY, axisZ =
+            self:getContractorProfileCurrentPoint(
+                shape, f, rx, rz, py, distance,
+                calibrated and px or nil, calibrated and pz or nil
+            )
+    end
 
-    -- Та же native-операция, что и в обычной очистке, но одна плоскость
-    -- в известном направлении вместо полного перебора 12 направлений.
+    -- Для выученных точек воспроизводим размеры успешного native-вызова.
+    local thickness = exact and point[11]
+        or LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS
+    local sizeX = exact and point[12]
+        or LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
+    local sizeY = exact and point[13]
+        or LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
     local didDelimb = findAndRemoveSplitShapeAttachments(
         wx, wy, wz,
         -radialX, -radialY, -radialZ,
         axisX, axisY, axisZ,
-        LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
-        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
-        LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE
+        thickness, sizeX, sizeY
     )
 
     cleanup.profileIndex = cleanup.profileIndex + 1
@@ -3121,12 +3220,10 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
             wx, wy, wz,
             -radialX, -radialY, -radialZ,
             axisX, axisY, axisZ,
-            LoggingContractor.PROCESSING_ATTACHMENT_THICKNESS,
-            LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
-            LoggingContractor.PROCESSING_ATTACHMENT_MAX_SIZE,
+            thickness, sizeX, sizeY,
             calibrated and math.sqrt(
                 (px - point[6]) ^ 2 + (pz - point[7]) ^ 2
-            ) or distance
+            ) or (exact and radius or distance)
         )
     end
 
