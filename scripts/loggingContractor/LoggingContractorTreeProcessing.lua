@@ -2113,11 +2113,6 @@ LoggingContractor.PROCESSING_SPIRAL_ANGLE_STEP = 15
 LoggingContractor.PROCESSING_SPIRAL_PASS_SHIFT = 20
 LoggingContractor.PROCESSING_SPIRAL_MAX_PASSES = 5
 
--- Паузы нужны для видеозаписи: после основного прохода и между
--- диагностическими группами. Время задаётся в миллисекундах.
-LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS = 2000
-
-
 -- Возвращает размер плоскости testSplitShape с запасом относительно текущего
 -- split-shape. Большой размер нужен только для измерения сечения и не задаёт
 -- область удаления attachments.
@@ -3353,210 +3348,6 @@ function LoggingContractor:createContractorPruningState(
 end
 
 
--- Включает клиентскую 3D-визуализацию плоскостей адресной очистки деревьев.
--- Координаты сохраняются во время реальных native-вызовов; состояние
--- относится только к текущему запуску игры и не попадает в сохранение.
-LoggingContractor.PROFILE_VISUAL_ENABLED = true
-LoggingContractor.PROFILE_VISUAL_MAX_TREES = 24
-LoggingContractor.PROFILE_VISUAL_MAX_DISTANCE = 35
-LoggingContractor.PROFILE_VISUAL_LABEL_DISTANCE = 12
-
--- Сохраняет ТОЧНУЮ локальную плоскость основного/отладочного вызова.
--- Пока split-shape существует, маркер следует за его движением; после
--- удаления shape используется последний сохранённый мировой снимок.
--- Индекс соответствует полю group в LoggingContractorProfilePoint.
-function LoggingContractor:recordContractorProfileVisualPoint(
-    state, category, groupIndex,
-    lx, ly, lz, rx, rz, profileHeight, removed
-)
-    if not LoggingContractor.PROFILE_VISUAL_ENABLED
-        or not self.mission:getIsClient()
-        or state.attachmentProfileFrame == nil
-        or (category == "PRIMARY" and removed ~= 0) then
-        return
-    end
-
-    local shape = state.shape
-    if shape == nil or not entityExists(shape) then
-        return
-    end
-
-    local tree = state.contractorProfileVisualTree
-    if tree == nil then
-        self.contractorProfileVisualTrees =
-            self.contractorProfileVisualTrees or {}
-        tree = {
-            model = state.attachmentProfileName,
-            shape = shape,
-            markers = {},
-            remaining = nil
-        }
-        state.contractorProfileVisualTree = tree
-        local trees = self.contractorProfileVisualTrees
-        trees[#trees + 1] = tree
-        if #trees > LoggingContractor.PROFILE_VISUAL_MAX_TREES then
-            table.remove(trees, 1)
-        end
-    end
-
-    local f = state.attachmentProfileFrame
-    local cx = f.origin[1] + f.axisY[1] * profileHeight
-    local cy = f.origin[2] + f.axisY[2] * profileHeight
-    local cz = f.origin[3] + f.axisY[3] * profileHeight
-    local dx = f.axisX[1] * rx + f.axisZ[1] * rz
-    local dy = f.axisX[2] * rx + f.axisZ[2] * rz
-    local dz = f.axisX[3] * rx + f.axisZ[3] * rz
-    local tipX, tipY, tipZ =
-        lx + dx * 0.42, ly + dy * 0.42, lz + dz * 0.42
-
-    local mx, my, mz = localToWorld(shape, lx, ly, lz)
-    local bx, by, bz = localToWorld(shape, cx, cy, cz)
-    local ex, ey, ez = localToWorld(shape, tipX, tipY, tipZ)
-
-    local marker = {
-        groupIndex = groupIndex,
-        category = category,
-        removed = removed,
-        lx = lx, ly = ly, lz = lz,
-        cx = cx, cy = cy, cz = cz,
-        tipX = tipX, tipY = tipY, tipZ = tipZ,
-        wx = mx, wy = my, wz = mz,
-        baseX = bx, baseY = by, baseZ = bz,
-        endX = ex, endY = ey, endZ = ez
-    }
-    tree.markers[#tree.markers + 1] = marker
-end
-
-
--- Рисует ближайший к камере адресный профиль прямо во время очистки.
--- Красным показаны только основные точки с removed=0, синим — каждая
--- новая диагностическая проба независимо от результата удаления.
--- Все координаты взяты из фактических вызовов движка.
-function LoggingContractor:drawContractorProfileVisual()
-    if not LoggingContractor.PROFILE_VISUAL_ENABLED
-        or not self.mission:getIsServer() then
-        -- Диагностика формируется сервером; в MP она не синхронизируется.
-        return
-    end
-
-    local trees = self.contractorProfileVisualTrees
-    if trees == nil or #trees == 0 then
-        return
-    end
-
-    local camera = g_cameraManager ~= nil
-        and g_cameraManager:getActiveCamera() or nil
-    if camera == nil or not entityExists(camera) then
-        return
-    end
-
-    local camX, camY, camZ = getWorldTranslation(camera)
-    local maxDist2 = LoggingContractor.PROFILE_VISUAL_MAX_DISTANCE ^ 2
-    local bestTree, bestD2 = nil, maxDist2
-
-    -- Выбираем только одну ближайшую модель, чтобы несколько деревьев
-    -- и сотни номеров не перекрывали друг друга на площадке.
-    for i = #trees, 1, -1 do
-        local tree = trees[i]
-        local marker = tree.markers[1]
-        if marker ~= nil then
-            local x, y, z = marker.wx, marker.wy, marker.wz
-            if tree.shape ~= nil and entityExists(tree.shape) then
-                x, y, z = localToWorld(
-                    tree.shape, marker.lx, marker.ly, marker.lz
-                )
-            end
-            local dx, dz = camX - x, camZ - z
-            local d2 = dx * dx + dz * dz
-            if d2 < bestD2 then
-                bestTree, bestD2 = tree, d2
-            end
-        end
-    end
-
-    if bestTree == nil then
-        return
-    end
-
-    local shape = bestTree.shape
-    local followsShape = shape ~= nil and entityExists(shape)
-    local labelDistance2 =
-        LoggingContractor.PROFILE_VISUAL_LABEL_DISTANCE ^ 2
-
-    -- Здесь сохраняются последние мировые позиции: после BUCK исходный
-    -- shape может исчезнуть, и привязка к новым брёвнам не гарантируется.
-    for _, marker in ipairs(bestTree.markers) do
-        if followsShape then
-            marker.wx, marker.wy, marker.wz =
-                localToWorld(shape, marker.lx, marker.ly, marker.lz)
-            marker.baseX, marker.baseY, marker.baseZ =
-                localToWorld(shape, marker.cx, marker.cy, marker.cz)
-            marker.endX, marker.endY, marker.endZ =
-                localToWorld(
-                    shape, marker.tipX, marker.tipY, marker.tipZ
-                )
-        end
-
-        local r, g, b = 1, 0.15, 0.15
-        local prefix = "!"
-        if marker.category == "DEBUG" then
-            r, g, b = 0.15, 0.5, 1
-            prefix = "D"
-        end
-
-        -- Луч направлен от оси ствола через плоскость наружу. Точка
-        -- вызова отмечена коротким 3D-крестом поверх геометрии дерева.
-        drawDebugLine(
-            marker.baseX, marker.baseY, marker.baseZ, r, g, b,
-            marker.endX, marker.endY, marker.endZ, r, g, b, false
-        )
-        local x, y, z = marker.wx, marker.wy, marker.wz
-        local crossSize = 0.065
-        drawDebugLine(
-            x - crossSize, y, z, r, g, b,
-            x + crossSize, y, z, r, g, b, false
-        )
-        drawDebugLine(
-            x, y - crossSize, z, r, g, b,
-            x, y + crossSize, z, r, g, b, false
-        )
-        drawDebugLine(
-            x, y, z - crossSize, r, g, b,
-            x, y, z + crossSize, r, g, b, false
-        )
-
-        local dx, dy, dz = x - camX, y - camY, z - camZ
-        local d2 = dx * dx + dy * dy + dz * dz
-        if d2 < labelDistance2 then
-            Utils.renderTextAtWorldPosition(
-                marker.endX, marker.endY + 0.10, marker.endZ,
-                string.format("%s%d", prefix, marker.groupIndex),
-                getCorrectTextSize(0.013), 0,
-                r, g, b, 1
-            )
-        end
-    end
-
-    -- Модель и значение маркеров выводятся один раз, вне игрового HUD.
-    setTextAlignment(RenderText.ALIGN_LEFT)
-    setTextBold(false)
-    setTextColor(1, 1, 1, 1)
-    renderText(
-        0.02, 0.34, getCorrectTextSize(0.013),
-        string.format(
-            "LoggingContractor %s  shape=%s  points=%d",
-            bestTree.model or "unknown",
-            tostring(shape),
-            #bestTree.markers
-        )
-    )
-    renderText(
-        0.02, 0.32, getCorrectTextSize(0.012),
-        "Red=primary removed=0  Blue=debug probe"
-    )
-end
-
-
 -- Выводит остаток attachments по конкретной I3D-модели.
 -- Для елей и lodgepolePine замер выполняется после адресного прохода;
 -- остальные модели используют штатный общий алгоритм.
@@ -3644,8 +3435,6 @@ function LoggingContractor:advanceContractorSpiralDiagnostics(state, cleanup)
         cleanup.spiralPassCalls = 0
         cleanup.spiralPassHits = 0
         cleanup.spiralPassRemoved = 0
-        cleanup.spiralPauseUntil =
-            g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
         return false, false
     end
 
@@ -3726,18 +3515,6 @@ function LoggingContractor:advanceContractorSpiralDiagnostics(state, cleanup)
             cleanup.spiralPass, degrees
         )
     end
-
-    -- Отображаем каждую новую диагностическую плоскость синим.
-    local lx, ly, lz = worldToLocal(shape, worldX, worldY, worldZ)
-    local vx, vy, vz = worldDirectionToLocal(shape, rx, ry, rz)
-    local fx, fy, fz = lx - frame.origin[1], ly - frame.origin[2], lz - frame.origin[3]
-    local height = fx * frame.axisY[1] + fy * frame.axisY[2] + fz * frame.axisY[3]
-    local modelRx = vx * frame.axisX[1] + vy * frame.axisX[2] + vz * frame.axisX[3]
-    local modelRz = vx * frame.axisZ[1] + vy * frame.axisZ[2] + vz * frame.axisZ[3]
-    self:recordContractorProfileVisualPoint(
-        state, "DEBUG", cleanup.spiralStep - 1,
-        lx, ly, lz, modelRx, modelRz, height, removed
-    )
 
     if after <= 0 then
         return self:finishContractorSpiralDiagnostics(state, cleanup, 0, "complete")
@@ -3981,13 +3758,6 @@ function LoggingContractor:advanceContractorProfileAttachments(state, cleanup)
         before, after, removed
     )
 
-    -- Немедленно показываем красным только вызовы с removed=0.
-    -- Успешные основные точки не загромождают видеозапись.
-    self:recordContractorProfileVisualPoint(
-        state, "PRIMARY", cleanup.profileIndex - 1,
-        lx, ly, lz, rx, rz, py, removed
-    )
-
     if after <= 0 then
         cleanup.phase = "DONE"
         cleanup.profileRemaining = 0
@@ -4020,8 +3790,6 @@ function LoggingContractor:beginContractorSpiralDiagnostics(state, cleanup, rema
     cleanup.spiralPassCalls = 0
     cleanup.spiralPassHits = 0
     cleanup.spiralPassRemoved = 0
-    cleanup.spiralPauseUntil =
-        g_time + LoggingContractor.PROCESSING_PROFILE_VISUAL_PAUSE_MS
     Logging.info(
         "[LoggingContractorSpiralStart] model=%s shape=%s remaining=%d step=%.3f angleStep=%d passShift=%d maxPasses=%d",
         tostring(state.attachmentProfileName), tostring(state.shape),
@@ -4090,12 +3858,6 @@ function LoggingContractor:advanceContractorMainTrunkAttachments(state)
     end
 
     if cleanup.phase == "SPIRAL" then
-        -- Паузы между полными витками не блокируют отрисовку кадров.
-        if cleanup.spiralPauseUntil ~= nil
-            and g_time < cleanup.spiralPauseUntil then
-            return false, false
-        end
-        cleanup.spiralPauseUntil = nil
         return self:advanceContractorSpiralDiagnostics(state, cleanup)
     end
 
