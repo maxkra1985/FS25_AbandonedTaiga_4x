@@ -431,7 +431,7 @@ end
 
 -- Сопоставляет имена I3D-групп конкретным адресным профилям.
 -- Один splitType может включать несколько геометрически разных моделей.
--- У сухостоя используется отдельный профиль модели deadwood.
+-- У сухостоя и девяти моделей бука используются отдельные профили.
 local CONTRACTOR_ADDRESS_TREE_MODELS = {
     spruceVar01_stage01 = "spruce1_stage01",
     spruceVar01_stage02 = "spruce1_stage02",
@@ -444,13 +444,22 @@ local CONTRACTOR_ADDRESS_TREE_MODELS = {
     lodgepolePine_stage02Var2 = "lodgepolePine_stage02Var2",
     lodgepolePine_stage03 = "lodgepolePine_stage03",
     lodgepolePine_stage03Var2 = "lodgepolePine_stage03Var2",
-    deadwood = "deadwood"
+    deadwood = "deadwood",
+    beech_stage01 = "beech_stage01",
+    beech_stage02 = "beech_stage02",
+    beech_stage02_var02 = "beech_stage02_var02",
+    beech_stage02_var03 = "beech_stage02_var03",
+    beech_stage03 = "beech_stage03",
+    beech_stage04 = "beech_stage04",
+    beech_stage05 = "beech_stage05",
+    beech_stage06_var01 = "beech_stage06_var01",
+    beech_stage06_var02 = "beech_stage06_var02"
 }
 
 -- Возвращает название конкретной исходной I3D-модели по её родительской
--- transform-group. Различает варианты ели, сосны и модель сухостоя.
+-- transform-group. Различает варианты ели, сосны, сухостоя и бука.
 function LoggingContractor:getContractorTreeModelProfile(shape, splitTypeName)
-    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "DEADWOOD")
+    if (splitTypeName ~= "SPRUCE" and splitTypeName ~= "LODGEPOLEPINE" and splitTypeName ~= "DEADWOOD" and splitTypeName ~= "BEECH")
         or shape == nil or not entityExists(shape) then
         return nil
     end
