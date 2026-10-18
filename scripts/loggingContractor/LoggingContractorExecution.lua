@@ -1675,9 +1675,11 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
         if done then
             state.shape = state.pruning.shape
             state.trunkLength = state.pruning.length
-            if job.pruneLargeBranches == false then
-                -- Без распила крупных ветвей оставляем целый очищенный
-                -- ствол: пропускаем BUCK_INIT/BUCK и завершаем удалением пня.
+            if job.pruneLargeBranches == false
+                and self:getContractorNeedsBranchSearch(state.splitTypeName) then
+                -- Только у пород с отдельным распилом древесных ветвей
+                -- оставляем ствол целым. Ели, сосны и остальные прямоствольные
+                -- породы раскряжёвываются независимо от этой настройки.
                 state.buckingSuccess = true
                 state.phase = "REMOVE_STUMP"
             else
