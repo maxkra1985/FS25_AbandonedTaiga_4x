@@ -26,6 +26,7 @@ function LoggingContractorProgressEvent.new(job)
     self.plannedTrees = job.plannedTrees
     self.onlyMarkedTrees = job.onlyMarkedTrees == true
     self.pruneLargeBranches = job.pruneLargeBranches ~= false
+    self.selectedSpecies = job.selectedSpecies
     self.contractorCutTrees = job.contractorCutTrees or 0
     self.remainingTrees = job.remainingTrees or job.plannedTrees
     self.equipmentCount = job.equipmentCount
@@ -44,6 +45,13 @@ function LoggingContractorProgressEvent:writeStream(streamId, connection)
     streamWriteUInt32(streamId, self.plannedTrees)
     streamWriteBool(streamId, self.onlyMarkedTrees)
     streamWriteBool(streamId, self.pruneLargeBranches)
+    streamWriteBool(streamId, self.selectedSpecies ~= nil)
+    if self.selectedSpecies ~= nil then
+        streamWriteUInt8(streamId, #self.selectedSpecies)
+        for _, name in ipairs(self.selectedSpecies) do
+            streamWriteString(streamId, name)
+        end
+    end
     streamWriteUInt32(streamId, self.contractorCutTrees)
     streamWriteUInt32(streamId, self.remainingTrees)
     streamWriteUInt32(streamId, self.equipmentCount)
@@ -60,6 +68,12 @@ function LoggingContractorProgressEvent:readStream(streamId, connection)
     self.plannedTrees = streamReadUInt32(streamId)
     self.onlyMarkedTrees = streamReadBool(streamId)
     self.pruneLargeBranches = streamReadBool(streamId)
+    if streamReadBool(streamId) then
+        self.selectedSpecies = {}
+        for _ = 1, streamReadUInt8(streamId) do
+            table.insert(self.selectedSpecies, streamReadString(streamId))
+        end
+    end
     self.contractorCutTrees = streamReadUInt32(streamId)
     self.remainingTrees = streamReadUInt32(streamId)
     self.equipmentCount = streamReadUInt32(streamId)

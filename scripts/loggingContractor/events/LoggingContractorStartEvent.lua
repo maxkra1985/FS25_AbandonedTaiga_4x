@@ -21,13 +21,14 @@ end
 
 -- Создаёт клиентский запрос с параметрами, которые пользователь действительно
 -- выбирает в интерфейсе. Расчётные значения намеренно не передаются.
-function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
+function LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches, selectedSpecies)
     local self = LoggingContractorStartEvent.emptyNew()
     self.farmlandId = farmlandId
     self.equipmentCount = equipmentCount
     self.logLength = logLength
     self.onlyMarkedTrees = onlyMarkedTrees == true
     self.pruneLargeBranches = pruneLargeBranches ~= false
+    self.selectedSpecies = selectedSpecies
 
     return self
 end
@@ -40,6 +41,13 @@ function LoggingContractorStartEvent:writeStream(streamId, connection)
     streamWriteUInt8(streamId, self.logLength)
     streamWriteBool(streamId, self.onlyMarkedTrees)
     streamWriteBool(streamId, self.pruneLargeBranches)
+    streamWriteBool(streamId, self.selectedSpecies ~= nil)
+    if self.selectedSpecies ~= nil then
+        streamWriteUInt8(streamId, #self.selectedSpecies)
+        for _, name in ipairs(self.selectedSpecies) do
+            streamWriteString(streamId, name)
+        end
+    end
 end
 
 
@@ -50,6 +58,13 @@ function LoggingContractorStartEvent:readStream(streamId, connection)
     self.logLength = streamReadUInt8(streamId)
     self.onlyMarkedTrees = streamReadBool(streamId)
     self.pruneLargeBranches = streamReadBool(streamId)
+    if streamReadBool(streamId) then
+        self.selectedSpecies = {}
+        local count = streamReadUInt8(streamId)
+        for _ = 1, count do
+            table.insert(self.selectedSpecies, streamReadString(streamId))
+        end
+    end
     self:run(connection)
 end
 
@@ -72,7 +87,8 @@ function LoggingContractorStartEvent:run(connection)
             self.equipmentCount,
             self.logLength,
             self.onlyMarkedTrees,
-            self.pruneLargeBranches
+            self.pruneLargeBranches,
+            self.selectedSpecies
         )
     end
 
@@ -82,7 +98,7 @@ end
 
 -- Отправляет запрос текущему серверу. Метод используется GUI и одинаково
 -- работает для обычного клиента и локального клиента хоста.
-function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
+function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches, selectedSpecies)
     if g_client == nil then
         return false
     end
@@ -92,6 +108,8 @@ function LoggingContractorStartEvent.sendEvent(farmlandId, equipmentCount, logLe
         return false
     end
 
-    connection:sendEvent(LoggingContractorStartEvent.new(farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches))
+    connection:sendEvent(LoggingContractorStartEvent.new(
+        farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches, selectedSpecies
+    ))
     return true
 end

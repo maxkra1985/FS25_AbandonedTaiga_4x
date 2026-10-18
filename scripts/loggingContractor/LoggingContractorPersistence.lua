@@ -202,6 +202,9 @@ function LoggingContractor:saveToSavegame(directory)
         setXMLInt(xmlFile, key .. "#plannedTrees", job.plannedTrees)
         setXMLBool(xmlFile, key .. "#onlyMarkedTrees", job.onlyMarkedTrees == true)
         setXMLBool(xmlFile, key .. "#pruneLargeBranches", job.pruneLargeBranches ~= false)
+        if job.selectedSpecies ~= nil then
+            setXMLString(xmlFile, key .. "#selectedSpecies", table.concat(job.selectedSpecies, ","))
+        end
         setXMLInt(
             xmlFile,
             key .. "#contractorCutTrees",
@@ -412,6 +415,16 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         math.max(getXMLInt(xmlFile, key .. "#failedTreeCount") or 0, 0)
         + mutatedProcessingCount
 
+    -- Отсутствующее поле в старых сохранениях означает все породы.
+    local speciesText = getXMLString(xmlFile, key .. "#selectedSpecies")
+    local selectedSpecies = nil
+    if speciesText ~= nil then
+        selectedSpecies = {}
+        for name in speciesText:gmatch("[^,]+") do
+            table.insert(selectedSpecies, name)
+        end
+    end
+
     local job = LoggingContractorJob.new({
         jobId = jobId,
         farmId = farmId,
@@ -422,6 +435,7 @@ function LoggingContractor:restorePersistentJob(xmlFile, key)
         -- В старых сохранениях настройка отсутствует: используется полная обрезка.
         pruneLargeBranches =
             getXMLBool(xmlFile, key .. "#pruneLargeBranches") ~= false,
+        selectedSpecies = selectedSpecies,
         contractorCutTrees = contractorCutTrees,
         failedTreeCount = failedTreeCount,
         remainingTrees = #pendingNodes + #processingNodes,

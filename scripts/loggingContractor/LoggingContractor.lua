@@ -162,6 +162,9 @@ function LoggingContractor:treeScanOverlapCallback(transformId)
 
     local treeTypeDesc = g_treePlantManager:getTreeTypeDescFromSplitType(splitTypeIndex)
     local speciesName, speciesTitle = self:getTreeSpecies(treeTypeDesc, splitTypeIndex)
+    if scan.selectedSpecies ~= nil and not scan.selectedSpecies[speciesName] then
+        return
+    end
     local species = scan.bySpecies[speciesName]
 
     if species == nil then
@@ -180,7 +183,7 @@ end
 
 -- Сканирует выбранный принадлежащий ферме участок и возвращает количество
 -- стоящих деревьев с разбивкой по породам.
-function LoggingContractor:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
+function LoggingContractor:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees, selectedSpecies)
     if g_farmlandManager == nil or g_treePlantManager == nil then
         return nil, "managerUnavailable"
     end
@@ -215,6 +218,7 @@ function LoggingContractor:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees
     self.activeTreeScan = {
         farmlandId = farmlandId,
         onlyMarkedTrees = onlyMarkedTrees == true,
+        selectedSpecies = selectedSpecies,
         totalCount = 0,
         bySpecies = {},
         seenNodes = {}
@@ -403,7 +407,7 @@ end
 -- Выполняет серверную часть заключения договора: определяет ферму отправителя,
 -- проверяет право manageContracts, участок и деревья, заново рассчитывает цену,
 -- проверяет баланс, списывает средства и создаёт LoggingContractorJob.
-function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
+function LoggingContractor:startContract(connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches, selectedSpeciesNames)
     if not self.mission:getIsServer() then
         return LoggingContractorResultEvent.STATE_INTERNAL_ERROR
     end
@@ -433,12 +437,42 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     -- Отсутствующий параметр у прежних вызовов не меняет старое поведение.
     pruneLargeBranches = pruneLargeBranches ~= false
 
-    local scan, errorCode = self:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
+    -- Клиент передаёт только имена пород. Сервер самостоятельно проверяет
+    -- их по фактически найденным на участке видам и пересчитывает цену.
+    local selectedSpecies = nil
+    if selectedSpeciesNames ~= nil then
+        if type(selectedSpeciesNames) ~= "table" or #selectedSpeciesNames == 0
+            or #selectedSpeciesNames > 255 then
+            return LoggingContractorResultEvent.STATE_NO_SELECTED_SPECIES
+        end
+        local fullScan, scanError = self:scanFarmlandTrees(farmlandId, farmId, onlyMarkedTrees)
+        if fullScan == nil then
+            return self:getStartResultStateForScanError(scanError)
+        end
+        local available = {}
+        for _, species in ipairs(fullScan.species) do
+            available[species.name] = true
+        end
+        selectedSpecies = {}
+        for _, name in ipairs(selectedSpeciesNames) do
+            if type(name) ~= "string" or not available[name] or selectedSpecies[name] then
+                return LoggingContractorResultEvent.STATE_NO_SELECTED_SPECIES
+            end
+            selectedSpecies[name] = true
+        end
+    end
+
+    local scan, errorCode = self:scanFarmlandTrees(
+        farmlandId, farmId, onlyMarkedTrees, selectedSpecies
+    )
     if scan == nil then
         return self:getStartResultStateForScanError(errorCode)
     end
 
     if scan.totalCount <= 0 then
+        if selectedSpecies ~= nil then
+            return LoggingContractorResultEvent.STATE_NO_SELECTED_SPECIES
+        end
         if onlyMarkedTrees then
             return LoggingContractorResultEvent.STATE_NO_MARKED_TREES
         end
@@ -465,6 +499,7 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
         plannedTrees = scan.totalCount,
         onlyMarkedTrees = onlyMarkedTrees,
         pruneLargeBranches = pruneLargeBranches,
+        selectedSpecies = selectedSpeciesNames,
         equipmentCount = equipmentCount,
         logLength = logLength,
         workHours = estimate.workHours,
@@ -487,7 +522,7 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
     self.nextJobId = self.nextJobId + 1
 
     Logging.info(
-        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d cost=%d",
+        "[LoggingContractor] Contract started: job=%d farm=%d farmland=%d trees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d cost=%d species=%s",
         job.jobId,
         job.farmId,
         job.farmlandId,
@@ -496,7 +531,8 @@ function LoggingContractor:startContract(connection, farmlandId, equipmentCount,
         tostring(job.pruneLargeBranches),
         job.equipmentCount,
         job.logLength,
-        job.totalCost
+        job.totalCost,
+        job.selectedSpecies ~= nil and table.concat(job.selectedSpecies, ",") or "ALL"
     )
 
     return LoggingContractorResultEvent.STATE_SUCCESS, job:getNetworkData()
@@ -514,6 +550,7 @@ function LoggingContractor:onStartContractResult(event)
             plannedTrees = event.plannedTrees,
             onlyMarkedTrees = event.onlyMarkedTrees,
             pruneLargeBranches = event.pruneLargeBranches,
+            selectedSpecies = event.selectedSpecies,
             equipmentCount = event.equipmentCount,
             logLength = event.logLength,
             workHours = event.workHours,

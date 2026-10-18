@@ -21,6 +21,7 @@ LoggingContractorDialog.GUI_XML = "gui/LoggingContractorDialog.xml"
 LoggingContractorDialog.INSTANCE = nil
 LoggingContractorDialog.baseDirectory = nil
 LoggingContractorDialog.LOG_LENGTHS = {3, 6, 9, 12}
+LoggingContractorDialog.SPECIES_ROWS_PER_PAGE = 9
 
 
 -- Создаёт контроллер единого окна подрядчика.
@@ -37,6 +38,8 @@ function LoggingContractorDialog.new(target, customMt)
     self.currentLogLength = LoggingContractorDialog.LOG_LENGTHS[1]
     self.onlyMarkedTrees = false
     self.pruneLargeBranches = true
+    self.selectedSpecies = {}
+    self.speciesPage = 1
     self.startRequestPending = false
 
     return self
@@ -95,6 +98,8 @@ function LoggingContractorDialog.getContractDraftErrorText(errorCode)
         return "Выбрано недопустимое количество техники."
     elseif errorCode == "invalidLogLength" then
         return "Выбрана недопустимая длина брёвен."
+    elseif errorCode == "noSelectedSpecies" then
+        return "Выберите хотя бы одну породу деревьев."
     end
 
     return LoggingContractorDialog.getScanErrorText(errorCode)
@@ -119,6 +124,8 @@ function LoggingContractorDialog.getStartContractResultErrorText(state)
         return "Сервер отклонил выбранное количество техники."
     elseif state == LoggingContractorResultEvent.STATE_INVALID_LOG_LENGTH then
         return "Сервер отклонил выбранную длину брёвен."
+    elseif state == LoggingContractorResultEvent.STATE_NO_SELECTED_SPECIES then
+        return "Сервер отклонил выбранные породы деревьев."
     elseif state == LoggingContractorResultEvent.STATE_NOT_ENOUGH_MONEY then
         return "На счету фермы недостаточно средств для заключения договора."
     elseif state == LoggingContractorResultEvent.STATE_ALREADY_ACTIVE then
@@ -142,6 +149,8 @@ function LoggingContractorDialog:setData(contractor, farmlands)
     self.startRequestPending = false
     self.onlyMarkedTrees = false
     self.pruneLargeBranches = true
+    self.selectedSpecies = {}
+    self.speciesPage = 1
 
     self.onlyMarkedOption:setTexts({"Нет", "Да"})
     self.onlyMarkedOption:setState(1)
@@ -161,7 +170,7 @@ function LoggingContractorDialog:setData(contractor, farmlands)
         self.farmlandOption:setState(1)
         self.farmlandOption:setDisabled(true)
         self.treeCountText:setText("У текущей фермы нет принадлежащих ей участков.")
-        self.speciesText:setText("")
+        self:updateStatisticsText({species = {}, totalCount = 0})
         self.equipmentHintText:setText("Расчётное количество техники: 0")
         self:setEquipmentOptions(0, 0)
         return
@@ -179,22 +188,65 @@ function LoggingContractorDialog:setData(contractor, farmlands)
 end
 
 
--- Формирует отдельную строку общего количества деревьев и визуально вложенный
--- список пород с дополнительным отступом вправо.
-function LoggingContractorDialog:updateStatisticsText(scan)
-    local title = scan.onlyMarkedTrees and "Помеченных стоящих деревьев" or "Стоящих деревьев"
-    self.treeCountText:setText(string.format("%s: %d", title, scan.totalCount))
-
-    local lines = {}
-    if #scan.species == 0 then
-        table.insert(lines, "Деревьев нет")
-    else
-        for _, species in ipairs(scan.species) do
-            table.insert(lines, string.format("%s: %d", species.title, species.count))
+-- Считает выбранные деревья из полного сканирования участка.
+function LoggingContractorDialog:getSelectedTreeCount(scan)
+    local count = 0
+    for _, species in ipairs(scan ~= nil and scan.species or {}) do
+        if self.selectedSpecies[species.name] ~= false then
+            count = count + species.count
         end
     end
+    return count
+end
 
-    self.speciesText:setText(table.concat(lines, "\n"))
+
+-- Возвращает имена отмеченных пород для проверяемого сервером запроса.
+function LoggingContractorDialog:getSelectedSpeciesNames(scan)
+    local names = {}
+    for _, species in ipairs(scan ~= nil and scan.species or {}) do
+        if self.selectedSpecies[species.name] ~= false then
+            table.insert(names, species.name)
+        end
+    end
+    return names
+end
+
+
+-- Отображает текущую страницу списка пород с независимыми переключателями.
+function LoggingContractorDialog:updateStatisticsText(scan)
+    local title = scan.onlyMarkedTrees and "Помеченных стоящих деревьев" or "Стоящих деревьев"
+    self.treeCountText:setText(string.format(
+        "%s: %d из %d", title, self:getSelectedTreeCount(scan), scan.totalCount
+    ))
+
+    local totalPages = math.max(
+        math.ceil(#scan.species / LoggingContractorDialog.SPECIES_ROWS_PER_PAGE), 1
+    )
+    self.speciesPage = math.clamp(self.speciesPage, 1, totalPages)
+    for index = 1, LoggingContractorDialog.SPECIES_ROWS_PER_PAGE do
+        local speciesIndex =
+            (self.speciesPage - 1) * LoggingContractorDialog.SPECIES_ROWS_PER_PAGE + index
+        local species = scan.species[speciesIndex]
+        local label = self["speciesLabel" .. index]
+        local option = self["speciesOption" .. index]
+        if species ~= nil then
+            label:setText(string.format("%s: %d", species.title, species.count))
+            label:setVisible(true)
+            option:setTexts({"Нет", "Да"})
+            option:setState(self.selectedSpecies[species.name] == false and 1 or 2)
+            option:setVisible(true)
+        else
+            label:setVisible(false)
+            option:setVisible(false)
+        end
+    end
+    local pages = {}
+    for page = 1, totalPages do
+        table.insert(pages, string.format("%d/%d", page, totalPages))
+    end
+    self.speciesPageOption:setTexts(pages)
+    self.speciesPageOption:setState(self.speciesPage)
+    self.speciesPageOption:setDisabled(totalPages == 1)
 end
 
 
@@ -249,7 +301,7 @@ function LoggingContractorDialog:refreshCurrentFarmlandScan()
         self.currentScan = nil
         self.currentEstimate = nil
         self.treeCountText:setText(LoggingContractorDialog.getScanErrorText(errorCode))
-        self.speciesText:setText("")
+        self:updateStatisticsText({species = {}, totalCount = 0})
         self.equipmentHintText:setText("Расчётное количество техники: 0")
         self:setEquipmentOptions(0, 0)
         return
@@ -258,9 +310,10 @@ function LoggingContractorDialog:refreshCurrentFarmlandScan()
     self.currentScan = scan
     self:updateStatisticsText(scan)
 
-    local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
+    local selectedCount = self:getSelectedTreeCount(scan)
+    local recommendedCount = self.contractor:getRecommendedEquipmentCount(selectedCount)
     self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
-    self:setEquipmentOptions(scan.totalCount, recommendedCount)
+    self:setEquipmentOptions(selectedCount, recommendedCount)
 end
 
 
@@ -285,7 +338,7 @@ function LoggingContractorDialog:updateStartContractButton()
         and self.contractor ~= nil
         and self.currentFarmland ~= nil
         and self.currentScan ~= nil
-        and self.currentScan.totalCount > 0
+        and self:getSelectedTreeCount(self.currentScan) > 0
         and self.currentEquipmentCount > 0
         and self.currentEstimate ~= nil
 
@@ -302,7 +355,8 @@ function LoggingContractorDialog:updateEstimate()
     self.currentContractDraft = nil
 
     local zeroMoney = g_i18n:formatMoney(0, 0, true, false)
-    if self.currentScan == nil or self.currentScan.totalCount <= 0 or self.currentEquipmentCount <= 0 then
+    local selectedCount = self:getSelectedTreeCount(self.currentScan)
+    if selectedCount <= 0 or self.currentEquipmentCount <= 0 then
         self.currentEstimate = nil
         self.estimateTimeText:setText("Расчётное время: 0,0 ч")
         self.rentCostText:setText(string.format("Аренда техники: %s", zeroMoney))
@@ -314,7 +368,7 @@ function LoggingContractorDialog:updateEstimate()
     end
 
     local estimate = self.contractor:calculateEstimate(
-        self.currentScan.totalCount,
+        selectedCount,
         self.currentEquipmentCount
     )
     self.currentEstimate = estimate
@@ -367,6 +421,14 @@ function LoggingContractorDialog:createContractDraft()
         return nil, self.onlyMarkedTrees and "noMarkedTrees" or "noTrees"
     end
 
+    local selectedCount = self:getSelectedTreeCount(scan)
+    if selectedCount <= 0 then
+        self.currentScan = scan
+        self:updateStatisticsText(scan)
+        self:setEquipmentOptions(0, 0)
+        return nil, "noSelectedSpecies"
+    end
+
     local equipmentCount = math.floor(self.currentEquipmentCount or 0)
     if equipmentCount <= 0 then
         return nil, "invalidEquipment"
@@ -374,7 +436,7 @@ function LoggingContractorDialog:createContractDraft()
 
     equipmentCount = math.min(
         equipmentCount,
-        scan.totalCount
+        selectedCount
     )
 
     local logLengthIsValid = false
@@ -391,12 +453,12 @@ function LoggingContractorDialog:createContractDraft()
     self.currentScan = scan
     self:updateStatisticsText(scan)
 
-    local recommendedCount = self.contractor:getRecommendedEquipmentCount(scan.totalCount)
+    local recommendedCount = self.contractor:getRecommendedEquipmentCount(selectedCount)
     self.equipmentHintText:setText(string.format("Расчётное количество техники: %d", recommendedCount))
 
-    if self.maxEquipmentCount ~= scan.totalCount
+    if self.maxEquipmentCount ~= selectedCount
         or self.currentEquipmentCount ~= equipmentCount then
-        self:setEquipmentOptions(scan.totalCount, equipmentCount)
+        self:setEquipmentOptions(selectedCount, equipmentCount)
     else
         self:updateEstimate()
     end
@@ -409,7 +471,8 @@ function LoggingContractorDialog:createContractDraft()
     local draft = {
         farmId = farmId,
         farmlandId = self.currentFarmland.id,
-        plannedTrees = scan.totalCount,
+        plannedTrees = selectedCount,
+        selectedSpecies = self:getSelectedSpeciesNames(scan),
         onlyMarkedTrees = self.onlyMarkedTrees,
         pruneLargeBranches = self.pruneLargeBranches,
         equipmentCount = self.currentEquipmentCount,
@@ -428,6 +491,84 @@ end
 
 
 -- Обрабатывает смену участка в верхнем селекторе окна.
+-- Переключает породу на текущей странице и обновляет расчёт.
+function LoggingContractorDialog:onClickSpeciesRow(row, state)
+    if self.currentScan == nil then
+        return
+    end
+    local index = (self.speciesPage - 1)
+        * LoggingContractorDialog.SPECIES_ROWS_PER_PAGE + row
+    local species = self.currentScan.species[index]
+    if species == nil then
+        return
+    end
+    self.selectedSpecies[species.name] = state == 2
+    self.currentContractDraft = nil
+    self:updateStatisticsText(self.currentScan)
+    local selectedCount = self:getSelectedTreeCount(self.currentScan)
+    local equipmentCount = math.min(self.currentEquipmentCount, selectedCount)
+    self.equipmentHintText:setText(string.format(
+        "Расчётное количество техники: %d",
+        self.contractor:getRecommendedEquipmentCount(selectedCount)
+    ))
+    self:setEquipmentOptions(selectedCount, equipmentCount)
+end
+
+
+-- Меняет страницу переключателей при большом количестве пород.
+function LoggingContractorDialog:onClickSpeciesPage(state)
+    self.speciesPage = state
+    if self.currentScan ~= nil then
+        self:updateStatisticsText(self.currentScan)
+    end
+end
+
+
+function LoggingContractorDialog:onClickSpecies1(state)
+    self:onClickSpeciesRow(1, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies2(state)
+    self:onClickSpeciesRow(2, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies3(state)
+    self:onClickSpeciesRow(3, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies4(state)
+    self:onClickSpeciesRow(4, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies5(state)
+    self:onClickSpeciesRow(5, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies6(state)
+    self:onClickSpeciesRow(6, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies7(state)
+    self:onClickSpeciesRow(7, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies8(state)
+    self:onClickSpeciesRow(8, state)
+end
+
+
+function LoggingContractorDialog:onClickSpecies9(state)
+    self:onClickSpeciesRow(9, state)
+end
+
+
 function LoggingContractorDialog:onClickFarmland(state)
     self:selectFarmland(state)
 end
@@ -450,7 +591,7 @@ end
 
 
 function LoggingContractorDialog:onClickEquipment(state)
-    if self.currentScan == nil or self.currentScan.totalCount <= 0 then
+    if self.currentScan == nil or self:getSelectedTreeCount(self.currentScan) <= 0 then
         return
     end
 
@@ -492,7 +633,7 @@ function LoggingContractorDialog:onClickStartContract()
     self:updateStartContractButton()
 
     Logging.info(
-        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d previewCost=%d",
+        "[LoggingContractor] Start request: farm=%d farmland=%d previewTrees=%d onlyMarked=%s pruneLargeBranches=%s equipment=%d logLength=%d previewCost=%d species=%s",
         draft.farmId,
         draft.farmlandId,
         draft.plannedTrees,
@@ -500,7 +641,8 @@ function LoggingContractorDialog:onClickStartContract()
         tostring(draft.pruneLargeBranches),
         draft.equipmentCount,
         draft.logLength,
-        draft.totalCost
+        draft.totalCost,
+        table.concat(draft.selectedSpecies, ",")
     )
 
     if not LoggingContractorStartEvent.sendEvent(
@@ -508,7 +650,8 @@ function LoggingContractorDialog:onClickStartContract()
         draft.equipmentCount,
         draft.logLength,
         draft.onlyMarkedTrees,
-        draft.pruneLargeBranches
+        draft.pruneLargeBranches,
+        draft.selectedSpecies
     ) then
         self.startRequestPending = false
         self:updateStartContractButton()
@@ -608,6 +751,8 @@ function LoggingContractorDialog:onClose()
     self.onlyMarkedTrees = false
     self.pruneLargeBranches = true
     self.startRequestPending = false
+    self.selectedSpecies = {}
+    self.speciesPage = 1
 
     LoggingContractorDialog:superClass().onClose(self)
 end

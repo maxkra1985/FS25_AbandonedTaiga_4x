@@ -607,14 +607,23 @@ function LoggingContractor:contractTargetOverlapCallback(transformId)
 
     if self:isStandingContractTarget(transformId, scan.farmlandId)
         and (not scan.onlyMarkedTrees or self:isContractTargetMarked(transformId)) then
-        table.insert(scan.nodes, transformId)
+        local allowed = scan.selectedSpecies == nil
+        if not allowed then
+            local splitType = getSplitType(transformId)
+            local desc = g_treePlantManager:getTreeTypeDescFromSplitType(splitType)
+            local speciesName = self:getTreeSpecies(desc, splitType)
+            allowed = scan.selectedSpecies[speciesName] == true
+        end
+        if allowed then
+            table.insert(scan.nodes, transformId)
+        end
     end
 end
 
 
 -- Собирает фактический список стоящих целей участка. Метод используется только
 -- сервером для фиксации исходного набора деревьев сразу после заключения договора.
-function LoggingContractor:collectContractTargets(farmlandId, onlyMarkedTrees)
+function LoggingContractor:collectContractTargets(farmlandId, onlyMarkedTrees, selectedSpecies)
     local farmland = g_farmlandManager ~= nil and g_farmlandManager:getFarmlandById(farmlandId) or nil
     if farmland == nil then
         return {}
@@ -632,6 +641,7 @@ function LoggingContractor:collectContractTargets(farmlandId, onlyMarkedTrees)
     self.activeContractTargetScan = {
         farmlandId = farmlandId,
         onlyMarkedTrees = onlyMarkedTrees == true,
+        selectedSpecies = selectedSpecies,
         nodes = {},
         seenNodes = {}
     }
@@ -980,7 +990,9 @@ function LoggingContractor:initializeJobTargets(job)
         and getContractorPerfTimeMs()
         or nil
 
-    job.targetNodes = self:collectContractTargets(job.farmlandId, job.onlyMarkedTrees)
+    job.targetNodes = self:collectContractTargets(
+        job.farmlandId, job.onlyMarkedTrees, job:getSelectedSpeciesSet()
+    )
 
     if perfStartMs ~= nil then
         self:recordContractorPerfMetric(
@@ -1759,6 +1771,7 @@ function LoggingContractor:applyClientJobProgress(data)
             plannedTrees = data.plannedTrees,
             onlyMarkedTrees = data.onlyMarkedTrees,
             pruneLargeBranches = data.pruneLargeBranches,
+            selectedSpecies = data.selectedSpecies,
             contractorCutTrees = data.contractorCutTrees,
             remainingTrees = data.remainingTrees,
             equipmentCount = data.equipmentCount,
@@ -1777,6 +1790,7 @@ function LoggingContractor:applyClientJobProgress(data)
         job.plannedTrees = data.plannedTrees
         job.onlyMarkedTrees = data.onlyMarkedTrees == true
         job.pruneLargeBranches = data.pruneLargeBranches ~= false
+        job.selectedSpecies = data.selectedSpecies
         job.contractorCutTrees = data.contractorCutTrees
         job.remainingTrees = data.remainingTrees
         job.equipmentCount = data.equipmentCount
@@ -2220,8 +2234,11 @@ end
 
 -- Расширяет заключение договора и сразу фиксирует исходный набор целей. Само
 -- списание средств и все проверки остаются в существующем startContract.
-function LoggingContractor:startContractWithExecution(superFunc, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
-    local state, data = superFunc(self, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches)
+function LoggingContractor:startContractWithExecution(superFunc, connection, farmlandId, equipmentCount, logLength, onlyMarkedTrees, pruneLargeBranches, selectedSpecies)
+    local state, data = superFunc(
+        self, connection, farmlandId, equipmentCount, logLength,
+        onlyMarkedTrees, pruneLargeBranches, selectedSpecies
+    )
 
     if state == LoggingContractorResultEvent.STATE_SUCCESS and data ~= nil then
         local job = self.activeJobs[data.jobId]

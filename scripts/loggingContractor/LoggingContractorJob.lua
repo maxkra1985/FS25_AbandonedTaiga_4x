@@ -25,6 +25,7 @@ function LoggingContractorJob.new(data, customMt)
     self.plannedTrees = data.plannedTrees
     self.onlyMarkedTrees = data.onlyMarkedTrees == true
     self.pruneLargeBranches = data.pruneLargeBranches ~= false
+    self.selectedSpecies = data.selectedSpecies
     self.contractorCutTrees = data.contractorCutTrees or 0
     -- Отдельно учитываем незавершённые попытки, не включая их в успехи.
     self.failedTreeCount = data.failedTreeCount or 0
@@ -55,6 +56,7 @@ function LoggingContractorJob:getNetworkData()
         plannedTrees = self.plannedTrees,
         onlyMarkedTrees = self.onlyMarkedTrees,
         pruneLargeBranches = self.pruneLargeBranches,
+        selectedSpecies = self.selectedSpecies,
         contractorCutTrees = self.contractorCutTrees,
         remainingTrees = self.remainingTrees,
         equipmentCount = self.equipmentCount,
@@ -67,6 +69,20 @@ function LoggingContractorJob:getNetworkData()
         totalCost = self.totalCost,
         state = self.state
     }
+end
+
+
+-- Возвращает набор разрешённых пород для поиска целей.
+-- nil означает отсутствие фильтра (старые договоры и настройки по умолчанию).
+function LoggingContractorJob:getSelectedSpeciesSet()
+    if self.selectedSpecies == nil then
+        return nil
+    end
+    local result = {}
+    for _, name in ipairs(self.selectedSpecies) do
+        result[name] = true
+    end
+    return result
 end
 
 

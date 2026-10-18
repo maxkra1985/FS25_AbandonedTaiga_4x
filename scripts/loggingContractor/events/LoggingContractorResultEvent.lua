@@ -23,6 +23,7 @@ LoggingContractorResultEvent.STATE_NOT_ENOUGH_MONEY = 8
 LoggingContractorResultEvent.STATE_ALREADY_ACTIVE = 9
 LoggingContractorResultEvent.STATE_INTERNAL_ERROR = 10
 LoggingContractorResultEvent.STATE_NO_MARKED_TREES = 11
+LoggingContractorResultEvent.STATE_NO_SELECTED_SPECIES = 12
 
 
 -- Создаёт пустое сетевое событие для десериализации GIANTS Engine.
@@ -44,6 +45,7 @@ function LoggingContractorResultEvent.new(state, data)
         self.plannedTrees = data.plannedTrees
         self.onlyMarkedTrees = data.onlyMarkedTrees == true
         self.pruneLargeBranches = data.pruneLargeBranches ~= false
+        self.selectedSpecies = data.selectedSpecies
         self.equipmentCount = data.equipmentCount
         self.logLength = data.logLength
         self.workHours = data.workHours
@@ -72,6 +74,13 @@ function LoggingContractorResultEvent:writeStream(streamId, connection)
     streamWriteUInt32(streamId, self.plannedTrees)
     streamWriteBool(streamId, self.onlyMarkedTrees)
     streamWriteBool(streamId, self.pruneLargeBranches)
+    streamWriteBool(streamId, self.selectedSpecies ~= nil)
+    if self.selectedSpecies ~= nil then
+        streamWriteUInt8(streamId, #self.selectedSpecies)
+        for _, name in ipairs(self.selectedSpecies) do
+            streamWriteString(streamId, name)
+        end
+    end
     streamWriteUInt32(streamId, self.equipmentCount)
     streamWriteUInt8(streamId, self.logLength)
     streamWriteFloat32(streamId, self.workHours)
@@ -94,6 +103,12 @@ function LoggingContractorResultEvent:readStream(streamId, connection)
         self.plannedTrees = streamReadUInt32(streamId)
         self.onlyMarkedTrees = streamReadBool(streamId)
         self.pruneLargeBranches = streamReadBool(streamId)
+        if streamReadBool(streamId) then
+            self.selectedSpecies = {}
+            for _ = 1, streamReadUInt8(streamId) do
+                table.insert(self.selectedSpecies, streamReadString(streamId))
+            end
+        end
         self.equipmentCount = streamReadUInt32(streamId)
         self.logLength = streamReadUInt8(streamId)
         self.workHours = streamReadFloat32(streamId)

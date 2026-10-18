@@ -22,7 +22,27 @@
             </MultiTextOption>
 
             <Text profile="loggingContractorTreeCount" id="treeCountText"/>
-            <Text profile="loggingContractorSpecies" id="speciesText"/>
+            <!-- Девять переключателей пород на странице; остальные доступны
+                 через селектор страниц без ограничения количества пород. -->
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel1" position="-65px -195px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption1" position="245px -195px" onClick="onClickSpecies1"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel2" position="-65px -219px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption2" position="245px -219px" onClick="onClickSpecies2"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel3" position="-65px -243px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption3" position="245px -243px" onClick="onClickSpecies3"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel4" position="-65px -267px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption4" position="245px -267px" onClick="onClickSpecies4"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel5" position="-65px -291px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption5" position="245px -291px" onClick="onClickSpecies5"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel6" position="-65px -315px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption6" position="245px -315px" onClick="onClickSpecies6"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel7" position="-65px -339px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption7" position="245px -339px" onClick="onClickSpecies7"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel8" position="-65px -363px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption8" position="245px -363px" onClick="onClickSpecies8"/>
+            <Text profile="loggingContractorSpeciesRow" id="speciesLabel9" position="-65px -387px"/>
+            <MultiTextOption profile="loggingContractorSpeciesSwitch" id="speciesOption9" position="245px -387px" onClick="onClickSpecies9"/>
+            <MultiTextOption profile="loggingContractorSpeciesPage" id="speciesPageOption" position="0px -415px" onClick="onClickSpeciesPage"/>
 
             <!-- Отбор деревьев и обрезка крупных ветвей располагаются в одной строке. -->
             <Text profile="loggingContractorHalfSettingLabel" text="Только помеченные деревья" position="-150px -445px"/>
@@ -127,6 +147,21 @@
             <textAlignment value="left"/>
             <textVerticalAlignment value="top"/>
             <textMaxNumLines value="12"/>
+        </Profile>
+
+        <Profile name="loggingContractorSpeciesRow" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="420px 24px"/>
+            <textSize value="18px"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
+        </Profile>
+
+        <Profile name="loggingContractorSpeciesSwitch" extends="fs25_multiTextOption" with="anchorTopCenter">
+            <size value="100px 24px"/>
+        </Profile>
+
+        <Profile name="loggingContractorSpeciesPage" extends="fs25_multiTextOption" with="anchorTopCenter">
+            <size value="165px 26px"/>
         </Profile>
 
         <Profile name="loggingContractorSettingLabel" extends="fs25_textDefault" with="anchorTopCenter">
