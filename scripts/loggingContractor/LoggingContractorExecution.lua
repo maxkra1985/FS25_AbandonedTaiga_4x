@@ -1285,7 +1285,8 @@ function LoggingContractor:freezeContractorPruningTrunk(state, shape)
 end
 
 
--- Возвращает основному стволу динамическую физику перед раскряжёвкой.
+-- Возвращает основному стволу динамическую физику перед раскряжёвкой
+-- либо при завершении очистки, если раскряжёвка отключена.
 function LoggingContractor:releaseContractorPruningTrunk(state)
     local shape = state.frozenShape
     state.frozenShape = nil
@@ -1519,6 +1520,17 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
     end
 
     if state.phase == "REMOVE_STUMP" then
+        -- Если раскряжёвка отключена, освобождаем очищенный ствол до
+        -- удаления пня и даём физике синхронизироваться в отдельном tick.
+        if state.frozenShape ~= nil then
+            if not allowMutation then
+                return false, false, false
+            end
+
+            self:releaseContractorPruningTrunk(state)
+            return false, true, false
+        end
+
         while #state.stumpShapes > 0 do
             local stumpShape = table.remove(state.stumpShapes, 1)
 
@@ -1651,7 +1663,14 @@ function LoggingContractor:advanceContractorTreeProcess(job, state, allowMutatio
         if done then
             state.shape = state.pruning.shape
             state.trunkLength = state.pruning.length
-            state.phase = "BUCK_INIT"
+            if job.pruneLargeBranches == false then
+                -- Без распила крупных ветвей оставляем целый очищенный
+                -- ствол: пропускаем BUCK_INIT/BUCK и завершаем удалением пня.
+                state.buckingSuccess = true
+                state.phase = "REMOVE_STUMP"
+            else
+                state.phase = "BUCK_INIT"
+            end
         end
 
         return false, false, false
