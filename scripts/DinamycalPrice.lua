@@ -216,6 +216,110 @@ function DinamycalPrice:calculateChanged()
 	self:broadcastMultipliers()
 end
 
+-- Налоговое уведомление передаётся сервером всем клиентам, но показывается только своей ферме.
+DinamycalPriceTaxEvent = {}
+local DinamycalPriceTaxEvent_mt = Class(DinamycalPriceTaxEvent, Event)
+InitEventClass(DinamycalPriceTaxEvent, "DinamycalPriceTaxEvent")
+
+function DinamycalPriceTaxEvent.emptyNew()
+    return Event.new(DinamycalPriceTaxEvent_mt)
+end
+
+function DinamycalPriceTaxEvent.new(farmId, message)
+    local self = DinamycalPriceTaxEvent.emptyNew()
+    self.farmId = farmId
+    self.message = message
+    return self
+end
+
+function DinamycalPriceTaxEvent:writeStream(streamId, connection)
+    streamWriteInt32(streamId, self.farmId)
+    streamWriteString(streamId, self.message)
+end
+
+function DinamycalPriceTaxEvent:readStream(streamId, connection)
+    self.farmId = streamReadInt32(streamId)
+    self.message = streamReadString(streamId)
+    self:run(connection)
+end
+
+function DinamycalPriceTaxEvent:run(connection)
+    if g_currentMission == nil or g_currentMission:getIsServer() then
+        return
+    end
+    if g_currentMission:getFarmId() == self.farmId then
+        g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_INFO, self.message)
+    end
+end
+
+function DinamycalPrice:notifyFarmTax(farmId, message)
+    if g_currentMission:getFarmId() == farmId then
+        g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_INFO, message)
+    end
+    if g_server ~= nil then
+        g_server:broadcastEvent(DinamycalPriceTaxEvent.new(farmId, message), false)
+    end
+    logMessage("[TAX]", string.format("Farm %s notification: %s", tostring(farmId), message))
+end
+
+function DinamycalPrice:getTaxStatePath()
+    local info = g_currentMission ~= nil and g_currentMission.missionInfo or nil
+    local dir = info ~= nil and info.savegameDirectory or nil
+    if dir == nil or dir == "" then
+        return nil
+    end
+    return dir .. "/dinamycalPriceTax.xml"
+end
+
+function DinamycalPrice:loadTaxState()
+    self.taxSalesBaseline = {}
+    local path = self:getTaxStatePath()
+    if path == nil or not fileExists(path) then
+        logMessage("[TAX]", "No persisted tax baseline (migration / new save)")
+        return false
+    end
+    local xml = loadXMLFile("dinamycalPriceTax", path)
+    if xml == nil or xml == 0 then
+        logMessage("[WARN]", "Could not load tax baseline: " .. path)
+        return false
+    end
+    local index = 0
+    while true do
+        local key = string.format("taxState.farm(%d)", index)
+        local farmId = getXMLInt(xml, key .. "#id")
+        if farmId == nil then
+            break
+        end
+        self.taxSalesBaseline[farmId] = getXMLFloat(xml, key .. "#sales") or 0
+        index = index + 1
+    end
+    delete(xml)
+    logMessage("[TAX]", string.format("Loaded saved tax baselines for %d farms", index))
+    return true
+end
+
+function DinamycalPrice:saveTaxState()
+    local path = self:getTaxStatePath()
+    if path == nil then
+        logMessage("[WARN]", "Cannot persist tax baseline: savegame directory missing")
+        return
+    end
+    local xml = createXMLFile("dinamycalPriceTax", path, "taxState")
+    if xml == nil or xml == 0 then
+        logMessage("[WARN]", "Cannot create tax state: " .. path)
+        return
+    end
+    local index = 0
+    for farmId, sales in pairs(self.taxSalesBaseline or {}) do
+        local key = string.format("taxState.farm(%d)", index)
+        setXMLInt(xml, key .. "#id", tonumber(farmId))
+        setXMLFloat(xml, key .. "#sales", sales)
+        index = index + 1
+    end
+    saveXMLFile(xml)
+    delete(xml)
+end
+
 --================================================================================================
 -- Рассчёт и списание налога с продаж.
 function DinamycalPrice:getCurrentTaxableSales(finances)
@@ -242,7 +346,10 @@ function DinamycalPrice:initializeTaxSalesBaseline()
 
 	for farmId, farm in pairs(g_farmManager.farms) do
 		if farm ~= nil and farm.stats ~= nil then
-			self.taxSalesBaseline[farmId] = self:getCurrentTaxableSales(farm.stats.finances)
+			if self.taxSalesBaseline[farmId] == nil then
+                self.taxSalesBaseline[farmId] = self:getCurrentTaxableSales(farm.stats.finances)
+                logMessage("[TAX]", string.format("Farm %s baseline initialized from current totals (unrecoverable earlier day sales)", tostring(farmId)))
+            end
 		end
 	end
 
@@ -253,121 +360,67 @@ end
 -- FarmStats.finances накапливается в течение периода, поэтому суточный оборот
 -- считаем как разницу двух накопительных снимков.
 function DinamycalPrice:calculateTax()
-	if g_currentMission == nil or g_farmManager == nil or not g_currentMission:getIsServer() then
-		return
-	end
+    if g_currentMission == nil or g_farmManager == nil or not g_currentMission:getIsServer() then
+        return
+    end
 
-	local farmId = g_currentMission:getFarmId()
-	if farmId == nil then
-		logMessage("[WARN]", "TAX: не удалось определить farmId")
-		return
-	end
+    self.taxSalesBaseline = self.taxSalesBaseline or {}
+    local fullYears = getFullYears()
+    local difficultyMultiplier = EconomyManager.getPriceMultiplier()
+    local limits = {50000, 500000, 1000000, 2000000, 3500000}
+    local rates = {0, 0.02, 0.05, 0.10, 0.20, 0.30}
 
-	local farm = g_farmManager:getFarmById(farmId)
-	if farm == nil or farm.stats == nil or farm.stats.finances == nil then
-		logMessage("[WARN]", "TAX: не удалось получить статистику фермы")
-		return
-	end
+    for farmId, farm in pairs(g_farmManager.farms or {}) do
+        if farm ~= nil and farm.stats ~= nil and farm.stats.finances ~= nil
+            and tonumber(farmId) ~= nil and tonumber(farmId) > 0 then
+            local cumulative = self:getCurrentTaxableSales(farm.stats.finances)
+            local previous = self.taxSalesBaseline[farmId]
+            local daily = 0
+            if previous ~= nil then
+                daily = cumulative >= previous and (cumulative - previous) or cumulative
+            end
 
-	self.taxSalesBaseline = self.taxSalesBaseline or {}
+            self.taxSalesBaseline[farmId] = cumulative
+            daily = math.max(0, daily)
 
-	local cumulativeSales = self:getCurrentTaxableSales(farm.stats.finances)
-	local previousSales = self.taxSalesBaseline[farmId]
-	local dailySales
+            local baseRate = rates[6]
+            for i, limit in ipairs(limits) do
+                if daily <= limit * difficultyMultiplier then
+                    baseRate = rates[i]
+                    break
+                end
+            end
 
-	if previousSales == nil then
-		dailySales = 0
-	elseif cumulativeSales >= previousSales then
-		dailySales = cumulativeSales - previousSales
-	else
-		-- FarmStats был архивирован на PERIOD_CHANGED и накопитель начался заново.
-		dailySales = cumulativeSales
-	end
+            local rate = 0
+            if fullYears >= 3 and baseRate > 0 then
+                rate = MathUtil.round(
+                    (baseRate + (3 - difficultyMultiplier) / 100) * currentBuyMultiplier, 2)
+            end
+            local amount = MathUtil.round(daily * rate, 0)
 
-	self.taxSalesBaseline[farmId] = cumulativeSales
-	dailySales = math.max(0, dailySales)
+            logMessage("[TAX]", string.format(
+                "farm=%s cumulative=%.2f previous=%s daily=%.2f fullYears=%s baseRate=%.2f finalRate=%.2f tax=%.2f",
+                tostring(farmId), cumulative, tostring(previous), daily, tostring(fullYears), baseRate, rate, amount))
 
-	logMessage("[TAX]", string.format(
-		"Daily sales: cumulative=%.2f previous=%s daily=%.2f",
-		cumulativeSales, tostring(previousSales), dailySales
-	))
+            if amount > 0 then
+                g_currentMission:addMoney(-amount, farmId, MoneyType.OTHER, true, true)
+            end
 
-	-- Тестовое условие оставлено намеренно.
-	local fullYears = getFullYears()
-	if fullYears < 3 then
-		g_currentMission:addIngameNotification(
-			FSBaseMission.INGAME_NOTIFICATION_INFO,
-			"Действует льготный период налогообложения (три года)"
-		)
-		logMessage("[TAX]", string.format(
-			"Налог не начислен: оборот %.2f, льготный период не истёк", dailySales
-		))
-		return
-	end
+            local message
+            if fullYears < 3 then
+                message = string.format("Налог с продаж: 0 (льготный период, оборот %.0f)", daily)
+            elseif amount == 0 then
+                message = string.format("Налог с продаж: 0 (оборот %.0f, необлагаемый предел %.0f)",
+                    daily, limits[1] * difficultyMultiplier)
+            else
+                message = string.format("Налог с продаж: %s (оборот %.0f, ставка %.0f%%)",
+                    g_i18n:formatMoney(amount, 0, true, true), daily, rate * 100)
+            end
+            self:notifyFarmTax(farmId, message)
+        end
+    end
 
-	local difficultyMultiplier = EconomyManager.getPriceMultiplier()
-
-	local taxLimit1 = 50000 * difficultyMultiplier
-	local taxLimit2 = 500000 * difficultyMultiplier
-	local taxLimit3 = 1000000 * difficultyMultiplier
-	local taxLimit4 = 2000000 * difficultyMultiplier
-	local taxLimit5 = 3500000 * difficultyMultiplier
-
-	local baseTaxRate = 0.00
-	if dailySales <= taxLimit1 then
-		baseTaxRate = 0.00
-	elseif dailySales <= taxLimit2 then
-		baseTaxRate = 0.02
-	elseif dailySales <= taxLimit3 then
-		baseTaxRate = 0.05
-	elseif dailySales <= taxLimit4 then
-		baseTaxRate = 0.10
-	elseif dailySales <= taxLimit5 then
-		baseTaxRate = 0.20
-	else
-		baseTaxRate = 0.30
-	end
-
-	local taxRate = 0.00
-	if baseTaxRate > 0 then
-		taxRate = MathUtil.round(
-			(baseTaxRate + (3 - difficultyMultiplier) / 100) * currentBuyMultiplier,
-			2
-		)
-	end
-
-	local taxAmount = MathUtil.round(dailySales * taxRate, 0)
-
-	logMessage("[TAX]", string.format(
-		"difficultyMultiplier=%.2f limits=[%.0f, %.0f, %.0f, %.0f, %.0f] baseRate=%.0f%% buyMultiplier=%.4f finalRate=%.0f%% tax=%.2f",
-		difficultyMultiplier, taxLimit1, taxLimit2, taxLimit3, taxLimit4, taxLimit5,
-		baseTaxRate * 100, currentBuyMultiplier, taxRate * 100, taxAmount
-	))
-
-	if taxAmount > 0 then
-		g_currentMission:addMoney(-taxAmount, farmId, MoneyType.OTHER, true, true)
-		g_currentMission:addIngameNotification(
-			FSBaseMission.INGAME_NOTIFICATION_INFO,
-			string.format(
-				"Налог с продаж за прошедший день: %s (ставка %.0f%%)",
-				g_i18n:formatMoney(taxAmount, 0, true, true),
-				taxRate * 100
-			)
-		)
-		logMessage("[TAX]", string.format("Списан налог %.2f, категория OTHER", taxAmount))
-	else
-		g_currentMission:addIngameNotification(
-			FSBaseMission.INGAME_NOTIFICATION_INFO,
-			string.format(
-				"Налог с продаж за прошедший день: %s (необлагаемый оборот)",
-				g_i18n:formatMoney(0, 0, true, true)
-			)
-		)
-		logMessage("[TAX]", string.format(
-			"Налог не начислен: оборот %.2f, необлагаемый предел %.2f",
-			dailySales, taxLimit1
-		))
-	end
+    self:saveTaxState()
 end
 
 --================================================================================================
@@ -1983,6 +2036,7 @@ function DinamycalPrice:loadMap(name)
 		g_messageCenter:subscribe(MessageType.DAY_CHANGED, self.onDayChanged, self)
 		logMessage("[EVENT]", "Subscribed to DAY_CHANGED")
 
+		self:loadTaxState()
 		self:initializeTaxSalesBaseline()
 
 		if not DinamycalPrice.placeableHookInstalled then
