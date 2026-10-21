@@ -33,10 +33,12 @@ function TaigaRadio.new(baseDirectory)
     end
 
     xmlFile:iterate("taigaRadio.track", function(_, key)
-        local path = xmlFile:getValue(key .. "#file")
-        local title = xmlFile:getValue(key .. "#title")
-        local durationMs = xmlFile:getValue(key .. "#durationMs")
-        local speakerPath = xmlFile:getValue(key .. "#speakerFile")
+        -- У XML нет зарегистрированной схемы, поэтому используем типовые
+        -- getString/getInt вместо getValue, требующего XMLSchema.
+        local path = xmlFile:getString(key .. "#file")
+        local title = xmlFile:getString(key .. "#title")
+        local durationMs = xmlFile:getInt(key .. "#durationMs")
+        local speakerPath = xmlFile:getString(key .. "#speakerFile")
 
         if path == nil or title == nil or durationMs == nil or durationMs <= 0 then
             Logging.warning("[TaigaRadio] Пропущена запись %s: требуются file, title и durationMs", key)
