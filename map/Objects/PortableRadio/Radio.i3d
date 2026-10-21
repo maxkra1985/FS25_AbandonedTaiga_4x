@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<i3D name="Radio.i3d" version="1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://i3d.giants.ch/schema/i3d-1.6.xsd">
+  <Asset>
+    <Export program="GIANTS Editor 64bit" version="10.0.11"/>
+  </Asset>
+
+  <Files>
+    <File fileId="2" filename="textures/DefaultMaterial_Base_color_1001.dds"/>
+    <File fileId="3" filename="textures/DefaultMaterial_Normal_OpenGL_1001.dds"/>
+    <File fileId="7" filename="$data/shaders/alphabetShader.xml"/>
+    <File fileId="8" filename="$data/shared/alphabet/fontDI_alpha.dds"/>
+    <File fileId="5" filename="$data/shared/default_diffuse.dds"/>
+    <File fileId="6" filename="$data/shared/default_normal.dds"/>
+  </Files>
+
+
+  <Materials>
+    <Material name="AlphabetShader" materialId="5" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="9"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="6" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="11"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="7" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="13"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="8" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="15"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="9" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="21"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="10" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="22"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="11" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="23"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="12" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="25"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="13" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="28"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="14" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="30"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="15" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="31"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="AlphabetShader" materialId="16" customShaderId="7">
+      <Texture fileId="5"/>
+      <Normalmap fileId="6"/>
+      <Custommap name="alphaMap" fileId="8"/>
+      <CustomParameter name="index" value="32"/>
+      <CustomParameter name="lightControl" value="10"/>
+      <CustomParameter name="colorScale" value="0.00312558 0.103665 0.0142405 1"/>
+    </Material>
+    <Material name="PhilipsRadioAE5020" materialId="17" specularColor="0.501961 1 0">
+      <Texture fileId="2"/>
+      <Normalmap fileId="3"/>
+    </Material>
+    <Material name="UnnamedMaterial" materialId="18" diffuseColor="1 1 1 1">
+    </Material>
+  </Materials>
+
+
+  <Shapes externalShapesFile="Radio.i3d.shapes">
+  </Shapes>
+
+  <Scene>
+    <Shape name="collision" shapeId="1" dynamic="true" compound="true" collisionFilterGroup="0x10000" collisionFilterMask="0xfe3dfb83" nodeId="32" castsShadows="false" receiveShadows="false" distanceBlending="false" renderedInViewports="false" materialIds="18">
+      <Shape name="Antenna" shapeId="2" clipDistance="300" nodeId="33" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Body" shapeId="3" clipDistance="300" nodeId="34" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Brand" translation="0 0 0.000247808" shapeId="4" clipDistance="300" nodeId="35" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Button01" shapeId="5" clipDistance="300" nodeId="36" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Button02" shapeId="6" clipDistance="300" nodeId="37" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Button03" shapeId="7" clipDistance="300" nodeId="38" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Display" shapeId="8" clipDistance="300" nodeId="39" castsShadows="true" receiveShadows="true" materialIds="17">
+        <TransformGroup name="track" translation="-7.35736 -2.03038 -2.41234" clipDistance="300" nodeId="40">
+          <Shape name="track_0" translation="7.28402 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="41" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="14"/>
+          <Shape name="track_1" translation="7.29164 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="42" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="13"/>
+          <Shape name="track_2" translation="7.3 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="43" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="6"/>
+          <Shape name="track_3" translation="7.308 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="44" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="7"/>
+          <Shape name="track_4" translation="7.316 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="45" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="9"/>
+          <Shape name="track_id_0" translation="7.34 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="46" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="5"/>
+          <Shape name="track_id_1" translation="7.348 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="47" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="5"/>
+        </TransformGroup>
+        <TransformGroup name="volume" translation="-7.35736 -2.03038 -2.41234" clipDistance="300" nodeId="48">
+          <Shape name="volume_0" translation="7.28402 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="49" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="16"/>
+          <Shape name="volume_1" translation="7.29164 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="50" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="12"/>
+          <Shape name="volume_2" translation="7.3 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="51" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="10"/>
+          <Shape name="volume_3" translation="7.308 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="52" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="15"/>
+          <Shape name="volume_4" translation="7.316 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="53" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="11"/>
+          <Shape name="volume_5" translation="7.324 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="54" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="8"/>
+          <Shape name="volume_id_0" translation="7.34 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="55" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="5"/>
+          <Shape name="volume_id_1" translation="7.348 2.15843 2.45365" scale="0.00909199 0.0154432 0.00967661" shapeId="9" nodeId="56" castsShadows="false" receiveShadows="false" distanceBlending="false" materialIds="5"/>
+        </TransformGroup>
+      </Shape>
+      <Shape name="Feet" shapeId="10" clipDistance="300" nodeId="57" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="Handle" shapeId="11" clipDistance="300" nodeId="58" castsShadows="true" receiveShadows="true" materialIds="17"/>
+      <Shape name="trigger" translation="0 0.719033 0.637587" scale="1 1.58103 1" shapeId="12" kinematic="true" compound="true" trigger="true" collisionFilterGroup="0x20000000" collisionFilterMask="0x100000" clipDistance="300" nodeId="59" castsShadows="false" receiveShadows="false" distanceBlending="false" renderedInViewports="false" materialIds="18"/>
+    </Shape>
+  </Scene>
+
+</i3D>
