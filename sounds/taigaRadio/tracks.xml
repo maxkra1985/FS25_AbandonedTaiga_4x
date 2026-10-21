@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Радио Заброшенная тайга.
+    Композиции подключаются по одной записи track.
+    file       — MP3 для транспортного радио (потоковый звук).
+    speakerFile — OGG для позиционных радиоприёмников (необязателен).
+    title      — надпись в стандартном уведомлении радио.
+    durationMs — точная длительность композиции в миллисекундах.
+    Без файла или правильной длительности запись пропускается.
+    Добавьте сюда собственные композиции после копирования в sounds/taigaRadio/music/.
+
+    Пример (снять комментарий только после добавления файлов):
+    <track title="Здесь будет жизнь"
+           file="sounds/taigaRadio/music/01_ZdesBudetZhizn.mp3"
+           speakerFile="sounds/taigaRadio/music/01_ZdesBudetZhizn.ogg"
+           durationMs="238000"/>
+-->
+<taigaRadio>
+</taigaRadio>

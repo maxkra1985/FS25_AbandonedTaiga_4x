@@ -176,7 +176,12 @@ function MissionTayga.new(baseDirectory, customMt)
     MissionTayga.loadLoggingContractorModules(baseDirectory)
     MissionTayga.installLicensePlateHooks()
 
-    return MissionTayga:superClass().new(baseDirectory, customMt or MissionTayga_mt)
+    local mission = MissionTayga:superClass().new(baseDirectory, customMt or MissionTayga_mt)
+    -- Подключаем радиостанцию к конкретному SoundPlayer до регистрации
+    -- пользовательских действий и до старта миссии.
+    mission.taigaRadio = TaigaRadio.new(baseDirectory)
+    mission.taigaRadio:install()
+    return mission
 end
 
 
@@ -234,6 +239,11 @@ function MissionTayga:delete()
     if self.loggingContractor ~= nil then
         self.loggingContractor:delete()
         self.loggingContractor = nil
+    end
+
+    if self.taigaRadio ~= nil then
+        self.taigaRadio:delete()
+        self.taigaRadio = nil
     end
 
     MissionTayga:superClass().delete(self)

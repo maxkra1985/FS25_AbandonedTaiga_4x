@@ -33,6 +33,9 @@
 	<l10n filenamePrefix="lang/l10n"/>
 
 	<extraSourceFiles>
+        <!-- Радио: общий список композиций и серверная синхронизация приёмников. -->
+        <sourceFile filename="scripts/taigaRadio/TaigaRadio.lua"/>
+        <sourceFile filename="scripts/taigaRadio/TaigaRadioReceiverEvent.lua"/>
 		<sourceFile filename="scripts/CustomMapHotspots.lua"/>
 		<sourceFile filename="map/placeables/HandPlantSaplings/scripts/main.lua"/>
 		<sourceFile filename="scripts/addStoreCategory.lua"/>
@@ -74,6 +77,7 @@
 	</vehicleTypes>
 
 	<placeableSpecializations>
+        <specialization name="taigaRadioReceiver" className="PlaceableTaigaRadioReceiver" filename="scripts/taigaRadio/PlaceableTaigaRadioReceiver.lua"/>
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<specialization name="handPlantSaplings" className="PlaceableHandPlantSaplings" filename="map/placeables/HandPlantSaplings/scripts/specializations/PlaceableHandPlantSaplings.lua"/>
 		<specialization name="hotspotsExtension" className="PlaceableHotspotsExtension" filename="map/placeables/HandPlantSaplings/scripts/specializations/PlaceableHotspotsExtension.lua"/>
@@ -84,6 +88,11 @@
 	</placeableSpecializations>
 
 	<placeableTypes>
+        <!-- Объект с локальным радиоприёмником и I3D-триггером. -->
+        <type name="taigaRadioPlaceable" parent="simplePlaceable"
+              filename="$dataS/scripts/placeables/Placeable.lua">
+            <specialization name="taigaRadioReceiver"/>
+        </type>
 		<type name="handPlantSaplings"
 			  parent="simplePlaceable"
 			  className="Placeable"
