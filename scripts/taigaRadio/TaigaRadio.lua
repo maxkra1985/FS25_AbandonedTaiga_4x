@@ -98,24 +98,36 @@ function TaigaRadio:notify()
     player:onChange(TaigaRadio.STATION_NAME, title, false)
 end
 
+-- Освобождает предыдущий поток вместе с загруженным аудиофайлом.
+-- stopStreamedSample только прекращает звучание: повторный loadStreamedSample
+-- для того же объекта вызывает ошибку "Stream sample already loaded".
+function TaigaRadio:releaseStream()
+    if self.stream ~= nil then
+        stopStreamedSample(self.stream)
+        delete(self.stream)
+        self.stream = nil
+    end
+    self.streamPaused = false
+    self.vehiclePlaying = false
+end
+
 -- Запускает текущий MP3 через потоковый плеер движка в AudioGroup.RADIO.
 function TaigaRadio:startTrack()
     local track = self.tracks[self.trackIndex]
     if track == nil then
         return false
     end
-    if self.stream == nil then
-        self.stream = createStreamedSample("TaigaRadio", false)
-        if self.stream == nil or self.stream == 0 then
-            self.stream = nil
-            Logging.warning("[TaigaRadio] createStreamedSample не создал источник")
-            return false
-        end
-        setStreamedSampleGroup(self.stream, AudioGroup.RADIO)
-        setStreamedSampleVolume(self.stream, 1)
-    else
-        stopStreamedSample(self.stream)
+    -- Для каждого нового трека создаём свежий источник. Повторная загрузка
+    -- в ранее использованный streamed sample запрещена самим движком.
+    self:releaseStream()
+    self.stream = createStreamedSample("TaigaRadio", false)
+    if self.stream == nil or self.stream == 0 then
+        self.stream = nil
+        Logging.warning("[TaigaRadio] createStreamedSample не создал источник")
+        return false
     end
+    setStreamedSampleGroup(self.stream, AudioGroup.RADIO)
+    setStreamedSampleVolume(self.stream, 1)
 
     -- В штатном коде GIANTS результат loadStreamedSample не проверяется:
     -- реализация движка не гарантирует возвращаемое значение boolean.
@@ -169,10 +181,9 @@ function TaigaRadio:selectTrack(step)
     if self.vehiclePlaying then
         return self:startTrack()
     end
-    if self.stream ~= nil then
-        stopStreamedSample(self.stream)
-    end
-    self.streamPaused = false
+    -- При смене трека на паузе тоже освобождаем уже загруженный файл:
+    -- повторное включение должно открыть выбранный MP3 с начала.
+    self:releaseStream()
     self.elapsedMs = 0
     self:notify()
     return true
@@ -304,9 +315,5 @@ function TaigaRadio:delete()
         end
         self.player = nil
     end
-    if self.stream ~= nil then
-        stopStreamedSample(self.stream)
-        delete(self.stream)
-        self.stream = nil
-    end
+    self:releaseStream()
 end
