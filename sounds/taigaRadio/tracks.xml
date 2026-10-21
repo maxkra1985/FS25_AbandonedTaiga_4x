@@ -16,4 +16,13 @@
            durationMs="238000"/>
 -->
 <taigaRadio>
+	<track title="Заброшенная тайга - Здесь будет жизнь"
+		   file="sounds/taigaRadio/01_ZdesBudetZhizn.mp3"
+		   durationMs="299000"/>
+	<track title="Заброшенная тайга - Таёжная дорога"
+		   file="sounds/taigaRadio/02_TayozhnaiaDoroga.mp3"
+		   durationMs="316000"/>
+	<track title="Заброшенная тайга - Ночная тайга"
+		   file="sounds/taigaRadio/03_NochnaiaTaiga.mp3"
+		   durationMs="420000"/>
 </taigaRadio>
