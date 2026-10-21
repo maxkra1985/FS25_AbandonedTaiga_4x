@@ -16,13 +16,25 @@
            durationMs="238000"/>
 -->
 <taigaRadio>
-	<track title="Заброшенная тайга - Здесь будет жизнь"
+	<track title="Здесь будет жизнь"
 		   file="sounds/taigaRadio/01_ZdesBudetZhizn.mp3"
 		   durationMs="299000"/>
-	<track title="Заброшенная тайга - Таёжная дорога"
+	<track title="Таёжная дорога"
 		   file="sounds/taigaRadio/02_TayozhnaiaDoroga.mp3"
 		   durationMs="316000"/>
-	<track title="Заброшенная тайга - Ночная тайга"
+	<track title="Ночная тайга"
 		   file="sounds/taigaRadio/03_NochnaiaTaiga.mp3"
 		   durationMs="420000"/>
+	<track title="Боевой УАЗ"
+		   file="sounds/taigaRadio/04_BoevoiUAZ.mp3"
+		   durationMs="281000"/>
+	<track title="Железный урал"
+		   file="sounds/taigaRadio/05_ZheleznyiUral.mp3"
+		   durationMs="316000"/>
+	<track title="У костра"
+		   file="sounds/taigaRadio/06_Ukostra.mp3"
+		   durationMs="289000"/>
+	<track title="Я - тайга"
+		   file="sounds/taigaRadio/07_Iataiga.mp3"
+		   durationMs="293000"/>
 </taigaRadio>
