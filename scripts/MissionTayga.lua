@@ -235,6 +235,10 @@ function MissionTayga:update(dt)
     if self.loggingContractor ~= nil then
         self.loggingContractor:update(dt)
     end
+
+    if self.taigaRadioMapReceivers ~= nil and self:getIsClient() then
+        self.taigaRadioMapReceivers:update(dt)
+    end
 end
 
 
