@@ -188,6 +188,40 @@ function MissionTayga.new(baseDirectory, customMt)
 end
 
 
+-- Регистрирует ровно три переносных радио как сетевые PhysicsObject.
+-- Штатная findDynamicObjects продолжает обслуживать остальные объекты карты.
+-- Кратковременная смена типа нужна, чтобы базовая функция не удалила
+-- их динамическую физику при отсутствии mpCreatePhysicsObject в I3D.
+function MissionTayga:findDynamicObjects(node)
+    if not self.missionDynamicInfo.isMultiplayer then
+        return MissionTayga:superClass().findDynamicObjects(self, node)
+    end
+
+    local radios = {}
+    for i = 0, getNumOfChildren(node) - 1 do
+        local child = getChildAt(node, i)
+        if getRigidBodyType(child) == RigidBodyType.DYNAMIC
+            and getUserAttribute(child, "mpCreatePhysicsObject") ~= true then
+            local body, display, trigger = TaigaRadioMapReceivers.findModelNodes(child)
+            if body ~= nil and display ~= nil and trigger ~= nil then
+                setRigidBodyType(child, RigidBodyType.KINEMATIC)
+                radios[#radios + 1] = child
+            end
+        end
+    end
+
+    MissionTayga:superClass().findDynamicObjects(self, node)
+
+    for _, child in ipairs(radios) do
+        local object = PhysicsObject.new(self:getIsServer(), self:getIsClient())
+        self.onCreateObjectSystem:add(object)
+        object:loadOnCreate(child)
+        object:register(true)
+        Logging.info("[TaigaRadio] Сетевая физика приёмника зарегистрирована: %s", getName(child))
+    end
+end
+
+
 -- Получает от стандартного загрузчика готовый корневой узел map.i3d.
 -- Обнаружение динамических приёмников не требует правки большого I3D-файла.
 function MissionTayga:loadMission00Finished(node, arguments)
@@ -211,9 +245,24 @@ function MissionTayga:onStartMission()
 
     MissionTayga:superClass().onStartMission(self)
 
+    -- После полной клиентской загрузки повторяем запрос снимка состояния.
+    -- Повторное состояние не перезапускает уже звучащий трек.
+    if self:getIsClient() and not self:getIsServer() then
+        TaigaRadioMapReceiverEvent.requestSnapshot()
+    end
+
     self.loggingContractor = LoggingContractor.new(self)
     self.loggingContractor:initialize()
     self.loggingContractor:loadFromSavegame()
+end
+
+
+-- Отдаёт новому игроку текущее состояние радио в штатной фазе синхронизации.
+function MissionTayga:sendInitialClientState(connection, user, farm)
+    MissionTayga:superClass().sendInitialClientState(self, connection, user, farm)
+    if self.taigaRadioMapReceivers ~= nil then
+        self.taigaRadioMapReceivers:sendSnapshot(connection)
+    end
 end
 
 
@@ -236,7 +285,7 @@ function MissionTayga:update(dt)
         self.loggingContractor:update(dt)
     end
 
-    if self.taigaRadioMapReceivers ~= nil and self:getIsClient() then
+    if self.taigaRadioMapReceivers ~= nil then
         self.taigaRadioMapReceivers:update(dt)
     end
 end

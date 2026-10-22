@@ -9,6 +9,7 @@ function TaigaRadioMapReceivers.new(mission)
     self.mission = mission
     self.receivers = {}
     self.byTriggerNode = {}
+    self.byRootNode = {}
     return self
 end
 
@@ -120,16 +121,9 @@ function TaigaRadioMapReceivers:adjustVolume(receiver, delta)
         return
     end
 
-    receiver.volume = nextVolume
-    if receiver.soundSample ~= nil then
-        setSampleVolume(receiver.soundSample, receiver.volume)
-    end
-    if receiver.enabled then
-        receiver.volumeDisplayTimer = 3000
-        self:setDisplayMode(receiver, "volume")
-    end
-
-    Logging.info("[TaigaRadio] Приёмник: громкость %d%%", math.floor(receiver.volume * 100 + 0.5))
+    local action = delta > 0 and TaigaRadioMapReceiverEvent.ACTION_VOLUME_UP
+        or TaigaRadioMapReceiverEvent.ACTION_VOLUME_DOWN
+    self:requestAction(receiver, action)
 end
 
 -- Регистрирует экземпляр модели и клиентский триггер без привязки к
@@ -140,6 +134,7 @@ function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, tri
     end
 
     local receiver = {
+        id = #self.receivers + 1,
         rootNode = rootNode,
         soundNode = bodyNode,
         displayNode = displayNode,
@@ -159,6 +154,7 @@ function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, tri
     }
     self.receivers[#self.receivers + 1] = receiver
     self.byTriggerNode[triggerNode] = receiver
+    self.byRootNode[rootNode] = receiver
 
     -- При загрузке скрываем одновременно отображаемые TRACK и VOLUME.
     if self.mission:getIsClient() then
@@ -248,7 +244,8 @@ end
 
 -- Создаёт позиционный источник непосредственно на подвижном Body приёмника.
 -- Старый источник всегда удаляется до перехода к следующей композиции.
-function TaigaRadioMapReceivers:playTrack(receiver)
+-- playSample принимает начальное смещение; оно важно для позднего подключения.
+function TaigaRadioMapReceivers:playTrack(receiver, elapsedMs)
     self:stopTrack(receiver)
     local radio = self.mission.taigaRadio
     local track = radio ~= nil and radio:getTrack(receiver.trackIndex) or nil
@@ -271,8 +268,10 @@ function TaigaRadioMapReceivers:playTrack(receiver)
     setAudioSourceAutoPlay(source, false)
     receiver.soundSample = getAudioSourceSample(source)
     setSampleGroup(receiver.soundSample, AudioGroup.ENVIRONMENT)
-    playSample(receiver.soundSample, 1, receiver.volume, 0, 0, 0)
-    receiver.elapsedMs = 0
+    local offset = math.max(0, elapsedMs or 0)
+    -- playSample получает смещение в миллисекундах.
+    playSample(receiver.soundSample, 1, receiver.volume, offset, 0, 0)
+    receiver.elapsedMs = offset
     receiver.volumeDisplayTimer = 0
     self:setDisplayMode(receiver, "track")
     Logging.info("[TaigaRadio] Приёмник: воспроизводится '%s'", track.title)
@@ -290,6 +289,130 @@ function TaigaRadioMapReceivers:stopTrack(receiver)
     end
 end
 
+-- Применяет проверенное состояние сервера на локальном клиенте.
+-- При изменении только громкости не перезапускает воспроизводимую композицию.
+function TaigaRadioMapReceivers:applyNetworkState(receiverId, enabled, trackIndex, volume, elapsedMs)
+    local receiver = self.receivers[receiverId]
+    local radio = self.mission.taigaRadio
+    if receiver == nil or radio == nil or trackIndex < 1
+        or trackIndex > #radio.tracks or volume < 0 or volume > 1 then
+        Logging.warning("[TaigaRadio] Получено некорректное состояние приёмника %s", tostring(receiverId))
+        return
+    end
+
+    local playbackChanged = receiver.enabled ~= enabled or receiver.trackIndex ~= trackIndex
+    local volumeChanged = receiver.volume ~= volume
+    receiver.enabled = enabled
+    receiver.trackIndex = trackIndex
+    receiver.volume = volume
+    receiver.elapsedMs = math.max(0, math.min(elapsedMs or 0, radio.tracks[trackIndex].durationMs))
+
+    if self.mission:getIsClient() then
+        if playbackChanged then
+            if enabled then
+                self:playTrack(receiver, receiver.elapsedMs)
+            else
+                self:stopTrack(receiver)
+                receiver.volumeDisplayTimer = 0
+                self:setDisplayMode(receiver, "none")
+            end
+        elseif enabled and receiver.soundSample == nil then
+            -- Отправленный после входа снимок состояния может прийти,
+            -- когда локальный звук ещё не был создан.
+            self:playTrack(receiver, receiver.elapsedMs)
+        elseif volumeChanged and receiver.soundSample ~= nil then
+            setSampleVolume(receiver.soundSample, volume)
+        end
+
+        if volumeChanged and enabled and not playbackChanged then
+            receiver.volumeDisplayTimer = 3000
+            self:setDisplayMode(receiver, "volume")
+        end
+        if receiver.activatable ~= nil then
+            receiver.activatable:updateText()
+        end
+    end
+end
+
+-- Принимает действие только на сервере и распространяет его результат.
+function TaigaRadioMapReceivers:applyServerAction(receiverId, action)
+    if not self.mission:getIsServer() then
+        return
+    end
+
+    local receiver = self.receivers[receiverId]
+    local radio = self.mission.taigaRadio
+    if receiver == nil or radio == nil or #radio.tracks == 0 then
+        return
+    end
+
+    local event = TaigaRadioMapReceiverEvent
+    local enabled, trackIndex, volume = receiver.enabled, receiver.trackIndex, receiver.volume
+    if action == event.ACTION_TOGGLE then
+        enabled = not enabled
+    elseif action == event.ACTION_NEXT then
+        trackIndex = (trackIndex % #radio.tracks) + 1
+    elseif action == event.ACTION_PREVIOUS then
+        trackIndex = ((trackIndex - 2) % #radio.tracks) + 1
+    elseif action == event.ACTION_VOLUME_UP then
+        volume = math.min(1, math.floor(volume * 10 + 1.5) / 10)
+    elseif action == event.ACTION_VOLUME_DOWN then
+        volume = math.max(0, math.floor(volume * 10 - 0.5) / 10)
+    else
+        return
+    end
+
+    if receiver.enabled == enabled and receiver.trackIndex == trackIndex and receiver.volume == volume then
+        return
+    end
+
+    local elapsed = trackIndex ~= receiver.trackIndex and 0 or receiver.elapsedMs
+    if enabled and not receiver.enabled then
+        elapsed = 0
+    end
+    self:applyNetworkState(receiverId, enabled, trackIndex, volume, elapsed)
+    TaigaRadioMapReceiverEvent.broadcastState(receiver)
+end
+
+-- Проверяет, что сетевой запрос пришёл от игрока рядом с данным приёмником.
+function TaigaRadioMapReceivers:handleRemoteAction(connection, receiverId, action)
+    local receiver = self.receivers[receiverId]
+    local player = self.mission:getPlayerByConnection(connection)
+    if receiver == nil or player == nil or player.rootNode == nil then
+        return
+    end
+
+    local px, py, pz = getWorldTranslation(player.rootNode)
+    local tx, ty, tz = getWorldTranslation(receiver.triggerNode)
+    local dx, dy, dz = px - tx, py - ty, pz - tz
+
+    -- 6 м ограничивают дистанционные запросы; штатный I3D-триггер
+    -- дополнительно контролирует появление действий на клиенте.
+    if dx * dx + dy * dy + dz * dz > 36 then
+        return
+    end
+    self:applyServerAction(receiverId, action)
+end
+
+-- Пересылает поздно подключившемуся игроку состояние всех трёх объектов.
+function TaigaRadioMapReceivers:sendSnapshot(connection)
+    if not self.mission:getIsServer() or connection == nil then
+        return
+    end
+    for _, receiver in ipairs(self.receivers) do
+        connection:sendEvent(TaigaRadioMapReceiverEvent.newState(receiver))
+    end
+end
+
+-- Отправляет команду серверу; в одиночной игре хост исполняет её напрямую.
+function TaigaRadioMapReceivers:requestAction(receiver, action)
+    if self.mission:getIsServer() then
+        self:applyServerAction(receiver.id, action)
+    else
+        TaigaRadioMapReceiverEvent.sendAction(receiver.id, action)
+    end
+end
+
 -- Включает либо выключает независимое радио указанного экземпляра.
 function TaigaRadioMapReceivers:toggle(receiver)
     local radio = self.mission.taigaRadio
@@ -297,17 +420,7 @@ function TaigaRadioMapReceivers:toggle(receiver)
         return
     end
 
-    receiver.enabled = not receiver.enabled
-    if receiver.enabled then
-        self:playTrack(receiver)
-    else
-        self:stopTrack(receiver)
-        receiver.volumeDisplayTimer = 0
-        self:setDisplayMode(receiver, "none")
-    end
-    if receiver.activatable ~= nil then
-        receiver.activatable:updateText()
-    end
+    self:requestAction(receiver, TaigaRadioMapReceiverEvent.ACTION_TOGGLE)
 end
 
 -- Выбирает следующую либо предыдущую песню, не затрагивая транспортное радио.
@@ -316,14 +429,9 @@ function TaigaRadioMapReceivers:nextTrack(receiver, step)
     if radio == nil or #radio.tracks == 0 then
         return
     end
-    receiver.trackIndex = ((receiver.trackIndex - 1 + step) % #radio.tracks) + 1
-    receiver.elapsedMs = 0
-    if receiver.enabled then
-        self:playTrack(receiver)
-    else
-        self:setDisplayMode(receiver, "none")
-    end
-    Logging.info("[TaigaRadio] Приёмник: выбран трек %d", receiver.trackIndex)
+    local action = step > 0 and TaigaRadioMapReceiverEvent.ACTION_NEXT
+        or TaigaRadioMapReceiverEvent.ACTION_PREVIOUS
+    self:requestAction(receiver, action)
 end
 
 -- Переводит проигрыватель к следующему MP3 по длительности из tracks.xml.
@@ -345,8 +453,10 @@ function TaigaRadioMapReceivers:update(dt)
             local track = radio:getTrack(receiver.trackIndex)
             if track ~= nil then
                 receiver.elapsedMs = receiver.elapsedMs + dt
-                if receiver.elapsedMs >= track.durationMs then
-                    self:nextTrack(receiver, 1)
+                -- Смену песни принимает только сервер: иначе каждый
+                -- клиент переключал бы её независимо и расходился по времени.
+                if self.mission:getIsServer() and receiver.elapsedMs >= track.durationMs then
+                    self:applyServerAction(receiver.id, TaigaRadioMapReceiverEvent.ACTION_NEXT)
                 end
             end
         end
@@ -386,6 +496,7 @@ function TaigaRadioMapReceivers:delete()
     end
     self.receivers = {}
     self.byTriggerNode = {}
+    self.byRootNode = {}
 end
 
 TaigaRadioMapReceiverActivatable = {}
