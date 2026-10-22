@@ -350,10 +350,10 @@ function TaigaRadioMapReceivers:applyServerAction(receiverId, action)
     local enabled, trackIndex, volume = receiver.enabled, receiver.trackIndex, receiver.volume
     if action == event.ACTION_TOGGLE then
         enabled = not enabled
-    elseif action == event.ACTION_NEXT then
-        trackIndex = (trackIndex % #radio.tracks) + 1
-    elseif action == event.ACTION_PREVIOUS then
-        trackIndex = ((trackIndex - 2) % #radio.tracks) + 1
+    elseif action == event.ACTION_NEXT or action == event.ACTION_PREVIOUS then
+        -- Только сервер выбирает случайный трек и рассылает его индекс клиентам.
+        -- При нескольких композициях текущая не выбирается повторно.
+        trackIndex = TaigaRadio.getRandomTrackIndex(#radio.tracks, trackIndex)
     elseif action == event.ACTION_VOLUME_UP then
         volume = math.min(1, math.floor(volume * 10 + 1.5) / 10)
     elseif action == event.ACTION_VOLUME_DOWN then
@@ -423,7 +423,7 @@ function TaigaRadioMapReceivers:toggle(receiver)
     self:requestAction(receiver, TaigaRadioMapReceiverEvent.ACTION_TOGGLE)
 end
 
--- Выбирает следующую либо предыдущую песню, не затрагивая транспортное радио.
+-- Выбирает случайную другую песню, не затрагивая транспортное радио.
 function TaigaRadioMapReceivers:nextTrack(receiver, step)
     local radio = self.mission.taigaRadio
     if radio == nil or #radio.tracks == 0 then
