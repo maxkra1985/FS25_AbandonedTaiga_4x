@@ -70,6 +70,20 @@ function TaigaRadio.new(baseDirectory)
     return self
 end
 
+-- Выбирает случайную композицию, исключая немедленный повтор текущей.
+-- Возвращает прежний индекс при наличии только одного трека.
+function TaigaRadio.getRandomTrackIndex(trackCount, currentIndex)
+    if trackCount <= 1 then
+        return trackCount == 1 and 1 or nil
+    end
+
+    local nextIndex = math.random(trackCount - 1)
+    if nextIndex >= currentIndex then
+        nextIndex = nextIndex + 1
+    end
+    return nextIndex
+end
+
 -- Возвращает дорожку для стационарного радиоприёмника.
 function TaigaRadio:getTrack(index)
     return self.tracks[index]
@@ -172,12 +186,12 @@ function TaigaRadio:pause()
     return true
 end
 
--- Выбирает композицию; поддерживает штатные NEXT/PREVIOUS ITEM.
+-- Случайно выбирает другую композицию при NEXT/PREVIOUS ITEM.
 function TaigaRadio:selectTrack(step)
     if #self.tracks == 0 then
         return false
     end
-    self.trackIndex = ((self.trackIndex - 1 + step) % #self.tracks) + 1
+    self.trackIndex = TaigaRadio.getRandomTrackIndex(#self.tracks, self.trackIndex)
     if self.vehiclePlaying then
         return self:startTrack()
     end
