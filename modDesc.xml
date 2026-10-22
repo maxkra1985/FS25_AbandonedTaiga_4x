@@ -267,10 +267,10 @@
             <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_0" index="1"/>
         </actionBinding>
         <actionBinding action="TAIGA_RADIO_NEXT">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_pageup"/>
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_6" index="1"/>
         </actionBinding>
         <actionBinding action="TAIGA_RADIO_PREVIOUS">
-            <binding device="KB_MOUSE_DEFAULT" input="KEY_pagedown"/>
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_4" index="1"/>
         </actionBinding>
         <actionBinding action="TAIGA_RADIO_VOLUME_UP">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_plus" axisComponent="+" neutralInput="0" index="1"/>
