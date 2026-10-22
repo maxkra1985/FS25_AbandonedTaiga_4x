@@ -34,6 +34,7 @@
 
 	<extraSourceFiles>
         <!-- Радио: общий список композиций и серверная синхронизация приёмников. -->
+        <sourceFile filename="scripts/taigaRadio/TaigaRadioMapReceivers.lua"/>
         <sourceFile filename="scripts/taigaRadio/TaigaRadio.lua"/>
         <sourceFile filename="scripts/taigaRadio/TaigaRadioReceiverEvent.lua"/>
 		<sourceFile filename="scripts/CustomMapHotspots.lua"/>

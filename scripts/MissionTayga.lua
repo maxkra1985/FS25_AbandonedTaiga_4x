@@ -181,7 +181,21 @@ function MissionTayga.new(baseDirectory, customMt)
     -- пользовательских действий и до старта миссии.
     mission.taigaRadio = TaigaRadio.new(baseDirectory)
     mission.taigaRadio:install()
+
+    -- Реестр подвижных приёмников наполняется только после загрузки map.i3d.
+    mission.taigaRadioMapReceivers = TaigaRadioMapReceivers.new(mission)
     return mission
+end
+
+
+-- Получает от стандартного загрузчика готовый корневой узел map.i3d.
+-- Обнаружение динамических приёмников не требует правки большого I3D-файла.
+function MissionTayga:loadMission00Finished(node, arguments)
+    if not self.cancelLoading and self.taigaRadioMapReceivers ~= nil then
+        self.taigaRadioMapReceivers:discover(node)
+    end
+
+    MissionTayga:superClass().loadMission00Finished(self, node, arguments)
 end
 
 
@@ -239,6 +253,11 @@ function MissionTayga:delete()
     if self.loggingContractor ~= nil then
         self.loggingContractor:delete()
         self.loggingContractor = nil
+    end
+
+    if self.taigaRadioMapReceivers ~= nil then
+        self.taigaRadioMapReceivers:delete()
+        self.taigaRadioMapReceivers = nil
     end
 
     if self.taigaRadio ~= nil then
