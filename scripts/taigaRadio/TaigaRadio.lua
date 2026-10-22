@@ -123,6 +123,29 @@ function TaigaRadio:releaseStream()
     end
     self.streamPaused = false
     self.vehiclePlaying = false
+    self.lastVolume = nil
+end
+
+-- Читает штатную настройку громкости радио, применяемую к виртуальному потоку.
+-- При отсутствии значения оставляет исходную громкость.
+function TaigaRadio:getConfiguredVolume()
+    local volume = g_gameSettings ~= nil and g_gameSettings:getValue("radioVolume") or nil
+    if type(volume) ~= "number" then
+        return 1
+    end
+    return math.max(0, math.min(1, volume))
+end
+
+-- Обновляет громкость без перезапуска композиции при изменении настроек.
+function TaigaRadio:updateVolume()
+    if self.stream == nil then
+        return
+    end
+    local volume = self:getConfiguredVolume()
+    if self.lastVolume ~= volume then
+        setStreamedSampleVolume(self.stream, volume)
+        self.lastVolume = volume
+    end
 end
 
 -- Запускает текущий MP3 через потоковый плеер движка в AudioGroup.RADIO.
@@ -141,7 +164,8 @@ function TaigaRadio:startTrack()
         return false
     end
     setStreamedSampleGroup(self.stream, AudioGroup.RADIO)
-    setStreamedSampleVolume(self.stream, 1)
+    self.lastVolume = nil
+    self:updateVolume()
 
     -- В штатном коде GIANTS результат loadStreamedSample не проверяется:
     -- реализация движка не гарантирует возвращаемое значение boolean.
@@ -240,7 +264,11 @@ end
 -- Обновляет позицию потокового трека, не вызывая штатный update с
 -- несуществующим в нативном списке номером канала.
 function TaigaRadio:update(dt)
-    if not self.vehicleSelected or not self.vehiclePlaying then
+    if not self.vehicleSelected then
+        return
+    end
+    self:updateVolume()
+    if not self.vehiclePlaying then
         return
     end
     local track = self.tracks[self.trackIndex]
