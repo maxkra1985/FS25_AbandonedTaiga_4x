@@ -253,6 +253,7 @@
 	</storeItems>
 	<actions>
         <!-- Управление песнями подвижного радио, когда игрок находится в триггере. -->
+        <action name="TAIGA_RADIO_TOGGLE" category="ONFOOT" axisType="HALF"/>
         <action name="TAIGA_RADIO_NEXT" category="ONFOOT" axisType="HALF"/>
         <action name="TAIGA_RADIO_PREVIOUS" category="ONFOOT" axisType="HALF"/>
         <action name="TAIGA_RADIO_VOLUME_UP" category="ONFOOT" axisType="HALF"/>
@@ -262,6 +263,9 @@
 		<action name="HPS_TOGGLE_FREE_PLANT" axisType="HALF"/>
 	</actions>
 	<inputBinding>
+        <actionBinding action="TAIGA_RADIO_TOGGLE">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_0" index="1"/>
+        </actionBinding>
         <actionBinding action="TAIGA_RADIO_NEXT">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_pageup"/>
         </actionBinding>

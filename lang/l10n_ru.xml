@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<texts>
+        <text name="input_TAIGA_RADIO_TOGGLE" text="Включить / выключить радиоприёмник"/>
+        <text name="input_TAIGA_RADIO_NEXT" text="Следующая песня радиоприёмника"/>
+        <text name="input_TAIGA_RADIO_PREVIOUS" text="Предыдущая песня радиоприёмника"/>
+        <text name="input_TAIGA_RADIO_VOLUME_UP" text="Громче на радиоприёмнике"/>
+        <text name="input_TAIGA_RADIO_VOLUME_DOWN" text="Тише на радиоприёмнике"/>
+
 		<text name="fillType_instrument"	text="Набор инструментов"/>
 		<text name="typeDesc_instrument"	text="Набор инструментов для выполнения строительных и ремонтных работ"/>
 

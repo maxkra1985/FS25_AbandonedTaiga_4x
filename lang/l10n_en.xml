@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <l10n>
 	<texts>
+        <text name="input_TAIGA_RADIO_TOGGLE" text="Toggle portable radio"/>
+        <text name="input_TAIGA_RADIO_NEXT" text="Next portable radio track"/>
+        <text name="input_TAIGA_RADIO_PREVIOUS" text="Previous portable radio track"/>
+        <text name="input_TAIGA_RADIO_VOLUME_UP" text="Portable radio volume up"/>
+        <text name="input_TAIGA_RADIO_VOLUME_DOWN" text="Portable radio volume down"/>
+
 		<text name="fillType_instrument"	text="Tool Set"/>
 		<text name="typeDesc_instrument"	text="Tool Set for Construction and Repair Work"/>
 

@@ -514,6 +514,11 @@ end
 -- Подписывает основное действие в зависимости от состояния проигрывателя.
 function TaigaRadioMapReceiverActivatable:updateText()
     self.activateText = self.receiver.enabled and "Выключить радиоприёмник" or "Включить радиоприёмник"
+    -- Основное действие Activatable может не выводиться отдельной строкой
+    -- при зарегистрированных пользовательских действиях. Обновляем свою кнопку.
+    if self.toggleEventId ~= nil then
+        g_inputBinding:setActionEventText(self.toggleEventId, self.activateText)
+    end
 end
 
 -- Радиоприёмник доступен только при наличии композиций и вне транспорта.
@@ -529,6 +534,17 @@ end
 
 -- Дополнительные действия выбора композиции регистрируются только в зоне приёмника.
 function TaigaRadioMapReceiverActivatable:registerCustomInput(inputContext)
+    -- Явная кнопка включения: не полагаемся на скрытое стандартное действие.
+    local _, toggleId = g_inputBinding:registerActionEvent(
+        InputAction.TAIGA_RADIO_TOGGLE, self, self.onToggle, false, true, false, true
+    )
+    self.toggleEventId = toggleId
+    if toggleId ~= nil then
+        g_inputBinding:setActionEventTextPriority(toggleId, GS_PRIO_VERY_HIGH)
+        g_inputBinding:setActionEventTextVisibility(toggleId, true)
+        g_inputBinding:setActionEventText(toggleId, self.activateText)
+    end
+
     local _, nextId = g_inputBinding:registerActionEvent(
         InputAction.TAIGA_RADIO_NEXT, self, self.onNextTrack, false, true, false, true
     )
@@ -564,10 +580,16 @@ end
 -- Удаляет дополнительные привязки при выходе из триггера.
 function TaigaRadioMapReceiverActivatable:removeCustomInput(inputContext)
     g_inputBinding:removeActionEventsByTarget(self)
+    self.toggleEventId = nil
     self.nextEventId = nil
     self.previousEventId = nil
     self.volumeUpEventId = nil
     self.volumeDownEventId = nil
+end
+
+-- Включает или выключает выбранный приёмник, используя серверную команду.
+function TaigaRadioMapReceiverActivatable:onToggle()
+    self.system:toggle(self.receiver)
 end
 
 -- Переключает композицию вперёд.
