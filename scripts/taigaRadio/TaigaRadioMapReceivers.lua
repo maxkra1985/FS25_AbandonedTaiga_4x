@@ -53,10 +53,19 @@ function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, tri
         displayNode = displayNode,
         triggerNode = triggerNode,
         playerInside = false,
-        triggerRegistered = false
+        triggerRegistered = false,
+        enabled = false,
+        trackIndex = 1,
+        elapsedMs = 0,
+        soundSource = nil,
+        soundSample = nil,
+        activatable = nil
     }
     self.receivers[#self.receivers + 1] = receiver
     self.byTriggerNode[triggerNode] = receiver
+    if self.mission:getIsClient() then
+        receiver.activatable = TaigaRadioMapReceiverActivatable.new(self, receiver)
+    end
 
     if self.mission:getIsClient() then
         addTrigger(triggerNode, "onTriggerCallback", self)
@@ -131,32 +140,198 @@ function TaigaRadioMapReceivers:discover(mapRootNode)
     end
 end
 
--- Регистрирует вход/выход локального игрока. На этом этапе события
--- только диагностируются; управление музыкой добавим отдельным этапом.
+-- Создаёт позиционный источник непосредственно на подвижном Body приёмника.
+-- Старый источник всегда удаляется до перехода к следующей композиции.
+function TaigaRadioMapReceivers:playTrack(receiver)
+    self:stopTrack(receiver)
+    local radio = self.mission.taigaRadio
+    local track = radio ~= nil and radio:getTrack(receiver.trackIndex) or nil
+    if track == nil then
+        return
+    end
+
+    local filename = track.speakerFilename or track.filename
+    local source = createAudioSource("TaigaRadioReceiver", filename, 35, 3, 0.65, 1)
+    if source == nil or source == 0 then
+        Logging.warning("[TaigaRadio] Не удалось создать 3D-источник MP3: %s", filename)
+        receiver.enabled = false
+        return
+    end
+
+    receiver.soundSource = source
+    link(receiver.soundNode, source)
+    setTranslation(source, 0, 0, 0)
+    setAudioSourceAutoPlay(source, false)
+    receiver.soundSample = getAudioSourceSample(source)
+    setSampleGroup(receiver.soundSample, AudioGroup.ENVIRONMENT)
+    playSample(receiver.soundSample, 1, 0.65, 0, 0, 0)
+    receiver.elapsedMs = 0
+    Logging.info("[TaigaRadio] Приёмник: воспроизводится '%s'", track.title)
+end
+
+-- Останавливает воспроизведение и освобождает ресурс аудиодвижка.
+function TaigaRadioMapReceivers:stopTrack(receiver)
+    if receiver.soundSample ~= nil then
+        stopSample(receiver.soundSample, 0, 0)
+        receiver.soundSample = nil
+    end
+    if receiver.soundSource ~= nil then
+        delete(receiver.soundSource)
+        receiver.soundSource = nil
+    end
+end
+
+-- Включает либо выключает независимое радио указанного экземпляра.
+function TaigaRadioMapReceivers:toggle(receiver)
+    local radio = self.mission.taigaRadio
+    if radio == nil or #radio.tracks == 0 then
+        return
+    end
+
+    receiver.enabled = not receiver.enabled
+    if receiver.enabled then
+        self:playTrack(receiver)
+    else
+        self:stopTrack(receiver)
+    end
+    if receiver.activatable ~= nil then
+        receiver.activatable:updateText()
+    end
+end
+
+-- Выбирает следующую либо предыдущую песню, не затрагивая транспортное радио.
+function TaigaRadioMapReceivers:nextTrack(receiver, step)
+    local radio = self.mission.taigaRadio
+    if radio == nil or #radio.tracks == 0 then
+        return
+    end
+    receiver.trackIndex = ((receiver.trackIndex - 1 + step) % #radio.tracks) + 1
+    receiver.elapsedMs = 0
+    if receiver.enabled then
+        self:playTrack(receiver)
+    end
+    Logging.info("[TaigaRadio] Приёмник: выбран трек %d", receiver.trackIndex)
+end
+
+-- Переводит проигрыватель к следующему MP3 по длительности из tracks.xml.
+function TaigaRadioMapReceivers:update(dt)
+    local radio = self.mission.taigaRadio
+    if radio == nil then
+        return
+    end
+    for _, receiver in ipairs(self.receivers) do
+        if receiver.enabled then
+            local track = radio:getTrack(receiver.trackIndex)
+            if track ~= nil then
+                receiver.elapsedMs = receiver.elapsedMs + dt
+                if receiver.elapsedMs >= track.durationMs then
+                    self:nextTrack(receiver, 1)
+                end
+            end
+        end
+    end
+end
+
+-- Регистрирует действия F1 при входе локального игрока в подвижный триггер.
 function TaigaRadioMapReceivers:onTriggerCallback(triggerId, otherId, onEnter, onLeave, onStay)
     local receiver = self.byTriggerNode[triggerId]
     local player = g_localPlayer
-    if receiver == nil or player == nil or otherId ~= player.rootNode then
+    if receiver == nil or receiver.activatable == nil or player == nil or otherId ~= player.rootNode then
         return
     end
 
     if onEnter and not receiver.playerInside then
         receiver.playerInside = true
+        self.mission.activatableObjectsSystem:addActivatable(receiver.activatable)
         Logging.info("[TaigaRadio] Игрок вошёл в триггер приёмника %s", tostring(triggerId))
     elseif onLeave and receiver.playerInside then
         receiver.playerInside = false
+        self.mission.activatableObjectsSystem:removeActivatable(receiver.activatable)
         Logging.info("[TaigaRadio] Игрок вышел из триггера приёмника %s", tostring(triggerId))
     end
 end
 
--- Снимает триггеры до удаления геометрии карты. Геометрия нам не принадлежит.
+-- Очищает триггеры, игровые действия и 3D-источники до удаления карты.
 function TaigaRadioMapReceivers:delete()
     for _, receiver in ipairs(self.receivers) do
+        if receiver.activatable ~= nil then
+            self.mission.activatableObjectsSystem:removeActivatable(receiver.activatable)
+        end
         if receiver.triggerRegistered then
             removeTrigger(receiver.triggerNode)
             receiver.triggerRegistered = false
         end
+        self:stopTrack(receiver)
     end
     self.receivers = {}
     self.byTriggerNode = {}
+end
+
+TaigaRadioMapReceiverActivatable = {}
+local TaigaRadioMapReceiverActivatable_mt = Class(TaigaRadioMapReceiverActivatable)
+
+-- Создаёт действие включения радиоприёмника для игрового меню F1.
+function TaigaRadioMapReceiverActivatable.new(system, receiver)
+    local self = setmetatable({}, TaigaRadioMapReceiverActivatable_mt)
+    self.system = system
+    self.receiver = receiver
+    self:updateText()
+    return self
+end
+
+-- Подписывает основное действие в зависимости от состояния проигрывателя.
+function TaigaRadioMapReceiverActivatable:updateText()
+    self.activateText = self.receiver.enabled and "Выключить радиоприёмник" or "Включить радиоприёмник"
+end
+
+-- Радиоприёмник доступен только при наличии композиций и вне транспорта.
+function TaigaRadioMapReceiverActivatable:getIsActivatable()
+    local radio = self.system.mission.taigaRadio
+    return radio ~= nil and #radio.tracks > 0 and g_localPlayer ~= nil
+end
+
+-- Выполняет основное действие F1 через стандартную систему активации.
+function TaigaRadioMapReceiverActivatable:run()
+    self.system:toggle(self.receiver)
+end
+
+-- Дополнительные действия выбора композиции регистрируются только в зоне приёмника.
+function TaigaRadioMapReceiverActivatable:registerCustomInput(inputContext)
+    local _, nextId = g_inputBinding:registerActionEvent(
+        InputAction.TAIGA_RADIO_NEXT, self, self.onNextTrack, false, true, false, true
+    )
+    local _, previousId = g_inputBinding:registerActionEvent(
+        InputAction.TAIGA_RADIO_PREVIOUS, self, self.onPreviousTrack, false, true, false, true
+    )
+    self.nextEventId = nextId
+    self.previousEventId = previousId
+    if nextId ~= nil then
+        g_inputBinding:setActionEventText(nextId, "Следующая песня")
+    end
+    if previousId ~= nil then
+        g_inputBinding:setActionEventText(previousId, "Предыдущая песня")
+    end
+end
+
+-- Удаляет дополнительные привязки при выходе из триггера.
+function TaigaRadioMapReceiverActivatable:removeCustomInput(inputContext)
+    g_inputBinding:removeActionEventsByTarget(self)
+    self.nextEventId = nil
+    self.previousEventId = nil
+end
+
+-- Переключает композицию вперёд.
+function TaigaRadioMapReceiverActivatable:onNextTrack()
+    self.system:nextTrack(self.receiver, 1)
+end
+
+-- Переключает композицию назад.
+function TaigaRadioMapReceiverActivatable:onPreviousTrack()
+    self.system:nextTrack(self.receiver, -1)
+end
+
+-- Определяет расстояние по текущему положению подвижного триггера.
+function TaigaRadioMapReceiverActivatable:getDistance(x, y, z)
+    local tx, ty, tz = getWorldTranslation(self.receiver.triggerNode)
+    return MathUtil.vector3Length(x - tx, y - ty, z - tz)
 end
