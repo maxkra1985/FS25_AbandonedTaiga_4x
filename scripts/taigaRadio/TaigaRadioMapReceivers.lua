@@ -40,6 +40,98 @@ function TaigaRadioMapReceivers.findModelNodes(node)
     return nil, nil, nil
 end
 
+-- Ищет дочерний узел I3D по имени, сохраняя независимость от nodeId.
+function TaigaRadioMapReceivers.findChildByName(parentNode, name)
+    if parentNode == nil then
+        return nil
+    end
+    for i = 0, getNumOfChildren(parentNode) - 1 do
+        local node = getChildAt(parentNode, i)
+        if getName(node) == name then
+            return node
+        end
+    end
+    return nil
+end
+
+-- Собирает два набора цифровых разрядов и индикаторов экрана.
+-- Иерархия соответствует исходной модели PortableRadio/Radio.i3d.
+function TaigaRadioMapReceivers.findDisplayNodes(displayNode)
+    local trackGroup = TaigaRadioMapReceivers.findChildByName(displayNode, "track")
+    local volumeGroup = TaigaRadioMapReceivers.findChildByName(displayNode, "volume")
+    if trackGroup == nil or volumeGroup == nil then
+        return nil
+    end
+
+    local display = {
+        trackGroup = trackGroup,
+        volumeGroup = volumeGroup,
+        trackDigits = {},
+        volumeDigits = {}
+    }
+    for i = 0, 1 do
+        display.trackDigits[i + 1] =
+            TaigaRadioMapReceivers.findChildByName(trackGroup, "track_id_" .. i)
+        display.volumeDigits[i + 1] =
+            TaigaRadioMapReceivers.findChildByName(volumeGroup, "volume_id_" .. i)
+    end
+
+    if display.trackDigits[1] == nil or display.trackDigits[2] == nil
+        or display.volumeDigits[1] == nil or display.volumeDigits[2] == nil then
+        return nil
+    end
+
+    return display
+end
+
+-- Выводит двузначное число на готовых цифровых мешах через параметр index.
+-- Индикаторы TRACK и VOLUME уже находятся в соответствующих группах I3D.
+function TaigaRadioMapReceivers.setDisplayNumber(digits, value)
+    local number = math.min(99, math.max(0, math.floor(value)))
+    local tens = math.floor(number / 10)
+    local ones = number % 10
+    setShaderParameter(digits[1], "index", tens, 0, 0, 0, false)
+    setShaderParameter(digits[2], "index", ones, 0, 0, 0, false)
+end
+
+-- Показывает номер трека, громкость либо полностью выключает экран.
+function TaigaRadioMapReceivers:setDisplayMode(receiver, mode)
+    receiver.displayMode = mode
+    local display = receiver.display
+    if display == nil then
+        return
+    end
+    setVisibility(display.trackGroup, mode == "track")
+    setVisibility(display.volumeGroup, mode == "volume")
+
+    if mode == "track" then
+        TaigaRadioMapReceivers.setDisplayNumber(display.trackDigits, receiver.trackIndex)
+    elseif mode == "volume" then
+        local percent = math.floor(receiver.volume * 100 + 0.5)
+        TaigaRadioMapReceivers.setDisplayNumber(display.volumeDigits, percent)
+    end
+end
+
+-- Применяет громкость к текущему 3D-источнику без его перезагрузки.
+-- На три секунды показывает громкость на штатном дисплее модели.
+function TaigaRadioMapReceivers:adjustVolume(receiver, delta)
+    local nextVolume = math.max(0, math.min(1, math.floor(receiver.volume * 10 + delta * 10 + 0.5) / 10))
+    if nextVolume == receiver.volume then
+        return
+    end
+
+    receiver.volume = nextVolume
+    if receiver.soundSample ~= nil then
+        setSampleVolume(receiver.soundSample, receiver.volume)
+    end
+    if receiver.enabled then
+        receiver.volumeDisplayTimer = 3000
+        self:setDisplayMode(receiver, "volume")
+    end
+
+    Logging.info("[TaigaRadio] Приёмник: громкость %d%%", math.floor(receiver.volume * 100 + 0.5))
+end
+
 -- Регистрирует экземпляр модели и клиентский триггер без привязки к
 -- неподвижной позиции. Все узлы остаются детьми подвижного корня I3D.
 function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, triggerNode)
@@ -57,12 +149,26 @@ function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, tri
         enabled = false,
         trackIndex = 1,
         elapsedMs = 0,
+        volume = 0.7,
+        volumeDisplayTimer = 0,
+        displayMode = "none",
+        display = TaigaRadioMapReceivers.findDisplayNodes(displayNode),
         soundSource = nil,
         soundSample = nil,
         activatable = nil
     }
     self.receivers[#self.receivers + 1] = receiver
     self.byTriggerNode[triggerNode] = receiver
+
+    -- При загрузке скрываем одновременно отображаемые TRACK и VOLUME.
+    if self.mission:getIsClient() then
+        if receiver.display == nil then
+            Logging.warning("[TaigaRadio] Приёмник #%d: отсутствуют узлы цифрового дисплея", #self.receivers)
+        else
+            self:setDisplayMode(receiver, "none")
+        end
+    end
+
     if self.mission:getIsClient() then
         receiver.activatable = TaigaRadioMapReceiverActivatable.new(self, receiver)
     end
@@ -151,10 +257,11 @@ function TaigaRadioMapReceivers:playTrack(receiver)
     end
 
     local filename = track.speakerFilename or track.filename
-    local source = createAudioSource("TaigaRadioReceiver", filename, 35, 3, 0.65, 1)
+    local source = createAudioSource("TaigaRadioReceiver", filename, 35, 3, receiver.volume, 1)
     if source == nil or source == 0 then
         Logging.warning("[TaigaRadio] Не удалось создать 3D-источник MP3: %s", filename)
         receiver.enabled = false
+        self:setDisplayMode(receiver, "none")
         return
     end
 
@@ -164,8 +271,10 @@ function TaigaRadioMapReceivers:playTrack(receiver)
     setAudioSourceAutoPlay(source, false)
     receiver.soundSample = getAudioSourceSample(source)
     setSampleGroup(receiver.soundSample, AudioGroup.ENVIRONMENT)
-    playSample(receiver.soundSample, 1, 0.65, 0, 0, 0)
+    playSample(receiver.soundSample, 1, receiver.volume, 0, 0, 0)
     receiver.elapsedMs = 0
+    receiver.volumeDisplayTimer = 0
+    self:setDisplayMode(receiver, "track")
     Logging.info("[TaigaRadio] Приёмник: воспроизводится '%s'", track.title)
 end
 
@@ -193,6 +302,8 @@ function TaigaRadioMapReceivers:toggle(receiver)
         self:playTrack(receiver)
     else
         self:stopTrack(receiver)
+        receiver.volumeDisplayTimer = 0
+        self:setDisplayMode(receiver, "none")
     end
     if receiver.activatable ~= nil then
         receiver.activatable:updateText()
@@ -209,6 +320,8 @@ function TaigaRadioMapReceivers:nextTrack(receiver, step)
     receiver.elapsedMs = 0
     if receiver.enabled then
         self:playTrack(receiver)
+    else
+        self:setDisplayMode(receiver, "none")
     end
     Logging.info("[TaigaRadio] Приёмник: выбран трек %d", receiver.trackIndex)
 end
@@ -221,6 +334,14 @@ function TaigaRadioMapReceivers:update(dt)
     end
     for _, receiver in ipairs(self.receivers) do
         if receiver.enabled then
+            if receiver.volumeDisplayTimer > 0 then
+                receiver.volumeDisplayTimer = receiver.volumeDisplayTimer - dt
+                if receiver.volumeDisplayTimer <= 0 then
+                    receiver.volumeDisplayTimer = 0
+                    self:setDisplayMode(receiver, "track")
+                end
+            end
+
             local track = radio:getTrack(receiver.trackIndex)
             if track ~= nil then
                 receiver.elapsedMs = receiver.elapsedMs + dt
@@ -305,11 +426,27 @@ function TaigaRadioMapReceiverActivatable:registerCustomInput(inputContext)
     )
     self.nextEventId = nextId
     self.previousEventId = previousId
+
+    local _, volumeUpId = g_inputBinding:registerActionEvent(
+        InputAction.TAIGA_RADIO_VOLUME_UP, self, self.onVolumeUp, false, true, false, true
+    )
+    local _, volumeDownId = g_inputBinding:registerActionEvent(
+        InputAction.TAIGA_RADIO_VOLUME_DOWN, self, self.onVolumeDown, false, true, false, true
+    )
+    self.volumeUpEventId = volumeUpId
+    self.volumeDownEventId = volumeDownId
+
     if nextId ~= nil then
         g_inputBinding:setActionEventText(nextId, "Следующая песня")
     end
     if previousId ~= nil then
         g_inputBinding:setActionEventText(previousId, "Предыдущая песня")
+    end
+    if volumeUpId ~= nil then
+        g_inputBinding:setActionEventText(volumeUpId, "Громче")
+    end
+    if volumeDownId ~= nil then
+        g_inputBinding:setActionEventText(volumeDownId, "Тише")
     end
 end
 
@@ -318,6 +455,8 @@ function TaigaRadioMapReceiverActivatable:removeCustomInput(inputContext)
     g_inputBinding:removeActionEventsByTarget(self)
     self.nextEventId = nil
     self.previousEventId = nil
+    self.volumeUpEventId = nil
+    self.volumeDownEventId = nil
 end
 
 -- Переключает композицию вперёд.
@@ -328,6 +467,16 @@ end
 -- Переключает композицию назад.
 function TaigaRadioMapReceiverActivatable:onPreviousTrack()
     self.system:nextTrack(self.receiver, -1)
+end
+
+-- Увеличивает громкость приёмника на один шаг.
+function TaigaRadioMapReceiverActivatable:onVolumeUp()
+    self.system:adjustVolume(self.receiver, 0.1)
+end
+
+-- Уменьшает громкость приёмника на один шаг.
+function TaigaRadioMapReceiverActivatable:onVolumeDown()
+    self.system:adjustVolume(self.receiver, -0.1)
 end
 
 -- Определяет расстояние по текущему положению подвижного триггера.

@@ -252,8 +252,10 @@
 	</storeItems>
 	<actions>
         <!-- Управление песнями подвижного радио, когда игрок находится в триггере. -->
-        <action name="TAIGA_RADIO_NEXT" axisType="HALF"/>
-        <action name="TAIGA_RADIO_PREVIOUS" axisType="HALF"/>
+        <action name="TAIGA_RADIO_NEXT" category="ONFOOT" axisType="HALF"/>
+        <action name="TAIGA_RADIO_PREVIOUS" category="ONFOOT" axisType="HALF"/>
+        <action name="TAIGA_RADIO_VOLUME_UP" category="ONFOOT" axisType="HALF"/>
+        <action name="TAIGA_RADIO_VOLUME_DOWN" category="ONFOOT" axisType="HALF"/>
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<action name="HPS_ACTION_SECONDRY" axisType="HALF"/>
 		<action name="HPS_TOGGLE_FREE_PLANT" axisType="HALF"/>
@@ -264,6 +266,12 @@
         </actionBinding>
         <actionBinding action="TAIGA_RADIO_PREVIOUS">
             <binding device="KB_MOUSE_DEFAULT" input="KEY_pagedown"/>
+        </actionBinding>
+        <actionBinding action="TAIGA_RADIO_VOLUME_UP">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_plus" axisComponent="+" neutralInput="0" index="1"/>
+        </actionBinding>
+        <actionBinding action="TAIGA_RADIO_VOLUME_DOWN">
+            <binding device="KB_MOUSE_DEFAULT" input="KEY_lctrl KEY_KP_minus" axisComponent="+" neutralInput="0" index="1"/>
         </actionBinding>
 		<!-- HandPlantSaplings - ручная посадка саженцев -->
 		<actionBinding action="HPS_ACTION_SECONDRY">
