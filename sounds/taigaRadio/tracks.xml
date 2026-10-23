@@ -37,4 +37,10 @@
 	<track title="Я - тайга"
 		   file="sounds/taigaRadio/07_Iataiga.mp3"
 		   durationMs="293000"/>
+	<track title="Построим своими руками"
+		   file="sounds/taigaRadio/08_PostroimSvoimiRukami.mp3"
+		   durationMs="341000"/>
+	<track title="Там, где шумела тайга"
+		   file="sounds/taigaRadio/09_TamGdeShumelaTaiga.mp3"
+		   durationMs="331000"/>
 </taigaRadio>
