@@ -472,34 +472,53 @@ local function addProductionInfo(productionPoint, infoTable)
 end
 
 -- Форматирует количество литров с разделением тысяч для заголовка HUD.
--- Реестр дополнений к секции производственного склада.
--- Обработчики принадлежат своим модам, карта ничего не знает об их объектах.
-HUD.productionStorageExtensions = HUD.productionStorageExtensions or {}
-
--- Регистрирует функцию расширения склада: (productionPoint, infoTable, headerRow,
--- displayedFillTypes) -> true, если выведено содержимое склада.
-function HUD.registerProductionStorageExtension(callback)
-    if type(callback) ~= "function" then
-        return false
-    end
-
-    for _, registered in ipairs(HUD.productionStorageExtensions) do
-        if registered == callback then
-            return true
-        end
-    end
-
-    table.insert(HUD.productionStorageExtensions, callback)
-    return true
+local function formatElevatorStorageLiters(value)
+    local digits = tostring(math.floor(math.max(value or 0, 0) + 0.5))
+    return digits:reverse():gsub("(%d%d%d)", "%1 "):reverse():gsub("^ ", "")
 end
 
--- Формирует общую секцию; специальные объекты дополняют её через реестр.
+-- Формирует заголовок хранилища; заполненность добавляется только для WoodElevator.
+local function getProductionStorageTitle(productionPoint)
+    local title = getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage")
+    local placeable = productionPoint.owningPlaceable
+    local filename = placeable ~= nil and normalizeFilename(placeable.configFileName) or nil
+
+    if filename == nil
+        or string.find(filename, "/map/placeables/woodelevator/woodelevator.xml", 1, true) == nil
+        or productionPoint.storage == nil then
+        return title
+    end
+
+    local storage = productionPoint.storage
+    local used = 0
+    for _, fillLevel in pairs(storage:getFillLevels() or {}) do
+        used = used + (fillLevel or 0)
+    end
+
+    return string.format(
+        "%s (%s / %s)",
+        title,
+        formatElevatorStorageLiters(used),
+        formatElevatorStorageLiters(storage.capacity)
+    )
+end
+
 local function addProductionStorageInfo(productionPoint, infoTable)
-    local headerRow = {
-        title = getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage"),
-        accentuate = true
-    }
-    table.insert(infoTable, headerRow)
+    addSection(infoTable, getProductionStorageTitle(productionPoint))
+
+    -- WoodElevator хранит четыре культуры, которые намеренно не входят в рецепты.
+    -- Его существующий post-update обработчик вызывается с пустым superFunc:
+    -- так сохраняются строка общей ёмкости и storage-only культуры, но не запускается
+    -- чужая глобальная цепочка ProductionPoint:updateInfo.
+    if WoodElevatorStorageInfo ~= nil
+        and type(WoodElevatorStorageInfo.updateInfo) == "function" then
+        WoodElevatorStorageInfo:updateInfo(
+            productionPoint,
+            function()
+            end,
+            infoTable
+        )
+    end
 
     local displayed = false
     local displayedFillTypes = {}
@@ -527,10 +546,46 @@ local function addProductionStorageInfo(productionPoint, infoTable)
         addFillType(fillTypeIndex)
     end
 
-    -- Специализированные расширения могут изменить заголовок и добавить строки.
-    for _, callback in ipairs(HUD.productionStorageExtensions) do
-        if callback(productionPoint, infoTable, headerRow, displayedFillTypes) then
-            displayed = true
+    -- Дополнительные культуры деревянного элеватора не входят в рецепты,
+    -- поэтому штатный ProductionPoint:getFillLevel() возвращает для них 0.
+    -- Читаем эти культуры непосредственно из Storage, не полагаясь на глобальную
+    -- доступность скрипта другого мода.
+    local placeable = productionPoint.owningPlaceable
+    local filename = placeable ~= nil and normalizeFilename(placeable.configFileName) or nil
+    if filename ~= nil
+        and string.find(filename, "/map/placeables/woodelevator/woodelevator.xml", 1, true) ~= nil
+        and productionPoint.storage ~= nil then
+        local storage = productionPoint.storage
+        local extraFillTypes = {"CANOLA", "SUNFLOWER", "SOYBEAN", "MAIZE"}
+
+        for _, fillTypeName in ipairs(extraFillTypes) do
+            local fillTypeIndex = g_fillTypeManager:getFillTypeIndexByName(fillTypeName)
+            if fillTypeIndex ~= nil and not displayedFillTypes[fillTypeIndex] then
+                displayedFillTypes[fillTypeIndex] = true
+
+                local fillLevel = storage:getFillLevel(fillTypeIndex)
+                if storage:getIsFillTypeSupported(fillTypeIndex) and fillLevel > 1 then
+                    local title = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+                    local alreadyAdded = false
+
+                    -- Не дублируем строку, если её уже добавил внешний обработчик.
+                    for _, row in ipairs(infoTable) do
+                        if row.title == title then
+                            alreadyAdded = true
+                            break
+                        end
+                    end
+
+                    if not alreadyAdded then
+                        table.insert(infoTable, {
+                            title = title,
+                            text = g_i18n:formatVolume(fillLevel, 0)
+                        })
+                    end
+
+                    displayed = true
+                end
+            end
         end
     end
 
