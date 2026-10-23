@@ -176,6 +176,9 @@ function MissionTayga.new(baseDirectory, customMt)
     MissionTayga.loadLoggingContractorModules(baseDirectory)
     MissionTayga.installLicensePlateHooks()
 
+    -- Интервал попыток генерации контрактов: 30 игровых минут.
+    MissionManager.MISSION_GENERATION_INTERVAL = 1800000
+	
     local mission = MissionTayga:superClass().new(baseDirectory, customMt or MissionTayga_mt)
     -- Подключаем радиостанцию к конкретному SoundPlayer до регистрации
     -- пользовательских действий и до старта миссии.
