@@ -138,3 +138,37 @@
 - [ ] Протестировать покупку, отказ, логирование и переподключение в FS25; статическое чтение само по себе не подтверждает работоспособность.
 
 **Вывод:** требуются как минимум два различных обработчика покупки: для `BuyingStation` и для `PlaceablePalletBuyingStation`. Нельзя заменить их одной клиентской проверкой или одним hook на расчёт цены.
+
+## Уточнение реальных объектов карты и потоков (2026-10-23)
+
+### Элеватор Степаныча — подтверждённый приём сыпучих грузов
+
+Источник: [map/placeables/RailBulkSellPoint/RailBulkSellPoint.xml](https://github.com/maxkra1985/FS25_AbandonedTaiga_4x/blob/main/map/placeables/RailBulkSellPoint/RailBulkSellPoint.xml#L78-L84).
+
+- Объект объявлен как `<placeable type="sellingStation">` (стр. 2), содержит `<sellingStation>` (стр. 78), `<unloadTrigger exactFillRootNode="unloadTrigger" ...>` (стр. 79) и `<baleTrigger>` (стр. 80).
+- Допускаются не только зерновые: в списке есть `WOODCHIPS`, `SILAGE`, `GRASS`, `STONE`, `FERTILIZER`, `LIME` и другие. Для контрактной категории «сыпучие» нужен **явный список разрешённых fillType из XML**, а не простая проверка возможности выгрузки в данный триггер.
+- Маршрут приёмки должен быть совместим со штатным [SellingStation.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/objects/SellingStation.lua#L317-L390), включая `self.missions`/`fillSold`. Ещё предстоит проверить конкретные объекты unload trigger и точное подтверждение количества принятых литров.
+
+### Склад Семёныча — подтверждённый магазин поддонов
+
+Источник: [map/placeables/PalletBuyingStation/warehouseLogisticUS.xml](https://github.com/maxkra1985/FS25_AbandonedTaiga_4x/blob/main/map/placeables/PalletBuyingStation/warehouseLogisticUS.xml#L1-L15), [секция palletBuyingStation](https://github.com/maxkra1985/FS25_AbandonedTaiga_4x/blob/main/map/placeables/PalletBuyingStation/warehouseLogisticUS.xml#L66-L148).
+
+- Описание объекта прямо называет его «Место покупки различных товаров», а код специализации `PlaceablePalletBuyingStation` создаёт покупаемые поддоны.
+- **Это не доказательство наличия здесь точки СДАЧИ поддонов.** Скупщик паллет из функциональных требований должен быть найден отдельно среди `sellingStationProducts` или других продающих объектов карты; соответствие пока неизвестно.
+- Для предотвращения перепродажи требуется блокировать **покупку** совпадающего `fillType` через этот магазин до создания поддона, сохраняя контрактную сдачу в реальную selling station.
+
+### Покупка сыпучих товаров
+
+Источник: [BuyingStation.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/objects/BuyingStation.lua#L96-L116).
+
+- `BuyingStation:addFillLevelToFillableObject` добавляет литры в транспорт до списания денег. Запрет покупки требуется проверять до вызова исходной операции.
+- Элеватор Степаныча объявлен как **SellingStation**, не **BuyingStation**. Сам по себе этот элеватор не подтверждён как место покупки зерна. Запрет покупки сыпучего контрактного товара нужно применять к фактическим продающим игроку BuyingStation, которые ещё предстоит установить.
+
+### Что пока не удалось установить
+
+- Конкретный XML объекта `sellingStationWood` по записи preplaced в `config/placeables.xml`; предполагаемые пути не подтверждены.
+- Обе `sellingStationProducts` и их связь с приёмом поддонов.
+- Реальный метод приёма поддона и подтверждения принятого литража именно на карте.
+- Достаточность одного hook для серверной блокировки магазина поддонов, включая корректный сетевой ответ игроку.
+
+**Решение:** не реализовывать блокировку продажи на самом элеваторе как замену блокировке ПОКУПКИ товара. Это два разных направления передачи продукции, и запрет продажи разрушил бы выполнение контракта. Следующий шаг — получить реестр preplaced из map.i3d/конфигураций объектов, установить точные XML по uniqueId и проследить unloading path.
