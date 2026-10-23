@@ -913,14 +913,44 @@ function HUD.installAuthoritativeInfoTriggerHook()
 
     local originalOnDraw = PlaceableInfoTrigger.onDraw
 
+    -- Диагностика конечного формирования HUD элеватора с ограничением частоты.
+    local elevatorDebugTimes = setmetatable({}, {__mode = "k"})
+
     local wrappedOnDraw = function(placeable, ...)
+        local filename = placeable ~= nil and normalizeFilename(placeable.configFileName) or ""
+        local isElevator = filename ~= nil and string.find(filename, "woodelevator", 1, true) ~= nil
+        local now = g_currentMission ~= nil and g_currentMission.time or 0
+        local previous = isElevator and elevatorDebugTimes[placeable] or nil
+        local debugEnabled = isElevator and (previous == nil or now < previous or now - previous >= 5000)
+        if debugEnabled then
+            elevatorDebugTimes[placeable] = now
+        end
+
         local showConstruction = HUD.shouldSuppressFutureFacilityInfo(placeable)
         local showProduction = not showConstruction and HUD.useFinishedProductionInfo(placeable)
         local showHusbandryStorage = not showConstruction
             and not showProduction
             and HUD.useFinishedHusbandryStorageInfo(placeable)
 
+        if debugEnabled then
+            local productionPoint = HUD.getProductionPoint(placeable)
+            local storage = productionPoint ~= nil and productionPoint.storage or nil
+            local canolaId = g_fillTypeManager ~= nil and g_fillTypeManager:getFillTypeIndexByName("CANOLA") or nil
+            Logging.info(
+                "%s ELEVATOR draw: path=%s construction=%s production=%s husbandry=%s composite=%s productionPoint=%s storage=%s canolaId=%s canolaLevel=%s",
+                HUD.LOG_PREFIX, tostring(filename), tostring(showConstruction),
+                tostring(showProduction), tostring(showHusbandryStorage),
+                tostring(HUD.useFinishedCompositeInfo(placeable)),
+                tostring(productionPoint ~= nil), tostring(storage ~= nil),
+                tostring(canolaId),
+                tostring(storage ~= nil and canolaId ~= nil and storage:getFillLevel(canolaId) or nil)
+            )
+        end
+
         if not showConstruction and not showProduction and not showHusbandryStorage then
+            if debugEnabled then
+                Logging.info("%s ELEVATOR draw: standard onDraw branch", HUD.LOG_PREFIX)
+            end
             return originalOnDraw(placeable, ...)
         end
 
@@ -942,6 +972,16 @@ function HUD.installAuthoritativeInfoTriggerHook()
             HUD.addFinishedCompositeInfo(placeable, spec.info)
         else
             HUD.addFinishedProductionInfo(placeable, spec.info)
+        end
+
+        if debugEnabled then
+            Logging.info("%s ELEVATOR final HUD rows=%d", HUD.LOG_PREFIX, #spec.info)
+            for index, entry in ipairs(spec.info) do
+                Logging.info(
+                    "%s ELEVATOR row[%d] title=%s text=%s",
+                    HUD.LOG_PREFIX, index, tostring(entry.title), tostring(entry.text)
+                )
+            end
         end
 
         drawPreparedInfo(placeable, spec.info)
