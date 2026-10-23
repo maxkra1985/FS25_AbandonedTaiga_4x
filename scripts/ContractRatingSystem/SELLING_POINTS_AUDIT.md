@@ -172,3 +172,29 @@
 - Достаточность одного hook для серверной блокировки магазина поддонов, включая корректный сетевой ответ игроку.
 
 **Решение:** не реализовывать блокировку продажи на самом элеваторе как замену блокировке ПОКУПКИ товара. Это два разных направления передачи продукции, и запрет продажи разрушил бы выполнение контракта. Следующий шаг — получить реестр preplaced из map.i3d/конфигураций объектов, установить точные XML по uniqueId и проследить unloading path.
+
+## Выгрузка поддонов: фактическая цепочка в штатном FS25 (2026-10-23)
+
+Прочитаны [PalletUnloadTrigger.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/triggers/PalletUnloadTrigger.lua#L64-L116) и [UnloadTrigger.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/triggers/UnloadTrigger.lua#L125-L142).
+
+1. `PalletUnloadTrigger:update()` на сервере запускает `unloadPallets()` при наличии поддонов в зоне; действие также вызывается из callback триггера.
+2. `unloadPallets(farmId)` проверяет доступ к поддону, затем наличие допустимого `fillType`, количество в fillUnit и условия динамического крепления.
+3. При наличии `getPalletUnloadTriggerExtraSellPrice` и `target.moneyChangeType` **до приёмки** может быть отдельно начислен бонус за поддон — потенциальный канал двойной оплаты в контрактной поставке.
+4. Фактическая передача происходит через `used = self:addFillUnitFillLevel(pallet:getOwnerFarmId(), fillUnitIndex, fillLevel, fillTypeIndex, ToolType.UNDEFINED)`; ровно `used` вычитается из поддона. Пустой поддон удаляется.
+5. `UnloadTrigger:addFillUnitFillLevel` вызывает `target:addFillLevelFromTool` и возвращает реально заявленное целевым объектом количество; **при конвертации fillType** возвращает `applied / ratio`. Это означает необходимость учитывать преобразование единиц/типов при зачёте поставки.
+6. Следовательно, при контрактной поставке необходимо отдельно гарантировать: зачёт принятого количества, отсутствие промежуточных обычных продаж и дополнительных денежных начислений, сохранение штатного удаления/разгрузки поддонов, корректность MP.
+
+### Существенный вопрос о текущем SellingStation.lua
+
+В [SellingStation.lua:317–357](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/objects/SellingStation.lua#L317-L357) вызов `mission:fillSold(deltaFillLevel)` расположен **до** формирования `movedFillLevel`. При этом `movedFillLevel` присваивается только внутри ветки `if storeGoods then`, а базовый `getStoreGoods` (стр. 359–361) возвращает `false`. Буквальное прочтение этого файла означает, что прямой `SellingStation` по умолчанию возвращает 0, хотя миссии может засчитываться `deltaFillLevel`. Это нетривиальное расхождение: **нельзя считать фактическую выгрузку доказанной по одному этому файлу**. Требуется проверить наследование/переопределения, реальный runtime и соответствие восстановленных исходников установленной версии игры. Ни в коем случае не копировать этот фрагмент без проверки.
+
+### Уточнение карты
+
+[RailBulkSellPoint.xml](https://github.com/maxkra1985/FS25_AbandonedTaiga_4x/blob/main/map/placeables/RailBulkSellPoint/RailBulkSellPoint.xml#L78-L84) подтверждает базовый `SellingStation` с `unloadTrigger` и `baleTrigger`; типы продукции перечислены явно. Пункт приёма древесины и две `sellingStationProducts` ещё требуют точной привязки к XML из preplaced map.i3d.
+
+### Осталось проверить
+
+- [ ] Есть ли у конкретного SellingStation override `getStoreGoods`, и соответствует ли логика реальному FS25 1.25.0.0.
+- [ ] Точные XML двух `sellingStationProducts`, пункта древесины и типы их триггеров.
+- [ ] Попадает ли паллетный путь в `SellingStation` напрямую либо в иной подкласс, включая дополнительную оплату паллет.
+- [ ] Сетевая обработка отказа покупки и демонстрация локализованного сообщения без выдачи товара.
