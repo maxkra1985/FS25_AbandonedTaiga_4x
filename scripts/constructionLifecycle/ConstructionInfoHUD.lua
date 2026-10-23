@@ -471,11 +471,40 @@ local function addProductionInfo(productionPoint, infoTable)
     addProductionRows(productionPoint, infoTable)
 end
 
-local function addProductionStorageInfo(productionPoint, infoTable)
-    addSection(
-        infoTable,
-        getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage")
+-- Форматирует количество литров с разделением тысяч для заголовка HUD.
+local function formatElevatorStorageLiters(value)
+    local digits = tostring(math.floor(math.max(value or 0, 0) + 0.5))
+    return digits:reverse():gsub("(%d%d%d)", "%1 "):reverse():gsub("^ ", "")
+end
+
+-- Формирует заголовок хранилища; заполненность добавляется только для WoodElevator.
+local function getProductionStorageTitle(productionPoint)
+    local title = getText(HUD.L10N_PRODUCTION_STORAGE, "ui_productions_buildingStorage", "Production storage")
+    local placeable = productionPoint.owningPlaceable
+    local filename = placeable ~= nil and normalizeFilename(placeable.configFileName) or nil
+
+    if filename == nil
+        or string.find(filename, "/map/placeables/woodelevator/woodelevator.xml", 1, true) == nil
+        or productionPoint.storage == nil then
+        return title
+    end
+
+    local storage = productionPoint.storage
+    local used = 0
+    for _, fillLevel in pairs(storage:getFillLevels() or {}) do
+        used = used + (fillLevel or 0)
+    end
+
+    return string.format(
+        "%s (%s / %s)",
+        title,
+        formatElevatorStorageLiters(used),
+        formatElevatorStorageLiters(storage.capacity)
     )
+end
+
+local function addProductionStorageInfo(productionPoint, infoTable)
+    addSection(infoTable, getProductionStorageTitle(productionPoint))
 
     -- WoodElevator хранит четыре культуры, которые намеренно не входят в рецепты.
     -- Его существующий post-update обработчик вызывается с пустым superFunc:
