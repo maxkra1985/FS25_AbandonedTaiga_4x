@@ -517,6 +517,49 @@ local function addProductionStorageInfo(productionPoint, infoTable)
         addFillType(fillTypeIndex)
     end
 
+    -- Дополнительные культуры деревянного элеватора не входят в рецепты,
+    -- поэтому штатный ProductionPoint:getFillLevel() возвращает для них 0.
+    -- Читаем эти культуры непосредственно из Storage, не полагаясь на глобальную
+    -- доступность скрипта другого мода.
+    local placeable = productionPoint.owningPlaceable
+    local filename = placeable ~= nil and normalizeFilename(placeable.configFileName) or nil
+    if filename ~= nil
+        and string.find(filename, "/map/placeables/woodelevator/woodelevator.xml", 1, true) ~= nil
+        and productionPoint.storage ~= nil then
+        local storage = productionPoint.storage
+        local extraFillTypes = {"CANOLA", "SUNFLOWER", "SOYBEAN", "MAIZE"}
+
+        for _, fillTypeName in ipairs(extraFillTypes) do
+            local fillTypeIndex = g_fillTypeManager:getFillTypeIndexByName(fillTypeName)
+            if fillTypeIndex ~= nil and not displayedFillTypes[fillTypeIndex] then
+                displayedFillTypes[fillTypeIndex] = true
+
+                local fillLevel = storage:getFillLevel(fillTypeIndex)
+                if storage:getIsFillTypeSupported(fillTypeIndex) and fillLevel > 1 then
+                    local title = g_fillTypeManager:getFillTypeTitleByIndex(fillTypeIndex)
+                    local alreadyAdded = false
+
+                    -- Не дублируем строку, если её уже добавил внешний обработчик.
+                    for _, row in ipairs(infoTable) do
+                        if row.title == title then
+                            alreadyAdded = true
+                            break
+                        end
+                    end
+
+                    if not alreadyAdded then
+                        table.insert(infoTable, {
+                            title = title,
+                            text = g_i18n:formatVolume(fillLevel, 0)
+                        })
+                    end
+
+                    displayed = true
+                end
+            end
+        end
+    end
+
     if not displayed then
         if productionPoint.infoTables ~= nil and productionPoint.infoTables.storageEmpty ~= nil then
             table.insert(infoTable, productionPoint.infoTables.storageEmpty)
