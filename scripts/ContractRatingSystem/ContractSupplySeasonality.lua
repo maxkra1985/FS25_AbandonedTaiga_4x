@@ -61,10 +61,13 @@ function ContractSupplySeasonality.loadConfig(baseDirectory)
         local fillTypeName = getXMLString(xml, key .. "#fillType")
         local months = ContractSupplySeasonality.parseMonths(
             getXMLString(xml, key .. "#months"))
-        local fillType = fillTypeName ~= nil
+        -- WOOD учитывается игрой как древесина через woodUnloadTrigger,
+        -- а не как обычный fillType. В ассортименте это условный маркер.
+        local isWood = station == "wood" and fillTypeName == "WOOD"
+        local fillType = not isWood and fillTypeName ~= nil
             and g_fillTypeManager:getFillTypeByName(fillTypeName) or nil
-        if not allowedStations[station] or fillType == nil or months == nil
-            or products[station][fillType.name] ~= nil then
+        if not allowedStations[station] or (not isWood and fillType == nil) or months == nil
+            or products[station][isWood and "WOOD" or (fillType ~= nil and fillType.name or "")] ~= nil then
             Logging.warning(
                 "[ContractRating] Invalid seasonal product: %s / %s",
                 tostring(station), tostring(fillTypeName))
@@ -72,9 +75,10 @@ function ContractSupplySeasonality.loadConfig(baseDirectory)
             return false
         end
 
-        products[station][fillType.name] = {
-            name = fillType.name,
-            index = fillType.index,
+        local productName = isWood and "WOOD" or fillType.name
+        products[station][productName] = {
+            name = productName,
+            index = isWood and nil or fillType.index,
             months = months
         }
         index = index + 1

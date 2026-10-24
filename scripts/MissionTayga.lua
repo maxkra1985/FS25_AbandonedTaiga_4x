@@ -198,9 +198,6 @@ function MissionTayga.new(baseDirectory, customMt)
     if not ContractSupplyEconomy.loadConfig(baseDirectory) then
         Logging.warning("[ContractRating] Supply economy configuration invalid")
     end
-    if not ContractSupplySeasonality.loadConfig(baseDirectory) then
-        Logging.warning("[ContractRating] Seasonal product configuration invalid")
-    end
     if not ContractSupplyVolumes.loadConfig(baseDirectory) then
         Logging.warning("[ContractRating] Supply volume configuration invalid")
     end
@@ -297,6 +294,10 @@ function MissionTayga:onStartMission()
     -- Рейтинг загружается только на сервере, результаты обрабатываются после старта.
     self.contractRatingRuntime = ContractRatingRuntime.new(self)
     self.contractRatingRuntime:start()
+    -- К этому моменту типы продукции карты и сторонних модов уже зарегистрированы.
+    if not ContractSupplySeasonality.loadConfig(self.baseDirectory) then
+        Logging.warning("[ContractRating] Seasonal product configuration invalid after map load")
+    end
     self.contractSupplyCalendar = ContractSupplyCalendar.new(self)
     self.contractSupplyCalendar:start()
     if self:getIsClient() and not self:getIsServer() then

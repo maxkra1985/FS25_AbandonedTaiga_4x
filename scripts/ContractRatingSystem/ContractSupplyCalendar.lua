@@ -45,7 +45,7 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     local kind = self.rotation:getTypeForMonth(index)
     local station, placeable = ContractSupplyStations.resolve(kind)
     if station == nil or placeable == nil then
-        Logging.warning("[ContractRating] Supply station %s unavailable for month %d",
+        Logging.warning("[ContractRating] Supply station %s unavailable for month %d; proposal not generated",
             tostring(kind), index)
         return
     end
@@ -53,7 +53,7 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     local candidates = {}
     for _, product in ipairs(ContractSupplySeasonality.getCandidates(
         kind, environment.currentPeriod)) do
-        if station:getIsFillTypeAllowed(product.index) then
+        if product.index ~= nil and station:getIsFillTypeAllowed(product.index) then
             local fillType = g_fillTypeManager:getFillTypeByIndex(product.index)
             if fillType ~= nil and type(fillType.pricePerLiter) == "number"
                 and fillType.pricePerLiter > 0 then
@@ -62,8 +62,8 @@ function ContractSupplyCalendar:checkCurrentPeriod()
         end
     end
     if #candidates == 0 then
-        Logging.warning("[ContractRating] No accepted seasonal goods for %s",
-            tostring(kind))
+        Logging.warning("[ContractRating] No accepted priced fillTypes for %s in period %d; proposal not generated",
+            tostring(kind), environment.currentPeriod)
         return
     end
 
