@@ -58,6 +58,14 @@ function ContractSupplyRotation:markGenerated(monthIndex, missionId)
     return true
 end
 
+-- Запоминает успешно завершённый контракт без повторной генерации в месяце.
+function ContractSupplyRotation:markCompleted(monthIndex, missionId)
+    local entry = self.generated[monthIndex]
+    if entry == nil or tostring(entry.missionId) ~= tostring(missionId) then return false end
+    entry.missionId = "completed:" .. tostring(missionId)
+    return true
+end
+
 -- Разрешает замену удалённого или завершённого без успеха предложения.
 function ContractSupplyRotation:clearGenerated(monthIndex, missionId)
     local existing = self.generated[monthIndex]

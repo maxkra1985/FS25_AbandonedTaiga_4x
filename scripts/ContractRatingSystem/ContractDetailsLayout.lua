@@ -65,8 +65,21 @@ end
 function ContractDetailsLayout.install()
     if ContractDetailsLayout.installed or InGameMenuContractsFrame == nil
         or InGameMenuContractsFrame.updateDetailContents == nil then return false end
-    InGameMenuContractsFrame.updateDetailContents = Utils.appendedFunction(
-        InGameMenuContractsFrame.updateDetailContents, ContractDetailsLayout.update)
+    -- textMaxNumLines нужно увеличить ДО штатного setText:
+    -- иначе TextElement обрезает описание до четырёх строк при установке.
+    InGameMenuContractsFrame.updateDetailContents = Utils.overwrittenFunction(
+        InGameMenuContractsFrame.updateDetailContents,
+        function(frame, superFunc, section, index)
+            if frame.contractDescriptionText ~= nil then
+                local state = ContractDetailsLayout.capture(frame)
+                if state ~= nil then
+                    frame.contractDescriptionText.textMaxNumLines = 14
+                end
+            end
+            superFunc(frame, section, index)
+            ContractDetailsLayout.update(frame)
+        end)
     ContractDetailsLayout.installed = true
+    Logging.info("[ContractRating] Adaptive contract details layout installed")
     return true
 end

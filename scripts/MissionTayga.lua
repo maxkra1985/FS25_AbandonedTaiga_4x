@@ -306,6 +306,10 @@ function MissionTayga:onStartMission()
     end
     self.contractSupplyCalendar = ContractSupplyCalendar.new(self)
     self.contractSupplyCalendar:start()
+    -- GUI может загрузиться позднее конструктора миссии.
+    if not ContractDetailsLayout.install() then
+        Logging.info("[ContractRating] Contracts GUI hook not installed at mission start")
+    end
     if self:getIsClient() and not self:getIsServer() then
         ContractRatingSyncRequestEvent.sendEvent()
     end

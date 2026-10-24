@@ -128,6 +128,10 @@ function ContractSupplyCalendar:onMissionDeleted(contract)
     if current == nil or contract.monthIndex ~= current then
         return
     end
+    if contract.finishState == MissionFinishState.SUCCESS then
+        self.rotation:markCompleted(current, contract:getUniqueId())
+        return
+    end
     if self.rotation:clearGenerated(current, contract:getUniqueId()) then
         self.lastObservedMonth = nil
         self:checkCurrentPeriod()
@@ -143,6 +147,10 @@ function ContractSupplyCalendar:onMissionFinished(contract, finishState)
         return
     end
     local current = ContractSupplyCalendar.getMonthIndex(self.mission.environment)
+    if contract.monthIndex == current and finishState == MissionFinishState.SUCCESS then
+        self.rotation:markCompleted(current, contract:getUniqueId())
+        return
+    end
     if contract.monthIndex == current
         and self.rotation:clearGenerated(current, contract:getUniqueId()) then
         self.lastObservedMonth = nil
@@ -176,6 +184,31 @@ function ContractSupplyCalendar:start()
         if contract.type ~= nil and contract.type.name == TaigaSupplyMission.TYPE_NAME
             and contract.monthIndex ~= nil and self.rotation:canGenerate(contract.monthIndex) then
             self.rotation:markGenerated(contract.monthIndex, tostring(contract:getUniqueId()))
+        end
+    end
+    -- При удалении контракта из сохранения sidecar мог оставить его старый ID.
+    -- Проверяем именно текущий месяц; успешно закрытые контракты не восстанавливаем.
+    local monthIndex = ContractSupplyCalendar.getMonthIndex(self.mission.environment)
+    local entry = monthIndex ~= nil and self.rotation.generated[monthIndex] or nil
+    if entry ~= nil and string.sub(entry.missionId, 1, 10) ~= "completed:" then
+        local found = false
+        for _, contract in ipairs(g_missionManager:getMissions()) do
+            if contract.type ~= nil and contract.type.name == TaigaSupplyMission.TYPE_NAME
+                and tostring(contract:getUniqueId()) == entry.missionId then
+                found = true
+                if contract.finishState == MissionFinishState.SUCCESS then
+                    self.rotation:markCompleted(monthIndex, entry.missionId)
+                elseif contract.finishState ~= MissionFinishState.NONE
+                    and contract.status == MissionStatus.FINISHED then
+                    self.rotation:clearGenerated(monthIndex, entry.missionId)
+                end
+                break
+            end
+        end
+        if not found then
+            Logging.warning("[ContractRating] Stale supply mission %s for month %d; allowing replacement",
+                entry.missionId, monthIndex)
+            self.rotation:clearGenerated(monthIndex, entry.missionId)
         end
     end
     self:checkCurrentPeriod()
