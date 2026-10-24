@@ -87,33 +87,72 @@ TaigaSupplyMission.CATEGORY_NAMES = {
 
 -- Подставляет существующего персонажа карты для выбранного предприятия.
 function TaigaSupplyMission:getNPC()
-    local profiles = {
-        elevator = {title = "Степаныч", filename = "map/npc/helper.png"},
-        wood = {title = "Михалыч", filename = "map/npc/forester.png"},
-        pallets = {title = "Дмитрич", filename = "map/npc/farmer.png"}
+    -- BetterContracts обращается к npc.index: нужен настоящий NPC из
+    -- g_npcManager, а не таблица только с именем и изображением.
+    local names = {
+        elevator = "Степаныч",
+        wood = "Михалыч",
+        pallets = "Дмитрич"
     }
-    local profile = profiles[self.stationKind]
-    local mission = g_currentMission
-    if profile == nil or mission == nil or mission.baseDirectory == nil then
+    local name = names[self.stationKind]
+    if name == nil or g_npcManager == nil
+        or g_npcManager.getNPCByIndex == nil then
         return nil
     end
-    return {
-        title = profile.title,
-        imageFilename = Utils.getFilename(profile.filename, mission.baseDirectory)
-    }
+    for index = 1, 64 do
+        local npc = g_npcManager:getNPCByIndex(index)
+        if npc ~= nil and npc.title == name and npc.index ~= nil then
+            return npc
+        end
+    end
+    -- Не отдаём объект без index: BetterContracts падает на таком NPC.
+    return nil
 end
 
 -- Центрирует мини-карту контракта на его пункте приёма, а не на (0, 0).
 -- Координаты берутся из фактически загруженного placeable на клиенте.
 function TaigaSupplyMission:getWorldPosition()
-    local _, placeable = ContractSupplyStations.resolve(self.stationKind)
-    if placeable ~= nil and placeable.uniqueId == self.stationId
-        and placeable.rootNode ~= nil and placeable.rootNode ~= 0 then
+    local station, placeable = ContractSupplyStations.resolve(self.stationKind)
+    if placeable == nil or placeable.uniqueId ~= self.stationId then
+        return nil, nil
+    end
+
+    -- Наиболее точная позиция — узел разгрузочного триггера.
+    if station ~= nil then
+        for _, trigger in ipairs(station.unloadTriggers or {}) do
+            local node = trigger.triggerNode
+            if node ~= nil and node ~= 0 then
+                local x, _, z = getWorldTranslation(node)
+                return x, z
+            end
+        end
+    end
+
+    if placeable.rootNode ~= nil and placeable.rootNode ~= 0 then
         local x, _, z = getWorldTranslation(placeable.rootNode)
         return x, z
     end
-    -- При отсутствии объекта не центрируем карту на случайной позиции.
     return nil, nil
+end
+
+-- Показывает на карточке контракта штатный значок точки приёма.
+-- Новый hotspot не создаётся: используются маркеры реального placeable.
+function TaigaSupplyMission:getMapHotspots()
+    local _, placeable = ContractSupplyStations.resolve(self.stationKind)
+    if placeable == nil or placeable.uniqueId ~= self.stationId then
+        return {}
+    end
+    local hotspot = placeable.mapHotspot
+    if hotspot == nil and placeable.spec_mapHotspot ~= nil then
+        hotspot = placeable.spec_mapHotspot.mapHotspot
+    end
+    if hotspot == nil and placeable.spec_sellingStation ~= nil then
+        hotspot = placeable.spec_sellingStation.mapHotspot
+    end
+    if hotspot ~= nil and hotspot.getWorldPosition ~= nil then
+        return {hotspot}
+    end
+    return {}
 end
 
 -- Возвращает читаемое название товара, используя зарегистрированный fillType.
