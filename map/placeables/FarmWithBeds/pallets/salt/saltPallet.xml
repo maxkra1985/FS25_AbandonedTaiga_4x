@@ -9,6 +9,7 @@
 		</name>
 		<image>map/placeables/FarmWithBeds/pallets/salt/hud_Palet_Soli.dds</image>
 		<price>500</price>
+		<showInStore>false</showInStore>
 		<allowLeasing>false</allowLeasing>
 		<category>pallets</category>
 		<financeCategory>PURCHASE_PALLETS</financeCategory>

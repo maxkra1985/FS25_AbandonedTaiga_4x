@@ -182,6 +182,7 @@
 		<storeItem xmlFilename="map/tools/nails/palletNails.xml"/>
 		<storeItem xmlFilename="map/tools/nails/multiPurchaseNails.xml"/>
 		<storeItem xmlFilename="map/tools/plywood/plywood.xml"/>
+		<storeItem xmlFilename="map/tools/plywood/multiPurchasePlywood.xml"/>
 		<storeItem xmlFilename="map/tools/BuildingMetal/BuildingMetal.xml"/>
 		<storeItem xmlFilename="map/tools/Metal/metalPallet.xml"/>
 		<!-- ОВОЩИ -->
@@ -231,6 +232,7 @@
 		<storeItem xmlFilename="map/placeables/GardenBeds/gardenBeds.xml"/>
 		<storeItem xmlFilename="map/placeables/GardenBeds/gardenBedsMirror.xml"/>
 		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/salt/saltPallet.xml"/>
+		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/salt/multiPurchaseSalt.xml"/>
 		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_tomatoes/barrel_tomatoesPallet.xml"/>
 		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_cucumbers/barrel cucumbersPallet.xml"/>
 		<storeItem xmlFilename="map/placeables/FarmWithBeds/pallets/barrel_cabbage/BarrelCabbagepPallet.xml"/>

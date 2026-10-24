@@ -9,7 +9,7 @@
 		</specs>
 		<image>map/tools/plywood/store_plywood.dds</image>
 		<price>445</price>
-		<showInStore>true</showInStore>
+		<showInStore>false</showInStore>
 		<allowLeasing>false</allowLeasing>
 		<canBeSold>true</canBeSold>
 		<category>pallets</category>

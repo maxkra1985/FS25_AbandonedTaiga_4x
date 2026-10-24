@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="multipleItemPurchase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<storeData>
+		<name>
+			<en>salt Pallet</en>
+			<ru>Поддон соли</ru>
+		</name>
+		<specs><weight ignore="true"/></specs>
+		<image>map/placeables/FarmWithBeds/pallets/salt/hud_Palet_Soli.dds</image>
+		<price>500</price>
+		<lifetime>600</lifetime>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<category>pallets</category>
+		<financeCategory>OTHER</financeCategory>
+		<shopHeight>2</shopHeight>
+		<storeIconRendering><settings cameraXRot="-15" cameraYRot="25"/></storeIconRendering>
+	</storeData>
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>$data/objects/multiPurchaseItem/multiPurchaseItem.i3d</filename>
+		<size width="3.6" length="6.4" height="1.6"/>
+		<components><component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1"/></components>
+	</base>
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits><fillUnit fillTypes="salt" capacity="1000"/></fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+	<!-- Обёртка создаёт отдельные физические поддоны и удаляется после покупки. -->
+	<multipleItemPurchase filename="map/placeables/FarmWithBeds/pallets/salt/saltPallet.xml" isVehicle="true">
+		<!-- Ориентировочные смещения для центрирования группы поддонов. -->
+		<offsets>
+			<offset amount="2" offset="0.825 0 0"/>
+			<offset amount="3" offset="0.825 0 0.6"/>
+			<offset amount="5" offset="0.825 0 1.2"/>
+			<offset amount="7" offset="0.825 0 1.8"/>
+			<offset amount="9" offset="0.825 0 2.4"/>
+		</offsets>
+		<!-- Примерная сетка 2x5 с шагом 1.65 м по X и 1.20 м по Z. -->
+		<!-- Координаты можно скорректировать по результатам проверки в игре. -->
+		<itemPositions>
+			<itemPosition position="0 0 0" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 0" rotation="0 0 0"/>
+			<itemPosition position="0 0 -1.2" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -1.2" rotation="0 0 0"/>
+			<itemPosition position="0 0 -2.4" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -2.4" rotation="0 0 0"/>
+			<itemPosition position="0 0 -3.6" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -3.6" rotation="0 0 0"/>
+			<itemPosition position="0 0 -4.8" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -4.8" rotation="0 0 0"/>
+		</itemPositions>
+	</multipleItemPurchase>
+	<!-- Доплата за остальные поддоны к базовой цене одного. -->
+	<multipleItemPurchaseAmountConfigurations>
+		<multipleItemPurchaseAmountConfiguration name="1" price="0"/>
+		<multipleItemPurchaseAmountConfiguration name="2" price="500"/>
+		<multipleItemPurchaseAmountConfiguration name="3" price="1000"/>
+		<multipleItemPurchaseAmountConfiguration name="4" price="1500"/>
+		<multipleItemPurchaseAmountConfiguration name="5" price="2000"/>
+		<multipleItemPurchaseAmountConfiguration name="6" price="2500"/>
+		<multipleItemPurchaseAmountConfiguration name="7" price="3000"/>
+		<multipleItemPurchaseAmountConfiguration name="8" price="3500"/>
+		<multipleItemPurchaseAmountConfiguration name="9" price="4000"/>
+		<multipleItemPurchaseAmountConfiguration name="10" price="4500"/>
+	</multipleItemPurchaseAmountConfigurations>
+</vehicle>

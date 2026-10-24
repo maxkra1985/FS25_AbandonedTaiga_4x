@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="multipleItemPurchase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<storeData>
+		<name>$l10n_storeItem_plywood</name>
+		<specs><weight ignore="true"/></specs>
+		<image>map/tools/plywood/store_plywood.dds</image>
+		<price>445</price>
+		<lifetime>600</lifetime>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<category>pallets</category>
+		<financeCategory>OTHER</financeCategory>
+	</storeData>
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>$data/objects/multiPurchaseItem/multiPurchaseItem.i3d</filename>
+		<size width="3.6" length="6.4" height="1.6"/>
+		<components><component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1"/></components>
+	</base>
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits><fillUnit fillTypes="PLYWOOD" capacity="1000"/></fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+	<!-- Обёртка создаёт отдельные физические поддоны и удаляется после покупки. -->
+	<multipleItemPurchase filename="map/tools/plywood/plywood.xml" isVehicle="true">
+		<!-- Ориентировочные смещения для центрирования группы поддонов. -->
+		<offsets>
+			<offset amount="2" offset="0.825 0 0"/>
+			<offset amount="3" offset="0.825 0 0.6"/>
+			<offset amount="5" offset="0.825 0 1.2"/>
+			<offset amount="7" offset="0.825 0 1.8"/>
+			<offset amount="9" offset="0.825 0 2.4"/>
+		</offsets>
+		<!-- Примерная сетка 2x5 с шагом 1.65 м по X и 1.20 м по Z. -->
+		<!-- Координаты можно скорректировать по результатам проверки в игре. -->
+		<itemPositions>
+			<itemPosition position="0 0 0" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 0" rotation="0 0 0"/>
+			<itemPosition position="0 0 -1.2" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -1.2" rotation="0 0 0"/>
+			<itemPosition position="0 0 -2.4" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -2.4" rotation="0 0 0"/>
+			<itemPosition position="0 0 -3.6" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -3.6" rotation="0 0 0"/>
+			<itemPosition position="0 0 -4.8" rotation="0 0 0"/>
+			<itemPosition position="-1.65 0 -4.8" rotation="0 0 0"/>
+		</itemPositions>
+	</multipleItemPurchase>
+	<!-- Доплата за остальные поддоны к базовой цене одного. -->
+	<multipleItemPurchaseAmountConfigurations>
+		<multipleItemPurchaseAmountConfiguration name="1" price="0"/>
+		<multipleItemPurchaseAmountConfiguration name="2" price="445"/>
+		<multipleItemPurchaseAmountConfiguration name="3" price="890"/>
+		<multipleItemPurchaseAmountConfiguration name="4" price="1335"/>
+		<multipleItemPurchaseAmountConfiguration name="5" price="1780"/>
+		<multipleItemPurchaseAmountConfiguration name="6" price="2225"/>
+		<multipleItemPurchaseAmountConfiguration name="7" price="2670"/>
+		<multipleItemPurchaseAmountConfiguration name="8" price="3115"/>
+		<multipleItemPurchaseAmountConfiguration name="9" price="3560"/>
+		<multipleItemPurchaseAmountConfiguration name="10" price="4005"/>
+	</multipleItemPurchaseAmountConfigurations>
+</vehicle>
