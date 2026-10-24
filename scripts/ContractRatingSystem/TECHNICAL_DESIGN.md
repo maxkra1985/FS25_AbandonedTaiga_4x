@@ -128,3 +128,40 @@
 - [ ] Не проведены игровые и MP тесты.
 
 **Этап 1 остаётся в работе; ничего из этого не следует выдавать за реализованный рейтинг.**
+
+## H. Проверка рейтингового допуска в сетевом маршруте принятия (2026-10-24)
+
+Проверены следующие штатные файлы:
+- [InGameMenuContractsFrame.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/gui/InGameMenuContractsFrame.lua#L379-L430)
+- [MissionStartEvent.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/missions/events/MissionStartEvent.lua)
+- [MissionStartState.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/missions/MissionStartState.lua)
+- [MissionManager.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/missions/MissionManager.lua#L317-L366)
+- [MissionFinishedEvent.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/missions/events/MissionFinishedEvent.lua)
+- [MissionFinishState.lua](https://github.com/maxkra1985/FarmingSimulator25_dataS/blob/main/scripts/missions/MissionFinishState.lua)
+
+### Реальная последовательность принятия
+
+1. Клиентский `InGameMenuContractsFrame:startContract` передаёт выбранную миссию, `farmId`, флаг аренды транспорта через `MissionStartEvent.new`.
+2. `MissionStartEvent:run(connection)` на сервере определяет пользователя по соединению, проверяет право `manageContracts` и вызывает `g_missionManager:startMission(self.mission, self.farmId, self.spawnVehicles)`.
+3. `MissionManager:startMission` требует выполнения на сервере, проверяет ограничения, затем выполняет `mission:validate()`. **Если validate возвращает false, миссия удаляется** и ответом становится `MissionStartState.NOT_AVAILABLE_ANYMORE`.
+4. После запуска сервер посылает `MissionStartEvent.newServerToClient(startState, spawnVehicles)`; GUI показывает диалог по перечислению `MissionStartState`.
+
+### Установленные ограничения
+
+- В `MissionStartState` существует только восемь значений: `OK`, `LIMIT_REACHED`, `ALREADY_STARTED`, `NOT_AVAILABLE_ANYMORE`, `NO_ACCESS`, `CANNOT_BE_STARTED_NOW`, `PENDING_MISSION`, `NO_PERMISSION`. **Специального значения «недостаточно рейтинга» нет**.
+- Следовательно, нельзя реализовывать рейтинговый отказ через `mission:validate() == false`: штатный менеджер удалит само предложение.
+- Также нельзя без изменения штатного enum отправлять новый, произвольный `MissionStartState`. Безопаснее перехватить серверный путь **до вызова** `MissionManager:startMission`, передать поддерживаемый `CANNOT_BE_STARTED_NOW` и дополнительно синхронизировать требуемый/фактический рейтинг своим событием либо заранее показать причину клиенту. Точную схему пользовательского сообщения и повторных сетевых отказов необходимо определить после аудита событий.
+- Серверный `MissionStartEvent:run` проверяет permission для `senderFarm.farmId`, но вызывает менеджер с `self.farmId`, переданным клиентом. Это **наблюдаемая разница аргументов**, не подтверждённый эксплойт; при интеграции своего контроля рейтинга идентификатор фермы следует брать из проверенного контекста соединения, а не доверять одному клиентскому `farmId`.
+
+### Сохранение и результат
+
+- `MissionManager:saveToXMLFile` сохраняет список миссий, `loadFromXMLFile` восстанавливает их по зарегистрированным типам, проверяя версию. Отдельная история рейтинга и удалённых попыток требует собственного сериализуемого состояния; точный savegame-hook в `MissionTayga` ещё проверяется.
+- `MissionFinishState` различает `SUCCESS`, `FAILED`, `TIMED_OUT`, `CANCELED`; для рейтинга не следует объединять успех, отмену и истечение времени. `MissionFinishedEvent:run` на клиенте вызывает `self.mission:finish(self.finishState)`, что повторно публикует локальное сообщение об окончании. **Начислять рейтинг должен только сервер**, даже если UI наблюдает событие на клиенте.
+
+### Предлагаемый следующий шаг
+
+1. Найти штатные точки `Mission00` сохранения/загрузки, события savegame и жизненный цикл карты; выбрать место для отдельного журнала.
+2. Сверить корректность привязки фермы к соединению и способ сообщать причину отказа, не ломая стандартную сетевую обработку.
+3. Только после этого создавать код ядра; рабочее серверное правило допуска обязательно покрыть тестом сохранения предложения и повторной попытки после повышения рейтинга.
+
+**Статус:** подтверждено по исходникам, не испытано на выделенном сервере.
