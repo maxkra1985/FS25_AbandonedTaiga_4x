@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <npc>
 	<class>NPC</class>
-	<title>Семёныч</title>
+	<title>Степаныч</title>
 	<imageFilename>map/npc/helper.png</imageFilename>
 	<filename>map/npc/npcBase.i3d</filename>
 	<sounds>

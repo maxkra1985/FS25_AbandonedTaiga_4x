@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <npc>
 	<class>NPC</class>
-	<title>Степаныч</title>
+	<title>Семёныч</title>
 	<imageFilename>map/npc/grandpa.png</imageFilename>
 	<filename>map/npc/npcBase.i3d</filename>
 	<sounds>
