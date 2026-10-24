@@ -57,6 +57,71 @@ function TaigaSupplyMission:getCompletion()
     return math.min(self.deliveredLiters / self.requiredLiters, 1)
 end
 
+-- Названия точек и типов сроков для штатного меню контрактов.
+TaigaSupplyMission.STATION_NAMES = {
+    elevator = "Элеватор Степаныча",
+    wood = "Лесник Михалыч",
+    pallets = "Скупка продукции у Дмитрича"
+}
+TaigaSupplyMission.CATEGORY_NAMES = {
+    short = "Краткосрочный (1/12 месяца)",
+    medium = "Среднесрочный (1 месяц)",
+    long = "Долгосрочный (3 месяца)"
+}
+
+-- Возвращает читаемое название товара, используя зарегистрированный fillType.
+function TaigaSupplyMission:getProductName()
+    if self.fillTypeName == "WOOD" then
+        return "Древесина"
+    end
+    local fillType = self.fillTypeName ~= nil
+        and g_fillTypeManager:getFillTypeByName(self.fillTypeName) or nil
+    if fillType ~= nil then
+        return fillType.title or fillType.name
+    end
+    return self.fillTypeName or "Не указано"
+end
+
+-- Формирует заголовок контракта после загрузки и для сетевых клиентов.
+function TaigaSupplyMission:getTitle()
+    return "Поставка: " .. self:getProductName()
+end
+
+-- Указывает реальную точку, а не пустую стандартную локацию.
+function TaigaSupplyMission:getLocation()
+    return TaigaSupplyMission.STATION_NAMES[self.stationKind] or "Неизвестная точка"
+end
+
+-- Описывает товар, объём, пункт назначения и сроки выполнения.
+function TaigaSupplyMission:getDescription()
+    local product = self:getProductName()
+    local required = math.floor((self.requiredLiters or 0) + 0.5)
+    local destination = self:getLocation()
+    local category = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"
+    return string.format(
+        "Доставьте %s в пункт «%s». Необходимый объём: %s л. Тип задания: %s. Срок отсчитывается с момента принятия.",
+        product, destination, tostring(required), category)
+end
+
+-- Показывает условия поставки в деталях; аренда техники недоступна.
+function TaigaSupplyMission:getDetails()
+    local required = self.requiredLiters or 0
+    local delivered = self.deliveredLiters or 0
+    return {
+        {title = "Продукция", value = self:getProductName()},
+        {title = "Пункт приёма", value = self:getLocation()},
+        {title = "Категория", value = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"},
+        {title = "Требуется", value = string.format("%.0f л", required)},
+        {title = "Поставлено", value = string.format("%.0f л", delivered)}
+    }
+end
+
+-- Отображает текущую поставку рядом с индикатором прогресса.
+function TaigaSupplyMission:getExtraProgressText()
+    return string.format("%.0f / %.0f л",
+        self.deliveredLiters or 0, self.requiredLiters or 0)
+end
+
 -- Возвращает сумму, зафиксированную при генерации предложения.
 function TaigaSupplyMission:getReward()
     return self.reward or 0
