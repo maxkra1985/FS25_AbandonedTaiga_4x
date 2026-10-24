@@ -115,6 +115,40 @@ function ContractSupplyCalendar:checkCurrentPeriod()
         index, kind, fillType.name, liters, reward)
 end
 
+-- Возобновляет месячную поставку, когда текущее предложение удалено.
+-- Не трогает чужие контракты и успешные завершения.
+function ContractSupplyCalendar:onMissionDeleted(contract)
+    if contract == nil or contract.type == nil
+        or contract.type.name ~= TaigaSupplyMission.TYPE_NAME
+        or not self.mission:getIsServer() then
+        return
+    end
+    local current = ContractSupplyCalendar.getMonthIndex(self.mission.environment)
+    if current == nil or contract.monthIndex ~= current then
+        return
+    end
+    if self.rotation:clearGenerated(current, contract:getUniqueId()) then
+        self.lastObservedMonth = nil
+        self:checkCurrentPeriod()
+    end
+end
+
+-- Генерирует замену после провала, отмены или истечения срока.
+function ContractSupplyCalendar:onMissionFinished(contract, finishState)
+    if contract == nil or contract.type == nil
+        or contract.type.name ~= TaigaSupplyMission.TYPE_NAME
+        or finishState == MissionFinishState.SUCCESS
+        or not self.mission:getIsServer() then
+        return
+    end
+    local current = ContractSupplyCalendar.getMonthIndex(self.mission.environment)
+    if contract.monthIndex == current
+        and self.rotation:clearGenerated(current, contract:getUniqueId()) then
+        self.lastObservedMonth = nil
+        self:checkCurrentPeriod()
+    end
+end
+
 -- Получает уведомление о смене игрового месяца.
 function ContractSupplyCalendar:onPeriodChanged()
     self:checkCurrentPeriod()
@@ -134,6 +168,8 @@ function ContractSupplyCalendar:start()
         end
     end
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, self.onPeriodChanged, self)
+    g_messageCenter:subscribe(MessageType.MISSION_DELETED, self.onMissionDeleted, self)
+    g_messageCenter:subscribe(MissionFinishedEvent, self.onMissionFinished, self)
     -- Сверяем сохранённые миссии на случай отсутствия sidecar после сбоя.
     for _, contract in ipairs(g_missionManager:getMissions()) do
         if contract.type ~= nil and contract.type.name == TaigaSupplyMission.TYPE_NAME

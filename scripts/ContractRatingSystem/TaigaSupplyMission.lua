@@ -38,7 +38,7 @@ function TaigaSupplyMission.new(isServer, isClient)
     self.supplyCategory = nil
     self.baseAmount = nil
     self.deliveryPremium = nil
-    self.vehiclesToLoad = {}
+    self.vehiclesToLoad = nil
     self.vehicleGroupIdentifier = -1
     return self
 end
@@ -51,6 +51,11 @@ end
 -- Не предлагает аренду: доставка выполняется техникой игрока.
 function TaigaSupplyMission:getVehicleGroup()
     return {}, -1
+end
+
+-- Запрещает штатному GUI предлагать аренду даже при восстановлении старого сохранения.
+function TaigaSupplyMission:hasLeasableVehicles()
+    return false
 end
 
 -- Контракты поставки не арендуют технику и не имеют расходов на аренду.
@@ -77,6 +82,24 @@ TaigaSupplyMission.CATEGORY_NAMES = {
     medium = "Среднесрочный (1 месяц)",
     long = "Долгосрочный (3 месяца)"
 }
+
+-- Подставляет существующего персонажа карты для выбранного предприятия.
+function TaigaSupplyMission:getNPC()
+    local profiles = {
+        elevator = {title = "Степаныч", filename = "map/npc/helper.png"},
+        wood = {title = "Михалыч", filename = "map/npc/forester.png"},
+        pallets = {title = "Дмитрич", filename = "map/npc/farmer.png"}
+    }
+    local profile = profiles[self.stationKind]
+    local mission = g_currentMission
+    if profile == nil or mission == nil or mission.baseDirectory == nil then
+        return nil
+    end
+    return {
+        title = profile.title,
+        imageFilename = Utils.getFilename(profile.filename, mission.baseDirectory)
+    }
+end
 
 -- Возвращает читаемое название товара, используя зарегистрированный fillType.
 function TaigaSupplyMission:getProductName()

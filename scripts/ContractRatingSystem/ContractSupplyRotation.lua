@@ -58,6 +58,16 @@ function ContractSupplyRotation:markGenerated(monthIndex, missionId)
     return true
 end
 
+-- Разрешает замену удалённого или завершённого без успеха предложения.
+function ContractSupplyRotation:clearGenerated(monthIndex, missionId)
+    local existing = self.generated[monthIndex]
+    if existing == nil or tostring(existing.missionId) ~= tostring(missionId) then
+        return false
+    end
+    self.generated[monthIndex] = nil
+    return true
+end
+
 -- Сохраняет месяцы генерации в самостоятельный файл savegame.
 function ContractSupplyRotation:save(directory)
     if type(directory) ~= "string" or directory == "" then
