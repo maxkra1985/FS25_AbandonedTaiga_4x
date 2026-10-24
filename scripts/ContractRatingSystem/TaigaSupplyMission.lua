@@ -55,7 +55,7 @@ function TaigaSupplyMission:getCompletion()
     return math.min(self.deliveredLiters / self.requiredLiters, 1)
 end
 
--- Проверяет содержательность задания и штатный срок действия.
+-- Выплата производится штатным dismiss только после успешной сдачи.\nfunction TaigaSupplyMission:getReward()\n    return self.reward or 0\nend\n\n-- Проверяет содержательность задания и штатный срок действия.
 function TaigaSupplyMission:validate()
     return self.stationId ~= nil
         and self.stationKind ~= nil
