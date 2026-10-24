@@ -176,6 +176,13 @@ function MissionTayga.new(baseDirectory, customMt)
     MissionTayga.loadLoggingContractorModules(baseDirectory)
     MissionTayga.installLicensePlateHooks()
 
+    -- Классы и обработчики рейтинга загружаем до запуска игровой миссии.
+    if ContractRatingRuntime == nil then
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingLedger.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
+    end
+    ContractRatingRuntime.installSaveHook()
+
     -- Интервал попыток генерации контрактов: 30 игровых минут.
     MissionManager.MISSION_GENERATION_INTERVAL = 1800000
 	
@@ -257,6 +264,10 @@ function MissionTayga:onStartMission()
     self.loggingContractor = LoggingContractor.new(self)
     self.loggingContractor:initialize()
     self.loggingContractor:loadFromSavegame()
+
+    -- Рейтинг загружается только на сервере, результаты обрабатываются после старта.
+    self.contractRatingRuntime = ContractRatingRuntime.new(self)
+    self.contractRatingRuntime:start()
 end
 
 
@@ -306,6 +317,11 @@ end
 
 -- Освобождает ресурсы собственных систем карты перед удалением Mission00.
 function MissionTayga:delete()
+    if self.contractRatingRuntime ~= nil then
+        self.contractRatingRuntime:delete()
+        self.contractRatingRuntime = nil
+    end
+
     if self.loggingContractor ~= nil then
         self.loggingContractor:delete()
         self.loggingContractor = nil
