@@ -180,19 +180,17 @@ end
 
 -- Описывает товар, объём, пункт назначения и сроки выполнения.
 function TaigaSupplyMission:getDescription()
-    local product = self:getProductName()
-    local destination = self:getLocation()
-    local category = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"
-    local opening
+    local mediator = ({
+        elevator = "Степаныч",
+        wood = "Михалыч",
+        pallets = "Дмитрич"
+    })[self.stationKind] or "местный посредник"
     if self.customerName ~= nil and self.customerName ~= "" then
-        opening = string.format("Организация «%s» закупает продукцию «%s». Посредником выступает %s.",
-            self.customerName, product,
-            ({elevator = "Степаныч", wood = "Михалыч", pallets = "Дмитрич"})[self.stationKind] or "местный представитель")
-    else
-        opening = string.format("Внешний заказчик закупает продукцию «%s» через местного посредника.", product)
+        return string.format("«%s» закупает %s. Приём и отправку организует %s.",
+            self.customerName, string.lower(self:getProductName()), mediator)
     end
-    return string.format("%s Доставьте %s в пункт «%s». Объём: %.0f л. %s. Срок с момента принятия.",
-        opening, product, destination, self.requiredLiters or 0, category)
+    return string.format("Внешняя организация закупает %s через посредника %s.",
+        string.lower(self:getProductName()), mediator)
 end
 
 -- Возвращает разбивку итоговой суммы. Старые сохранения не содержат полей. 
@@ -212,24 +210,25 @@ end
 
 -- Показывает условия поставки в деталях; аренда техники недоступна.
 function TaigaSupplyMission:getDetails()
-    local required = self.requiredLiters or 0
-    local delivered = self.deliveredLiters or 0
     local base, premium = self:getPaymentBreakdown()
     local details = {
-        {title = "Продукция", value = self:getProductName()},
         {title = "Пункт приёма", value = self:getLocation()},
-        {title = "Категория", value = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"},
-        {title = "Требуется", value = string.format("%.0f л", required)},
-        {title = "Поставлено", value = string.format("%.0f л", delivered)}
+        {title = "Срок", value = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указан"},
+        {title = "Требуется", value = string.format("%.0f л", self.requiredLiters or 0)},
+        {title = "Поставлено", value = string.format("%.0f л", self.deliveredLiters or 0)}
     }
-    if self.customerName ~= nil and self.customerName ~= "" then
-        table.insert(details, 1, {title = "Заказчик", value = self.customerName})
-    end
+    -- Общая выплата уже показана отдельным крупным блоком штатного меню.
+    -- Заказчик указан в описании, а товар в заголовке, поэтому не дублируем их.
     if base ~= nil then
-        details[#details + 1] = {title = "Стоимость продукции", value = g_i18n:formatMoney(base, 0, true, true)}
-        details[#details + 1] = {title = "Премия за доставку", value = g_i18n:formatMoney(premium, 0, true, true)}
+        details[#details + 1] = {
+            title = "Стоимость продукции",
+            value = g_i18n:formatMoney(base, 0, true, true)
+        }
+        details[#details + 1] = {
+            title = "Премия за доставку",
+            value = g_i18n:formatMoney(premium, 0, true, true)
+        }
     end
-    details[#details + 1] = {title = "Итого", value = g_i18n:formatMoney(self:getReward(), 0, true, true)}
     return details
 end
 
