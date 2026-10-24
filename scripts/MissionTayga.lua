@@ -191,6 +191,7 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyVolumes.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyEconomy.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplySeasonality.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCustomers.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyUnload.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
@@ -297,6 +298,9 @@ function MissionTayga:onStartMission()
     -- К этому моменту типы продукции карты и сторонних модов уже зарегистрированы.
     if not ContractSupplySeasonality.loadConfig(self.baseDirectory) then
         Logging.warning("[ContractRating] Seasonal product configuration invalid after map load")
+    end
+    if not ContractSupplyCustomers.loadConfig(self.baseDirectory) then
+        Logging.warning("[ContractRating] Supply customer configuration invalid")
     end
     self.contractSupplyCalendar = ContractSupplyCalendar.new(self)
     self.contractSupplyCalendar:start()

@@ -22,6 +22,17 @@
         <!-- Месяцы: 1=январь ... 12=декабрь; разделитель — пробел.
              Начальный ассортимент — редактируемый вариант, не агрономический норматив.
              Разрешены только товары, фактически принимаемые назначенной точкой. -->
+        <!-- Вымышленные внешние заказчики. fillTypes: список имён через пробел.
+             Организации выбираются только для совпадающего типа точки и товара.
+             Названия можно менять без изменения Lua. -->
+        <customers>
+            <customer name="Липинский животноводческий комплекс" station="elevator" fillTypes="SORGHUM WHEAT BARLEY MAIZE SOYBEAN"/>
+            <customer name="Северный комбикормовый завод" station="elevator" fillTypes="WHEAT BARLEY MAIZE CANOLA SOYBEAN SORGHUM"/>
+            <customer name="Приозёрская теплоэнергетическая компания" station="elevator" fillTypes="WOODCHIPS"/>
+            <customer name="Сибирский деревообрабатывающий комбинат" station="wood" fillTypes="WOOD"/>
+            <customer name="Таёжная строительная компания" station="pallets" fillTypes="BOARDS PLANKS"/>
+            <customer name="Региональная торговая сеть" station="pallets" fillTypes="FLOUR HONEY"/>
+        </customers>
         <seasonalProducts>
             <product station="wood" fillType="WOOD" months="1 2 3 4 5 6 7 8 9 10 11 12"/>
             <product station="elevator" fillType="WOODCHIPS" months="1 2"/>
