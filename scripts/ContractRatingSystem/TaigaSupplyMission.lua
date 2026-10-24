@@ -103,6 +103,19 @@ function TaigaSupplyMission:getNPC()
     }
 end
 
+-- Центрирует мини-карту контракта на его пункте приёма, а не на (0, 0).
+-- Координаты берутся из фактически загруженного placeable на клиенте.
+function TaigaSupplyMission:getWorldPosition()
+    local _, placeable = ContractSupplyStations.resolve(self.stationKind)
+    if placeable ~= nil and placeable.uniqueId == self.stationId
+        and placeable.rootNode ~= nil and placeable.rootNode ~= 0 then
+        local x, _, z = getWorldTranslation(placeable.rootNode)
+        return x, z
+    end
+    -- При отсутствии объекта не центрируем карту на случайной позиции.
+    return nil, nil
+end
+
 -- Возвращает читаемое название товара, используя зарегистрированный fillType.
 function TaigaSupplyMission:getProductName()
     if self.fillTypeName == "WOOD" then
