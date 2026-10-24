@@ -184,6 +184,7 @@
 		<storeItem xmlFilename="map/tools/plywood/plywood.xml"/>
 		<storeItem xmlFilename="map/tools/plywood/multiPurchasePlywood.xml"/>
 		<storeItem xmlFilename="map/tools/BuildingMetal/BuildingMetal.xml"/>
+		<storeItem xmlFilename="map/tools/BuildingMetal/multiPurchaseBuildingMetal.xml"/>
 		<storeItem xmlFilename="map/tools/Metal/metalPallet.xml"/>
 		<!-- ОВОЩИ -->
 		<storeItem xmlFilename="map/placeables/GardenBeds/pallets/cucumbersBoxPallet/cucumbersBoxPallet.xml"/>
