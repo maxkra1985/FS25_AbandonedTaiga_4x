@@ -1063,20 +1063,23 @@ function DynamicRoadMap:initialize()
 	self:createOrLoadLegacyInfoLayer()
 
 	if isServer then
-		if not self.legacyMaskWasLoaded and self.legacyImportCompleted then
-			self:log("Typed legacy-road mask is missing/new; legacy import completion flag reset")
-			self.legacyImportCompleted = false
-		end
-
-		-- Новая игра не запускает полный скан, даже если эталон неполный.
-		-- Для существующих сохранений прежний алгоритм импорта не изменён.
 		if self.isNewRoadMapSave then
+			-- На старте карты дороги могут полностью отсутствовать. Пустая
+			-- legacy-маска в этом случае корректна и не требует сканирования.
+			-- Сохраняем признак завершённого импорта, чтобы следующая загрузка
+			-- этого сохранения тоже не инициировала полный проход по terrain.
 			if not self.legacyMaskWasLoaded then
-				self:log("WARNING: default dynamicRoadMapLegacy.grle is missing or invalid; roads cannot be restored from default XML alone")
-			elseif not self.legacyImportCompleted then
-				self:log("WARNING: default road import metadata is incomplete; automatic scanning is disabled for new games")
+				self:log("Default legacy-road mask is absent; starting with an empty road network")
 			end
+			self.legacyImportCompleted = true
+			self.legacyImportVersion = self.LEGACY_IMPORT_VERSION
 		else
+			-- Существующие сохранения продолжают использовать прежнюю
+			-- процедуру восстановления отсутствующей маски.
+			if not self.legacyMaskWasLoaded and self.legacyImportCompleted then
+				self:log("Typed legacy-road mask is missing/new; legacy import completion flag reset")
+				self.legacyImportCompleted = false
+			end
 			if not self.legacyImportCompleted then
 				self:requestLegacyImport()
 				self:log("Legacy-road background import scheduled at savegame load (server only)")
