@@ -18,6 +18,7 @@ function TaigaSupplyMission.registerSavegameXMLPaths(schema, key)
     schema:register(XMLValueType.FLOAT, key .. ".supply#delivered", "Delivered liters")
     schema:register(XMLValueType.INT, key .. ".supply#monthIndex", "Generated month")
     schema:register(XMLValueType.STRING, key .. ".supply#category", "Supply duration category")
+    schema:register(XMLValueType.STRING, key .. ".supply#customer", "External buyer organization")
     schema:register(XMLValueType.INT, key .. ".supply#baseAmount", "Fixed base value")
     schema:register(XMLValueType.INT, key .. ".supply#deliveryPremium", "Fixed delivery premium")
 end
@@ -36,6 +37,7 @@ function TaigaSupplyMission.new(isServer, isClient)
     self.deliveredLiters = 0
     self.monthIndex = nil
     self.supplyCategory = nil
+    self.customerName = nil
     self.baseAmount = nil
     self.deliveryPremium = nil
     self.vehiclesToLoad = nil
@@ -127,12 +129,18 @@ end
 -- Описывает товар, объём, пункт назначения и сроки выполнения.
 function TaigaSupplyMission:getDescription()
     local product = self:getProductName()
-    local required = math.floor((self.requiredLiters or 0) + 0.5)
     local destination = self:getLocation()
     local category = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"
-    return string.format(
-        "Доставьте %s в пункт «%s». Необходимый объём: %s л. Тип задания: %s. Срок отсчитывается с момента принятия.",
-        product, destination, tostring(required), category)
+    local opening
+    if self.customerName ~= nil and self.customerName ~= "" then
+        opening = string.format("Организация «%s» закупает продукцию «%s». Посредником выступает %s.",
+            self.customerName, product,
+            ({elevator = "Степаныч", wood = "Михалыч", pallets = "Дмитрич"})[self.stationKind] or "местный представитель")
+    else
+        opening = string.format("Внешний заказчик закупает продукцию «%s» через местного посредника.", product)
+    end
+    return string.format("%s Доставьте %s в пункт «%s». Объём: %.0f л. %s. Срок с момента принятия.",
+        opening, product, destination, self.requiredLiters or 0, category)
 end
 
 -- Возвращает разбивку итоговой суммы. Старые сохранения не содержат полей. 
@@ -162,6 +170,9 @@ function TaigaSupplyMission:getDetails()
         {title = "Требуется", value = string.format("%.0f л", required)},
         {title = "Поставлено", value = string.format("%.0f л", delivered)}
     }
+    if self.customerName ~= nil and self.customerName ~= "" then
+        table.insert(details, 1, {title = "Заказчик", value = self.customerName})
+    end
     if base ~= nil then
         details[#details + 1] = {title = "Стоимость продукции", value = g_i18n:formatMoney(base, 0, true, true)}
         details[#details + 1] = {title = "Премия за доставку", value = g_i18n:formatMoney(premium, 0, true, true)}
@@ -232,6 +243,9 @@ function TaigaSupplyMission:saveToXMLFile(xmlFile, key)
     xmlFile:setValue(key .. ".supply#delivered", self.deliveredLiters)
     xmlFile:setValue(key .. ".supply#monthIndex", self.monthIndex)
     xmlFile:setValue(key .. ".supply#category", self.supplyCategory)
+    if self.customerName ~= nil then
+        xmlFile:setValue(key .. ".supply#customer", self.customerName)
+    end
     if self.baseAmount ~= nil then
         xmlFile:setValue(key .. ".supply#baseAmount", self.baseAmount)
         xmlFile:setValue(key .. ".supply#deliveryPremium", self.deliveryPremium)
@@ -250,6 +264,7 @@ function TaigaSupplyMission:loadFromXMLFile(xmlFile, key)
     self.deliveredLiters = xmlFile:getValue(key .. ".supply#delivered", 0)
     self.monthIndex = xmlFile:getValue(key .. ".supply#monthIndex")
     self.supplyCategory = xmlFile:getValue(key .. ".supply#category")
+    self.customerName = xmlFile:getValue(key .. ".supply#customer")
     self.baseAmount = xmlFile:getValue(key .. ".supply#baseAmount")
     self.deliveryPremium = xmlFile:getValue(key .. ".supply#deliveryPremium")
     return self:validate() and self.deliveredLiters >= 0
@@ -266,6 +281,7 @@ function TaigaSupplyMission:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.deliveredLiters)
     streamWriteInt32(streamId, self.monthIndex or -1)
     streamWriteString(streamId, self.supplyCategory or "")
+    streamWriteString(streamId, self.customerName or "")
     local base, premium = self:getPaymentBreakdown()
     streamWriteInt32(streamId, base or -1)
     streamWriteInt32(streamId, premium or -1)
@@ -281,6 +297,7 @@ function TaigaSupplyMission:readStream(streamId, connection)
     self.deliveredLiters = streamReadFloat32(streamId)
     self.monthIndex = streamReadInt32(streamId)
     self.supplyCategory = streamReadString(streamId)
+    self.customerName = streamReadString(streamId)
     local base = streamReadInt32(streamId)
     local premium = streamReadInt32(streamId)
     self.baseAmount = base >= 0 and base or nil

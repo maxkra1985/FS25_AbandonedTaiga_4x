@@ -95,6 +95,7 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     contract.deliveryPremium = deliveryPremium
     contract.monthIndex = index
     contract.supplyCategory = category
+    contract.customerName = ContractSupplyCustomers.choose(kind, fillType.name)
     contract.completion = 0
 
     if not contract:validate() then
