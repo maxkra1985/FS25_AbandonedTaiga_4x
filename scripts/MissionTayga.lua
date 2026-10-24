@@ -179,6 +179,8 @@ function MissionTayga.new(baseDirectory, customMt)
     -- Классы и обработчики рейтинга загружаем до запуска игровой миссии.
     if ContractRatingRuntime == nil then
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingLedger.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingSyncEvent.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingSyncRequestEvent.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
@@ -268,6 +270,9 @@ function MissionTayga:onStartMission()
     -- Рейтинг загружается только на сервере, результаты обрабатываются после старта.
     self.contractRatingRuntime = ContractRatingRuntime.new(self)
     self.contractRatingRuntime:start()
+    if self:getIsClient() and not self:getIsServer() then
+        ContractRatingSyncRequestEvent.sendEvent()
+    end
 end
 
 

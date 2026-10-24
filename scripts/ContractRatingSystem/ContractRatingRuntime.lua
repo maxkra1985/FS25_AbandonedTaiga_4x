@@ -1,7 +1,8 @@
 --[[
     ContractRatingRuntime
     Серверное подключение журнала рейтинга к штатным контрактам FS25.
-    Сетевые события и контроль допуска реализуются отдельным этапом.
+    Передача рейтинга клиентам реализована через отдельные сетевые события.
+    Контроль допуска и GUI реализуются отдельным этапом.
 ]]
 ContractRatingRuntime = {}
 ContractRatingRuntime.__index = ContractRatingRuntime
@@ -60,6 +61,7 @@ function ContractRatingRuntime:onMissionFinished(contract, finishState)
         tostring(contract.type.name) .. ":" .. tostring(finishState)
     )
     if applied then
+        self:broadcastEntry(result)
         Logging.info("[ContractRating] Farm %d: %+d (rating %s -> %s)",
             contract.farmId, delta, tostring(result.before), tostring(result.after))
     elseif result ~= "duplicateTransaction" then
@@ -121,4 +123,40 @@ function ContractRatingRuntime.installSaveHook()
         end
     )
     FSCareerMissionInfo.taigaContractRatingSaveHookInstalled = true
+end
+
+
+-- Отправляет новую рейтинговую операцию всем подключённым клиентам.
+function ContractRatingRuntime:broadcastEntry(entry)
+    if self.mission ~= nil and self.mission:getIsServer() and g_server ~= nil then
+        g_server:broadcastEvent(ContractRatingSyncEvent.new(1, entry), false)
+    end
+end
+
+-- Отправляет полную историю только указанному соединению, начиная с очистки.
+function ContractRatingRuntime:sendSnapshot(connection)
+    if self.mission == nil or not self.mission:getIsServer() or connection == nil then
+        return
+    end
+    connection:sendEvent(ContractRatingSyncEvent.new(0))
+    for _, entry in ipairs(self.ledger:getTransactions()) do
+        connection:sendEvent(ContractRatingSyncEvent.new(1, entry))
+    end
+end
+
+-- Применяет на клиенте серверную операцию; повторные события не удваивают рейтинг.
+function ContractRatingRuntime:receiveSync(kind, entry)
+    if self.mission == nil or self.mission:getIsServer() then
+        return
+    end
+    if kind == 0 then
+        self.ledger = ContractRatingLedger.new()
+    elseif kind == 1 and entry ~= nil then
+        local ok, reason = self.ledger:apply(
+            entry.id, entry.farmId, entry.attemptId, entry.delta, entry.reason
+        )
+        if not ok and reason ~= "duplicateTransaction" then
+            Logging.warning("[ContractRating] Invalid sync entry: %s", tostring(reason))
+        end
+    end
 end
