@@ -76,7 +76,7 @@ function ContractSupplyCalendar:checkCurrentPeriod()
         return
     end
     local fillType = candidates[math.random(#candidates)]
-    local reward = ContractSupplyEconomy.calculateReward(fillType, liters, category)
+    local baseAmount, deliveryPremium, reward = ContractSupplyEconomy.calculateBreakdown(fillType, liters, category)
     if reward == nil then return end
 
     local missionType = g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME)
@@ -91,6 +91,8 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     contract.fillTypeIndex = fillType.index
     contract.requiredLiters = liters
     contract.reward = reward
+    contract.baseAmount = baseAmount
+    contract.deliveryPremium = deliveryPremium
     contract.monthIndex = index
     contract.supplyCategory = category
     contract.completion = 0

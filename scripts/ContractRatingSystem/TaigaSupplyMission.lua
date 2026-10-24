@@ -18,6 +18,8 @@ function TaigaSupplyMission.registerSavegameXMLPaths(schema, key)
     schema:register(XMLValueType.FLOAT, key .. ".supply#delivered", "Delivered liters")
     schema:register(XMLValueType.INT, key .. ".supply#monthIndex", "Generated month")
     schema:register(XMLValueType.STRING, key .. ".supply#category", "Supply duration category")
+    schema:register(XMLValueType.INT, key .. ".supply#baseAmount", "Fixed base value")
+    schema:register(XMLValueType.INT, key .. ".supply#deliveryPremium", "Fixed delivery premium")
 end
 
 -- Создаёт экземпляр без выдачи награды и без доступного товара.
@@ -34,6 +36,8 @@ function TaigaSupplyMission.new(isServer, isClient)
     self.deliveredLiters = 0
     self.monthIndex = nil
     self.supplyCategory = nil
+    self.baseAmount = nil
+    self.deliveryPremium = nil
     self.vehiclesToLoad = {}
     self.vehicleGroupIdentifier = -1
     return self
@@ -47,6 +51,11 @@ end
 -- Не предлагает аренду: доставка выполняется техникой игрока.
 function TaigaSupplyMission:getVehicleGroup()
     return {}, -1
+end
+
+-- Контракты поставки не арендуют технику и не имеют расходов на аренду.
+function TaigaSupplyMission:getVehicleCosts()
+    return 0
 end
 
 -- Возвращает текущий прогресс реальной доставки.
@@ -103,17 +112,39 @@ function TaigaSupplyMission:getDescription()
         product, destination, tostring(required), category)
 end
 
+-- Возвращает разбивку итоговой суммы. Старые сохранения не содержат полей. 
+function TaigaSupplyMission:getPaymentBreakdown()
+    if self.baseAmount ~= nil and self.deliveryPremium ~= nil then
+        return self.baseAmount, self.deliveryPremium
+    end
+    local category = ContractSupplyEconomy.categories[self.supplyCategory]
+    if category == nil or type(self.reward) ~= "number" then
+        return nil, nil
+    end
+    -- Для старых предложений восстанавливаем суммы из зафиксированной награды;
+    -- исходная цена не сохранялась, поэтому возможна разница округления на 1 евро.
+    local base = math.floor(self.reward / (1 + category.premium) + 0.5)
+    return base, self.reward - base
+end
+
 -- Показывает условия поставки в деталях; аренда техники недоступна.
 function TaigaSupplyMission:getDetails()
     local required = self.requiredLiters or 0
     local delivered = self.deliveredLiters or 0
-    return {
+    local base, premium = self:getPaymentBreakdown()
+    local details = {
         {title = "Продукция", value = self:getProductName()},
         {title = "Пункт приёма", value = self:getLocation()},
         {title = "Категория", value = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указана"},
         {title = "Требуется", value = string.format("%.0f л", required)},
         {title = "Поставлено", value = string.format("%.0f л", delivered)}
     }
+    if base ~= nil then
+        details[#details + 1] = {title = "Стоимость продукции", value = g_i18n:formatMoney(base, 0, true, true)}
+        details[#details + 1] = {title = "Премия за доставку", value = g_i18n:formatMoney(premium, 0, true, true)}
+    end
+    details[#details + 1] = {title = "Итого", value = g_i18n:formatMoney(self:getReward(), 0, true, true)}
+    return details
 end
 
 -- Отображает текущую поставку рядом с индикатором прогресса.
@@ -178,6 +209,10 @@ function TaigaSupplyMission:saveToXMLFile(xmlFile, key)
     xmlFile:setValue(key .. ".supply#delivered", self.deliveredLiters)
     xmlFile:setValue(key .. ".supply#monthIndex", self.monthIndex)
     xmlFile:setValue(key .. ".supply#category", self.supplyCategory)
+    if self.baseAmount ~= nil then
+        xmlFile:setValue(key .. ".supply#baseAmount", self.baseAmount)
+        xmlFile:setValue(key .. ".supply#deliveryPremium", self.deliveryPremium)
+    end
 end
 
 -- Загружает данные поставки, отвергая пустые или повреждённые задания.
@@ -192,6 +227,8 @@ function TaigaSupplyMission:loadFromXMLFile(xmlFile, key)
     self.deliveredLiters = xmlFile:getValue(key .. ".supply#delivered", 0)
     self.monthIndex = xmlFile:getValue(key .. ".supply#monthIndex")
     self.supplyCategory = xmlFile:getValue(key .. ".supply#category")
+    self.baseAmount = xmlFile:getValue(key .. ".supply#baseAmount")
+    self.deliveryPremium = xmlFile:getValue(key .. ".supply#deliveryPremium")
     return self:validate() and self.deliveredLiters >= 0
         and self.deliveredLiters <= self.requiredLiters
 end
@@ -206,6 +243,9 @@ function TaigaSupplyMission:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.deliveredLiters)
     streamWriteInt32(streamId, self.monthIndex or -1)
     streamWriteString(streamId, self.supplyCategory or "")
+    local base, premium = self:getPaymentBreakdown()
+    streamWriteInt32(streamId, base or -1)
+    streamWriteInt32(streamId, premium or -1)
 end
 
 -- Восстанавливает параметры задания из серверного сетевого потока.
@@ -218,6 +258,10 @@ function TaigaSupplyMission:readStream(streamId, connection)
     self.deliveredLiters = streamReadFloat32(streamId)
     self.monthIndex = streamReadInt32(streamId)
     self.supplyCategory = streamReadString(streamId)
+    local base = streamReadInt32(streamId)
+    local premium = streamReadInt32(streamId)
+    self.baseAmount = base >= 0 and base or nil
+    self.deliveryPremium = premium >= 0 and premium or nil
 end
 
 -- Не создаёт необеспеченных предложений без проверенной станции и товара.

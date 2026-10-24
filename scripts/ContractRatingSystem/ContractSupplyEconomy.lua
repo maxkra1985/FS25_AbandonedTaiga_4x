@@ -36,6 +36,18 @@ function ContractSupplyEconomy.loadConfig(baseDirectory)
     return true
 end
 
+-- Возвращает зафиксированные базовую стоимость, премию и итоговую сумму.
+function ContractSupplyEconomy.calculateBreakdown(fillType, liters, category)
+    local settings = ContractSupplyEconomy.categories[category]
+    if fillType == nil or settings == nil or type(fillType.pricePerLiter) ~= "number"
+        or fillType.pricePerLiter <= 0 or type(liters) ~= "number" or liters <= 0 then
+        return nil
+    end
+    local base = math.floor(fillType.pricePerLiter * liters + 0.5)
+    local total = math.floor(fillType.pricePerLiter * liters * (1 + settings.premium) + 0.5)
+    return base, total - base, total
+end
+
 -- Возвращает денежную награду от базовой цены за литр и надбавки.
 function ContractSupplyEconomy.calculateReward(fillType, liters, category)
     local settings = ContractSupplyEconomy.categories[category]
