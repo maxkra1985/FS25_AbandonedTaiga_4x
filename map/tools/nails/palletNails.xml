@@ -9,7 +9,7 @@
 		</specs>
 		<image>map/tools/nails/store_nails.dds</image>
 		<price>225</price>
-		<showInStore>true</showInStore>
+		<showInStore>false</showInStore>
 		<allowLeasing>false</allowLeasing>
 		<canBeSold>true</canBeSold>
 		<category>pallets</category>

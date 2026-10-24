@@ -9,7 +9,7 @@
 		</specs>
 		<image>map/tools/Instrument/Instrument.dds</image>
 		<price>1500</price>
-		<showInStore>true</showInStore>
+		<showInStore>false</showInStore>
 		<allowLeasing>false</allowLeasing>
 		<canBeSold>false</canBeSold>
 		<category>pallets</category>

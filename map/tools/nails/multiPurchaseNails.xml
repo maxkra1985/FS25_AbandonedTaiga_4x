@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<vehicle type="multipleItemPurchase" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://validation.gdn.giants-software.com/xml/fs25/vehicle.xsd">
+	<storeData>
+		<name>$l10n_storeItem_nails</name>
+		<specs>
+			<weight ignore="true"/>
+		</specs>
+		<image>map/tools/nails/store_nails.dds</image>
+		<price>225</price>
+		<lifetime>600</lifetime>
+		<allowLeasing>false</allowLeasing>
+		<canBeSold>false</canBeSold>
+		<rotation>0</rotation>
+		<brand>LIZARD</brand>
+		<category>pallets</category>
+		<financeCategory>OTHER</financeCategory>
+	</storeData>
+
+	<base>
+		<typeDesc>$l10n_typeDesc_pallet</typeDesc>
+		<filename>$data/objects/multiPurchaseItem/multiPurchaseItem.i3d</filename>
+		<size width="3.2" length="6.4" height="1.6"/>
+		<components>
+			<component centerOfMass="0 0.1 0" solverIterationCount="10" mass="1"/>
+		</components>
+	</base>
+
+	<fillUnit>
+		<fillUnitConfigurations>
+			<fillUnitConfiguration>
+				<fillUnits>
+					<fillUnit fillTypes="NAILS" capacity="150"/>
+				</fillUnits>
+			</fillUnitConfiguration>
+		</fillUnitConfigurations>
+	</fillUnit>
+
+	<!-- Временная обёртка создаёт самостоятельные поддоны и удаляется после покупки. -->
+	<multipleItemPurchase filename="map/tools/nails/palletNails.xml" isVehicle="true">
+		<!-- Приблизительное центрирование сетки в зависимости от количества поддонов. -->
+		<offsets>
+			<offset amount="2" offset="0.725 0 0"/>
+			<offset amount="3" offset="0.725 0 0.625"/>
+			<offset amount="5" offset="0.725 0 1.25"/>
+			<offset amount="7" offset="0.725 0 1.875"/>
+			<offset amount="9" offset="0.725 0 2.5"/>
+		</offsets>
+		<!-- Сетка 2x5; шаг между поддонами 1.45 м по X и 1.25 м по Z. -->
+		<!-- Координаты можно уточнить после проверки на площадке магазина. -->
+		<itemPositions>
+			<itemPosition position="0 0 0" rotation="0 0 0"/>
+			<itemPosition position="-1.45 0 0" rotation="0 0 0"/>
+			<itemPosition position="0 0 -1.25" rotation="0 0 0"/>
+			<itemPosition position="-1.45 0 -1.25" rotation="0 0 0"/>
+			<itemPosition position="0 0 -2.5" rotation="0 0 0"/>
+			<itemPosition position="-1.45 0 -2.5" rotation="0 0 0"/>
+			<itemPosition position="0 0 -3.75" rotation="0 0 0"/>
+			<itemPosition position="-1.45 0 -3.75" rotation="0 0 0"/>
+			<itemPosition position="0 0 -5" rotation="0 0 0"/>
+			<itemPosition position="-1.45 0 -5" rotation="0 0 0"/>
+		</itemPositions>
+	</multipleItemPurchase>
+
+	<!-- Цена конфигурации добавляется к базовой стоимости первого поддона. -->
+	<multipleItemPurchaseAmountConfigurations>
+		<multipleItemPurchaseAmountConfiguration name="1" price="0"/>
+		<multipleItemPurchaseAmountConfiguration name="2" price="225"/>
+		<multipleItemPurchaseAmountConfiguration name="3" price="450"/>
+		<multipleItemPurchaseAmountConfiguration name="4" price="675"/>
+		<multipleItemPurchaseAmountConfiguration name="5" price="900"/>
+		<multipleItemPurchaseAmountConfiguration name="6" price="1125"/>
+		<multipleItemPurchaseAmountConfiguration name="7" price="1350"/>
+		<multipleItemPurchaseAmountConfiguration name="8" price="1575"/>
+		<multipleItemPurchaseAmountConfiguration name="9" price="1800"/>
+		<multipleItemPurchaseAmountConfiguration name="10" price="2025"/>
+	</multipleItemPurchaseAmountConfigurations>
+</vehicle>

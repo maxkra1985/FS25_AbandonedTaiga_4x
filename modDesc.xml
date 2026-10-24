@@ -178,7 +178,9 @@
 		<storeItem xmlFilename="map/tools/Jackhammer/jackhammer.xml"/>
 		<!-- МАТЕРИАЛЫ ДЛЯ СТРОИТЕЛЬСТВА -->
 		<storeItem xmlFilename="map/tools/Instrument/Instrument.xml"/>
+		<storeItem xmlFilename="map/tools/Instrument/multiPurchaseInstrument.xml"/>
 		<storeItem xmlFilename="map/tools/nails/palletNails.xml"/>
+		<storeItem xmlFilename="map/tools/nails/multiPurchaseNails.xml"/>
 		<storeItem xmlFilename="map/tools/plywood/plywood.xml"/>
 		<storeItem xmlFilename="map/tools/BuildingMetal/BuildingMetal.xml"/>
 		<storeItem xmlFilename="map/tools/Metal/metalPallet.xml"/>
