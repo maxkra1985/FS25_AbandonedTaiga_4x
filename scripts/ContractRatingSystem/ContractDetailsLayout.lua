@@ -71,7 +71,7 @@ function ContractDetailsLayout.update(frame)
     -- границу, не двигая нижний блок с суммой вознаграждения.
     list:setSize(nil, state.listHeight - shift)
 
-    if not frame.taigaDetailsLayoutReported then
+    if frame.taigaDetailsLayoutReported ~= true then
         Logging.info("[ContractRating] Contracts layout: lines=%d, textHeight=%.4f, overlap=%.4f, shift=%.4f, listHeight=%.4f",
             lines, textHeight, overlap, shift, list.size[2])
         frame.taigaDetailsLayoutReported = true
@@ -86,6 +86,10 @@ function ContractDetailsLayout.updateDetailContents(frame, superFunc, section, i
         frame.contractDescriptionText.textMaxNumLines = 20
     end
     superFunc(frame, section, index)
+    if not frame.taigaLayoutHookCalled then
+        frame.taigaLayoutHookCalled = true
+        Logging.info("[ContractRating] Contracts layout callback reached (post-updateDetailContents)")
+    end
     ContractDetailsLayout.update(frame)
 end
 

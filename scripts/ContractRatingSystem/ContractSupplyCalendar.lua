@@ -12,7 +12,8 @@ function ContractSupplyCalendar.new(mission)
     return setmetatable({
         mission = mission,
         rotation = ContractSupplyRotation.new(),
-        lastObservedMonth = nil
+        lastObservedMonth = nil,
+        regenerationDelayMs = nil
     }, ContractSupplyCalendar)
 end
 
@@ -133,8 +134,7 @@ function ContractSupplyCalendar:onMissionDeleted(contract)
         return
     end
     if self.rotation:clearGenerated(current, contract:getUniqueId()) then
-        self.lastObservedMonth = nil
-        self:checkCurrentPeriod()
+        self:scheduleReplacement(current)
     end
 end
 
@@ -153,9 +153,28 @@ function ContractSupplyCalendar:onMissionFinished(contract, finishState)
     end
     if contract.monthIndex == current
         and self.rotation:clearGenerated(current, contract:getUniqueId()) then
-        self.lastObservedMonth = nil
-        self:checkCurrentPeriod()
+        self:scheduleReplacement(current)
     end
+end
+
+-- Помещает создание замены в очередь, не выполняя его из события удаления.
+-- Таймер основан на реальном dt: изменение скорости игры не влияет на задержку.
+function ContractSupplyCalendar:scheduleReplacement(monthIndex)
+    local current = ContractSupplyCalendar.getMonthIndex(self.mission.environment)
+    if monthIndex ~= current then return end
+    self.regenerationDelayMs = 45000
+    Logging.info("[ContractRating] Supply replacement queued for month %d (45 sec)", monthIndex)
+end
+
+-- Обрабатывает очередь после выхода из обработчиков удаления и завершения.
+function ContractSupplyCalendar:update(dt)
+    if self.regenerationDelayMs == nil or self.mission == nil
+        or not self.mission:getIsServer() then return end
+    self.regenerationDelayMs = self.regenerationDelayMs - math.max(dt or 0, 0)
+    if self.regenerationDelayMs > 0 then return end
+    self.regenerationDelayMs = nil
+    self.lastObservedMonth = nil
+    self:checkCurrentPeriod()
 end
 
 -- Получает уведомление о смене игрового месяца.

@@ -344,6 +344,10 @@ function MissionTayga:update(dt)
         self.loggingContractor:update(dt)
     end
 
+    if self.contractSupplyCalendar ~= nil then
+        self.contractSupplyCalendar:update(dt)
+    end
+
     if self.taigaRadioMapReceivers ~= nil then
         self.taigaRadioMapReceivers:update(dt)
     end
