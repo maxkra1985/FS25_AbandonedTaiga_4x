@@ -15,5 +15,22 @@
         <volume station="wood" short="20000" medium="60000" long="200000"/>
         <volume station="elevator" short="30000" medium="60000" long="150000"/>
         <!-- Паллетные объёмы уточняются отдельно. -->
+        <!-- Месяцы: 1=январь ... 12=декабрь; разделитель — пробел.
+             Начальный ассортимент — редактируемый вариант, не агрономический норматив.
+             Разрешены только товары, фактически принимаемые назначенной точкой. -->
+        <seasonalProducts>
+            <product station="wood" fillType="WOOD" months="1 2 3 4 5 6 7 8 9 10 11 12"/>
+            <product station="elevator" fillType="WOODCHIPS" months="1 2"/>
+            <product station="elevator" fillType="WHEAT" months="12 1"/>
+            <product station="elevator" fillType="BARLEY" months="3 4 5 6 7 8 9 10 11"/>
+            <product station="elevator" fillType="MAIZE" months="9 10 11"/>
+            <product station="elevator" fillType="CANOLA" months="5 6 7 8"/>
+            <product station="elevator" fillType="SOYBEAN" months="9 10 11"/>
+            <!-- Эти товары предназначены для отдельной точки скупки, НЕ склада покупки. -->
+            <product station="pallets" fillType="BOARDS" months="1 2 3 4 5 6 7 8 9 10 11 12"/>
+            <product station="pallets" fillType="PLANKS" months="1 2 3 4 5 6 7 8 9 10 11 12"/>
+            <product station="pallets" fillType="FLOUR" months="1 2 3 4 5 6 7 8 9 10 11 12"/>
+            <product station="pallets" fillType="HONEY" months="5 6 7 8 9"/>
+        </seasonalProducts>
     </supply>
 </contractRating>

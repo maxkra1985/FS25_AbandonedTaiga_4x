@@ -41,8 +41,11 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     end
     self.lastObservedMonth = index
     if self.rotation:canGenerate(index) then
-        Logging.info("[ContractRating] Supply month %d is pending, station: %s",
-            index, tostring(self.rotation:getTypeForMonth(index)))
+        local station = self.rotation:getTypeForMonth(index)
+        local candidates = ContractSupplySeasonality.getCandidates(
+            station, environment.currentPeriod)
+        Logging.info("[ContractRating] Supply month %d: %s, seasonal candidates: %d",
+            index, tostring(station), #candidates)
     end
 end
 
