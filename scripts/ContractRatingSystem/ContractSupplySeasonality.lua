@@ -75,10 +75,20 @@ function ContractSupplySeasonality.loadConfig(baseDirectory)
             return false
         end
 
-        local productName = isWood and "WOOD" or fillType.name
+        -- Не используем выражение isWood and nil or fillType.index:
+        -- в Lua при nil результатом становится правая ветка оператора or.
+        local productName
+        local fillTypeIndex
+        if isWood then
+            productName = "WOOD"
+            fillTypeIndex = nil
+        else
+            productName = fillType.name
+            fillTypeIndex = fillType.index
+        end
         products[station][productName] = {
             name = productName,
-            index = isWood and nil or fillType.index,
+            index = fillTypeIndex,
             months = months
         }
         index = index + 1
