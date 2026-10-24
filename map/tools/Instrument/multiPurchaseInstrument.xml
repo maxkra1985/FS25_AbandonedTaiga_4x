@@ -39,11 +39,11 @@
 	<multipleItemPurchase filename="map/tools/Instrument/Instrument.xml" isVehicle="true">
 		<!-- Приблизительное центрирование сетки в зависимости от количества поддонов. -->
 		<offsets>
-			<offset amount="2" offset="0.725 0 0"/>
-			<offset amount="3" offset="0.725 0 0.625"/>
-			<offset amount="5" offset="0.725 0 1.25"/>
-			<offset amount="7" offset="0.725 0 1.875"/>
-			<offset amount="9" offset="0.725 0 2.5"/>
+			<offset amount="2" offset="0.625 0 0"/>
+			<offset amount="3" offset="0.625 0 0.525"/>
+			<offset amount="5" offset="0.625 0 1.05"/>
+			<offset amount="7" offset="0.625 0 1.575"/>
+			<offset amount="9" offset="0.625 0 2.1"/>
 		</offsets>
 		<!-- Сетка 2x5; шаг между поддонами 1.25 м по X и 1.05 м по Z. -->
 		<!-- Координаты можно уточнить после проверки на площадке магазина. -->
