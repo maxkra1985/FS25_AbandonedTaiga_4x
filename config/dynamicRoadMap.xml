@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<dynamicRoadMap version="8">
+    <settings showAsphalt="true" showGravel="true" showImported="false"/>
+    <import completed="true" version="4"/>
+    <mask resolution="4096"/>
+</dynamicRoadMap>
