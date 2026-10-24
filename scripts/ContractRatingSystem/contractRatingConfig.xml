@@ -9,4 +9,11 @@
         <mission type="taigaQuestConstructionMission" minRating="70"/>
         <mission type="taigaQuestLandscapingMission" minRating="70"/>
     </access>
+    <!-- Базовые объёмы в литрах и множители экономической сложности. -->
+    <supply>
+        <difficulty easy="1.0" normal="1.25" hard="1.5"/>
+        <volume station="wood" short="20000" medium="60000" long="200000"/>
+        <volume station="elevator" short="30000" medium="60000" long="150000"/>
+        <!-- Паллетные объёмы уточняются отдельно. -->
+    </supply>
 </contractRating>

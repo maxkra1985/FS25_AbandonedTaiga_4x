@@ -188,10 +188,14 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/TaigaSupplyMission.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyStations.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyVolumes.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyUnload.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
+    if not ContractSupplyVolumes.loadConfig(baseDirectory) then
+        Logging.warning("[ContractRating] Supply volume configuration invalid")
+    end
     ContractSupplyUnload.install()
     -- Тип должен существовать до инициализации XML-схем менеджера миссий.
     if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
