@@ -184,8 +184,11 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingAccessDeniedEvent.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingAccess.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyRotation.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
+    ContractSupplyCalendar.installSaveHook()
     ContractRatingAccess.loadConfig(baseDirectory)
     ContractRatingAccess.install()
 
@@ -274,6 +277,8 @@ function MissionTayga:onStartMission()
     -- Рейтинг загружается только на сервере, результаты обрабатываются после старта.
     self.contractRatingRuntime = ContractRatingRuntime.new(self)
     self.contractRatingRuntime:start()
+    self.contractSupplyCalendar = ContractSupplyCalendar.new(self)
+    self.contractSupplyCalendar:start()
     if self:getIsClient() and not self:getIsServer() then
         ContractRatingSyncRequestEvent.sendEvent()
     end
@@ -326,6 +331,11 @@ end
 
 -- Освобождает ресурсы собственных систем карты перед удалением Mission00.
 function MissionTayga:delete()
+    if self.contractSupplyCalendar ~= nil then
+        self.contractSupplyCalendar:delete()
+        self.contractSupplyCalendar = nil
+    end
+
     if self.contractRatingRuntime ~= nil then
         self.contractRatingRuntime:delete()
         self.contractRatingRuntime = nil
