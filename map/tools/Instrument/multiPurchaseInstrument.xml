@@ -45,19 +45,19 @@
 			<offset amount="7" offset="0.725 0 1.875"/>
 			<offset amount="9" offset="0.725 0 2.5"/>
 		</offsets>
-		<!-- Сетка 2x5; шаг между поддонами 1.45 м по X и 1.25 м по Z. -->
+		<!-- Сетка 2x5; шаг между поддонами 1.25 м по X и 1.05 м по Z. -->
 		<!-- Координаты можно уточнить после проверки на площадке магазина. -->
 		<itemPositions>
 			<itemPosition position="0 0 0" rotation="0 0 0"/>
-			<itemPosition position="-1.45 0 0" rotation="0 0 0"/>
-			<itemPosition position="0 0 -1.25" rotation="0 0 0"/>
-			<itemPosition position="-1.45 0 -1.25" rotation="0 0 0"/>
-			<itemPosition position="0 0 -2.5" rotation="0 0 0"/>
-			<itemPosition position="-1.45 0 -2.5" rotation="0 0 0"/>
-			<itemPosition position="0 0 -3.75" rotation="0 0 0"/>
-			<itemPosition position="-1.45 0 -3.75" rotation="0 0 0"/>
-			<itemPosition position="0 0 -5" rotation="0 0 0"/>
-			<itemPosition position="-1.45 0 -5" rotation="0 0 0"/>
+			<itemPosition position="-1.25 0 0" rotation="0 0 0"/>
+			<itemPosition position="0 0 -1.05" rotation="0 0 0"/>
+			<itemPosition position="-1.25 0 -1.05" rotation="0 0 0"/>
+			<itemPosition position="0 0 -2.1" rotation="0 0 0"/>
+			<itemPosition position="-1.25 0 -2.1" rotation="0 0 0"/>
+			<itemPosition position="0 0 -3.15" rotation="0 0 0"/>
+			<itemPosition position="-1.25 0 -3.15" rotation="0 0 0"/>
+			<itemPosition position="0 0 -4.2" rotation="0 0 0"/>
+			<itemPosition position="-1.25 0 -4.2" rotation="0 0 0"/>
 		</itemPositions>
 	</multipleItemPurchase>
 
