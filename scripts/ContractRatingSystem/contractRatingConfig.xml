@@ -12,6 +12,10 @@
     <!-- Базовые объёмы в литрах и множители экономической сложности. -->
     <supply>
         <difficulty easy="1.0" normal="1.25" hard="1.5"/>
+        <!-- Доля надбавки к базовой цене; сроки в игровых месяцах. -->
+        <category name="short" premium="0.25" months="0.08333333333333333"/>
+        <category name="medium" premium="0.18" months="1"/>
+        <category name="long" premium="0.12" months="3"/>
         <volume station="wood" short="20000" medium="60000" long="200000"/>
         <volume station="elevator" short="30000" medium="60000" long="150000"/>
         <!-- Паллетные объёмы уточняются отдельно. -->

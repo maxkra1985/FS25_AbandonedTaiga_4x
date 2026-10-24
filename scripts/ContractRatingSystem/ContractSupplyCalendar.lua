@@ -40,13 +40,77 @@ function ContractSupplyCalendar:checkCurrentPeriod()
         return
     end
     self.lastObservedMonth = index
-    if self.rotation:canGenerate(index) then
-        local station = self.rotation:getTypeForMonth(index)
-        local candidates = ContractSupplySeasonality.getCandidates(
-            station, environment.currentPeriod)
-        Logging.info("[ContractRating] Supply month %d: %s, seasonal candidates: %d",
-            index, tostring(station), #candidates)
+    if not self.rotation:canGenerate(index) then return end
+
+    local kind = self.rotation:getTypeForMonth(index)
+    local station, placeable = ContractSupplyStations.resolve(kind)
+    if station == nil or placeable == nil then
+        Logging.warning("[ContractRating] Supply station %s unavailable for month %d",
+            tostring(kind), index)
+        return
     end
+
+    local candidates = {}
+    for _, product in ipairs(ContractSupplySeasonality.getCandidates(
+        kind, environment.currentPeriod)) do
+        if station:getIsFillTypeAllowed(product.index) then
+            local fillType = g_fillTypeManager:getFillTypeByIndex(product.index)
+            if fillType ~= nil and type(fillType.pricePerLiter) == "number"
+                and fillType.pricePerLiter > 0 then
+                candidates[#candidates + 1] = fillType
+            end
+        end
+    end
+    if #candidates == 0 then
+        Logging.warning("[ContractRating] No accepted seasonal goods for %s",
+            tostring(kind))
+        return
+    end
+
+    local categories = {"short", "medium", "long"}
+    local category = categories[math.random(#categories)]
+    local difficulty = self.mission.missionInfo.economicDifficulty
+    local liters = ContractSupplyVolumes.getRequiredLiters(kind, category, difficulty)
+    if liters == nil then
+        Logging.warning("[ContractRating] Missing volume for %s / %s", kind, category)
+        return
+    end
+    local fillType = candidates[math.random(#candidates)]
+    local reward = ContractSupplyEconomy.calculateReward(fillType, liters, category)
+    if reward == nil then return end
+
+    local missionType = g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME)
+    if missionType == nil or missionType.data.numInstances >= missionType.data.maxNumInstances then
+        return
+    end
+
+    local contract = TaigaSupplyMission.new(true, g_client ~= nil)
+    contract.stationKind = kind
+    contract.stationId = placeable.uniqueId
+    contract.fillTypeName = fillType.name
+    contract.fillTypeIndex = fillType.index
+    contract.requiredLiters = liters
+    contract.reward = reward
+    contract.monthIndex = index
+    contract.supplyCategory = category
+    contract.completion = 0
+
+    if not contract:validate() then
+        contract:delete()
+        return
+    end
+
+    g_missionManager:registerMission(contract, missionType)
+    local id = contract:getUniqueId()
+    if id == nil or g_missionManager:getMissionByUniqueId(id) ~= contract then
+        Logging.warning("[ContractRating] Mission registration failed for month %d", index)
+        return
+    end
+    if not self.rotation:markGenerated(index, tostring(id)) then
+        Logging.warning("[ContractRating] Cannot record generated month %d", index)
+    end
+    Logging.info("[ContractRating] Supply generated: month %d, %s, %s, %d l, reward %d",
+        index, kind, fillType.name, liters, reward)
 end
 
 -- Получает уведомление о смене игрового месяца.
@@ -68,6 +132,13 @@ function ContractSupplyCalendar:start()
         end
     end
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, self.onPeriodChanged, self)
+    -- Сверяем сохранённые миссии на случай отсутствия sidecar после сбоя.
+    for _, contract in ipairs(g_missionManager:getMissions()) do
+        if contract.type ~= nil and contract.type.name == TaigaSupplyMission.TYPE_NAME
+            and contract.monthIndex ~= nil and self.rotation:canGenerate(contract.monthIndex) then
+            self.rotation:markGenerated(contract.monthIndex, tostring(contract:getUniqueId()))
+        end
+    end
     self:checkCurrentPeriod()
 end
 

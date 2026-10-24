@@ -17,6 +17,7 @@ function TaigaSupplyMission.registerSavegameXMLPaths(schema, key)
     schema:register(XMLValueType.FLOAT, key .. ".supply#required", "Required liters")
     schema:register(XMLValueType.FLOAT, key .. ".supply#delivered", "Delivered liters")
     schema:register(XMLValueType.INT, key .. ".supply#monthIndex", "Generated month")
+    schema:register(XMLValueType.STRING, key .. ".supply#category", "Supply duration category")
 end
 
 -- Создаёт экземпляр без выдачи награды и без доступного товара.
@@ -32,6 +33,7 @@ function TaigaSupplyMission.new(isServer, isClient)
     self.requiredLiters = 0
     self.deliveredLiters = 0
     self.monthIndex = nil
+    self.supplyCategory = nil
     self.vehiclesToLoad = {}
     self.vehicleGroupIdentifier = -1
     return self
@@ -55,12 +57,27 @@ function TaigaSupplyMission:getCompletion()
     return math.min(self.deliveredLiters / self.requiredLiters, 1)
 end
 
--- Выплата производится штатным dismiss только после успешной сдачи.\nfunction TaigaSupplyMission:getReward()\n    return self.reward or 0\nend\n\n-- Проверяет содержательность задания и штатный срок действия.
+-- Возвращает сумму, зафиксированную при генерации предложения.
+function TaigaSupplyMission:getReward()
+    return self.reward or 0
+end
+
+-- Назначает срок выполнения от момента принятия, сохраняя штатный запуск.
+function TaigaSupplyMission:start(spawnVehicles)
+    local duration = ContractSupplyEconomy.getDuration(
+        self.supplyCategory, g_currentMission.environment.daysPerPeriod)
+    if duration == nil then return false end
+    self:setEndDateByOffset(duration)
+    return AbstractMission.start(self, spawnVehicles)
+end
+
+-- Проверяет содержательность задания и штатный срок действия.
 function TaigaSupplyMission:validate()
     return self.stationId ~= nil
         and self.stationKind ~= nil
         and self.fillTypeName ~= nil
         and self.requiredLiters > 0
+        and ContractSupplyEconomy.categories[self.supplyCategory] ~= nil
         and AbstractMission.validate(self)
 end
 
@@ -95,6 +112,7 @@ function TaigaSupplyMission:saveToXMLFile(xmlFile, key)
     xmlFile:setValue(key .. ".supply#required", self.requiredLiters)
     xmlFile:setValue(key .. ".supply#delivered", self.deliveredLiters)
     xmlFile:setValue(key .. ".supply#monthIndex", self.monthIndex)
+    xmlFile:setValue(key .. ".supply#category", self.supplyCategory)
 end
 
 -- Загружает данные поставки, отвергая пустые или повреждённые задания.
@@ -108,6 +126,7 @@ function TaigaSupplyMission:loadFromXMLFile(xmlFile, key)
     self.requiredLiters = xmlFile:getValue(key .. ".supply#required", 0)
     self.deliveredLiters = xmlFile:getValue(key .. ".supply#delivered", 0)
     self.monthIndex = xmlFile:getValue(key .. ".supply#monthIndex")
+    self.supplyCategory = xmlFile:getValue(key .. ".supply#category")
     return self:validate() and self.deliveredLiters >= 0
         and self.deliveredLiters <= self.requiredLiters
 end
@@ -121,6 +140,7 @@ function TaigaSupplyMission:writeStream(streamId, connection)
     streamWriteFloat32(streamId, self.requiredLiters)
     streamWriteFloat32(streamId, self.deliveredLiters)
     streamWriteInt32(streamId, self.monthIndex or -1)
+    streamWriteString(streamId, self.supplyCategory or "")
 end
 
 -- Восстанавливает параметры задания из серверного сетевого потока.
@@ -132,6 +152,7 @@ function TaigaSupplyMission:readStream(streamId, connection)
     self.requiredLiters = streamReadFloat32(streamId)
     self.deliveredLiters = streamReadFloat32(streamId)
     self.monthIndex = streamReadInt32(streamId)
+    self.supplyCategory = streamReadString(streamId)
 end
 
 -- Не создаёт необеспеченных предложений без проверенной станции и товара.

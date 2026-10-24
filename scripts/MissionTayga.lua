@@ -189,11 +189,15 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/TaigaSupplyMission.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyStations.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyVolumes.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyEconomy.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplySeasonality.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyUnload.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
+    if not ContractSupplyEconomy.loadConfig(baseDirectory) then
+        Logging.warning("[ContractRating] Supply economy configuration invalid")
+    end
     if not ContractSupplySeasonality.loadConfig(baseDirectory) then
         Logging.warning("[ContractRating] Seasonal product configuration invalid")
     end
