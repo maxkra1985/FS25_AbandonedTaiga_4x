@@ -1,85 +1,104 @@
 --[[
     ContractDetailsLayout
-    Адаптирует штатную карточку контрактов к длине описания.
-    Описание расширяется по фактической высоте текста, таблица смещается,
-    а при недостатке места остаётся прокручиваемой.
+    Адаптивная компоновка деталей контракта для стандартного интерфейса
+    и профилей BetterContracts. Координаты измеряются после штатной отрисовки.
 ]]
 ContractDetailsLayout = {}
 ContractDetailsLayout.installed = false
 
--- Сохраняет исходную геометрию штатных элементов отдельно для каждой карточки.
+-- Запоминает исходные размеры активного GUI. Профиль BetterContracts
+-- применяется позднее загрузки скриптов, поэтому захват выполняется при показе.
 function ContractDetailsLayout.capture(frame)
-    if frame.taigaDetailsLayout ~= nil then
-        return frame.taigaDetailsLayout
-    end
-    local description = frame.contractDescriptionText
+    local desc = frame.contractDescriptionText
     local list = frame.detailsList
-    if description == nil or list == nil then return nil end
-    local state = {
-        descriptionHeight = description.size[2],
-        descriptionMaxLines = description.textMaxNumLines,
-        listY = list.position[2],
-        listHeight = list.size[2]
-    }
-    frame.taigaDetailsLayout = state
+    if desc == nil or list == nil then return nil end
+    local state = frame.taigaDetailsLayout
+    if state == nil then
+        state = {
+            descriptionY = desc.position[2],
+            descriptionHeight = desc.size[2],
+            descriptionMaxLines = desc.textMaxNumLines,
+            listY = list.position[2],
+            listHeight = list.size[2],
+            listProfile = list.profileName
+        }
+        frame.taigaDetailsLayout = state
+    end
     return state
 end
 
--- Пересчитывает положение таблицы после обновления штатной карточки.
+-- Возвращает стандартную геометрию перед расчётом следующего контракта.
+function ContractDetailsLayout.reset(frame, state)
+    local desc = frame.contractDescriptionText
+    local list = frame.detailsList
+    desc:setPosition(nil, state.descriptionY)
+    desc:setSize(nil, state.descriptionHeight)
+    list:setPosition(nil, state.listY)
+    list:setSize(nil, state.listHeight)
+end
+
+-- Измеряет фактический текст и освобождает для него место над таблицей.
+-- Сокращение высоты списка сохраняет его нижнюю границу и область награды.
 function ContractDetailsLayout.update(frame)
     local state = ContractDetailsLayout.capture(frame)
     if state == nil then return end
-    local description = frame.contractDescriptionText
+    local desc = frame.contractDescriptionText
     local list = frame.detailsList
+    ContractDetailsLayout.reset(frame, state)
 
-    -- Сначала возвращаем штатную геометрию, иначе возникает накопление сдвига.
-    description:setSize(nil, state.descriptionHeight)
-    description.textMaxNumLines = math.max(12, state.descriptionMaxLines or 4)
-    list:setPosition(nil, state.listY)
-    list:setSize(nil, state.listHeight)
+    local textHeight, lines = desc:getTextHeight(true)
+    if textHeight == nil or lines == nil or lines <= 0 then return end
 
-    local height, lines = description:getTextHeight(true)
-    if height == nil or lines == nil or lines <= 0 then return end
+    local descTop = desc.absPosition[2] + desc.absSize[2]
+    local listTop = list.absPosition[2] + list.absSize[2]
+    -- Рассчитываем требуемый отступ непосредственно в нормализованных
+    -- координатах GUI, а не из предполагаемых размеров XML в пикселях.
+    local gap = 12 * g_pixelSizeY
+    local wantedTop = descTop - textHeight - gap
+    local overlap = math.max(0, listTop - wantedTop)
+    local minHeight = math.min(state.listHeight, 64 * g_pixelSizeY)
+    local shift = math.min(overlap, math.max(0, state.listHeight - minHeight))
 
-    -- Оставляем для таблицы не менее двух строк высотой по 32 пикселя.
-    -- Пропорции взяты из штатного InGameMenuContractsFrame.xml:
-    -- detailsList = 216px, строка = 32px.
-    local minListHeight = state.listHeight * (64 / 216)
-    local shift = math.min(math.max(0, height - state.descriptionHeight),
-        state.listHeight - minListHeight)
-    description:setSize(nil, state.descriptionHeight + shift)
-    list:setPosition(nil, state.listY - shift)
+    -- Текстовый элемент увеличиваем вниз от исходного верхнего края.
+    local newDescHeight = math.max(state.descriptionHeight, textHeight)
+    local extra = newDescHeight - state.descriptionHeight
+    if extra > 0 then
+        desc:setSize(nil, newDescHeight)
+        desc:setPosition(nil, state.descriptionY - extra)
+    end
+
+    -- Таблица имеет нижнюю привязку; уменьшение высоты опускает верхнюю
+    -- границу, не двигая нижний блок с суммой вознаграждения.
     list:setSize(nil, state.listHeight - shift)
 
-    -- Если описание длиннее доступной области, ограничиваем число строк;
-    -- прокручиваемая таблица и нижняя сумма не должны перекрываться.
-    local lineHeight = height / lines
-    if lineHeight > 0 then
-        local maxLines = math.max(1,
-            math.floor((state.descriptionHeight + shift) / lineHeight))
-        description.textMaxNumLines = math.min(description.textMaxNumLines, maxLines)
+    if not frame.taigaDetailsLayoutReported then
+        Logging.info("[ContractRating] Contracts layout: lines=%d, textHeight=%.4f, overlap=%.4f, shift=%.4f, listHeight=%.4f",
+            lines, textHeight, overlap, shift, list.size[2])
+        frame.taigaDetailsLayoutReported = true
     end
 end
 
--- Устанавливает обработчик ровно один раз, не меняя штатные XML и Lua.
+-- Перехватывает карточку до setText для отключения короткого лимита строк.
+function ContractDetailsLayout.updateDetailContents(frame, superFunc, section, index)
+    local state = ContractDetailsLayout.capture(frame)
+    if state ~= nil then
+        ContractDetailsLayout.reset(frame, state)
+        frame.contractDescriptionText.textMaxNumLines = 20
+    end
+    superFunc(frame, section, index)
+    ContractDetailsLayout.update(frame)
+end
+
+-- Устанавливает обработчик однократно, без модификации файлов BetterContracts.
 function ContractDetailsLayout.install()
     if ContractDetailsLayout.installed or InGameMenuContractsFrame == nil
-        or InGameMenuContractsFrame.updateDetailContents == nil then return false end
-    -- textMaxNumLines нужно увеличить ДО штатного setText:
-    -- иначе TextElement обрезает описание до четырёх строк при установке.
+        or InGameMenuContractsFrame.updateDetailContents == nil then
+        return false
+    end
     InGameMenuContractsFrame.updateDetailContents = Utils.overwrittenFunction(
         InGameMenuContractsFrame.updateDetailContents,
-        function(frame, superFunc, section, index)
-            if frame.contractDescriptionText ~= nil then
-                local state = ContractDetailsLayout.capture(frame)
-                if state ~= nil then
-                    frame.contractDescriptionText.textMaxNumLines = 14
-                end
-            end
-            superFunc(frame, section, index)
-            ContractDetailsLayout.update(frame)
-        end)
+        ContractDetailsLayout.updateDetailContents)
     ContractDetailsLayout.installed = true
-    Logging.info("[ContractRating] Adaptive contract details layout installed")
+    Logging.info("[ContractRating] Adaptive contract details layout installed (absolute geometry)")
     return true
 end
