@@ -181,9 +181,13 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingLedger.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingSyncEvent.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingSyncRequestEvent.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingAccessDeniedEvent.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingAccess.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
+    ContractRatingAccess.loadConfig(baseDirectory)
+    ContractRatingAccess.install()
 
     -- Интервал попыток генерации контрактов: 30 игровых минут.
     MissionManager.MISSION_GENERATION_INTERVAL = 1800000

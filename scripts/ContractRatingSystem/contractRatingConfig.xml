@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contractRating>
+    <!-- Имена новых типов являются резервными и должны совпасть с регистрацией миссий. -->
+    <access>
+        <mission type="taigaSupplyMission" minRating="10"/>
+        <mission type="taigaLoggingMission" minRating="40"/>
+        <mission type="taigaPlantingMission" minRating="40"/>
+        <mission type="taigaQuestClearingMission" minRating="70"/>
+        <mission type="taigaQuestConstructionMission" minRating="70"/>
+        <mission type="taigaQuestLandscapingMission" minRating="70"/>
+    </access>
+</contractRating>
