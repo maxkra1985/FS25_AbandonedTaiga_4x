@@ -186,9 +186,14 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyRotation.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/TaigaSupplyMission.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
+    -- Тип должен существовать до инициализации XML-схем менеджера миссий.
+    if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
+        g_missionManager:registerMissionType(TaigaSupplyMission, TaigaSupplyMission.TYPE_NAME, 3)
+    end
     ContractRatingAccess.loadConfig(baseDirectory)
     ContractRatingAccess.install()
 
