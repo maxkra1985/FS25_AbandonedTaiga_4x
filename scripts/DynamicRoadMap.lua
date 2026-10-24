@@ -323,6 +323,11 @@ function DynamicRoadMap:getLegacyMaskFilename()
 	return dir ~= nil and (dir .. "/dynamicRoadMapLegacy.grle") or nil
 end
 
+-- Эталонные данные лежат внутри карты и никогда не перезаписываются игрой.
+function DynamicRoadMap:getDefaultRoadMapFilename(filename)
+	return Utils.getFilename("config/" .. filename, g_currentModDirectory)
+end
+
 function DynamicRoadMap:getSettingsFilename()
 	local dir = self:getSavegameDirectory()
 	return dir ~= nil and (dir .. "/dynamicRoadMap.xml") or nil
@@ -335,6 +340,12 @@ function DynamicRoadMap:loadSettings()
 
 	self.settingsLoaded = true
 	local filename = self:getSettingsFilename()
+	-- Эталон используется только для нового сохранения без собственного XML.
+	-- В существующих сохранениях настройки и состояние импорта приоритетны.
+	self.isNewRoadMapSave = filename == nil or not fileExists(filename)
+	if self.isNewRoadMapSave then
+		filename = self:getDefaultRoadMapFilename("dynamicRoadMap.xml")
+	end
 
 	if filename ~= nil and fileExists(filename) then
 		local xml = loadXMLFile("dynamicRoadMapSettings", filename)
@@ -961,6 +972,10 @@ end
 
 function DynamicRoadMap:createOrLoadRoadInfoLayer()
 	local filename = self:getMaskFilename()
+	-- На новой игре читаем маску из карты, если собственная ещё не существует.
+	if self:getIsServer() and self.isNewRoadMapSave and (filename == nil or not fileExists(filename)) then
+		filename = self:getDefaultRoadMapFilename("dynamicRoadMap.grle")
+	end
 	local layer = InfoLayer.new("dynamicRoadMap", "")
 	local loaded = false
 
@@ -993,6 +1008,10 @@ end
 
 function DynamicRoadMap:createOrLoadLegacyInfoLayer()
 	local filename = self:getLegacyMaskFilename()
+	-- Исходные дороги поставляются отдельной маской вместе с картой.
+	if self:getIsServer() and self.isNewRoadMapSave and (filename == nil or not fileExists(filename)) then
+		filename = self:getDefaultRoadMapFilename("dynamicRoadMapLegacy.grle")
+	end
 	local layer = InfoLayer.new("dynamicRoadMapLegacy", "")
 	local loaded = false
 
@@ -1049,10 +1068,19 @@ function DynamicRoadMap:initialize()
 			self.legacyImportCompleted = false
 		end
 
-		-- Полное сканирование старых дорог выполняется только сервером.
-		if not self.legacyImportCompleted then
-			self:requestLegacyImport()
-			self:log("Legacy-road background import scheduled at savegame load (server only)")
+		-- Новая игра не запускает полный скан, даже если эталон неполный.
+		-- Для существующих сохранений прежний алгоритм импорта не изменён.
+		if self.isNewRoadMapSave then
+			if not self.legacyMaskWasLoaded then
+				self:log("WARNING: default dynamicRoadMapLegacy.grle is missing or invalid; roads cannot be restored from default XML alone")
+			elseif not self.legacyImportCompleted then
+				self:log("WARNING: default road import metadata is incomplete; automatic scanning is disabled for new games")
+			end
+		else
+			if not self.legacyImportCompleted then
+				self:requestLegacyImport()
+				self:log("Legacy-road background import scheduled at savegame load (server only)")
+			end
 		end
 	else
 		-- Клиент не доверяет локальным sidecar-файлам и не запускает импорт.
