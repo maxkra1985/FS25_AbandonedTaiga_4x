@@ -187,6 +187,7 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyRotation.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/TaigaSupplyMission.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyStations.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
