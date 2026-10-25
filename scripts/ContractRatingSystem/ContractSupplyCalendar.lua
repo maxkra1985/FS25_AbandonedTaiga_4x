@@ -13,7 +13,8 @@ function ContractSupplyCalendar.new(mission)
         mission = mission,
         rotation = ContractSupplyRotation.new(),
         lastObservedMonth = nil,
-        regenerationDelayMs = nil
+        regenerationDelayMs = nil,
+        previousDaysPerPeriod = mission.environment.daysPerPeriod
     }, ContractSupplyCalendar)
 end
 
@@ -98,6 +99,8 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     contract.supplyCategory = category
     contract.customerName = ContractSupplyCustomers.choose(kind, fillType.name)
     contract.completion = 0
+    -- Предложение действительно только до конца текущего игрового дня.
+    contract:setEndDate(environment.currentMonotonicDay, 86399999)
 
     if not contract:validate() then
         contract:delete()
@@ -177,6 +180,27 @@ function ContractSupplyCalendar:update(dt)
     self:checkCurrentPeriod()
 end
 
+-- Масштабирует оставшееся время активных поставок при смене длины месяца.
+-- Предложения не масштабируются: они всегда действуют до конца дня.
+function ContractSupplyCalendar:onPeriodLengthChanged(newDays)
+    local oldDays = self.previousDaysPerPeriod
+    self.previousDaysPerPeriod = newDays
+    if not self.mission:getIsServer() or oldDays == nil or oldDays <= 0
+        or type(newDays) ~= "number" or newDays <= 0 then return end
+    if oldDays == newDays then return end
+    for _, contract in ipairs(g_missionManager:getMissions()) do
+        if contract.type ~= nil and contract.type.name == TaigaSupplyMission.TYPE_NAME
+            and contract:getIsInProgress() and contract.endDate ~= nil then
+            local remaining = contract:getMinutesLeft()
+            if remaining ~= nil and remaining > 0 then
+                contract:setDeadlineFromNow(remaining * 60000 * newDays / oldDays)
+            end
+        end
+    end
+    Logging.info("[ContractRating] Supply deadlines rescaled: %d -> %d days per month",
+        oldDays, newDays)
+end
+
 -- Получает уведомление о смене игрового месяца.
 function ContractSupplyCalendar:onPeriodChanged()
     self:checkCurrentPeriod()
@@ -196,6 +220,7 @@ function ContractSupplyCalendar:start()
         end
     end
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, self.onPeriodChanged, self)
+    g_messageCenter:subscribe(MessageType.PERIOD_LENGTH_CHANGED, self.onPeriodLengthChanged, self)
     g_messageCenter:subscribe(MessageType.MISSION_DELETED, self.onMissionDeleted, self)
     g_messageCenter:subscribe(MissionFinishedEvent, self.onMissionFinished, self)
     -- Сверяем сохранённые миссии на случай отсутствия sidecar после сбоя.

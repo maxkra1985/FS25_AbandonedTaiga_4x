@@ -213,7 +213,8 @@ function TaigaSupplyMission:getDetails()
     local base, premium = self:getPaymentBreakdown()
     local details = {
         {title = "Пункт приёма", value = self:getLocation()},
-        {title = "Срок", value = TaigaSupplyMission.CATEGORY_NAMES[self.supplyCategory] or "Не указан"},
+        {title = "Срок", value = self:getDurationHours() ~= nil
+            and string.format("%g игровых ч.", self:getDurationHours()) or "Не указан"},
         {title = "Требуется", value = string.format("%.0f л", self.requiredLiters or 0)},
         {title = "Поставлено", value = string.format("%.0f л", self.deliveredLiters or 0)}
     }
@@ -243,13 +244,53 @@ function TaigaSupplyMission:getReward()
     return self.reward or 0
 end
 
+-- Устанавливает дедлайн относительно текущего игрового времени.
+function TaigaSupplyMission:setDeadlineFromNow(durationMs)
+    local env = g_currentMission.environment
+    local target = env.dayTime + durationMs
+    local dayOffset = math.floor(target / 86400000)
+    self:setEndDate(env.currentMonotonicDay + dayOffset, target % 86400000)
+    if self.isServer then
+        self:raiseDirtyFlags(self.missionDirtyFlag)
+    end
+end
+
+-- Отображает срок выполнения в часах при текущей длине игрового месяца.
+function TaigaSupplyMission:getDurationHours()
+    local config = ContractSupplyEconomy.categories[self.supplyCategory]
+    local env = g_currentMission ~= nil and g_currentMission.environment or nil
+    if config == nil or env == nil then return nil end
+    return config.months * env.daysPerPeriod * 24
+end
+
+-- Отправляет клиентам изменённый дедлайн при принятии и смене настройки.
+function TaigaSupplyMission:writeUpdateStream(streamId, connection, dirtyMask)
+    AbstractMission.writeUpdateStream(self, streamId, connection, dirtyMask)
+    streamWriteBool(streamId, self.endDate ~= nil)
+    if self.endDate ~= nil then
+        streamWriteInt32(streamId, self.endDate.endDay)
+        streamWriteFloat32(streamId, self.endDate.endDayTime)
+    end
+end
+
+-- Получает серверный дедлайн, не вычисляя его независимо у клиента.
+function TaigaSupplyMission:readUpdateStream(streamId, timestamp, connection)
+    AbstractMission.readUpdateStream(self, streamId, timestamp, connection)
+    if streamReadBool(streamId) then
+        self:setEndDate(streamReadInt32(streamId), streamReadFloat32(streamId))
+    else
+        self.endDate = nil
+    end
+end
+
 -- Назначает срок выполнения от момента принятия, сохраняя штатный запуск.
 function TaigaSupplyMission:start(spawnVehicles)
     local duration = ContractSupplyEconomy.getDuration(
         self.supplyCategory, g_currentMission.environment.daysPerPeriod)
     if duration == nil then return false end
-    self:setEndDateByOffset(duration)
-    return AbstractMission.start(self, spawnVehicles)
+    -- Отсчёт начинается с текущего часа, а не с полуночи.
+    self:setDeadlineFromNow(duration)
+    return AbstractMission.start(self, false)
 end
 
 -- Проверяет содержательность задания и штатный срок действия.
