@@ -18,7 +18,16 @@
         <category name="long" premium="0.12" months="3"/>
         <volume station="wood" short="20000" medium="60000" long="200000"/>
         <volume station="elevator" short="30000" medium="60000" long="150000"/>
-        <!-- Паллетные объёмы уточняются отдельно. -->
+        <!-- Предварительные объёмы товаров на поддонах в литрах.
+             Автор карты может изменить их по фактической сложности поставок. -->
+        <volume station="pallets" short="5000" medium="15000" long="40000"/>
+        <!-- Две preplaced точки sellingStationProducts в порядке предпочтения.
+             Выбирается только реально загруженная SellingStation,
+             принимающая конкретный тип продукции. Не путать со складом покупки. -->
+        <palletStations>
+            <station uniqueId="preplaced_sellingStationProducts_9dd6c026f17646e284165d259581c97e"/>
+            <station uniqueId="preplaced_sellingStationProducts_0ca796a1ab8114513d99adfe983259f8a"/>
+        </palletStations>
         <!-- Месяцы: 1=январь ... 12=декабрь; разделитель — пробел.
              Начальный ассортимент — редактируемый вариант, не агрономический норматив.
              Разрешены только товары, фактически принимаемые назначенной точкой. -->

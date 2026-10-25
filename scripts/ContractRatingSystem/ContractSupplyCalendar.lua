@@ -45,21 +45,23 @@ function ContractSupplyCalendar:checkCurrentPeriod()
     if not self.rotation:canGenerate(index) then return end
 
     local kind = self.rotation:getTypeForMonth(index)
-    local station, placeable = ContractSupplyStations.resolve(kind)
-    if station == nil or placeable == nil then
-        Logging.warning("[ContractRating] Supply station %s unavailable for month %d; proposal not generated",
-            tostring(kind), index)
-        return
-    end
-
     local candidates = {}
+    -- У пунктов покупки нет SellingStation. Скупщика выбираем только
+    -- по фактической поддержке товара у разрешённых точек сдачи.
     for _, product in ipairs(ContractSupplySeasonality.getCandidates(
         kind, environment.currentPeriod)) do
-        if product.index ~= nil and station:getIsFillTypeAllowed(product.index) then
-            local fillType = g_fillTypeManager:getFillTypeByIndex(product.index)
-            if fillType ~= nil and type(fillType.pricePerLiter) == "number"
-                and fillType.pricePerLiter > 0 then
-                candidates[#candidates + 1] = fillType
+        if product.index ~= nil then
+            local target, placeable = ContractSupplyStations.resolve(kind, nil, product.index)
+            if target ~= nil and placeable ~= nil
+                and target:getIsFillTypeAllowed(product.index) then
+                local fillType = g_fillTypeManager:getFillTypeByIndex(product.index)
+                if fillType ~= nil and type(fillType.pricePerLiter) == "number"
+                    and fillType.pricePerLiter > 0 then
+                    candidates[#candidates + 1] = {
+                        fillType = fillType,
+                        placeable = placeable
+                    }
+                end
             end
         end
     end
@@ -77,7 +79,9 @@ function ContractSupplyCalendar:checkCurrentPeriod()
         Logging.warning("[ContractRating] Missing volume for %s / %s", kind, category)
         return
     end
-    local fillType = candidates[math.random(#candidates)]
+    local candidate = candidates[math.random(#candidates)]
+    local fillType = candidate.fillType
+    local placeable = candidate.placeable
     local baseAmount, deliveryPremium, reward = ContractSupplyEconomy.calculateBreakdown(fillType, liters, category)
     if reward == nil then return end
 

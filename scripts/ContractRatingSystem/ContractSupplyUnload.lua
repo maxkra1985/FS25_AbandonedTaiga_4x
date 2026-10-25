@@ -22,7 +22,7 @@ function ContractSupplyUnload.findMission(station, farmId, fillTypeIndex)
             and contract.farmId == farmId
             and contract.fillTypeName == fillType.name
             and contract.deliveredLiters < contract.requiredLiters then
-            local target, placeable = ContractSupplyStations.resolve(contract.stationKind)
+            local target, placeable = ContractSupplyStations.resolve(contract.stationKind, contract.stationId, fillTypeIndex)
             if target == station and placeable ~= nil
                 and placeable.uniqueId == contract.stationId then
                 return contract

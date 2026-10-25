@@ -298,6 +298,9 @@ function MissionTayga:onStartMission()
     self.contractRatingRuntime = ContractRatingRuntime.new(self)
     self.contractRatingRuntime:start()
     -- К этому моменту типы продукции карты и сторонних модов уже зарегистрированы.
+    if not ContractSupplyStations.loadConfig(self.baseDirectory) then
+        Logging.warning("[ContractRating] Pallet selling station configuration invalid")
+    end
     if not ContractSupplySeasonality.loadConfig(self.baseDirectory) then
         Logging.warning("[ContractRating] Seasonal product configuration invalid after map load")
     end

@@ -112,7 +112,7 @@ end
 -- Центрирует мини-карту контракта на его пункте приёма, а не на (0, 0).
 -- Координаты берутся из фактически загруженного placeable на клиенте.
 function TaigaSupplyMission:getWorldPosition()
-    local station, placeable = ContractSupplyStations.resolve(self.stationKind)
+    local station, placeable = ContractSupplyStations.resolve(self.stationKind, self.stationId, self.fillTypeIndex)
     if placeable == nil or placeable.uniqueId ~= self.stationId then
         return nil, nil
     end
