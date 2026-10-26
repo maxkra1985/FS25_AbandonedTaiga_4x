@@ -170,6 +170,43 @@ function MissionTayga.installLicensePlateHooks()
 end
 
 
+-- Диагностирует отсутствующий тип миссии до штатного обращения к numInstances.
+-- Не регистрирует типы задним числом и не меняет сетевой протокол: при
+-- несовпадении реестров нужно знать точное имя, а не скрывать ошибку.
+function MissionTayga.installMissionTypeDiagnostics()
+    if MissionTayga.missionTypeDiagnosticsInstalled
+        or MissionManager == nil
+        or MissionManager.getMissionTypeDataByName == nil then
+        return
+    end
+
+    local getTypeData = MissionManager.getMissionTypeDataByName
+    local reported = {}
+    MissionManager.getMissionTypeDataByName = function(manager, name)
+        local data = getTypeData(manager, name)
+        if data == nil then
+            local key = tostring(name)
+            if not reported[key] then
+                reported[key] = true
+                local registered = {}
+                for index, missionType in ipairs(manager.missionTypes or {}) do
+                    registered[#registered + 1] =
+                        string.format("%d:%s", index, tostring(missionType.name))
+                end
+                local isServer = g_currentMission ~= nil
+                    and g_currentMission:getIsServer() or false
+                Logging.warning(
+                    "[ContractRating] НЕ ЗАРЕГИСТРИРОВАН ТИП МИССИИ: name=%s, server=%s, types=[%s]",
+                    key, tostring(isServer), table.concat(registered, ", ")
+                )
+            end
+        end
+        return data
+    end
+    MissionTayga.missionTypeDiagnosticsInstalled = true
+end
+
+
 -- Создаёт экземпляр миссии карты, загружает собственные модули и сохраняет
 -- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
@@ -205,10 +242,16 @@ function MissionTayga.new(baseDirectory, customMt)
     end
     ContractSupplyUnload.install()
     ContractDetailsLayout.install()
+    MissionTayga.installMissionTypeDiagnostics()
     -- Тип должен существовать до инициализации XML-схем менеджера миссий.
     if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
         g_missionManager:registerMissionType(TaigaSupplyMission, TaigaSupplyMission.TYPE_NAME, 3)
     end
+    local supplyType = g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME)
+    Logging.info("[ContractRating] Тип поставки: registered=%s, typeId=%s, count=%d",
+        tostring(supplyType ~= nil),
+        supplyType ~= nil and tostring(supplyType.typeId) or "nil",
+        #(g_missionManager.missionTypes or {}))
 
     -- Схема missions.xml создаётся раньше, чем загружается класс нашей миссии.
     -- Если штатный обход типов уже завершён, регистрируем пути вручную.
