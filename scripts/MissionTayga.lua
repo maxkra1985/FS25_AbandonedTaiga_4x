@@ -209,6 +209,18 @@ function MissionTayga.new(baseDirectory, customMt)
     if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
         g_missionManager:registerMissionType(TaigaSupplyMission, TaigaSupplyMission.TYPE_NAME, 3)
     end
+
+    -- Схема missions.xml создаётся раньше, чем загружается класс нашей миссии.
+    -- Если штатный обход типов уже завершён, регистрируем пути вручную.
+    -- На раннем этапе штатный MissionManager выполнит эту регистрацию сам.
+    local saveSchema = MissionManager.xmlSchemaSavegame
+    if saveSchema ~= nil and saveSchema.paths ~= nil then
+        local missionKey = string.format("missions.%s(?)", TaigaSupplyMission.TYPE_NAME)
+        if saveSchema.paths[missionKey .. ".supply#stationKind"] == nil then
+            TaigaSupplyMission.registerSavegameXMLPaths(saveSchema, missionKey)
+            Logging.info("[ContractRating] Схема сохранения taigaSupplyMission зарегистрирована")
+        end
+    end
     ContractRatingAccess.loadConfig(baseDirectory)
     ContractRatingAccess.install()
 
