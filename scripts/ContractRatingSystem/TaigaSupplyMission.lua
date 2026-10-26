@@ -6,6 +6,10 @@
 ]]
 TaigaSupplyMission = {}
 local TaigaSupplyMission_mt = Class(TaigaSupplyMission, AbstractMission)
+-- Отдельный сетевой класс необходим, чтобы клиент создавал TaigaSupplyMission,
+-- а не базовый AbstractMission с пустым getMissionTypeName().
+-- InitObjectClass вызывается при компиляции extraSourceFiles до создания миссии.
+InitObjectClass(TaigaSupplyMission, "TaigaSupplyMission")
 TaigaSupplyMission.TYPE_NAME = "taigaSupplyMission"
 
 -- Регистрирует дополнительные XML-поля для сохранения миссий.

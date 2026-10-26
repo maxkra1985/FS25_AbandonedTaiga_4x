@@ -33,6 +33,8 @@
 	<l10n filenamePrefix="lang/l10n"/>
 
 	<extraSourceFiles>
+        <!-- Сетевой класс миссии должен быть известен обеим сторонам до сетевой синхронизации. -->
+        <sourceFile filename="scripts/ContractRatingSystem/TaigaSupplyMission.lua"/>
         <!-- Радио: общий список композиций и серверная синхронизация приёмников. -->
         <sourceFile filename="scripts/taigaRadio/TaigaRadioMapReceiverEvent.lua"/>
         <sourceFile filename="scripts/taigaRadio/TaigaRadioMapReceivers.lua"/>

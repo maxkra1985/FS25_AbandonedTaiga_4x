@@ -195,10 +195,11 @@ function MissionTayga.installMissionTypeDiagnostics()
                 end
                 local isServer = g_currentMission ~= nil
                     and g_currentMission:getIsServer() or false
-                Logging.warning(
-                    "[ContractRating] НЕ ЗАРЕГИСТРИРОВАН ТИП МИССИИ: name=%s, server=%s, types=[%s]",
-                    key, tostring(isServer), table.concat(registered, ", ")
-                )
+                local diagnostic = name == nil
+                    and "[ContractRating] СЕТЕВАЯ МИССИЯ БЕЗ ИМЕНИ ТИПА: name=%s, server=%s, types=[%s]"
+                    or "[ContractRating] НЕ ЗАРЕГИСТРИРОВАН ТИП МИССИИ: name=%s, server=%s, types=[%s]"
+                Logging.warning(diagnostic, key, tostring(isServer),
+                    table.concat(registered, ", "))
             end
         end
         return data
@@ -223,7 +224,8 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyRotation.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
-        source(Utils.getFilename("scripts/ContractRatingSystem/TaigaSupplyMission.lua", baseDirectory))
+        -- TaigaSupplyMission уже загружен из modDesc.extraSourceFiles и
+        -- зарегистрирован как сетевой класс до создания MissionTayga.
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyStations.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyVolumes.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyEconomy.lua", baseDirectory))
@@ -248,10 +250,11 @@ function MissionTayga.new(baseDirectory, customMt)
         g_missionManager:registerMissionType(TaigaSupplyMission, TaigaSupplyMission.TYPE_NAME, 3)
     end
     local supplyType = g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME)
-    Logging.info("[ContractRating] Тип поставки: registered=%s, typeId=%s, count=%d",
+    Logging.info("[ContractRating] Тип поставки: registered=%s, typeId=%s, count=%d, networkClass=%s",
         tostring(supplyType ~= nil),
         supplyType ~= nil and tostring(supplyType.typeId) or "nil",
-        #(g_missionManager.missionTypes or {}))
+        #(g_missionManager.missionTypes or {}),
+        tostring(TaigaSupplyMission.className))
 
     -- Схема missions.xml создаётся раньше, чем загружается класс нашей миссии.
     -- Если штатный обход типов уже завершён, регистрируем пути вручную.
