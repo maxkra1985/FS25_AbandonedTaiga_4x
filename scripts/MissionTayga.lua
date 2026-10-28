@@ -232,6 +232,7 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplySeasonality.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCustomers.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractDetailsLayout.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingDialog.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyUnload.lua", baseDirectory))
     end
     ContractRatingRuntime.installSaveHook()
@@ -244,6 +245,7 @@ function MissionTayga.new(baseDirectory, customMt)
     end
     ContractSupplyUnload.install()
     ContractDetailsLayout.install()
+    ContractRatingDialog.install(baseDirectory)
     MissionTayga.installMissionTypeDiagnostics()
     -- Тип должен существовать до инициализации XML-схем менеджера миссий.
     if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
@@ -371,6 +373,8 @@ function MissionTayga:onStartMission()
     if not ContractDetailsLayout.install() then
         Logging.info("[ContractRating] Contracts GUI hook not installed at mission start")
     end
+    -- Повторная проверка: GUI контрактов мог быть создан после конструктора.
+    ContractRatingDialog.install(self.baseDirectory)
     if self:getIsClient() and not self:getIsServer() then
         ContractRatingSyncRequestEvent.sendEvent()
     end

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<GUI onOpen="onOpen" onClose="onClose">
+    <GuiElement profile="newLayer"/>
+    <Bitmap profile="dialogFullscreenBg" id="dialogBg"/>
+
+    <GuiElement profile="taigaRatingDialogBg" id="dialogElement">
+        <ThreePartBitmap profile="fs25_dialogBgMiddleSmall"/>
+        <ThreePartBitmap profile="fs25_dialogBgTopSmall"/>
+        <ThreePartBitmap profile="fs25_dialogBgBottom"/>
+        <GuiElement profile="taigaRatingContent">
+            <Text profile="taigaRatingTitle" text="РЕЙТИНГ И ИСТОРИЯ"/>
+            <Text profile="taigaRatingValue" id="ratingText"/>
+            <Text profile="taigaRatingFarm" id="farmText"/>
+            <MultiTextOption profile="taigaRatingOption" id="sectionOption" onClick="onClickSection" focusInit="onOpen"/>
+            <MultiTextOption profile="taigaRatingOption" id="filterOption" position="0px -205px" onClick="onClickFilter"/>
+            <Text profile="taigaRatingHeader" id="headerText"/>
+            <Text profile="taigaRatingRow" id="entryText1" position="0px -285px"/>
+            <Text profile="taigaRatingRow" id="entryText2" position="0px -321px"/>
+            <Text profile="taigaRatingRow" id="entryText3" position="0px -357px"/>
+            <Text profile="taigaRatingRow" id="entryText4" position="0px -393px"/>
+            <Text profile="taigaRatingRow" id="entryText5" position="0px -429px"/>
+            <Text profile="taigaRatingRow" id="entryText6" position="0px -465px"/>
+            <Text profile="taigaRatingRow" id="entryText7" position="0px -501px"/>
+            <Text profile="taigaRatingRow" id="entryText8" position="0px -537px"/>
+            <MultiTextOption profile="taigaRatingPages" id="pageOption" onClick="onClickPage"/>
+            <Text profile="taigaRatingSummary" id="summaryText"/>
+        </GuiElement>
+        <BoxLayout profile="fs25_dialogButtonBox" id="buttonsPC">
+            <Button profile="buttonBack" text="$l10n_button_close" onClick="onClickBack"/>
+        </BoxLayout>
+    </GuiElement>
+    <GUIProfiles>
+        <Profile name="taigaRatingDialogBg" extends="fs25_dialogBg">
+            <size value="920px 810px"/>
+        </Profile>
+        <Profile name="taigaRatingContent" extends="baseReference" with="anchorTopCenter">
+            <size value="850px 750px"/>
+            <position value="0px -15px"/>
+        </Profile>
+        <Profile name="taigaRatingTitle" extends="fs25_dialogTitle" with="anchorTopCenter">
+            <size value="825px 36px"/>
+            <position value="0px -25px"/>
+        </Profile>
+        <Profile name="taigaRatingValue" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="810px 45px"/>
+            <position value="0px -73px"/>
+            <textSize value="30px"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="taigaRatingFarm" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="810px 30px"/>
+            <position value="0px -119px"/>
+            <textSize value="18px"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="taigaRatingOption" extends="fs25_multiTextOption" with="anchorTopCenter">
+            <size value="650px 43px"/>
+            <position value="0px -158px"/>
+        </Profile>
+        <Profile name="taigaRatingHeader" extends="fs25_textDefault" with="anchorTopCenter">
+            <size value="800px 30px"/>
+            <position value="0px -251px"/>
+            <textSize value="18px"/>
+            <textAlignment value="center"/>
+        </Profile>
+        <Profile name="taigaRatingRow" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="815px 30px"/>
+            <textSize value="20px"/>
+            <textAlignment value="left"/>
+            <textVerticalAlignment value="middle"/>
+        </Profile>
+        <Profile name="taigaRatingPages" extends="fs25_multiTextOption" with="anchorTopCenter">
+            <size value="210px 36px"/>
+            <position value="0px -588px"/>
+        </Profile>
+        <Profile name="taigaRatingSummary" extends="fs25_dialogText" with="anchorTopCenter">
+            <size value="815px 60px"/>
+            <position value="0px -638px"/>
+            <textSize value="18px"/>
+            <textMaxNumLines value="3"/>
+            <textAlignment value="center"/>
+        </Profile>
+    </GUIProfiles>
+</GUI>

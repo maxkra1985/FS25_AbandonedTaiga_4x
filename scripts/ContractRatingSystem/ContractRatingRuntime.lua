@@ -160,3 +160,25 @@ function ContractRatingRuntime:receiveSync(kind, entry)
         end
     end
 end
+
+-- Возвращает рейтинг конкретной фермы из серверного/синхронизированного журнала.
+-- На клиенте используется только для отображения; изменения запрещены.
+function ContractRatingRuntime.getRatingForFarm(farmId)
+    local mission = g_currentMission
+    local runtime = mission ~= nil and mission.contractRatingRuntime or nil
+    if runtime == nil or type(farmId) ~= "number" or farmId <= 0
+        or farmId % 1 ~= 0 then return nil end
+    return runtime.ledger:getRating(farmId)
+end
+
+-- Единая серверная проверка для будущих производственных рецептов.
+-- Источник farmId обязан быть серверно установленным владельцем/оператором.
+-- Клиентское значение не предоставляет разрешения на использование рецепта.
+function ContractRatingRuntime.isFarmRatingSufficient(farmId, minRating)
+    local mission = g_currentMission
+    if mission == nil or not mission:getIsServer()
+        or type(minRating) ~= "number" or minRating ~= minRating
+        or minRating == math.huge or minRating == -math.huge then return false end
+    local rating = ContractRatingRuntime.getRatingForFarm(farmId)
+    return rating ~= nil and rating >= minRating
+end
