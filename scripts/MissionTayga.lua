@@ -222,6 +222,7 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/events/ContractRatingAccessDeniedEvent.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingAccess.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingRuntime.lua", baseDirectory))
+        source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingForestMissionGuard.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyRotation.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyCalendar.lua", baseDirectory))
         -- TaigaSupplyMission уже загружен из modDesc.extraSourceFiles и
@@ -240,6 +241,9 @@ function MissionTayga.new(baseDirectory, customMt)
     if not ContractRatingProduction.install() then
         Logging.warning("[ContractRating] Не удалось установить контроль minRating при создании карты")
     end
+    -- Не допускаем в GUI лесные контракты для земельных ID без Farmland.
+    -- Хуки ставятся до загрузки миссий из сохранения и до новой генерации.
+    ContractRatingForestMissionGuard.install()
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
     if not ContractSupplyEconomy.loadConfig(baseDirectory) then
