@@ -153,7 +153,10 @@ function ContractRatingProduction.enforceFarm(farmId)
 
     local disabled = 0
     for _, point in ipairs(manager:getProductionPointsForFarmId(farmId)) do
-        for _, production in ipairs(point.activeProductions or {}) do
+        -- setProductionState(false) удаляет элемент из activeProductions.
+        -- Обратный обход не пропускает следующие активные рецепты.
+        for index = #point.activeProductions, 1, -1 do
+            local production = point.activeProductions[index]
             local required = production.taigaMinRating
             if required ~= nil then
                 local current = mission.contractRatingRuntime.ledger:getRating(farmId)
