@@ -107,6 +107,12 @@ function ContractRatingProduction.setProductionState(point, superFunc,
     if state and (point.isServer or not noEventSend) then
         local allowed, required, current =
             ContractRatingProduction.check(point, productionId)
+        if required ~= nil and not noEventSend then
+            Logging.info("[ContractRating] Включение рецепта: recipe=%s, farmId=%s, rating=%s, minRating=%d, allowed=%s",
+                tostring(productionId),
+                tostring(ContractRatingProduction.getOwnerFarmId(point)),
+                tostring(current), required, tostring(allowed))
+        end
         if not allowed then
             if point.isClient and not noEventSend then
                 ContractRatingProduction.showLocalDenial(
@@ -137,6 +143,9 @@ function ContractRatingProduction.load(point, superFunc, components, xmlFile,
                     minRating = ContractRatingProduction.INVALID_RATING
                 end
                 production.taigaMinRating = minRating
+                Logging.info("[ContractRating] minRating прочитан: recipe=%s, minRating=%d, ownerFarmId=%s",
+                    tostring(id), minRating,
+                    tostring(ContractRatingProduction.getOwnerFarmId(point)))
             end
         end)
     end
@@ -229,10 +238,10 @@ end
 -- Подключает расширение при загрузке extraSourceFiles. Все штатные рецепты
 -- без minRating полностью сохраняют прежнюю логику и сетевой протокол.
 function ContractRatingProduction.install()
-    if ContractRatingProduction.installed then return end
+    if ContractRatingProduction.installed then return true end
     if ProductionPoint == nil or ProductionPointProductionStateEvent == nil then
-        Logging.warning("[ContractRating] Не найдены классы ProductionPoint")
-        return
+        Logging.warning("[ContractRating] Отложена установка minRating: классы ProductionPoint пока недоступны")
+        return false
     end
     ProductionPoint.registerXMLPaths = Utils.appendedFunction(
         ProductionPoint.registerXMLPaths,
@@ -248,6 +257,9 @@ function ContractRatingProduction.install()
         ContractRatingProduction.productionStateEventRun)
     ContractRatingProduction.installed = true
     Logging.info("[ContractRating] Контроль производственных рецептов по minRating подключён")
+    return true
 end
 
+-- Ранняя попытка не является окончательной: при компиляции extraSourceFiles
+-- штатные классы могут ещё отсутствовать. Повторная установка в MissionTayga.new.
 ContractRatingProduction.install()

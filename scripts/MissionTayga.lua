@@ -235,6 +235,11 @@ function MissionTayga.new(baseDirectory, customMt)
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractRatingDialog.lua", baseDirectory))
         source(Utils.getFilename("scripts/ContractRatingSystem/ContractSupplyUnload.lua", baseDirectory))
     end
+    -- В extraSourceFiles классы ProductionPoint ещё не существуют.
+    -- Подключаем хуки при создании карты, до загрузки XML производств.
+    if not ContractRatingProduction.install() then
+        Logging.warning("[ContractRating] Не удалось установить контроль minRating при создании карты")
+    end
     ContractRatingRuntime.installSaveHook()
     ContractSupplyCalendar.installSaveHook()
     if not ContractSupplyEconomy.loadConfig(baseDirectory) then
