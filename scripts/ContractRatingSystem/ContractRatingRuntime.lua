@@ -9,7 +9,19 @@ ContractRatingRuntime.__index = ContractRatingRuntime
 
 -- Создаёт обработчик, связанный с экземпляром миссии карты.
 function ContractRatingRuntime.new(mission)
-    return setmetatable({ mission = mission, ledger = ContractRatingLedger.new() }, ContractRatingRuntime)
+    local self = setmetatable({
+        mission = mission, ledger = ContractRatingLedger.new()
+    }, ContractRatingRuntime)
+
+    -- Любое новое понижение рейтинга, независимо от типа контракта,
+    -- автоматически перепроверяет активные рецепты только этой фермы.
+    self.ledger.onApplied = function(_, entry)
+        if entry.delta < 0 and self.mission ~= nil
+            and self.mission:getIsServer() then
+            ContractRatingProduction.enforceFarm(entry.farmId)
+        end
+    end
+    return self
 end
 
 -- Проверяет принадлежность типа миссии к штатным рейтингующим контрактам.

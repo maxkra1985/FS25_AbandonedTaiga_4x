@@ -55,6 +55,12 @@ function ContractRatingLedger:apply(transactionId, farmId, attemptId, delta, rea
     self.transactionIds[transactionId] = true
     self.ratings[farmId] = entry.after
 
+    -- Серверный наблюдатель применяет новые ограничения немедленно после
+    -- фактического изменения рейтинга. Временная копия при load() его не имеет.
+    if self.onApplied ~= nil then
+        self.onApplied(self, entry)
+    end
+
     return true, entry
 end
 

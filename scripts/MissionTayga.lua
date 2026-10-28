@@ -357,6 +357,8 @@ function MissionTayga:onStartMission()
     -- Рейтинг загружается только на сервере, результаты обрабатываются после старта.
     self.contractRatingRuntime = ContractRatingRuntime.new(self)
     self.contractRatingRuntime:start()
+    -- Сохранённые активные рецепты проверяются после загрузки рейтинга.
+    ContractRatingProduction.enforceAll()
     -- К этому моменту типы продукции карты и сторонних модов уже зарегистрированы.
     if not ContractSupplyStations.loadConfig(self.baseDirectory) then
         Logging.warning("[ContractRating] Pallet selling station configuration invalid")

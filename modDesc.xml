@@ -33,6 +33,9 @@
 	<l10n filenamePrefix="lang/l10n"/>
 
 	<extraSourceFiles>
+        <!-- Разрешённый при компиляции сетевой класс уведомления и XML minRating. -->
+        <sourceFile filename="scripts/ContractRatingSystem/events/ContractRatingProductionNoticeEvent.lua"/>
+        <sourceFile filename="scripts/ContractRatingSystem/ContractRatingProduction.lua"/>
         <!-- Сетевой класс миссии должен быть известен обеим сторонам до сетевой синхронизации. -->
         <sourceFile filename="scripts/ContractRatingSystem/TaigaSupplyMission.lua"/>
         <!-- Радио: общий список композиций и серверная синхронизация приёмников. -->
