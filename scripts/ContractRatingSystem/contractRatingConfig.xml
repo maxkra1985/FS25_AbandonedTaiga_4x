@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contractRating>
+    <!-- Очки рейтинга за одну принятую поставку. Штраф равен двойному
+         отрицательному значению награды за успех. -->
+    <rating>
+        <mission type="taigaSupplyMission" success="3" failure="-6"/>
+    </rating>
     <!-- Имена новых типов являются резервными и должны совпасть с регистрацией миссий. -->
     <access>
         <mission type="taigaSupplyMission" minRating="10"/>

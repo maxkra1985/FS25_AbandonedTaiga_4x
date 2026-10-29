@@ -279,6 +279,10 @@ function MissionTayga.new(baseDirectory, customMt)
         end
     end
     ContractRatingAccess.loadConfig(baseDirectory)
+    if not ContractRatingRuntime.loadRatingConfig(baseDirectory) then
+        Logging.warning(
+            "[ContractRating] Некорректная конфигурация рейтинга поставок; используются +3/-6")
+    end
     ContractRatingAccess.install()
 
     -- Интервал попыток генерации контрактов: 30 игровых минут.

@@ -7,6 +7,72 @@
 ContractRatingRuntime = {}
 ContractRatingRuntime.__index = ContractRatingRuntime
 
+-- Значения используются только если XML-настройка не смогла загрузиться.
+-- Они соответствуют утверждённым условиям поставок: +3 / -6.
+ContractRatingRuntime.supplyRating = {success = 3, failure = -6}
+
+-- Считывает рейтинг успешной/неудачной поставки из общего конфигурационного XML.
+-- Параметры обновляются только после полной проверки, иначе сохраняется
+-- гарантированная пара значений из требований.
+function ContractRatingRuntime.loadRatingConfig(baseDirectory)
+    local filename = Utils.getFilename(
+        "scripts/ContractRatingSystem/contractRatingConfig.xml", baseDirectory)
+    local xml = loadXMLFile("contractSupplyRatingConfig", filename)
+    if xml == nil or xml == 0 then
+        return false
+    end
+
+    local key = "contractRating.rating.mission(0)"
+    local missionType = getXMLString(xml, key .. "#type")
+    local success = getXMLInt(xml, key .. "#success")
+    local failure = getXMLInt(xml, key .. "#failure")
+    delete(xml)
+
+    if missionType ~= "taigaSupplyMission"
+        or success == nil or success <= 0
+        or failure == nil or failure ~= -2 * success then
+        return false
+    end
+
+    ContractRatingRuntime.supplyRating = {
+        success = success,
+        failure = failure
+    }
+    Logging.info(
+        "[ContractRating] Рейтинг поставок настроен: успех %+d, отмена/провал %+d",
+        success, failure)
+    return true
+end
+
+-- Возвращает изменение рейтинга для поставок только после их принятия.
+-- Непринятое предложение удаляется без MissionFinishedEvent и farmId.
+function ContractRatingRuntime.getSupplyMissionDelta(mission, finishState)
+    if mission == nil or mission.type == nil
+        or mission.type.name ~= "taigaSupplyMission"
+        or mission.farmId == nil then
+        return nil
+    end
+    if finishState == MissionFinishState.SUCCESS then
+        return ContractRatingRuntime.supplyRating.success
+    end
+    if finishState == MissionFinishState.CANCELED
+        or finishState == MissionFinishState.FAILED
+        or finishState == MissionFinishState.TIMED_OUT then
+        return ContractRatingRuntime.supplyRating.failure
+    end
+    return nil
+end
+
+-- Маршрутизирует завершение в штатную или пользовательскую рейтинговую механику.
+function ContractRatingRuntime.getMissionDelta(mission, finishState)
+    local supplyDelta =
+        ContractRatingRuntime.getSupplyMissionDelta(mission, finishState)
+    if supplyDelta ~= nil then
+        return supplyDelta
+    end
+    return ContractRatingRuntime.getStandardMissionDelta(mission, finishState)
+end
+
 -- Создаёт обработчик, связанный с экземпляром миссии карты.
 function ContractRatingRuntime.new(mission)
     local self = setmetatable({
@@ -56,7 +122,7 @@ function ContractRatingRuntime:onMissionFinished(contract, finishState)
         return
     end
 
-    local delta = ContractRatingRuntime.getStandardMissionDelta(contract, finishState)
+    local delta = ContractRatingRuntime.getMissionDelta(contract, finishState)
     if delta == nil or contract.farmId == nil then
         return
     end
@@ -67,7 +133,12 @@ function ContractRatingRuntime:onMissionFinished(contract, finishState)
         return
     end
 
-    local attemptId = "standard:" .. tostring(uniqueId)
+    -- Префикс различает попытки поставки и штатные контракты.
+    -- Постоянный uniqueId защищает от двойного начисления при повторном событии
+    -- и при восстановлении уже завершённой миссии из старого сохранения.
+    local prefix = contract.type.name == "taigaSupplyMission"
+        and "supply:" or "standard:"
+    local attemptId = prefix .. tostring(uniqueId)
     local applied, result = self.ledger:apply(
         "rating:" .. attemptId, contract.farmId, attemptId, delta,
         tostring(contract.type.name) .. ":" .. tostring(finishState)
@@ -78,6 +149,21 @@ function ContractRatingRuntime:onMissionFinished(contract, finishState)
             contract.farmId, delta, tostring(result.before), tostring(result.after))
     elseif result ~= "duplicateTransaction" then
         Logging.warning("[ContractRating] Could not record rating: %s", tostring(result))
+    end
+end
+
+-- Восстанавливает пропущенное рейтинговое событие для поставок, которые
+-- уже завершились, но ещё присутствуют в missions.xml. Удалённые миссии
+-- восстановить по журналу невозможно, поэтому фиктивные записи не создаются.
+function ContractRatingRuntime:reconcileFinishedSupplies()
+    local missions = g_missionManager ~= nil and g_missionManager:getMissions() or {}
+    for _, contract in ipairs(missions) do
+        if contract.type ~= nil
+            and contract.type.name == "taigaSupplyMission"
+            and contract.status == MissionStatus.FINISHED
+            and contract.finishState ~= nil then
+            self:onMissionFinished(contract, contract.finishState)
+        end
     end
 end
 
@@ -97,6 +183,7 @@ function ContractRatingRuntime:start()
     end
 
     g_messageCenter:subscribe(MissionFinishedEvent, self.onMissionFinished, self)
+    self:reconcileFinishedSupplies()
 end
 
 -- Сохраняет текущий журнал при штатном сохранении карьеры.
