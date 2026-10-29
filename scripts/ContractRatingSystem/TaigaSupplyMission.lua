@@ -248,6 +248,21 @@ function TaigaSupplyMission:getReward()
     return self.reward or 0
 end
 
+-- Вычисляет оставшееся время поставки по абсолютному игровому дню.
+-- Штатная функция AbstractMission.getMinutesLeft ошибается, когда текущий
+-- час суток больше времени окончания, а до окончания ещё несколько дней.
+-- Здесь одинаковая формула применяется к любым дням, включая просрочку.
+function TaigaSupplyMission:getMinutesLeft()
+    if self.endDate == nil then
+        return nil
+    end
+
+    local environment = g_currentMission.environment
+    local dayDifference = self.endDate.endDay - environment.currentMonotonicDay
+    local timeDifference = self.endDate.endDayTime - environment.dayTime
+    return (dayDifference * 86400000 + timeDifference) / 60000
+end
+
 -- Устанавливает дедлайн относительно текущего игрового времени.
 function TaigaSupplyMission:setDeadlineFromNow(durationMs)
     local env = g_currentMission.environment
