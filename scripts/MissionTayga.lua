@@ -208,6 +208,42 @@ function MissionTayga.installMissionTypeDiagnostics()
 end
 
 
+-- Выводит состояние штатной системы контрактов на удаление камней после загрузки карты.
+-- Диагностика не изменяет генерацию и выполняется только на сервере.
+function MissionTayga.logDestructibleRockMissionDiagnostics(self)
+    if not self:getIsServer() then
+        return
+    end
+
+    local manager = g_missionManager
+    if manager == nil then
+        Logging.warning("[RockMission] Менеджер миссий не создан")
+        return
+    end
+
+    local typeName = "destructibleRockMission"
+    local missionType = manager:getMissionType(typeName)
+    Logging.info("[RockMission] Регистрация типа: name=%s, registered=%s, typeId=%s",
+        typeName, tostring(missionType ~= nil),
+        missionType ~= nil and tostring(missionType.typeId) or "nil")
+
+    local spotsPath = Utils.getFilename("map/missions/destructibleRocksSpots.i3d", self.baseDirectory)
+    Logging.info("[RockMission] Файл точек: path=%s, exists=%s, configuredMaxInstances=6",
+        tostring(spotsPath), tostring(fileExists(spotsPath)))
+
+    -- Считаем уже созданные задания, не предполагая структуру внутренних генераторов.
+    local total, rockCount = 0, 0
+    for _, mission in pairs(manager.missions or {}) do
+        total = total + 1
+        if mission.type ~= nil and mission.type.name == typeName then
+            rockCount = rockCount + 1
+        end
+    end
+    Logging.info("[RockMission] После запуска карты: allMissions=%d, rockMissions=%d",
+        total, rockCount)
+end
+
+
 -- Создаёт экземпляр миссии карты, загружает собственные модули и сохраняет
 -- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
@@ -356,6 +392,7 @@ function MissionTayga:onStartMission()
     end
 
     MissionTayga:superClass().onStartMission(self)
+    MissionTayga.logDestructibleRockMissionDiagnostics(self)
 
     -- После полной клиентской загрузки повторяем запрос снимка состояния.
     -- Повторное состояние не перезапускает уже звучащий трек.
