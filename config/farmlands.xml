@@ -93,9 +93,34 @@
 		<farmland id="90" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
 		<farmland id="91" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
 		<farmland id="92" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
-		<farmland id="93" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />  <!-- BGA, farmland bought via placeable -->
-		<farmland id="100" priceScale="0" npcName="FORESTER" showOnFarmlandsScreen="false" />
-		<!-- Служебные лесные участки, используемые системой контрактов. -->
+		<farmland id="93" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="94" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="95" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="96" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="97" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="98" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="99" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="100" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="101" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="102" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="103" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="104" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="105" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="106" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="107" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="108" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="109" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="110" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="111" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="112" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="113" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="114" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="115" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="116" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="117" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="118" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="119" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
+		<farmland id="120" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
 		<farmland id="121" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
 		<farmland id="122" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />
 		<farmland id="123" priceScale="1" npcName="FORESTER" showOnFarmlandsScreen="false" />

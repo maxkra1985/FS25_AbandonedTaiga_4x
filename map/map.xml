@@ -34,13 +34,13 @@
     <helpline filename="$dataS/helpLine.xml"/>
     <gameplayHints filename="$dataS/gameplayHints.xml"/>
     <missions vehicleFilename="$dataS/missionVehicles.xml">
-        <deadwoodMission treeType="DEADWOOD" maxNumInstances="10">
+        <deadwoodMission treeType="DEADWOOD" maxNumInstances="6">
             <spots filename="map/missions/deadwoodSpots.i3d"/>
         </deadwoodMission>
-        <treeTransportMission treeType="TRANSPORT" maxNumInstances="10">
+        <treeTransportMission treeType="TRANSPORT" maxNumInstances="6">
             <spots filename="map/missions/transportSpots.i3d"/>
         </treeTransportMission>
-        <destructibleRockMission maxNumInstances="10">
+        <destructibleRockMission maxNumInstances="6">
             <spots filename="map/missions/destructibleRocksSpots.i3d"/>
             <marker filename="$data/shared/assets/marker/rockMissionFlag.i3d"/>
         </destructibleRockMission>
