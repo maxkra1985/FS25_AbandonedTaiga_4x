@@ -387,7 +387,7 @@
 			</transitions>
 		</stateMachine>
 
-		<sellingStation node="sellingStation" supportsExtension="false" allowMissions="false" appearsOnStats="false">
+		<sellingStation node="sellingStation" supportsExtension="false" allowMissions="false" appearsOnStats="true">
 			<palletTrigger	triggerNode="palletTrigger" aiNode="unloadTriggerAINode"	fillTypes="INSTRUMENT PLANKS BOARDS ROOFPLATES FURNITURE NAILS" />
 			<woodTrigger	triggerNode="woodTrigger"	aiNode="unloadTriggerAINode"	fillTypes="WOOD"	activationTriggerNode="woodSellActivationTrigger"/>
 		</sellingStation>

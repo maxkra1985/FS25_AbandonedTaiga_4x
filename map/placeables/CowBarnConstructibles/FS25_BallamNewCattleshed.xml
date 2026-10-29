@@ -625,7 +625,7 @@
 			</transitions>
 		</stateMachine>
 
-		<sellingStation appearsOnStats="true" supportsExtension="false">
+		<sellingStation supportsExtension="false" allowMissions="false" appearsOnStats="true">
 			<palletTrigger triggerNode="ConstructiblePalletTrigger" aiNode="ConstructibleUnloadTriggerAINode" deleteLitersPerSecond="50" fillTypes="INSTRUMENT BUILDING_METAL PLANKS BOARDS CEMENT FURNITURE CEMENTBRICKS NAILS" />
 		</sellingStation>
 

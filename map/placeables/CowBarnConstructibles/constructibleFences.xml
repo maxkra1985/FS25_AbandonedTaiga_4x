@@ -283,7 +283,7 @@
 			</transitions>
 		</stateMachine>
 
-		<sellingStation appearsOnStats="true" supportsExtension="false">
+		<sellingStation supportsExtension="false" allowMissions="false" appearsOnStats="true">
 			<palletTrigger	triggerNode="ConstructiblePalletTrigger"	aiNode="ConstructibleUnloadTriggerAINode"	fillTypes="INSTRUMENT"	deleteLitersPerSecond="50" />
 			<woodTrigger	triggerNode="ConstructibleWoodTrigger"		aiNode="ConstructibleUnloadTriggerAINode"	fillTypes="WOOD"		activationTriggerNode="ConstructibleWoodSellActivationTrigger"/>
 		</sellingStation>

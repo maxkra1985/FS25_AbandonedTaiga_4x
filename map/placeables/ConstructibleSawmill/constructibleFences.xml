@@ -251,7 +251,7 @@
 			</transitions>
 		</stateMachine>
 
-		<sellingStation appearsOnStats="true" supportsExtension="false">
+		<sellingStation supportsExtension="false" allowMissions="false" appearsOnStats="true">
 			<palletTrigger triggerNode="palletTrigger" aiNode="unloadTriggerAINode" fillTypes="INSTRUMENT BOARDS" />
 		</sellingStation>
 
