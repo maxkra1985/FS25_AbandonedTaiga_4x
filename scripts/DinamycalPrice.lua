@@ -273,6 +273,7 @@ end
 
 function DinamycalPrice:loadTaxState()
     self.taxSalesBaseline = {}
+    self.taxLastChargedDay = {}
     local path = self:getTaxStatePath()
     if path == nil or not fileExists(path) then
         logMessage("[TAX]", "No persisted tax baseline (migration / new save)")
@@ -291,6 +292,7 @@ function DinamycalPrice:loadTaxState()
             break
         end
         self.taxSalesBaseline[farmId] = getXMLFloat(xml, key .. "#sales") or 0
+        self.taxLastChargedDay[farmId] = getXMLString(xml, key .. "#lastChargedDay")
         index = index + 1
     end
     delete(xml)
@@ -314,6 +316,9 @@ function DinamycalPrice:saveTaxState()
         local key = string.format("taxState.farm(%d)", index)
         setXMLInt(xml, key .. "#id", tonumber(farmId))
         setXMLFloat(xml, key .. "#sales", sales)
+        if self.taxLastChargedDay ~= nil and self.taxLastChargedDay[farmId] ~= nil then
+            setXMLString(xml, key .. "#lastChargedDay", self.taxLastChargedDay[farmId])
+        end
         index = index + 1
     end
     saveXMLFile(xml)
@@ -337,23 +342,134 @@ function DinamycalPrice:getCurrentTaxableSales(finances)
 	)
 end
 
+-- Возвращает совокупные продажи текущего и завершённых финансовых периодов.
+-- Это исключает обнуление месячного счётчика из расчёта суточного оборота.
+function DinamycalPrice:getTotalTaxableSales(stats)
+    local total = self:getCurrentTaxableSales(stats.finances)
+    for _, finances in pairs(stats.financesHistory or {}) do
+        if finances ~= nil then
+            total = total + self:getCurrentTaxableSales(finances)
+        end
+    end
+    return total
+end
+
+-- Инициализирует базу только после появления статистики фермы.
+-- Существующие сохранённые значения при этом не перезаписываются.
 function DinamycalPrice:initializeTaxSalesBaseline()
-	self.taxSalesBaseline = self.taxSalesBaseline or {}
+    self.taxSalesBaseline = self.taxSalesBaseline or {}
+    if g_farmManager == nil or g_farmManager.farms == nil then
+        return
+    end
+    for farmId, farm in pairs(g_farmManager.farms) do
+        if farm ~= nil and farm.stats ~= nil and farm.stats.finances ~= nil
+            and self.taxSalesBaseline[farmId] == nil then
+            local total = self:getTotalTaxableSales(farm.stats)
+            self.taxSalesBaseline[farmId] = total
+            logMessage("[TAX]", string.format(
+                "Farm %s: initial baseline %.2f (previous sales before installation are not taxed)",
+                tostring(farmId), total))
+        end
+    end
+end
 
-	if g_farmManager == nil or g_farmManager.farms == nil then
-		return
-	end
+-- Определяет идентификатор игрового дня для защиты от повторного списания.
+function DinamycalPrice:getTaxDayKey()
+    local env = g_currentMission ~= nil and g_currentMission.environment or nil
+    if env == nil or env.currentDay == nil then
+        return nil
+    end
+    return string.format("%s:%s", tostring(env.currentYear), tostring(env.currentDay))
+end
 
-	for farmId, farm in pairs(g_farmManager.farms) do
-		if farm ~= nil and farm.stats ~= nil then
-			if self.taxSalesBaseline[farmId] == nil then
-                self.taxSalesBaseline[farmId] = self:getCurrentTaxableSales(farm.stats.finances)
-                logMessage("[TAX]", string.format("Farm %s baseline initialized from current totals (unrecoverable earlier day sales)", tostring(farmId)))
+-- Начисляет налог отдельно каждой ферме на сервере.
+-- Месячные архивы включаются в совокупный оборот; уже обработанный день пропускается.
+function DinamycalPrice:calculateTax()
+    if g_currentMission == nil or g_farmManager == nil or not g_currentMission:getIsServer() then
+        return
+    end
+
+    self:initializeTaxSalesBaseline()
+    self.taxLastChargedDay = self.taxLastChargedDay or {}
+    local dayKey = self:getTaxDayKey()
+    if dayKey == nil then
+        logMessage("[WARN]", "TAX: не удалось определить игровой день")
+        return
+    end
+
+    local fullYears = getFullYears()
+    local difficultyMultiplier = EconomyManager.getPriceMultiplier()
+    local limits = {50000, 500000, 1000000, 2000000, 3500000}
+    local rates = {0, 0.02, 0.05, 0.10, 0.20, 0.30}
+
+    for farmId, farm in pairs(g_farmManager.farms or {}) do
+        if farm ~= nil and farm.stats ~= nil and farm.stats.finances ~= nil
+            and tonumber(farmId) ~= nil and tonumber(farmId) > 0 then
+            local total = self:getTotalTaxableSales(farm.stats)
+            local previous = self.taxSalesBaseline[farmId]
+
+            if self.taxLastChargedDay[farmId] == dayKey then
+                logMessage("[TAX]", string.format(
+                    "farm=%s day=%s: повторный DAY_CHANGED, налог уже начислен",
+                    tostring(farmId), dayKey))
+            elseif previous == nil then
+                -- Новая ферма: нет подтверждённого предыдущего снимка для расчёта.
+                self.taxSalesBaseline[farmId] = total
+                logMessage("[TAX]", string.format(
+                    "farm=%s day=%s: база впервые создана %.2f, предыдущие продажи неизвестны",
+                    tostring(farmId), dayKey, total))
+            else
+                local daily = total - previous
+                if daily < 0 then
+                    -- Финансовая история могла потерять старейший период.
+                    -- Не начисляем налог на сомнительную разницу.
+                    logMessage("[WARN]", string.format(
+                        "TAX farm=%s: накопленный оборот уменьшился %.2f -> %.2f; требуется сверка истории",
+                        tostring(farmId), previous, total))
+                    daily = 0
+                end
+
+                local baseRate = rates[6]
+                for i, limit in ipairs(limits) do
+                    if daily <= limit * difficultyMultiplier then
+                        baseRate = rates[i]
+                        break
+                    end
+                end
+
+                local rate = 0
+                if fullYears >= 3 and baseRate > 0 then
+                    rate = MathUtil.round(
+                        (baseRate + (3 - difficultyMultiplier) / 100) * currentBuyMultiplier, 2)
+                end
+                local amount = MathUtil.round(daily * rate, 0)
+                logMessage("[TAX]", string.format(
+                    "farm=%s day=%s total=%.2f previous=%.2f daily=%.2f years=%s baseRate=%.2f rate=%.2f tax=%.2f",
+                    tostring(farmId), dayKey, total, previous, daily, tostring(fullYears), baseRate, rate, amount))
+
+                if amount > 0 then
+                    g_currentMission:addMoney(-amount, farmId, MoneyType.OTHER, true, true)
+                end
+
+                local message
+                if fullYears < 3 then
+                    message = string.format("Налог с продаж: 0 (льготный период, оборот %.0f)", daily)
+                elseif amount == 0 then
+                    message = string.format("Налог с продаж: 0 (оборот %.0f, необлагаемый предел %.0f)",
+                        daily, limits[1] * difficultyMultiplier)
+                else
+                    message = string.format("Налог с продаж: %s (оборот %.0f, ставка %.0f%%)",
+                        g_i18n:formatMoney(amount, 0, true, true), daily, rate * 100)
+                end
+
+                self.taxSalesBaseline[farmId] = total
+                self.taxLastChargedDay[farmId] = dayKey
+                self:notifyFarmTax(farmId, message)
             end
-		end
-	end
+        end
+    end
 
-	logMessage("[TAX]", "Initialized daily sales baselines")
+    self:saveTaxState()
 end
 
 --================================================================================================
@@ -2037,6 +2153,7 @@ function DinamycalPrice:loadMap(name)
 		logMessage("[EVENT]", "Subscribed to DAY_CHANGED")
 
 		self:loadTaxState()
+		-- Фермы могут загружаться позднее loadMap; повторная инициализация выполнится при DAY_CHANGED.
 		self:initializeTaxSalesBaseline()
 
 		if not DinamycalPrice.placeableHookInstalled then
