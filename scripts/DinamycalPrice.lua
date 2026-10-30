@@ -284,6 +284,7 @@ function DinamycalPrice:loadTaxState()
         logMessage("[WARN]", "Could not load tax baseline: " .. path)
         return false
     end
+    self.taxStateVersion = getXMLInt(xml, "taxState#version") or 1
     local index = 0
     while true do
         local key = string.format("taxState.farm(%d)", index)
@@ -311,6 +312,7 @@ function DinamycalPrice:saveTaxState()
         logMessage("[WARN]", "Cannot create tax state: " .. path)
         return
     end
+    setXMLInt(xml, "taxState#version", 2)
     local index = 0
     for farmId, sales in pairs(self.taxSalesBaseline or {}) do
         local key = string.format("taxState.farm(%d)", index)
@@ -362,15 +364,25 @@ function DinamycalPrice:initializeTaxSalesBaseline()
         return
     end
     for farmId, farm in pairs(g_farmManager.farms) do
-        if farm ~= nil and farm.stats ~= nil and farm.stats.finances ~= nil
-            and self.taxSalesBaseline[farmId] == nil then
+        if farm ~= nil and farm.stats ~= nil and farm.stats.finances ~= nil then
+            if self.taxStateVersion == 1 and self.taxSalesBaseline[farmId] ~= nil then
+                local history = 0
+                for _, finances in pairs(farm.stats.financesHistory or {}) do
+                    history = history + self:getCurrentTaxableSales(finances)
+                end
+                self.taxSalesBaseline[farmId] = self.taxSalesBaseline[farmId] + history
+                logMessage("[TAX]", string.format("Farm %s: legacy baseline migrated with history %.2f", tostring(farmId), history))
+            end
+            if self.taxSalesBaseline[farmId] == nil then
             local total = self:getTotalTaxableSales(farm.stats)
             self.taxSalesBaseline[farmId] = total
             logMessage("[TAX]", string.format(
                 "Farm %s: initial baseline %.2f (previous sales before installation are not taxed)",
                 tostring(farmId), total))
+            end
         end
     end
+    self.taxStateVersion = 2
 end
 
 -- Определяет идентификатор игрового дня для защиты от повторного списания.
