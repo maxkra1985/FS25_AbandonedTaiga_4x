@@ -341,6 +341,12 @@ function TaigaRadio:install()
     player.getItemName = function(p)
         return radio.vehicleSelected and radio.tracks[radio.trackIndex].title or original.getItemName(p)
     end
+
+    -- При каждой загрузке карты виртуальная станция выбрана первой.
+    -- Воспроизведение запускает штатное управление радио; дальнейший выбор
+    -- игрока сохраняется при выключении и повторном включении.
+    self.vehicleSelected = true
+
     Logging.info("[TaigaRadio] Виртуальная станция подключена к транспортному радио")
 end
 
