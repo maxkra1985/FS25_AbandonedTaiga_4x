@@ -435,6 +435,13 @@ function MissionTayga:onStartMission()
     end
 
     MissionTayga:superClass().onStartMission(self)
+
+    -- В начале каждой игровой сессии сервер включает приёмники с громкостью 40%.
+    -- Для клиентов состояние доставляется существующими сетевыми событиями.
+    if self.taigaRadioMapReceivers ~= nil then
+        self.taigaRadioMapReceivers:startAllReceiversOnMissionStart()
+    end
+
     MissionTayga.logDestructibleRockMissionDiagnostics(self)
 
     -- После полной клиентской загрузки повторяем запрос снимка состояния.

@@ -1,6 +1,7 @@
 -- Поиск встроенных в карту подвижных радиоприёмников.
 -- Не создаёт Placeable/Vehicle и не меняет физику или геометрию I3D.
 TaigaRadioMapReceivers = {}
+TaigaRadioMapReceivers.DEFAULT_START_VOLUME = 0.4
 local TaigaRadioMapReceivers_mt = Class(TaigaRadioMapReceivers)
 
 -- Создаёт реестр объектов и физических триггеров радиоприёмников.
@@ -144,7 +145,7 @@ function TaigaRadioMapReceivers:addReceiver(rootNode, bodyNode, displayNode, tri
         enabled = false,
         trackIndex = 1,
         elapsedMs = 0,
-        volume = 0.7,
+        volume = TaigaRadioMapReceivers.DEFAULT_START_VOLUME,
         volumeDisplayTimer = 0,
         displayMode = "none",
         display = TaigaRadioMapReceivers.findDisplayNodes(displayNode),
@@ -332,6 +333,39 @@ function TaigaRadioMapReceivers:applyNetworkState(receiverId, enabled, trackInde
             receiver.activatable:updateText()
         end
     end
+end
+
+-- Автоматически включает все приёмники после запуска миссии.
+-- Сервер задаёт одинаковую начальную громкость и рассылает состояние клиентам.
+-- Ручное выключение и регулировка громкости после загрузки сохраняются.
+function TaigaRadioMapReceivers:startAllReceiversOnMissionStart()
+    if not self.mission:getIsServer() then
+        return
+    end
+
+    local radio = self.mission.taigaRadio
+    if radio == nil or #radio.tracks == 0 then
+        Logging.warning("[TaigaRadio] Автовключение приёмников невозможно: нет доступных композиций")
+        return
+    end
+
+    local enabledCount = 0
+    for _, receiver in ipairs(self.receivers) do
+        self:applyNetworkState(
+            receiver.id, true, receiver.trackIndex,
+            TaigaRadioMapReceivers.DEFAULT_START_VOLUME, 0
+        )
+        if receiver.enabled then
+            enabledCount = enabledCount + 1
+        end
+        TaigaRadioMapReceiverEvent.broadcastState(receiver)
+    end
+
+    Logging.info(
+        "[TaigaRadio] При запуске миссии включено %d из %d приёмников, громкость %d%%",
+        enabledCount, #self.receivers,
+        math.floor(TaigaRadioMapReceivers.DEFAULT_START_VOLUME * 100 + 0.5)
+    )
 end
 
 -- Принимает действие только на сервере и распространяет его результат.
