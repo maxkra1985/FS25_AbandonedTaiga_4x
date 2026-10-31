@@ -244,6 +244,48 @@ function MissionTayga.logDestructibleRockMissionDiagnostics(self)
 end
 
 
+-- Логирует каждую штатную попытку создать контракт на удаление камней.
+-- Перехват не меняет аргументы, результат и порядок вызова генератора.
+function MissionTayga.installRockMissionGenerationDiagnostics()
+    if MissionTayga.rockMissionGenerationDiagnosticsInstalled then
+        return
+    end
+
+    local manager = g_missionManager
+    local rockType = manager ~= nil and manager:getMissionType("destructibleRockMission") or nil
+    local rockClass = rockType ~= nil and rockType.classObject or nil
+    if rockClass == nil or type(rockClass.tryGenerateMission) ~= "function" then
+        Logging.warning("[RockMission] Перехват генератора не установлен: type=%s, tryGenerateMission=%s",
+            tostring(rockType ~= nil), tostring(rockClass ~= nil and rockClass.tryGenerateMission ~= nil))
+        return
+    end
+
+    local original = rockClass.tryGenerateMission
+    local attempts = 0
+    rockClass.tryGenerateMission = function(...)
+        attempts = attempts + 1
+        local data = rockType.data or {}
+        local before = #(manager.missions or {})
+        Logging.info("[RockMission] Попытка #%d: missions=%d, instances=%s, maxInstances=%s, generationInProgress=%s",
+            attempts, before, tostring(data.numInstances), tostring(data.maxNumInstances),
+            tostring(manager.missionGenerationInProgress))
+
+        local mission = original(...)
+        Logging.info("[RockMission] Результат #%d: %s, missionsBefore=%d, instances=%s, maxInstances=%s",
+            attempts, mission ~= nil and "создан кандидат" or "кандидат не создан",
+            before, tostring(data.numInstances), tostring(data.maxNumInstances))
+        if mission == nil then
+            Logging.info("[RockMission] Попытка #%d отклонена внутри штатного tryGenerateMission; конкретная причина не возвращается",
+                attempts)
+        end
+        return mission
+    end
+
+    MissionTayga.rockMissionGenerationDiagnosticsInstalled = true
+    Logging.info("[RockMission] Диагностика попыток штатного генератора установлена")
+end
+
+
 -- Создаёт экземпляр миссии карты, загружает собственные модули и сохраняет
 -- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
@@ -296,6 +338,7 @@ function MissionTayga.new(baseDirectory, customMt)
     if g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME) == nil then
         g_missionManager:registerMissionType(TaigaSupplyMission, TaigaSupplyMission.TYPE_NAME, 3)
     end
+    MissionTayga.installRockMissionGenerationDiagnostics()
     local supplyType = g_missionManager:getMissionType(TaigaSupplyMission.TYPE_NAME)
     Logging.info("[ContractRating] Тип поставки: registered=%s, typeId=%s, count=%d, networkClass=%s",
         tostring(supplyType ~= nil),
