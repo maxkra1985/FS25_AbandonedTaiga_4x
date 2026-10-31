@@ -5000,7 +5000,7 @@
             <Option value="60" name="Farmland 60"/>
             <Option value="61" name="Farmland 61"/>
             <Option value="62" name="Farmland 62"/>
-            <Option value="63" name="Farmland 63"/>
+            <!--Option value="63" name="Farmland 63"/>
             <Option value="64" name="Farmland 64"/>
             <Option value="65" name="Farmland 65"/>
             <Option value="66" name="Farmland 66"/>
@@ -5013,7 +5013,7 @@
             <Option value="73" name="Farmland 73"/>
             <Option value="74" name="Farmland 74"/>
             <Option value="75" name="Farmland 75"/>
-            <Option value="76" name="Farmland 76"/>
+            <Option value="76" name="Farmland 76"/-->
             <Option value="77" name="Farmland 77"/>
             <Option value="78" name="Farmland 78"/>
             <Option value="79" name="Farmland 79"/>
