@@ -28,7 +28,7 @@
         <food filename="config/animalFood.xml"/>
     </animals>
     <npcs filename="config/maps_npcs.xml"/>
-    <wildlife filename="$data/animals/wildlife/wildlife.xml"/>
+    <wildlife filename="config/wildlife.xml"/>
     <licensePlates filename="map/russianLicensePlates/licensePlates.xml"/>
     <collectibles filename="map/Collectibles/collectibles.xml"/>
     <helpline filename="$dataS/helpLine.xml"/>

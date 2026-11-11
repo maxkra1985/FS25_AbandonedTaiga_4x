@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<species>
+	<annotation>Copyright (C) GIANTS Software GmbH, All Rights Reserved. Source assets: local ANIMALS bundle; map-local integration: Abandoned Taiga.</annotation>
+	<name>bear</name>
+	<class>WildlifeSpeciesDeer</class>
+	<settings costPerAnimal="5" maxNumInstances="5" fleeDistance="5.0">
+		<spawnTimer minSeconds="25" maxSeconds="55" />
+		<foliageBending minX="-0.22" maxX="0.22" minZ="-0.65" maxZ="0.56" yOffset="0.2" />
+		<treeCheck radius="15" height="15" minNumTrees="3" />
+		<despawn radius="200" />
+		<spawn radiusMin="120" radiusMax="150" />
+	</settings>
+	<companion maxNumAnimalsPerInstance="1" randomSpawnRadius="3">
+		<asset filename="character/animals/wild/bear/bear.i3d" skeletonNode="0" meshNode="1">
+			</asset>
+		<animation>
+			<states>
+				<state id="walk">
+					<animation id="walk1" clipLeft="walkSource" clipRight="walkSource" rotation="85" distance="0.9" />
+				</state>
+				<state id="run">
+					<animation id="run1" clipLeft="runSource" clipRight="runSource" rotation="30" speed="1.0" distance="3.25" />
+				</state>
+				<state id="idle">
+					<animation id="idle1" clip="idleSource" speed="1.0" />
+				</state>
+				<state id="eat">
+					<animation id="eat1" clip="eatSource" speed="1.0" />
+				</state>
+				<state id="attention">
+					<animation id="attention1" clip="idleSource" speed="1.0" />
+				</state>
+				<state id="scratching">
+					<animation id="scratching1" clip="idleSource" speed="1.0" />
+				</state>
+			</states>
+			<transitions defaultBlendTime="750">
+		</transitions>
+		</animation>
+		<sound>
+			<soundGroup name="walk" volume="0.45" indoorVolume="0.3" range="20" innerRange="1" pitch="0.9">
+				<sample filename="$data/sounds/animals/dog/anmlDogStep_01.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogStep_02.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogStep_03.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogStep_04.ogg" />
+			</soundGroup>
+			<soundGroup name="run" volume="0.65" indoorVolume="0.3" range="20" innerRange="1" pitch="0.9">
+				<sample filename="$data/sounds/animals/dog/anmlDogRun_01.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogRun_02.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogRun_03.ogg" />
+				<sample filename="$data/sounds/animals/dog/anmlDogRun_04.ogg" />
+			</soundGroup>
+		</sound>
+	</companion>
+</species>

@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<wildlife>
+	<!--Stock birds and deer use the game resources; additional species are bundled with this map.-->
+	<groups>
+		<group name="BIRDS_FLYBY" maxNumInstances="2" />
+		<group name="WOODLANDS" maxNumInstances="3" />
+		<group name="TAIGA_BOAR" maxNumInstances="2" />
+		<group name="TAIGA_FOX" maxNumInstances="3" />
+		<group name="TAIGA_WOLF" maxNumInstances="2" />
+		<group name="TAIGA_BEAR" maxNumInstances="3" />
+		<group name="TAIGA_DEER2" maxNumInstances="3" />
+	</groups>
+	<species>
+		<species filename="$data/animals/wildlife/species/crowFlyBy.xml" groups="BIRDS_FLYBY" />
+		<species filename="$data/animals/wildlife/species/storkFlyBy.xml" groups="BIRDS_FLYBY" />
+		<species filename="$data/animals/wildlife/species/deer.xml" groups="WOODLANDS" />
+		<species filename="character/species/boar.xml" groups="TAIGA_BOAR" />
+		<species filename="character/species/fox.xml" groups="TAIGA_FOX" />
+		<species filename="character/species/wolf.xml" groups="TAIGA_WOLF" />
+		<species filename="character/species/bear.xml" groups="TAIGA_BEAR" />
+		<species filename="character/species/deer2.xml" groups="TAIGA_DEER2" />
+	</species>
+</wildlife>

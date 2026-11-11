@@ -289,6 +289,11 @@ end
 -- Создаёт экземпляр миссии карты, загружает собственные модули и сохраняет
 -- полный штатный lifecycle Mission00.
 function MissionTayga.new(baseDirectory, customMt)
+    if TaigaWildlifePaths == nil then
+        source(Utils.getFilename("scripts/TaigaWildlifePaths.lua", baseDirectory))
+    end
+    TaigaWildlifePaths.install(baseDirectory)
+
     MissionTayga.loadLoggingContractorModules(baseDirectory)
     MissionTayga.installLicensePlateHooks()
 
